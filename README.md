@@ -1,6 +1,6 @@
-#Anaplan add-on
+#Microsoft Outlook add-on
 
-This add-on allows connect Anaplan models in eXo Platform collaboration spaces.
+This add-on allows use eXo Platform collaborative tools inside Microsoft Outlook.
 
 ##Usage
 
