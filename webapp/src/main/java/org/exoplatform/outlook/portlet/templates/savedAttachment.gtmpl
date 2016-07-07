@@ -1,0 +1,7 @@
+#{param name=files/}
+<% for (f in files) { %>
+<li class="ms-ListItem selectableItem" data-path="${f.path}" data-portalurl="${f.url}">
+	<span class="ms-ListItem-primaryText">${f.name}</span>
+	<span class="ms-ListItem-metaText lastModified">${f.lastModified}</span>
+</li>
+<% } %>

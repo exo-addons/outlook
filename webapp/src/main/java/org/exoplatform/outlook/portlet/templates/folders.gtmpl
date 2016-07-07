@@ -1,0 +1,8 @@
+#{param name=folder/}
+<div class="parentFolder" data-path="${folder.path}" data-pathlabel="${folder.pathLabel}" data-portalurl="${folder.url}" style="display: none;"></div>
+<% for (sf in folder.subfolders) { %>
+<li class="ms-ListItem selectableItem" data-path="${sf.path}" data-pathlabel="${sf.pathLabel}" data-portalurl="${sf.url}">
+	<span class="ms-ListItem-primaryText">${sf.title}</span>
+	<span class="ms-ListItem-metaText lastModified">${sf.lastModified}</span>
+</li>
+<% } %>

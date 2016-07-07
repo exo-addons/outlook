@@ -1,0 +1,92 @@
+#{param name=spaces/}
+<div class="container-fluid">
+	<div id="outlook-addAttachment" class="row-fluid">
+		<div class="span8 offset2">
+			<div class="text-centered">
+				<h4>&{Outlook.command.addAttachment}</h4>
+			</div>
+
+			<form role="form">
+				<fieldset class="centered">
+					<div class="control-group">
+						<label class="control-label ms-Label" for="attachmentIds">&{Outlook.selectedDocuments}</label>
+						<div class="controls">
+							<ul id="documents" class="form-control ms-List">
+							</ul>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label ms-Label" for="groupId">&{Outlook.selectDocumentSpace}</label>
+						<div class="controls ms-Dropdown" tabindex="0">
+							<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
+							<select name="groupId" class="form-control ms-Dropdown-select">
+								<%	for(s in spaces) { %>
+								<option value="${s.groupId}" data-path="${s.rootFolder.path}">${s.title ? s.title : s.groupId}</option>
+								<%	} %>
+							</select>
+						</div>
+					</div>
+					<div class="control-group group-path" style="display: none;">
+						<label class="control-label ms-Label" for="path">&{Outlook.selectDocument}</label>
+						<div class="controls">
+							<input name="path" type="hidden" value="">
+							<ul id="path-info" class="form-control ms-List">
+								<li class="ms-ListItem" >
+									<div class="ms-TextField ms-ListItem-primaryText">
+										<span class="ms-TextField-description">&{Outlook.pathInfoDescription}</span>
+										<input class="ms-TextField-field pathInfo" type="text" style="font-size: 14px !important;" readonly>
+							    </div>
+									<div class="ms-ListItem-actions pathControls">
+							      <span class="ms-ListItem-action pathUp" title="&{Outlook.pathUpDescription}"><i class="ms-Icon ms-Icon--arrowUp"></i></span>
+							      <span class="ms-ListItem-action pathOpen" title="&{Outlook.pathOpenDescription}"><i class="ms-Icon ms-Icon--arrowUpRight"></i></span>
+							    </div>
+								</li>
+							</ul>
+							<ul id="folders" class="form-control ms-List">
+							</ul>
+						</div>
+					</div>
+					<div class="control-group form-buttons">
+						<div class="controls">
+							<button class="ms-Button ms-Button--primary attachButton" disabled>
+								<span class="ms-Button-icon">
+									<i class="ms-Icon ms-Icon--plus"></i>
+								</span>
+								<span class="ms-Button-label">&{Outlook.attach}</span>
+								<span class="ms-Button-description">&{Outlook.addAttachmentDescription}</span>
+							</button>
+							<button class="ms-Button cancelButton" data-dismiss="modal">
+								<span class="ms-Button-icon">
+									<i class="ms-Icon ms-Icon--plus"></i>
+								</span>
+								<span class="ms-Button-label">&{Outlook.cancel}</span>
+								<span class="ms-Button-description">&{Outlook.cancelAddAttachmentDescription}</span>
+							</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+
+			<div class="centered addingAttachment" style="display: none;">
+				<div class="control-group">
+					<div class="controls text-centered">
+						<div>&{Outlook.addingAttachment}</div>
+						<div class="ms-Spinner" style="display: inline-block;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="centered addedAttachment" style="display: none;">
+				<div class="control-group">
+					<div class="controls">
+						<div class="savedSpaceInfo">&{Outlook.addedAttachment}</div>
+						<ul id="addedAttachmentList" class="form-control ms-List">
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+

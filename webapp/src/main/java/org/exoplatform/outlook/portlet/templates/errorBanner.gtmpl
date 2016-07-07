@@ -1,0 +1,18 @@
+<div id="outlook-error" class="error-message" style="display: none;">
+	<div class="ms-MessageBanner">
+		<div class="ms-MessageBanner-content">
+			<div class="ms-MessageBanner-text">
+				<div class="ms-MessageBanner-clipper"></div>
+			</div>
+			<button class="ms-MessageBanner-expand">
+				<i class="ms-Icon ms-Icon--chevronsDown"></i>
+			</button>
+			<div class="ms-MessageBanner-action" style="display: none;">
+				<button class="ms-Button ms-Button--primary ms-fontColor-neutralLight">OK</button>
+			</div>
+		</div>
+		<button class="ms-MessageBanner-close">
+			<i class="ms-Icon ms-Icon--x"></i>
+		</button>
+	</div>
+</div>

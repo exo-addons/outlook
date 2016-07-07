@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+  xmlns:jcr="http://www.jcp.org/jcr/1.0">
+
+  <!-- TODO not used -->
+  <!-- Editor mixin nodetype for adding to nt:file like nodetype when editing its content and need keep unconfirmed content changes -->
+  <nodeType name="exo:outlookConnection" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+    <propertyDefinitions>
+      <propertyDefinition name="exo:username" requiredType="String" autoCreated="false"
+        mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="exo:connectionDate" requiredType="Date" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="exo:connectionId" requiredType="String" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+    </propertyDefinitions>
+    <!-- childNodeDefinitions>
+      <childNodeDefinition name="exo:lastContent" defaultPrimaryType="nt:resource"
+        autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+        <requiredPrimaryTypes>
+          <requiredPrimaryType>nt:resource</requiredPrimaryType>
+        </requiredPrimaryTypes>
+      </childNodeDefinition>
+    </childNodeDefinitions -->
+  </nodeType>
+</nodeTypes>

@@ -1,0 +1,174 @@
+	<!-- Error banner -->
+	<div id="outlook-error" class="error-message" style="display: none;">
+		<div class="ms-MessageBanner">
+			<div class="ms-MessageBanner-content">
+				<div class="ms-MessageBanner-text">
+					<div class="ms-MessageBanner-clipper"></div>
+				</div>
+				<button class="ms-MessageBanner-expand">
+					<i class="ms-Icon ms-Icon--chevronsDown"></i>
+				</button>
+				<div class="ms-MessageBanner-action" style="display: none;">
+					<button class="ms-Button ms-Button--primary ms-fontColor-neutralLight">OK</button>
+				</div>
+			</div>
+			<button class="ms-MessageBanner-close">
+				<i class="ms-Icon ms-Icon--x"></i>
+			</button>
+		</div>
+	</div>
+	
+	<!-- Welcome screen -->
+	<div id="welcomePage" class="ms-Grid">
+		<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
+				<div class="ms-Dialog-header welcomeHeader">
+					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">Welcome to eXo Platform</p>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
+				<div class="ms-Dialog-header welcomeHeader">
+					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">It is eXo Platform add-in for Microsoft Outlook. Use it to enhance
+						your conversations with collaborative tools from eXo Platform.</p>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<!-- div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
+				<div class="ms-Dialog-header welcomeHeader">
+					<p class="ms-Dialog-title ms-font-m">This add-in offers following features for Outlook users:</p>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div -->
+		<div class="ms-Grid-row firstFeatureRow">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-ChoiceField">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+					<span class="featureText ms-font-s-plus">Save attachments in collaborative spaces and attach documents from them</span>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<!-- div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-ChoiceField">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+					<span class="featureText ms-font-s-plus">Attach documents from collaborative spaces to a message</span>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div -->
+		<div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-ChoiceField">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+					<span class="featureText ms-font-s-plus">Convert message to activity status, forum post or wiki page</span>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-ChoiceField">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+					<span class="featureText ms-font-s-plus">Post to activity streams, create forum posts and wiki pages from message window</span>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+			<div class="ms-ChoiceField">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+					<span class="featureText ms-font-s-plus">Search in collaborative spaces directly from message window</span>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		</div>
+		<div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm3 ms-u-md4 ms-u-lg4"></div>
+			<div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg4">
+				<div class="ms-Dialog-actions text-centered">
+					<button class="ms-Dialog-action ms-Button ms-Button--primary signInExo" data-dismiss="modal">
+						<span class="ms-Button-label" title="&{Outlook.signInExoDescription}">&{Outlook.signInExo}</span>
+					</button>
+				</div>
+			</div>
+			<div class="ms-Grid-col ms-u-sm3 ms-u-md4 ms-u-lg4"></div>
+		</div>
+	</div>
+	
+	<!-- Login dialog -->
+	<div id="signInDialog" class="ms-Dialog" style="display: none;">
+		<div class="ms-Overlay ms-Overlay--dark js-DialogAction--close"></div>
+		<div class="ms-Dialog-main">
+			<button class="ms-Dialog-button ms-Dialog-button--close js-DialogAction--close">
+				<i class="ms-Icon ms-Icon--x"></i>
+			</button>
+			<div class="ms-Dialog-header">
+				<p class="ms-Dialog-title text-centered">&{Outlook.signInExoTitle}</p>
+			</div>
+			<div class="ms-Dialog-inner">
+				<form role="form">
+					<div class="ms-Dialog-content">
+						<p class="ms-Dialog-subText">&{Outlook.signInDescription}</p>
+						<div class="ms-TextField">
+							<label for="userName" class="ms-Label">&{Outlook.userName}</label><input name="userName" class="ms-TextField-field" type="text">
+						</div>
+						<div class="ms-TextField">
+							<label for="password" class="ms-Label">&{Outlook.password}</label><input name="password" class="ms-TextField-field" type="password">
+						</div>
+					</div>
+					<div class="ms-Dialog-actions text-centered">
+						<button class="ms-Dialog-action ms-Button ms-Button--primary signIn" disabled>
+							<span class="ms-Button-label" title="&{Outlook.doSignInDescription}">&{Outlook.signIn}</span>
+						</button>
+						<button class="ms-Dialog-action ms-Button cancel">
+							<span class="ms-Button-label" title="&{Outlook.cancelSignInDescription}">&{Outlook.cancel}</span>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<div id="signInProgress" class="ms-Grid ms-bgColor-themeDarkAlt ms-borderColor-themeDark" style="display: none;">
+		<div class="text-centered signingIn">
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered">
+					<div class="ms-Dialog-header">
+						<p class="ms-Dialog-title ms-font-xxl ms-fontColor-yellow">eXo Platform</p>
+					</div>
+				</div>
+			</div>
+			<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered ms-font-m-plus ">
+					<div class="ms-Spinner ms-Spinner--large ms-fontColor-themeLighterAlt progressSpinner" style="display: inline-block;"></div>
+					<div class="ms-fontColor-themeLight">&{Outlook.signingIn}</div>
+				</div>
+			</div>
+		</div>	
+	</div>

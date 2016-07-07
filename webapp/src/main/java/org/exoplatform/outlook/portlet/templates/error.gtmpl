@@ -1,0 +1,11 @@
+#{param name=message/}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<h3>Error</h3>
+		${message}
+		<p>
+			<a class="btn btn-primary" href="@{index()}">Back</a>
+		</p>
+	</div>
+</div>
+

@@ -1,0 +1,141 @@
+/* Error banner (common) */
+#outlook-error>div.ms-MessageBanner {
+	min-width: 290px;
+}
+
+#outlook-error button.ms-MessageBanner-close {
+	margin-left: 25px;
+	width: 25px;
+}
+
+/* Login/Welcome page */
+
+.featureCheck {
+	max-width: 25px;
+}
+
+.welcomeHeader {
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.firstFeatureRow {
+ 	margin-top: 10px;
+}
+
+#signInProgress {
+	height: 500px;
+	width: 100%;
+}
+
+.signingIn {
+	width: 100%;
+	position: relative;
+  margin: auto;
+  top: 35%;
+}
+
+.progressSpinner {
+	width: 28px;
+}
+
+.progressSpinner>.ms-Spinner-circle {
+	background-color: #ffb900;
+}
+
+/* Portlet */
+
+span[disabled] {
+	pointer-events: none;
+}
+
+.ms-ListItem-metaText, .attachmentSize, .lastModified {
+	top: 5px !important;
+}
+
+.ms-ListItem {
+	padding-top: 6px !important;
+}
+
+.ms-ListItem-primaryText {
+	font-size: 14px !important;
+	top: -2px !important;
+}
+
+.ms-ListItem.is-selected:before, .ms-ListItem.is-selected:hover:before {
+	top: auto !important;
+}
+
+.ms-ListItem.is-selectable:hover:before {
+	top: auto !important;
+}
+
+.uiIconError {
+	background: url("/eXoResources/skin/images/Icons/uiIconColor.png")
+		no-repeat scroll left top transparent;
+	margin-left: 20px;
+}
+
+.uiIconWarning {
+	background: url("/eXoResources/skin/images/Icons/uiIconColor.png")
+		no-repeat -20px top transparent;
+	margin-left: 20px;
+}
+
+.error-message>.ms-MessageBanner {
+	background-color: #fde7e9;
+	color: #a80000;
+}
+
+.waitThrobber {
+	display: inline-block;
+	width: 50%;
+	height: 320px;
+	margin-right: auto;
+	margin-left: auto;
+	pointer-events: none;
+	background: url('icons/oxygen/32/animations/throbber.gif') no-repeat
+		left center !important; /* orientation=lt */
+	background: url('icons/oxygen/32/animations/throbber.gif') no-repeat
+		right center !important; /* orientation=rt */
+}
+
+.savedAttachment {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.selectableItem:hover {
+	cursor: pointer;
+	background-color: #eaeaea;
+	outline: 1px solid transparent;
+}
+
+.pathInfo {
+	font-size: 14px !important;
+	display: block !important;
+}
+
+#path-info>.ms-ListItem {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.pathControls {
+	top: 30px !important;
+	right: 5px !important;
+}
+
+.text-centered {
+	text-align: center;
+}
+
+.centered {
+	min-width: 150px;
+	max-width: 450px;
+	margin: 0 auto;
+}
+
+div.form-buttons {
+	marging-top: 10px;
+}

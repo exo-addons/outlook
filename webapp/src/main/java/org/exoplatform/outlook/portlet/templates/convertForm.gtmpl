@@ -1,0 +1,10 @@
+#{param name=workspaces/}
+<%
+  for(w in workspaces) {
+%>
+<option value="${w.id}">${w.name ? w.name : w.id}</option>
+<%
+  }
+%>
+
+

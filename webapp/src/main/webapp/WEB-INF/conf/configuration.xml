@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+  Copyright (C) 2016 eXo Platform SAS.
+  
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+  
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+  
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <component>
+    <key>org.exoplatform.outlook.OutlookService</key>
+    <type>org.exoplatform.outlook.OutlookServiceImpl</type>
+  </component>
+  <component>
+    <key>org.exoplatform.outlook.jcr.NodeFinder</key>
+    <type>org.exoplatform.outlook.jcr.CMSNodeFinder</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.outlook.security.OutlookTokenService</key>
+    <type>org.exoplatform.outlook.security.OutlookTokenService</type>
+    <init-params>
+      <values-param>
+        <name>service.configuration</name>
+        <value>jcr-token</value>
+        <value>90</value>
+        <value>DAY</value>
+        <value>outlooklogin</value>
+      </values-param>
+    </init-params>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
+    <component-plugin>
+      <name>chromattic</name>
+      <set-method>addLifeCycle</set-method>
+      <type>org.exoplatform.commons.chromattic.ChromatticLifeCycle</type>
+      <init-params>
+        <value-param>
+          <name>domain-name</name>
+          <value>outlooklogin</value>
+        </value-param>
+        <value-param>
+          <name>workspace-name</name>
+          <value>portal-work</value>
+        </value-param>
+        <values-param>
+          <name>entities</name>
+          <value>org.exoplatform.web.security.security.TokenContainer</value>
+          <value>org.exoplatform.web.security.security.TokenEntry</value>
+          <value>org.exoplatform.web.security.security.HashedToken</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
+    <component-plugin>
+      <name>Outlook login page filter Plugin</name>
+      <set-method>addFilterDefinitions</set-method>
+      <type>org.exoplatform.web.filter.FilterDefinitionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>Outlook Login Filter</name>
+          <object type="org.exoplatform.web.filter.FilterDefinition">
+            <field name="filter">
+              <object type="org.exoplatform.outlook.server.filter.OutlookLoginFilter" />
+            </field>
+            <field name="patterns">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <!-- string>^(/login\?initialURI=%2Fportal%2Fintranet%2Foutlook(.*)){1}$</string -->
+                  <string>/login</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Outlook Sanitize Filter</name>
+          <object type="org.exoplatform.web.filter.FilterDefinition">
+            <field name="filter">
+              <object type="org.exoplatform.outlook.server.filter.OutlookRememberMeFilter" />
+            </field>
+            <field name="patterns">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>/intranet/outlook</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <!-- ECMS menu actions -->
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+    <component-plugin>
+      <name>Add MS Office Actions</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>OutlookExport</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type">
+              <string>org.exoplatform.ecm.dms.UIActionBar</string>
+            </field>
+            <field name="name">
+              <string>OutlookExport</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.outlook.ecms.OutlookExportManageComponent</string>
+            </field>
+            <!-- TODO Filters here? -->
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <!-- Add Outlook actions to ECMS views -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.cms.views.ManageViewService</target-component>
+    <component-plugin>
+      <name>customize.view.plugin</name>
+      <set-method>setManageViewPlugin</set-method>
+      <type>org.exoplatform.outlook.ecms.CustomizeViewPlugin</type>
+      <description>this plugin customize user view</description>
+      <init-params>
+        <object-param>
+          <name>Admin</name>
+          <description>View configuration of Admin</description>
+          <object type="org.exoplatform.services.cms.views.ViewConfig">
+            <field name="name">
+              <string>Admin</string>
+            </field>
+            <field name="tabList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.cms.views.ViewConfig$Tab">
+                    <field name="tabName">
+                      <string>Admin</string>
+                    </field>
+                    <field name="buttons">
+                      <string>
+                        outlookExport
+                      </string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>Icons</name>
+          <description>View configuration for user</description>
+          <object type="org.exoplatform.services.cms.views.ViewConfig">
+            <field name="name">
+              <string>Icons</string>
+            </field>
+            <field name="tabList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.cms.views.ViewConfig$Tab">
+                    <field name="tabName">
+                      <string>Icons</string>
+                    </field>
+                    <field name="buttons">
+                      <string>
+                        outlookExport
+                      </string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>List</name>
+          <description>View configuration for List</description>
+          <object type="org.exoplatform.services.cms.views.ViewConfig">
+            <field name="name">
+              <string>List</string>
+            </field>
+            <field name="tabList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.cms.views.ViewConfig$Tab">
+                    <field name="tabName">
+                      <string>List</string>
+                    </field>
+                    <field name="buttons">
+                      <string>
+                        outlookExport
+                      </string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>Web</name>
+          <description>View configuration of WCM administrator</description>
+          <object type="org.exoplatform.services.cms.views.ViewConfig">
+            <field name="name">
+              <string>Web</string>
+            </field>
+            <field name="tabList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.cms.views.ViewConfig$Tab">
+                    <field name="tabName">
+                      <string>Authoring</string>
+                    </field>
+                    <field name="buttons">
+                      <string>
+                        outlookExport
+                      </string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>Categories</name>
+          <description>View configuration of WCM contributors</description>
+          <object type="org.exoplatform.services.cms.views.ViewConfig">
+            <field name="name">
+              <string>Categories</string>
+            </field>
+            <field name="tabList">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.cms.views.ViewConfig$Tab">
+                    <field name="tabName">
+                      <string>Collaboration</string>
+                    </field>
+                    <field name="buttons">
+                      <string>
+                        outlookExport
+                      </string>
+                    </field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <!-- external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.gadget.services.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Editor node types configuration file</description>
+          <value>jar:/conf/portal/jcr/editor-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins -->
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+    <component-plugin>
+      <name>ResourceBundle Plugin</name>
+      <set-method>addResourceBundle</set-method>
+      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+      <init-params>
+        <values-param>
+          <name>init.resources</name>
+          <description>Store the following resources into the db for the first launch</description>
+          <value>locale.outlook.Outlook</value>
+        </values-param>
+        <values-param>
+          <name>portal.resource.names</name>
+          <description>The properties files of the portal , those file will be merged into one ResoruceBundle properties</description>
+          <value>locale.outlook.Outlook</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <import>war:/conf/outlook/portal-configuration.xml</import>
+
+</configuration>
