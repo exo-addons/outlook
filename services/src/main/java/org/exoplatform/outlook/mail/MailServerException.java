@@ -19,7 +19,7 @@
  */
 package org.exoplatform.outlook.mail;
 
-import org.exoplatform.outlook.OfficeException;
+import org.exoplatform.outlook.OutlookException;
 
 /**
  * Created by The eXo Platform SAS
@@ -28,7 +28,7 @@ import org.exoplatform.outlook.OfficeException;
  * @version $Id: AnaplanAPIException.java 00000 May 11, 2016 pnedonosko $
  * 
  */
-public class MailServerException extends OfficeException {
+public class MailServerException extends OutlookException {
 
   /**
    * 

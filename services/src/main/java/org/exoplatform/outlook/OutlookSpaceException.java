@@ -19,54 +19,28 @@
  */
 package org.exoplatform.outlook;
 
-import org.exoplatform.outlook.jcr.Folder;
-
-import javax.jcr.RepositoryException;
-
 /**
+ * Anaplan space exception.
+ * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OfficeSpace.java 00000 May 28, 2016 pnedonosko $
+ * @version $Id: AnaplanSpaceException.java 00000 May 17, 2016 pnedonosko $
  * 
  */
-public abstract class OfficeSpace {
-
-  protected final String groupId;
-
-  protected final String title;
-
-  protected final String shortName;
-
-  public OfficeSpace(String groupId, String title, String shortName) {
-    this.groupId = groupId;
-    this.title = title;
-    this.shortName = shortName;
-  }
+public class OutlookSpaceException extends Exception {
 
   /**
-   * @return group id
+   * 
    */
-  public String getGroupId() {
-    return groupId;
+  private static final long serialVersionUID = 4432449561112505464L;
+
+  public OutlookSpaceException(String message, Throwable cause) {
+    super(message, cause);
   }
 
-  /**
-   * @return title
-   */
-  public String getTitle() {
-    return title;
+  public OutlookSpaceException(String message) {
+    super(message);
   }
-
-  /**
-   * @return the shortName
-   */
-  public String getShortName() {
-    return shortName;
-  }
-
-  public abstract Folder getFolder(String path) throws OfficeException, RepositoryException;
-
-  public abstract Folder getRootFolder() throws OfficeException, RepositoryException;
 
 }

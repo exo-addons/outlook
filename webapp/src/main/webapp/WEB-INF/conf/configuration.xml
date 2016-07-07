@@ -114,8 +114,8 @@
     </component-plugin>
   </external-component-plugins>
 
-  <external-component-plugins>
-    <!-- ECMS menu actions -->
+  <!-- ECMS menu actions (TODO NOT USED) -->
+  <!-- external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
       <name>Add MS Office Actions</name>
@@ -134,15 +134,14 @@
             <field name="component">
               <string>org.exoplatform.outlook.ecms.OutlookExportManageComponent</string>
             </field>
-            <!-- TODO Filters here? -->
           </object>
         </object-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
+  </external-component-plugins -->
   
   <!-- Add Outlook actions to ECMS views -->
-  <external-component-plugins>
+  <!-- external-component-plugins>
     <target-component>org.exoplatform.services.cms.views.ManageViewService</target-component>
     <component-plugin>
       <name>customize.view.plugin</name>
@@ -281,7 +280,7 @@
         </object-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
+  </external-component-plugins -->
   
   <!-- external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>

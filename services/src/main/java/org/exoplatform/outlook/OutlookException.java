@@ -20,27 +20,34 @@
 package org.exoplatform.outlook;
 
 /**
- * Anaplan space exception.
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: AnaplanSpaceException.java 00000 May 17, 2016 pnedonosko $
+ * @version $Id: OnlyofficeEditorException.java 00000 Jan 31, 2016 pnedonosko $
  * 
  */
-public class OfficeSpaceException extends Exception {
+public class OutlookException extends Exception {
 
   /**
-   * 
+   * @param message
    */
-  private static final long serialVersionUID = 4432449561112505464L;
-
-  public OfficeSpaceException(String message, Throwable cause) {
-    super(message, cause);
+  public OutlookException(String message) {
+    super(message);
   }
 
-  public OfficeSpaceException(String message) {
-    super(message);
+  /**
+   * @param cause
+   */
+  public OutlookException(Throwable cause) {
+    super(cause);
+  }
+
+  /**
+   * @param message
+   * @param cause
+   */
+  public OutlookException(String message, Throwable cause) {
+    super(message, cause);
   }
 
 }

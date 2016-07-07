@@ -26,7 +26,7 @@ package org.exoplatform.outlook;
  * @version $Id: BadParameterException.java 00000 Feb 16, 2016 pnedonosko $
  * 
  */
-public class BadParameterException extends OfficeException {
+public class BadParameterException extends OutlookException {
 
   /**
    * 

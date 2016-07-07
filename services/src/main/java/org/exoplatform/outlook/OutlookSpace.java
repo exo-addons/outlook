@@ -19,35 +19,54 @@
  */
 package org.exoplatform.outlook;
 
+import org.exoplatform.outlook.jcr.Folder;
+
+import javax.jcr.RepositoryException;
+
 /**
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OnlyofficeEditorException.java 00000 Jan 31, 2016 pnedonosko $
+ * @version $Id: OutlookSpace.java 00000 May 28, 2016 pnedonosko $
  * 
  */
-public class OfficeException extends Exception {
+public abstract class OutlookSpace {
 
-  /**
-   * @param message
-   */
-  public OfficeException(String message) {
-    super(message);
+  protected final String groupId;
+
+  protected final String title;
+
+  protected final String shortName;
+
+  public OutlookSpace(String groupId, String title, String shortName) {
+    this.groupId = groupId;
+    this.title = title;
+    this.shortName = shortName;
   }
 
   /**
-   * @param cause
+   * @return group id
    */
-  public OfficeException(Throwable cause) {
-    super(cause);
+  public String getGroupId() {
+    return groupId;
   }
 
   /**
-   * @param message
-   * @param cause
+   * @return title
    */
-  public OfficeException(String message, Throwable cause) {
-    super(message, cause);
+  public String getTitle() {
+    return title;
   }
+
+  /**
+   * @return the shortName
+   */
+  public String getShortName() {
+    return shortName;
+  }
+
+  public abstract Folder getFolder(String path) throws OutlookException, RepositoryException;
+
+  public abstract Folder getRootFolder() throws OutlookException, RepositoryException;
 
 }

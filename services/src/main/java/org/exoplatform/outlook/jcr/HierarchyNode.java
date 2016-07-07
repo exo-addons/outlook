@@ -20,7 +20,7 @@
 package org.exoplatform.outlook.jcr;
 
 import org.exoplatform.outlook.BadParameterException;
-import org.exoplatform.outlook.OfficeException;
+import org.exoplatform.outlook.OutlookException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.IdentityConstants;
@@ -85,7 +85,7 @@ public abstract class HierarchyNode {
    * @throws RepositoryException
    * 
    */
-  protected HierarchyNode(String rootPath, Node node) throws RepositoryException, OfficeException {
+  protected HierarchyNode(String rootPath, Node node) throws RepositoryException, OutlookException {
     this.path = node.getPath();
     this.node = node;
     this.name = node.getName();
@@ -127,7 +127,7 @@ public abstract class HierarchyNode {
     }
   }
 
-  protected HierarchyNode(Folder parent, Node node) throws RepositoryException, OfficeException {
+  protected HierarchyNode(Folder parent, Node node) throws RepositoryException, OutlookException {
     this(parent != null ? parent.getRootPath() : null, node);
   }
 

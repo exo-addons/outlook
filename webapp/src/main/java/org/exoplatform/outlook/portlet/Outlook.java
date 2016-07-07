@@ -27,7 +27,7 @@ import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.outlook.BadParameterException;
-import org.exoplatform.outlook.OfficeSpace;
+import org.exoplatform.outlook.OutlookSpace;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.User;
 import org.exoplatform.outlook.jcr.File;
@@ -190,9 +190,6 @@ public class Outlook {
   @Inject
   ResourceBundle                                            i18n;
 
-  // private final String[] menuItems = new String[] { "home",
-  // "saveAttachment", "convertTo", "create", "search", "userInfo" };
-
   private final Map<String, MenuItem>                       allMenuItems              = new LinkedHashMap<String, MenuItem>();
 
   private final Set<MenuItem>                               rootMenuItems             = new LinkedHashSet<MenuItem>();
@@ -200,6 +197,8 @@ public class Outlook {
   public Outlook() {
     addRootMenuItem(new MenuItem("home"));
     addRootMenuItem(new MenuItem("saveAttachment"));
+    addRootMenuItem(new MenuItem("addAttachment"));
+    
     MenuItem convertTo = new MenuItem("convertTo");
     convertTo.addSubmenu("convertToStatus");
     convertTo.addSubmenu("convertToWiki");
@@ -363,7 +362,7 @@ public class Outlook {
     if (groupId != null && path != null && ewsUrl != null && userEmail != null && messageId != null
         && attachmentToken != null && attachmentIds != null) {
       try {
-        OfficeSpace space = outlook.getSpace(groupId);
+        OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
           // Remove empty attachments in the array
           List<String> attachments = new ArrayList<String>();

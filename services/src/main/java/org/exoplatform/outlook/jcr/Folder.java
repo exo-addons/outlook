@@ -19,7 +19,7 @@
  */
 package org.exoplatform.outlook.jcr;
 
-import org.exoplatform.outlook.OfficeException;
+import org.exoplatform.outlook.OutlookException;
 import org.exoplatform.services.cms.thumbnail.ThumbnailService;
 
 import java.util.Collections;
@@ -43,17 +43,17 @@ public abstract class Folder extends HierarchyNode {
 
   protected final ThreadLocal<Set<Folder>> subfolders = new ThreadLocal<Set<Folder>>();
 
-  public Folder(Folder parent, Node node) throws RepositoryException, OfficeException {
+  public Folder(Folder parent, Node node) throws RepositoryException, OutlookException {
     super(parent, node);
     if (!isFolder(node)) {
-      throw new OfficeException("Not a folder node");
+      throw new OutlookException("Not a folder node");
     }
   }
 
-  public Folder(String rootPath, Node node) throws RepositoryException, OfficeException {
+  public Folder(String rootPath, Node node) throws RepositoryException, OutlookException {
     super(rootPath, node);
     if (!isFolder(node)) {
-      throw new OfficeException("Not a folder node");
+      throw new OutlookException("Not a folder node");
     }
   }
 
@@ -61,7 +61,7 @@ public abstract class Folder extends HierarchyNode {
     return rootPath.equals(path);
   }
 
-  public boolean hasSubfolders() throws RepositoryException, OfficeException {
+  public boolean hasSubfolders() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = this.subfolders.get();
     if (subfolders == null) {
       subfolders = readSubnodes();
@@ -69,7 +69,7 @@ public abstract class Folder extends HierarchyNode {
     return subfolders.size() > 0;
   }
 
-  public Set<Folder> getSubfolders() throws RepositoryException, OfficeException {
+  public Set<Folder> getSubfolders() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = this.subfolders.get();
     if (subfolders == null) {
       subfolders = readSubnodes();
@@ -77,9 +77,9 @@ public abstract class Folder extends HierarchyNode {
     return Collections.unmodifiableSet(subfolders);
   }
 
-  public abstract Folder addSubfolder(String name) throws RepositoryException, OfficeException;
+  public abstract Folder addSubfolder(String name) throws RepositoryException, OutlookException;
 
-  protected Set<Folder> readSubnodes() throws RepositoryException, OfficeException {
+  protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = new LinkedHashSet<Folder>();
     if (node.hasNodes()) {
       NodeIterator niter = node.getNodes();
@@ -95,7 +95,7 @@ public abstract class Folder extends HierarchyNode {
     return subfolders;
   }
 
-  protected abstract Folder newFolder(Folder parent, Node node) throws RepositoryException, OfficeException;
+  protected abstract Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException;
 
-  protected abstract Folder newFolder(String rootPath, Node node) throws RepositoryException, OfficeException;
+  protected abstract Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException;
 }

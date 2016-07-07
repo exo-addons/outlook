@@ -410,10 +410,13 @@ require(
 				    if ($menu.size() > 0) {
 					    var $menuItems = $menu.find(".outlookMenu");
 
-					    // special logic for saveAttachment: remove it when no attachment found in the message
-					    var $saveAttachment = $menuItems.find(".saveAttachment");
+					    var internetMessageId = Office.context.mailbox.item.internetMessageId;
+					    console.log(">> internetMessageId: " + internetMessageId);
+					    
+					    // special logic for saveAttachment: remove it when no attachment found in the message or it's compose mode
+					    var $saveAttachment = $menuItems.filter(".saveAttachment");
 					    if ($saveAttachment.size() > 0
-					        && !(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0)) {
+					        && (!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
 						    // $saveAttachment.click(function() {
 						    // var $mi = loadMenu("saveAttachment");
 						    // $mi.done(function() {
@@ -425,6 +428,11 @@ require(
 						    // });
 						    // } else {
 						    $saveAttachment.parent().remove();
+					    }
+					    // special login for item addAttachment - show it only in compose mode
+					    var $addAttachment = $menuItems.filter(".addAttachment");
+					    if ($addAttachment.size() > 0 && internetMessageId) {
+						    $addAttachment.parent().remove();
 					    }
 
 					    $menuItems.each(function(i, m) {

@@ -19,7 +19,7 @@
  */
 package org.exoplatform.outlook.jcr;
 
-import org.exoplatform.outlook.OfficeException;
+import org.exoplatform.outlook.OutlookException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -39,10 +39,10 @@ public abstract class File extends HierarchyNode {
    * @throws RepositoryException
    * 
    */
-  public File(Folder parent, Node node) throws RepositoryException, OfficeException {
+  public File(Folder parent, Node node) throws RepositoryException, OutlookException {
     super(parent, node);
     if (!isFile(node)) {
-      throw new OfficeException("Not a file node");
+      throw new OutlookException("Not a file node");
     }
   }
 }

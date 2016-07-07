@@ -104,11 +104,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected class UserFolder extends Folder {
 
-    protected UserFolder(Folder parent, Node node) throws RepositoryException, OfficeException {
+    protected UserFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
       super(parent, node);
     }
 
-    protected UserFolder(String rootPath, Node node) throws RepositoryException, OfficeException {
+    protected UserFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
       super(rootPath, node);
     }
 
@@ -116,7 +116,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Folder addSubfolder(String name) throws RepositoryException, OfficeException {
+    public Folder addSubfolder(String name) throws RepositoryException, OutlookException {
       final Node parent = getNode();
       Node subfolderNode = addFolder(parent, name);
       Folder subfolder = newFolder(this, subfolderNode);
@@ -140,7 +140,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    protected Folder newFolder(Folder parent, Node node) throws RepositoryException, OfficeException {
+    protected Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
       Folder folder = new UserFolder(parent, node);
       // initDocumentLink(space, folder);
       return folder;
@@ -150,7 +150,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    protected Folder newFolder(String rootPath, Node node) throws RepositoryException, OfficeException {
+    protected Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
       Folder folder = new UserFolder(rootPath, node);
       // initDocumentLink(space, folder);
       return folder;
@@ -159,7 +159,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected class UserFile extends File {
 
-    protected UserFile(Folder parent, Node node) throws RepositoryException, OfficeException {
+    protected UserFile(Folder parent, Node node) throws RepositoryException, OutlookException {
       super(parent, node);
     }
 
@@ -172,15 +172,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
-  protected class OfficeSpaceImpl extends OfficeSpace {
+  protected class OutlookSpaceImpl extends OutlookSpace {
 
     class SpaceFolder extends UserFolder {
 
-      protected SpaceFolder(Folder parent, Node node) throws RepositoryException, OfficeException {
+      protected SpaceFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
         super(parent, node);
       }
 
-      protected SpaceFolder(String rootPath, Node node) throws RepositoryException, OfficeException {
+      protected SpaceFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
         super(rootPath, node);
       }
 
@@ -188,10 +188,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
        * {@inheritDoc}
        */
       @Override
-      protected Set<Folder> readSubnodes() throws RepositoryException, OfficeException {
+      protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
         Set<Folder> subfolders = super.readSubnodes();
         for (Folder sf : subfolders) {
-          initDocumentLink(OfficeSpaceImpl.this, sf);
+          initDocumentLink(OutlookSpaceImpl.this, sf);
         }
         return subfolders;
       }
@@ -199,7 +199,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     protected final String rootPath;
 
-    protected OfficeSpaceImpl(Space socialSpace) {
+    protected OutlookSpaceImpl(Space socialSpace) {
       super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName());
       this.rootPath = groupDocsPath(groupId);
     }
@@ -208,7 +208,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Folder getFolder(String path) throws OfficeException, RepositoryException {
+    public Folder getFolder(String path) throws OutlookException, RepositoryException {
       Folder parent = getRootFolder();
       Folder folder;
       if (rootPath.equals(path)) {
@@ -226,7 +226,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Folder getRootFolder() throws OfficeException, RepositoryException {
+    public Folder getRootFolder() throws OutlookException, RepositoryException {
       Folder root = new SpaceFolder(rootPath, node(rootPath));
       // TODO root.init(rootPath);
       initDocumentLink(this, root);
@@ -253,7 +253,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected final ConcurrentHashMap<String, User>            authenticated = new ConcurrentHashMap<String, User>();
 
-  protected final ConcurrentHashMap<String, OfficeSpaceImpl> spaces        = new ConcurrentHashMap<String, OfficeSpaceImpl>();
+  protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces        = new ConcurrentHashMap<String, OutlookSpaceImpl>();
 
   protected MailAPI                                          mailserverApi;
 
@@ -293,7 +293,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public Folder getFolder(String path) throws OfficeException, RepositoryException {
+  public Folder getFolder(String path) throws OutlookException, RepositoryException {
     Node node = node(path);
     Folder folder = new UserFolder(path, node);
     // TODO folder.init(path);
@@ -304,7 +304,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public Folder getFolder(Folder parent, String path) throws OfficeException, RepositoryException {
+  public Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException {
     Node node = node(path);
     return new UserFolder(parent, node);
   }
@@ -313,35 +313,35 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public List<File> saveAttachment(OfficeSpace space,
+  public List<File> saveAttachment(OutlookSpace space,
                                    Folder destFolder,
                                    User user,
                                    String messageId,
                                    String attachmentToken,
-                                   String... attachmentIds) throws OfficeException, RepositoryException {
+                                   String... attachmentIds) throws OutlookException, RepositoryException {
     List<File> files = new ArrayList<File>();
     Node parent = destFolder.getNode();
     for (String attachmentId : attachmentIds) {
       JsonValue vatt = mailserverApi.getAttachment(user, messageId, attachmentToken, attachmentId);
       JsonValue vName = vatt.getElement("Name");
       if (isNull(vName)) {
-        throw new OfficeFormatException("Attachment doesn't contain Name");
+        throw new OutlookFormatException("Attachment doesn't contain Name");
       }
       String name = vName.getStringValue();
       JsonValue vContentType = vatt.getElement("ContentType");
       if (isNull(vContentType)) {
-        throw new OfficeFormatException("Attachment (" + name + ") doesn't contain ContentType");
+        throw new OutlookFormatException("Attachment (" + name + ") doesn't contain ContentType");
       }
       String contentType = vContentType.getStringValue();
       // TODO Do we need remote size?
       // JsonValue vSize = vatt.getElement("Size");
       // if (isNull(vSize)) {
-      // throw new OfficeFormatException("Attachment (" + name + ") doesn't contain Size");
+      // throw new OutlookFormatException("Attachment (" + name + ") doesn't contain Size");
       // }
       // long size = vSize.getLongValue();
       JsonValue vContentBytes = vatt.getElement("ContentBytes");
       if (isNull(vContentBytes)) {
-        throw new OfficeFormatException("Attachment (" + name + ") doesn't contain ContentBytes");
+        throw new OutlookFormatException("Attachment (" + name + ") doesn't contain ContentBytes");
       }
       // FYI attachment content in BASE64 (may be twice!)
       String contentBytes = vContentBytes.getStringValue();
@@ -351,7 +351,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         Node attachmentNode = addFile(parent, name, contentType, content);
         files.add(new UserFile(destFolder, attachmentNode));
       } catch (IOException e) {
-        throw new OfficeException("Error saving attachment in a file " + name, e);
+        throw new OutlookException("Error saving attachment in a file " + name, e);
       }
     }
     parent.save(); // save everything at the end only
@@ -372,7 +372,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                    User user,
                                    String messageId,
                                    String attachmentToken,
-                                   String... attachmentIds) throws OfficeException, RepositoryException {
+                                   String... attachmentIds) throws OutlookException, RepositoryException {
     return saveAttachment(null, destFolder, user, messageId, attachmentToken, attachmentIds);
   }
 
@@ -380,7 +380,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public User getUser(String userEmail, String ewsUrl) throws OfficeException, RepositoryException {
+  public User getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException {
     try {
       URI ewsUri = new URI(ewsUrl);
       String host = ewsUri.getHost();
@@ -425,12 +425,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public OfficeSpace getSpace(String groupId) throws OfficeSpaceException {
-    OfficeSpaceImpl space = spaces.get(groupId);
+  public OutlookSpace getSpace(String groupId) throws OutlookSpaceException {
+    OutlookSpaceImpl space = spaces.get(groupId);
     if (space == null) {
       Space socialSpace = spaceService().getSpaceByGroupId(groupId);
       if (socialSpace != null) {
-        space = new OfficeSpaceImpl(socialSpace);
+        space = new OutlookSpaceImpl(socialSpace);
         spaces.put(socialSpace.getGroupId(), space);
       }
     }
@@ -441,7 +441,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public List<OfficeSpace> getUserSpaces() throws OfficeSpaceException {
+  public List<OutlookSpace> getUserSpaces() throws OutlookSpaceException {
     return userSpaces(currentUserId());
   }
 
@@ -487,7 +487,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return new StringBuilder().append(workspace).append(":").append(path).toString();
   }
 
-  protected User getCurrentUser() throws OfficeException {
+  protected User getCurrentUser() throws OutlookException {
     ConversationState contextState = ConversationState.getCurrent();
     if (contextState != null) {
       String exoUsername = contextState.getIdentity().getUserId();
@@ -514,11 +514,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return null;
   }
 
-  protected org.exoplatform.services.organization.User getExoUser(String username) throws OfficeException {
+  protected org.exoplatform.services.organization.User getExoUser(String username) throws OutlookException {
     try {
       return organization.getUserHandler().findUserByName(username);
     } catch (Exception e) {
-      throw new OfficeException("Error searching user " + username, e);
+      throw new OutlookException("Error searching user " + username, e);
     }
   }
 
@@ -562,7 +562,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
-  protected String getUserLang(String userId) throws OfficeException {
+  protected String getUserLang(String userId) throws OutlookException {
     UserProfileHandler hanlder = organization.getUserProfileHandler();
     try {
       UserProfile userProfile = hanlder.findUserProfileByName(userId);
@@ -583,7 +583,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         throw new BadParameterException("User profile not found for " + userId);
       }
     } catch (Exception e) {
-      throw new OfficeException("Error searching user profile " + userId, e);
+      throw new OutlookException("Error searching user profile " + userId, e);
     }
   }
 
@@ -782,19 +782,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
 
-  protected List<OfficeSpace> userSpaces(String userId) throws OfficeSpaceException {
-    List<OfficeSpace> spaces = new ArrayList<OfficeSpace>();
+  protected List<OutlookSpace> userSpaces(String userId) throws OutlookSpaceException {
+    List<OutlookSpace> spaces = new ArrayList<OutlookSpace>();
     ListAccess<Space> list = spaceService().getMemberSpaces(userId);
     try {
       for (Space socialSpace : list.load(0, list.getSize())) {
-        spaces.add(new OfficeSpaceImpl(socialSpace));
+        spaces.add(new OutlookSpaceImpl(socialSpace));
       }
       return spaces;
     } catch (Throwable e) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Error loading user spaces", e);
       }
-      throw new OfficeSpaceException("Error loading user spaces", e);
+      throw new OutlookSpaceException("Error loading user spaces", e);
     }
   }
 
@@ -822,7 +822,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return groupsPath + groupId;
   }
 
-  protected void initDocumentLink(OfficeSpace space, HierarchyNode node) throws OfficeException {
+  protected void initDocumentLink(OutlookSpace space, HierarchyNode node) throws OutlookException {
     // Code adapted from ECMS's PermlinkActionComponent.getPermlink()
     // We need like the following:
     // https://peter.exoplatform.com.ua:8443/portal/g/:spaces:product_team/product_team/documents?path=.spaces.product_team/Groups/spaces/product_team/Documents/uploads/page_management_https_loading.png
@@ -854,7 +854,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         url.append(requestUri.toASCIIString());
         url.append(nodeURL.toString());
       } catch (URISyntaxException e) {
-        throw new OfficeException("Error creating server URL " + request.getRequestURI().toString(), e);
+        throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
       }
     } else {
       LOG.warn("Portal request not found. Node URL will be relative to this server (w/o host name).");

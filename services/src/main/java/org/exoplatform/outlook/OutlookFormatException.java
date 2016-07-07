@@ -28,7 +28,7 @@ package org.exoplatform.outlook;
  * @version $Id: AnaplanFormatException.java 00000 May 16, 2016 pnedonosko $
  * 
  */
-public class OfficeFormatException extends OfficeException {
+public class OutlookFormatException extends OutlookException {
 
   /**
    * 
@@ -38,14 +38,14 @@ public class OfficeFormatException extends OfficeException {
   /**
    * @param message
    */
-  public OfficeFormatException(String message) {
+  public OutlookFormatException(String message) {
     super(message);
   }
 
   /**
    * @param cause
    */
-  public OfficeFormatException(Throwable cause) {
+  public OutlookFormatException(Throwable cause) {
     super(cause);
   }
 
@@ -53,7 +53,7 @@ public class OfficeFormatException extends OfficeException {
    * @param message
    * @param cause
    */
-  public OfficeFormatException(String message, Throwable cause) {
+  public OutlookFormatException(String message, Throwable cause) {
     super(message, cause);
   }
 

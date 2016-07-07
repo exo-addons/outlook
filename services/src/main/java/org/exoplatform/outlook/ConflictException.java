@@ -28,7 +28,7 @@ package org.exoplatform.outlook;
  * @version $Id: ConflictException.java 00000 Feb 17, 2016 pnedonosko $
  * 
  */
-public class ConflictException extends OfficeException {
+public class ConflictException extends OutlookException {
 
   /**
    * 

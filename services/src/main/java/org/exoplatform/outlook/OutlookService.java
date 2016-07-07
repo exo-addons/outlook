@@ -39,36 +39,36 @@ public interface OutlookService {
    * Create Outlook user.
    * 
    * @return {@link User} object to access Outlook Mail API
-   * @throws OfficeException
+   * @throws OutlookException
    * @throws RepositoryException
    */
-  User getUser(String userEmail, String ewsUrl) throws OfficeException, RepositoryException;
+  User getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException;
 
-  Folder getFolder(String path) throws OfficeException, RepositoryException;
+  Folder getFolder(String path) throws OutlookException, RepositoryException;
 
-  Folder getFolder(Folder parent, String path) throws OfficeException, RepositoryException;
+  Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException;
 
-  List<File> saveAttachment(OfficeSpace space,
+  List<File> saveAttachment(OutlookSpace space,
                             Folder folder,
                             User user,
                             String messageId,
                             String attachmentToken,
-                            String... attachmentIds) throws OfficeSpaceException, OfficeException, RepositoryException;
+                            String... attachmentIds) throws OutlookSpaceException, OutlookException, RepositoryException;
 
   List<File> saveAttachment(Folder destFolder,
                             User user,
                             String messageId,
                             String attachmentToken,
-                            String... attachmentIds) throws OfficeException, RepositoryException;
+                            String... attachmentIds) throws OutlookException, RepositoryException;
 
   /**
    * Return Office space handler.
    * 
-   * @return {@link OfficeSpace}
-   * @throws OfficeSpaceException
+   * @return {@link OutlookSpace}
+   * @throws OutlookSpaceException
    */
-  OfficeSpace getSpace(String groupId) throws OfficeSpaceException;
+  OutlookSpace getSpace(String groupId) throws OutlookSpaceException;
 
-  List<OfficeSpace> getUserSpaces() throws OfficeSpaceException;
+  List<OutlookSpace> getUserSpaces() throws OutlookSpaceException;
 
 }
