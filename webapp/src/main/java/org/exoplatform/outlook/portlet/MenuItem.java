@@ -19,7 +19,6 @@
  */
 package org.exoplatform.outlook.portlet;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -42,7 +41,7 @@ public class MenuItem {
   protected final Set<MenuItem> submenu;
 
   public MenuItem(String name) {
-    this(name, null, null, new HashSet<MenuItem>());
+    this(name, null, null, new LinkedHashSet<MenuItem>());
   }
 
   public MenuItem(String name, Set<MenuItem> submenu) {
@@ -50,7 +49,7 @@ public class MenuItem {
   }
 
   public MenuItem(String name, String title) {
-    this(name, title, null, new HashSet<MenuItem>());
+    this(name, title, null, new LinkedHashSet<MenuItem>());
   }
 
   public MenuItem(String name, String title, Set<MenuItem> submenu) {
@@ -59,7 +58,7 @@ public class MenuItem {
 
   @Deprecated
   protected MenuItem(String name, String title, String link) {
-    this(name, title, link, new HashSet<MenuItem>());
+    this(name, title, link, new LinkedHashSet<MenuItem>());
   }
 
   protected MenuItem(String name, String title, String link, Set<MenuItem> submenu) {

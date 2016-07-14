@@ -19,48 +19,32 @@
  */
 package org.exoplatform.outlook;
 
-import java.net.URI;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Office user API.
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: User.java 00000 JUn 14, 2016 pnedonosko $
+ * @version $Id: OutlookMessageStore.java 00000 Jul 12, 2016 pnedonosko $
  * 
  */
-public class User {
+public class OutlookMessageStore {
 
-  protected final String email;
-
-  protected final URI    mailServerUrl;
-
-  protected User(String userEmail, URI mailServerUrl) {
-    this.email = userEmail;
-    this.mailServerUrl = mailServerUrl;
-  }
-
+  protected final ConcurrentHashMap<String, String>      temp = new ConcurrentHashMap<String, String>();
+  
   /**
-   * {@inheritDoc}
+   * 
    */
-  @Override
-  public String toString() {
-    return email;
+  public OutlookMessageStore() {
+    // TODO implement persistence in JCR (in social space within an activity node if possible)
+  }
+  
+  public void saveMessage(String id, String body) {
+    temp.put(id, body);
   }
 
-  /**
-   * @return the userEmail
-   */
-  public String getEmail() {
-    return email;
+  public String getMessage(String id) {
+    return temp.get(id);
   }
-
-  /**
-   * @return the mailServerUrl
-   */
-  public URI getMailServerUrl() {
-    return mailServerUrl;
-  }
-
+  
 }

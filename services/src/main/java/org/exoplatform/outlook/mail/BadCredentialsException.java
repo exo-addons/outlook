@@ -20,7 +20,7 @@
 package org.exoplatform.outlook.mail;
 
 /**
- * User credentials failed (unauthorized) in Anaplan API.
+ * OutlookUser credentials failed (unauthorized) in Anaplan API.
  * 
  * Created by The eXo Platform SAS
  * 

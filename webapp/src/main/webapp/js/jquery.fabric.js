@@ -560,8 +560,7 @@ fabric.Breadcrumb.prototype = (function() {
           highlighted: 'ms-DatePicker-day--highlighted',
           now: 'ms-DatePicker-day--today',
           infocus: 'ms-DatePicker-day--infocus',
-          outfocus: 'ms-DatePicker-day--outfocus',
-
+          outfocus: 'ms-DatePicker-day--outfocus'
         }
       },options||{}));
       var $picker = $dateField.pickadate('picker');

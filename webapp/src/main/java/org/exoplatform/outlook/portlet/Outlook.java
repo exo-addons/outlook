@@ -27,9 +27,10 @@ import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.outlook.BadParameterException;
-import org.exoplatform.outlook.OutlookSpace;
 import org.exoplatform.outlook.OutlookService;
-import org.exoplatform.outlook.User;
+import org.exoplatform.outlook.OutlookSpace;
+import org.exoplatform.outlook.OutlookUser;
+import org.exoplatform.outlook.common.ResourceBundleSerializer;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.security.OutlookTokenService;
@@ -37,6 +38,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
@@ -79,33 +81,46 @@ import javax.servlet.http.Cookie;
 public class Outlook {
 
   /** . */
-  private final static String                               GMT_TIME_ZONE_ID          = "GMT";
+  private final static String GMT_TIME_ZONE_ID          = "GMT";
 
   /** . */
-  private final static String                               COOKIE_DATE_FORMAT_STRING = "EEE, dd-MMM-yyyy HH:mm:ss z";
+  private final static String COOKIE_DATE_FORMAT_STRING = "EEE, dd-MMM-yyyy HH:mm:ss z";
 
   /** . */
-  private final static String                               NAME_VALUE_DELIMITER      = "=";
+  private final static String NAME_VALUE_DELIMITER      = "=";
 
   /** . */
-  private final static String                               ATTRIBUTE_DELIMITER       = "; ";
+  private final static String ATTRIBUTE_DELIMITER       = "; ";
 
   /** . */
-  private final static String                               COOKIE_HEADER_NAME        = "Set-Cookie";
+  private final static String COOKIE_HEADER_NAME        = "Set-Cookie";
 
   /** . */
-  private final static String                               PATH_ATTRIBUTE_NAME       = "Path";
+  private final static String PATH_ATTRIBUTE_NAME       = "Path";
 
   /** . */
-  private final static String                               EXPIRES_ATTRIBUTE_NAME    = "Expires";
+  private final static String EXPIRES_ATTRIBUTE_NAME    = "Expires";
 
   /** . */
-  private final static String                               MAXAGE_ATTRIBUTE_NAME     = "Max-Age";
+  private final static String MAXAGE_ATTRIBUTE_NAME     = "Max-Age";
 
   /** . */
-  private final static String                               DOMAIN_ATTRIBUTE_NAME     = "Domain";
+  private final static String DOMAIN_ATTRIBUTE_NAME     = "Domain";
 
-  private static final Log                                  LOG                       = ExoLogger.getLogger(Outlook.class);
+  private static final Log    LOG                       = ExoLogger.getLogger(Outlook.class);
+
+  public class Status extends ActivityStatus {
+
+    protected Status(String userTitle, String spaceName, String link) {
+      super(userTitle, spaceName, link);
+    }
+
+    public String getConvertedToUserActivityMessage() {
+      String msg = i18n.getString("Outlook.convertedToUserActivity");
+      return msg.replace("{SPACE_NAME}", spaceName);
+    }
+
+  }
 
   @Inject
   Provider<PortletPreferences>                              preferences;
@@ -120,8 +135,8 @@ public class Outlook {
   OutlookTokenService                                       outlookTokens;
 
   @Inject
-  @Path("index.gtmpl")
-  org.exoplatform.outlook.portlet.templates.index           index;
+  @Path("index2.gtmpl")
+  org.exoplatform.outlook.portlet.templates.index2          index;
 
   @Inject
   @Path("saveAttachment.gtmpl")
@@ -164,6 +179,10 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.convertToStatus convertToStatus;
 
   @Inject
+  @Path("convertedStatus.gtmpl")
+  org.exoplatform.outlook.portlet.templates.convertedStatus convertedStatus;
+
+  @Inject
   @Path("convertToWiki.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertToWiki   convertToWiki;
 
@@ -190,15 +209,18 @@ public class Outlook {
   @Inject
   ResourceBundle                                            i18n;
 
-  private final Map<String, MenuItem>                       allMenuItems              = new LinkedHashMap<String, MenuItem>();
+  @Inject
+  ResourceBundleSerializer                                  i18nJSON;
 
-  private final Set<MenuItem>                               rootMenuItems             = new LinkedHashSet<MenuItem>();
+  private final Map<String, MenuItem>                       allMenuItems  = new LinkedHashMap<String, MenuItem>();
+
+  private final Set<MenuItem>                               rootMenuItems = new LinkedHashSet<MenuItem>();
 
   public Outlook() {
     addRootMenuItem(new MenuItem("home"));
     addRootMenuItem(new MenuItem("saveAttachment"));
     addRootMenuItem(new MenuItem("addAttachment"));
-    
+
     MenuItem convertTo = new MenuItem("convertTo");
     convertTo.addSubmenu("convertToStatus");
     convertTo.addSubmenu("convertToWiki");
@@ -259,7 +281,7 @@ public class Outlook {
     }
 
     try {
-      return index.with().menu(menu).ok();
+      return index.with().menu(menu).messages(i18nJSON.toJSON(i18n)).ok();
     } catch (Throwable e) {
       LOG.error("Portlet error: " + e.getMessage(), e);
       return error(e.getMessage());
@@ -374,7 +396,7 @@ public class Outlook {
           }
           if (attachments.size() > 0) {
             Folder folder = space.getFolder(path);
-            User user = outlook.getUser(userEmail, ewsUrl);
+            OutlookUser user = outlook.getUser(userEmail, ewsUrl);
             List<File> files = outlook.saveAttachment(space,
                                                       folder,
                                                       user,
@@ -388,7 +410,7 @@ public class Outlook {
           }
         } else {
           if (LOG.isDebugEnabled()) {
-            LOG.debug("Error saving attachment: space not found " + groupId + ". User " + userEmail);
+            LOG.debug("Error saving attachment: space not found " + groupId + ". OutlookUser " + userEmail);
           }
           return errorMessage("Error saving attachment: space not found " + groupId, 404);
         }
@@ -398,7 +420,7 @@ public class Outlook {
       }
     } else {
       if (LOG.isDebugEnabled()) {
-        LOG.debug("Error in saving attachment request: groupId='" + groupId + "' path=" + path + " ewsUrl='" + ewsUrl
+        LOG.debug("Error in saving attachment request: spaceName='" + groupId + "' path=" + path + " ewsUrl='" + ewsUrl
             + "' userEmail='" + userEmail + "' messageId='" + messageId + "' attachmentToken(size)='"
             + (attachmentToken != null ? attachmentToken.length() : "null") + "' attachmentIds='" + attachmentIds + "'");
       }
@@ -458,7 +480,7 @@ public class Outlook {
     }
   }
 
-  // *************** User info command ***********
+  // *************** OutlookUser info command ***********
 
   @Ajax
   @Resource
@@ -477,9 +499,37 @@ public class Outlook {
   @Resource
   public Response convertToStatusForm() {
     try {
-      return convertToStatus.ok();
+      return convertToStatus.with().spaces(outlook.getUserSpaces()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing conversion to status form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response convertToStatus(String groupId, String title, String body, String userEmail, String messageId) {
+    try {
+      if (groupId != null && groupId.length() > 0) {
+        // space activity requested
+        OutlookSpace space = outlook.getSpace(groupId);
+        if (space != null) {
+          ExoSocialActivity activity = space.postActivity(userEmail, messageId, title, body);
+          return convertedStatus.with().status(new Status(null, space.getGroupId(), activity.getPermaLink())).ok();
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser " + userEmail);
+          }
+          return errorMessage("Error converting message to activity status : space not found " + groupId, 404);
+        }
+      } else {
+        // TODO user activity requested
+        OutlookUser user = outlook.getUser(userEmail, null);
+        ExoSocialActivity activity = user.postActivity(userEmail, messageId, title, body);
+        return convertedStatus.with().status(new Status(user.getUserName(), null, activity.getPermaLink())).ok();
+      }
+    } catch (Throwable e) {
+      LOG.error("Error converting message to activity status for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -566,7 +616,7 @@ public class Outlook {
         }
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug("User not authenticated " + userName);
+          LOG.debug("OutlookUser not authenticated " + userName);
         }
         return errorMessage("Not authenticated", 401);
       }

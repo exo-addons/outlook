@@ -24,6 +24,13 @@
     xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_3 http://www.gatein.org/xml/ns/gatein_resources_1_3"
     xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
 
+  <!-- CSS for Outlook views -->
+  <portal-skin>
+    <skin-name>Default</skin-name>
+    <skin-module>OutlookView</skin-module>
+    <css-path>/skin/outlook-view.css</css-path>
+  </portal-skin>
+
   <!-- Javascript for Outlook portlet -->
   <!-- module>
     <name>outlookJquery</name>
@@ -72,7 +79,7 @@
     <script>
       <adapter>
         (function(jQuery) {
-        <include>/js/jquery.fabric.js</include>
+        <include>/js/jquery.fabric.min.js</include>
         return fabric;
         })($);
       </adapter>

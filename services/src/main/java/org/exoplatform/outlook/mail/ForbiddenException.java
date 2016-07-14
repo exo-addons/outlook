@@ -20,7 +20,7 @@
 package org.exoplatform.outlook.mail;
 
 /**
- * User access failed (forbidden) in Anaplan API.
+ * OutlookUser access failed (forbidden) in Anaplan API.
  * 
  * Created by The eXo Platform SAS
  * 

@@ -1,6 +1,8 @@
 #{param name=menu/}
+#{param name=messages/}
 <div class="container-fluid">
 	<div id="outlook-pane" class="row-fluid">
+		<script type="text/javascript">var outlookBundle = ${messages}</script>
 		<div class="row-fluid">
 			<div class="span12">
 				#{include path=errorBanner.gtmpl/}
@@ -12,7 +14,7 @@
 					  <ul class="ms-NavBar-items">
 						<%	for (m in menu) {
 									if (m.hasSubmenu()) { %>
-	                <li class="ms-NavBar-item ms-NavBar-item--hasMenu"><a class="ms-NavBar-link">${m.title}</a><i class="ms-NavBar-chevronDown ms-Icon ms-Icon--chevronDown"></i>
+	                <li class="ms-NavBar-item ms-NavBar-item--hasMenu"><a class="ms-NavBar-link outlookGroupMenu ${m.name}">${m.title}</a><i class="ms-NavBar-chevronDown ms-Icon ms-Icon--chevronDown"></i>
 							      <ul class="ms-ContextualMenu">
 							      	<%	for (sm in m.submenu) { %>
 							        <li class="ms-ContextualMenu-item"><a class="ms-ContextualMenu-link outlookMenu ${sm.name}" data-name="${sm.name}">${sm.title}</a></li>

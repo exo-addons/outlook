@@ -183,7 +183,7 @@
               <Group id="readGroup">
                 <Label resid="groupLabel" />
                 <!-- Save Attachments: task pane button -->
-                <Control xsi:type="Button" id="readSaveAttachmentButton">
+                <!-- Control xsi:type="Button" id="readSaveAttachmentButton">
                   <Label resid="saveAttachmentLabel" />
                   <Supertip>
                     <Title resid="saveAttachmentTipTitle" />
@@ -197,7 +197,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="saveAttachmentUrl" />
                   </Action>
-                </Control>
+                </Control -->
                 <!-- Convert to: Menu (dropdown) button -->
                 <Control xsi:type="Menu" id="readConvertMenuButton">
                   <Label resid="convertMenuLabel" />

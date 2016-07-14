@@ -34,15 +34,17 @@ public interface OutlookService {
   final String PERSONAL_DRIVE_PARRTEN = "/Users/${userId}/Private";
 
   final String GROUP_DRIVE_PARRTEN    = "/Groups${groupId}/Documents";
-
+  
+  final String MESSAGE_NODETYPE    = "mso:message";
+  
   /**
    * Create Outlook user.
    * 
-   * @return {@link User} object to access Outlook Mail API
+   * @return {@link OutlookUser} object to access Outlook Mail API
    * @throws OutlookException
    * @throws RepositoryException
    */
-  User getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException;
+  OutlookUser getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException;
 
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
@@ -50,13 +52,13 @@ public interface OutlookService {
 
   List<File> saveAttachment(OutlookSpace space,
                             Folder folder,
-                            User user,
+                            OutlookUser user,
                             String messageId,
                             String attachmentToken,
                             String... attachmentIds) throws OutlookSpaceException, OutlookException, RepositoryException;
 
   List<File> saveAttachment(Folder destFolder,
-                            User user,
+                            OutlookUser user,
                             String messageId,
                             String attachmentToken,
                             String... attachmentIds) throws OutlookException, RepositoryException;

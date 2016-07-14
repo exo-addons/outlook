@@ -5,6 +5,18 @@ require(
     [ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/outlookJqueryValidate", "SHARED/juzu-ajax" ],
     function($, fabric) {
 
+	    function getMessage(key) {
+		    if (outlookBundle) {
+			    return outlookBundle.messages[key];
+		    } else {
+			    return key;
+		    }
+	    }
+
+	    function fixId(msId) {
+		    return msId ? msId.replace(/\//g, "-") : msId;
+	    }
+
 	    $(function() {
 		    // hide PLF's toolbar
 		    $("#PlatformAdminToolbarContainer").css("display", "none");
@@ -13,6 +25,17 @@ require(
 	    Office.initialize = function(reason) {
 
 		    $(function() {
+			    // context data
+			    var userEmail = Office.context.mailbox.userProfile.emailAddress;
+			    console.log("> userEmail: " + userEmail);
+			    // The itemId property returns null in compose mode for items that have not been saved to
+					// the server.
+			    var messageId = fixId(Office.context.mailbox.item.itemId);
+			    console.log("> messageId: " + messageId);
+			    // Internet message identifier for an email message. Read mode only.
+			    var internetMessageId = Office.context.mailbox.item.internetMessageId;
+			    console.log("> internetMessageId: " + internetMessageId);
+
 			    // init main pane page
 			    var $pane = $("#outlook-pane");
 			    if ($pane.size() > 0) {
@@ -25,10 +48,14 @@ require(
 				    }
 				    var $errorText = $error.find(".ms-MessageBanner-clipper");
 
-				    function showError(source) {
+				    function showError(source, cause) {
 					    var message;
-					    // check if source is jqXHR of jQuery ajax request
-					    if (source && source.hasOwnProperty("responseText")) {
+					    // check if source is i18n key or jqXHR (of jQuery ajax request)
+					    if (typeof source === "string" && source.indexOf("Outlook.messages") === 0) {
+						    // interpret as i18n message
+						    message = getMessage(source);
+					    } else if (source && source.hasOwnProperty("responseText")) {
+						    // it's jqXHR
 						    var text = source.responseText;
 						    if (!text) {
 							    text = source.statusText;
@@ -36,6 +63,9 @@ require(
 						    message = text + " (" + source.status + ")";
 					    } else {
 						    message = source;
+					    }
+					    if (cause) {
+						    message += " " + cause;
 					    }
 					    console.log("ERROR: " + message + ". ");
 					    $errorText.empty();
@@ -49,10 +79,6 @@ require(
 				    function clearError() {
 					    $error.hide("blind");
 					    $errorText.empty();
-				    }
-
-				    function fixId(msId) {
-					    return msId ? msId.replace(/\//g, "-") : msId;
 				    }
 
 				    var $menu = $pane.find("#outlook-menu");
@@ -105,7 +131,7 @@ require(
 								    portalUrl = $(this).data("portalurl");
 								    loadFolder();
 							    } else {
-								    showError("Error selecting folder - path not found. Please reload page.");
+								    showError("Outlook.messages.folderHasNoPath");
 							    }
 						    });
 					    }
@@ -128,8 +154,7 @@ require(
 							    });
 						    } else {
 							    console.log(">> loadFolder: groupId and/or path not found");
-							    showError("Space and/or path not found");
-							    process.reject("Space and/or path not found");
+							    process.reject(showError("Outlook.messages.spacePathNotFound"));
 						    }
 						    return process.promise();
 					    }
@@ -189,7 +214,6 @@ require(
 						    $form.submit(function(event) {
 							    event.preventDefault();
 							    clearError();
-							    $form.hide("fade");
 							    if ($cancelButton.data("cancel")) {
 								    loadMenu("home");
 							    } else {
@@ -201,22 +225,21 @@ require(
 									    }
 								    });
 								    if (attachmentIds.length > 0) {
+									    $form.hide("blind");
 									    $savingAttachment.show("blind");
 									    var spinner = new fabric.Spinner($savingAttachment.find(".ms-Spinner").get(0));
 									    spinner.start();
 									    function cancelSave() {
 										    spinner.stop();
-										    $savingAttachment.hide("fade");
+										    $savingAttachment.hide("blind", {
+											    "direction" : "down"
+										    });
 										    $form.show("blind", {
 											    "direction" : "down"
 										    });
 									    }
 									    Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
 										    if (asyncResult.status === "succeeded") {
-											    var userEmail = Office.context.mailbox.userProfile.emailAddress;
-											    console.log(">> userEmail: " + userEmail);
-											    var messageId = fixId(Office.context.mailbox.item.itemId);
-											    console.log(">> messageId: " + messageId);
 											    var attachmentToken = asyncResult.value;
 											    console.log(">> attachmentToken: " + attachmentToken);
 											    var ewsUrl = Office.context.mailbox.ewsUrl;
@@ -262,22 +285,25 @@ require(
 															    });
 														    });
 														    spinner.stop();
-														    $savingAttachment.hide("fade");
+														    $savingAttachment.hide("blind");
 														    $savedAttachment.show("blind");
 													    } else {
 														    // nothing saved, stay in the form
-														    showError("Nothing was saved. Please submit form again or contact administrator.");
+														    showError("Outlook.messages.nothingSavedTryAgain");
 														    cancelSave();
 													    }
 												    }
 											    });
 										    } else {
-											    showError("Error getting access token for mail server: " + asyncResult.error.message);
+										    	console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " 
+										    			+ JSON.stringify(asyncResult.error) + " value: " 
+										    			+ JSON.stringify(asyncResult.value));
+											    showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 											    cancelSave();
 										    }
 									    });
 								    } else {
-									    showError("Attachment not selected. Select at least an one and then submit form again.");
+									    showError("Outlook.messages.attachmentNotSelected");
 									    $form.animate({
 										    scrollTop : $attachments.offset().top - $form.offset().top + $form.scrollTop()
 									    });
@@ -344,7 +370,7 @@ require(
 													    }
 												    });
 											    } else {
-												    showError("Folder name required");
+												    showError("Outlook.messages.folderNameRequired");
 											    }
 										    }
 									    });
@@ -357,6 +383,102 @@ require(
 							    });
 						    });
 					    }
+				    }
+
+				    function convertToStatusInit() {
+					    var $convertToStatus = $("#outlook-convertToStatus");
+					    var $title = $convertToStatus.find("input[name='activityTitle']");
+					    var $text = $convertToStatus.find("div#activityText");
+					    var $form = $convertToStatus.find("form");
+					    var $groupIdDropdown = $form.find(".ms-Dropdown");
+					    var $groupId = $groupIdDropdown.find("select[name='groupId']");
+					    // $groupId.combobox(); // jQueryUI combo w/ autocompletion
+					    var $convertButton = $form.find("button.convertButton");
+					    $convertButton.prop("disabled", true);
+					    var $cancelButton = $form.find("button.cancelButton");
+					    var $converting = $convertToStatus.find("#converting");
+					    var $converted = $convertToStatus.find("#converted");
+					    var $convertedInfo = $converted.find(".convertedInfo");
+					    $cancelButton.click(function() {
+						    $cancelButton.data("cancel", true);
+					    });
+
+					    var subject = Office.context.mailbox.item.subject;
+					    $title.val(subject);
+
+					    // init spaces dropdown
+					    $groupId.val([]); // initially no spaces selected
+					    var groupId;
+					    $groupId.change(function() {
+						    var $space = $groupId.find("option:selected");
+						    if ($space.size() > 0) {
+							    groupId = $space.val();
+						    }
+					    });
+					    $groupIdDropdown.Dropdown();
+
+					    // FYI getTypeAsync available in compose mode only
+					    // Office.context.mailbox.item.body.getTypeAsync({}, function(asyncResult) {
+					    // if (asyncResult.status === "succeeded") {
+					    // var textType = asyncResult.value == "html" ? asyncResult.value : "text";
+					    var textType = "html";
+					    console.log(">> convertToStatus textType: " + textType);
+					    Office.context.mailbox.item.body.getAsync(textType, {}, function(asyncResult) {
+						    if (asyncResult.status === "succeeded") {
+						    	groupId = groupId ? groupId : "";
+							    console.log(">> groupId: " + groupId);
+							    console.log(">> title: " + $title.val());
+							    // console.log(">> text: " + asyncResult.value);
+							    $text.html(asyncResult.value);
+							    $form.submit(function() {
+								    event.preventDefault();
+								    clearError();
+								    $form.hide("blind");
+								    $converting.show("blind");
+								    var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
+								    spinner.start();
+								    if ($cancelButton.data("cancel")) {
+									    loadMenu("home");
+								    } else {
+									    $convertedInfo.jzLoad("Outlook.convertToStatus()", {
+									      groupId : groupId,
+									      title : $title.val(),
+									      body : asyncResult.value,
+									      userEmail : userEmail,
+									      messageId : messageId
+									    }, function(response, status, jqXHR) {
+										    if (status == "error") {
+											    showError(jqXHR);
+											    spinner.stop();
+											    $converting.hide("blind", {
+												    "direction" : "down"
+											    });
+											    $form.show("blind", {
+												    "direction" : "down"
+											    });
+										    } else {
+											    clearError();
+											    spinner.stop();
+											    $converting.hide("blind");
+											    $converted.show("blind");
+											    // TODO
+											    // var $activityLink = $convertedInfo.find("a.ms-Link");
+										    }
+									    });
+								    }
+							    });
+							    $convertButton.prop("disabled", false);
+						    } else {
+						    	console.log(">> Office.context.mailbox.item.body.getAsync() [" + asyncResult.status + "] error: " 
+						    			+ JSON.stringify(asyncResult.error) + " value: " 
+						    			+ JSON.stringify(asyncResult.value));
+							    showError("Outlook.messages.messageItemReadError", asyncResult.error.message);
+						    }
+					    });
+					    // } else {
+					    // showError("Outlook.messages.messageItemReadError", asyncResult.error.message);
+					    // }
+					    // });
 				    }
 
 				    function loadMenu(menuName) {
@@ -397,8 +519,7 @@ require(
 								    }
 							    });
 						    } else {
-							    showError("Menu name undefined");
-							    process.reject("Menu name undefined");
+							    process.reject(showError("Outlook.messages.menuNameUndefined"));
 						    }
 					    } else {
 						    process.resolve();
@@ -409,30 +530,27 @@ require(
 				    // init menu if it found
 				    if ($menu.size() > 0) {
 					    var $menuItems = $menu.find(".outlookMenu");
+					    var $menuGroups = $menu.find(".outlookGroupMenu");
 
-					    var internetMessageId = Office.context.mailbox.item.internetMessageId;
-					    console.log(">> internetMessageId: " + internetMessageId);
-					    
-					    // special logic for saveAttachment: remove it when no attachment found in the message or it's compose mode
+					    // special logic for saveAttachment: remove it when no attachment found in the message
+					    // or it's compose mode
 					    var $saveAttachment = $menuItems.filter(".saveAttachment");
 					    if ($saveAttachment.size() > 0
 					        && (!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
-						    // $saveAttachment.click(function() {
-						    // var $mi = loadMenu("saveAttachment");
-						    // $mi.done(function() {
-						    // // saveAttachmentInit();
-						    // });
-						    // $mi.fail(function() {
-						    // // TODO something here?
-						    // });
-						    // });
-						    // } else {
 						    $saveAttachment.parent().remove();
 					    }
 					    // special login for item addAttachment - show it only in compose mode
+					    // FYI internetMessageId will be found for sent/received message
 					    var $addAttachment = $menuItems.filter(".addAttachment");
 					    if ($addAttachment.size() > 0 && internetMessageId) {
 						    $addAttachment.parent().remove();
+					    }
+
+					    // remove convert* menus for new messages (messageId not null for messages saved on
+							// the server)
+					    var $convertTo = $menuGroups.filter(".convertTo");
+					    if ($convertTo.size() > 0 && !messageId) {
+						    $convertTo.parent().remove();
 					    }
 
 					    $menuItems.each(function(i, m) {
@@ -452,11 +570,6 @@ require(
 							    }
 						    });
 					    });
-
-					    // var $home = $menuItems.find(".home");
-					    // $home.click(function() {
-					    // loadMenu("home");
-					    // });
 				    }
 
 				    $menu.NavBar();

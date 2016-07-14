@@ -128,7 +128,7 @@
 								var $data = $(data);
 								var signinFailMessage = $data.find(".signinFail").text();
 								if (signinFailMessage) {
-									// showError("Sign in failed. Wrong username or password.");
+									// FYI wrong user/pwd will come as 200 with message in the body html
 									showError($signinFail.text());
 									$welcome.show();
 								} else {
@@ -137,9 +137,10 @@
 								}
 							});
 							$portalLogin.fail(function(jqXHR, textStatus, errorThrown) {
-								// TODO handle errors (wrong user/pwd and system failures)
-								console.log("[" + jqXHR.status + "] " + JSON.stringify(errorThrown));
-								showError("Portal login failed. Contact your administrator.");
+								// it's system/net error
+								console.log("[" + jqXHR.status + "] " + errorThrown);
+								// TODO i18n here
+								showError("Portal login failed (" + errorThrown + "). Contact your administrator.");
 								$welcome.show();
 							});
 						} // else, stay in the form (Login button disabled)

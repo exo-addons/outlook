@@ -23,16 +23,22 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+  
+  <!-- component>
+    <key>org.exoplatform.outlook.OutlookMessageStore</key>
+    <type>org.exoplatform.outlook.OutlookMessageStore</type>
+  </component -->
 
   <component>
     <key>org.exoplatform.outlook.OutlookService</key>
     <type>org.exoplatform.outlook.OutlookServiceImpl</type>
   </component>
+
   <component>
     <key>org.exoplatform.outlook.jcr.NodeFinder</key>
     <type>org.exoplatform.outlook.jcr.CMSNodeFinder</type>
   </component>
-  
+
   <component>
     <key>org.exoplatform.outlook.security.OutlookTokenService</key>
     <type>org.exoplatform.outlook.security.OutlookTokenService</type>
@@ -110,6 +116,73 @@
             </field>
           </object>
         </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
+    <component-plugin>
+      <name>add.action</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <!-- object-param>
+          <name>Outlook Message Activity</name>
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
+            <field name="name"><string>OUTLOOK_MESSAGE_ACTIVITY</string></field>
+            <field name="component"><string>org.exoplatform.outlook.social.UIOutlookMessageActivity</string></field>
+            <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
+          </object>
+        </object-param -->
+
+        <object-param>
+          <name>Share File Activity</name>
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type">
+              <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
+            </field>
+            <field name="name">
+              <string>outlook:sharemessage</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.outlook.social.SharedOutlookMessageActivity</string>
+            </field>
+            <field name="activityBuiderClass">
+              <string>org.exoplatform.wcm.ext.component.activity.FileUIActivityBuilder</string>
+            </field>
+          </object>
+        </object-param>
+
+        <object-param>
+          <name>ShowOutlookMessage</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type">
+              <string>org.exoplatform.ecm.dms.FileViewer</string>
+            </field>
+            <field name="name">
+              <string>ShowOutlookMessage</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.outlook.social.SharedOutlookMessageViewer</string>
+            </field>
+            <field name="category">
+              <string>FileViewer</string>
+            </field>
+            <field name="rank">
+              <int>10</int>
+            </field>
+            <!-- field name="extendedFilters">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.outlook.social.OutlookMessageFileFilter"></object>
+                </value>
+              </collection>
+            </field -->
+          </object>
+        </object-param>
+
       </init-params>
     </component-plugin>
   </external-component-plugins>
@@ -281,8 +354,23 @@
       </init-params>
     </component-plugin>
   </external-component-plugins -->
-  
-  <!-- external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.namespaces</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+      <init-params>
+        <properties-param>
+          <name>namespaces</name>
+          <property name="mso" value="http://www.exoplatform.com/jcr/microsoftoffice/1.0/" />
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
     <component-plugin>
       <name>add.gadget.services.nodeType</name>
@@ -291,12 +379,12 @@
       <init-params>
         <values-param>
           <name>autoCreatedInNewRepository</name>
-          <description>Editor node types configuration file</description>
-          <value>jar:/conf/portal/jcr/editor-nodetypes.xml</value>
+          <description>Outlook node types configuration file</description>
+          <value>jar:/conf/portal/jcr/outlook-nodetypes.xml</value>
         </values-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins -->
+  </external-component-plugins>
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
@@ -312,7 +400,8 @@
         </values-param>
         <values-param>
           <name>portal.resource.names</name>
-          <description>The properties files of the portal , those file will be merged into one ResoruceBundle properties</description>
+          <description>The properties files of the portal , those file will be merged into one ResoruceBundle
+            properties</description>
           <value>locale.outlook.Outlook</value>
         </values-param>
       </init-params>

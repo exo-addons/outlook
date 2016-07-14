@@ -1,0 +1,27 @@
+.outlookMessageActivityContent {
+	width: 100% !important;
+}
+
+.outlookMessagePreview .uiPreviewWebContent {
+	overflow-y: hidden;
+}
+
+.outlookMessagePreview .fileContent {
+	margin-right: initial;
+}
+
+.outlookMessagePreview .fileContent, 
+	.outlookMessagePreview #OutlookMessageViewer,
+	#OutlookMessageViewer .textContent,
+	#OutlookMessageViewer iframe {
+	height: 100%;
+	width: 100%;
+}
+
+#UIDocumentContainer #OutlookMessageViewer {
+	height: 400px;
+}
+
+.outlookMessageActivityContent #OutlookMessageViewer {
+	height: 160px;
+}

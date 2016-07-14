@@ -79,6 +79,16 @@
       <artifactId>httpclient</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.integration</groupId>
+      <artifactId>integ-social-ecms</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.integration</groupId>
+      <artifactId>integ-ecms-social</artifactId>
+      <scope>provided</scope>
+    </dependency>
     
     <!-- for tests -->
     <dependency>

@@ -27,7 +27,7 @@
 							</select>
 						</div>
 					<%	} else { %>
-						<label class="control-label ms-Label">&{Outlook.youDontHaveSpaces}</label>
+						<label class="control-label ms-Label">&{Outlook.messages.youDontHaveSpaces}</label>
 					<% 	}%>
 					</div>
 					<div class="control-group group-path" style="display: none;">
@@ -60,7 +60,7 @@
 								<span class="ms-Button-label">&{Outlook.save}</span>
 								<span class="ms-Button-description">&{Outlook.saveAttachmentDescription}</span>
 							</button>
-							<button class="ms-Button cancelButton" data-dismiss="modal">
+							<button class="ms-Button cancelButton">
 								<span class="ms-Button-icon">
 									<i class="ms-Icon ms-Icon--plus"></i>
 								</span>

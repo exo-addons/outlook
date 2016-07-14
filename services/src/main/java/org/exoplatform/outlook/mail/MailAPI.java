@@ -38,7 +38,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-import org.exoplatform.outlook.User;
+import org.exoplatform.outlook.OutlookUser;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.ws.frameworks.json.JsonParser;
@@ -153,7 +153,7 @@ public class MailAPI {
     }
   }
 
-  public JsonValue getAttachment(User user,
+  public JsonValue getAttachment(OutlookUser user,
                                  String messageId,
                                  String attachmentToken,
                                  String attachmentId) throws BadCredentialsException,

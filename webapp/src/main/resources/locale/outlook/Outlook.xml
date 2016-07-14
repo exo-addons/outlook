@@ -15,16 +15,20 @@
       <convertToWiki>Convert To Wiki</convertToWiki>
       <convertToForum>Convert To Forum</convertToForum>
     </command>
+
+    <noActionsAvailable>You have no actions available for this context.</noActionsAvailable>
+
     <selectAttachment>Select attachment</selectAttachment>
-    <youDontHaveSpaces>You are not a member of any space</youDontHaveSpaces>
     <selectSaveSpace>Save to space</selectSaveSpace>
     <selectFolder>Destination folder</selectFolder>
     <save>Save</save>
-    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoSaveDescription>
+    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.
+    </pathInfoSaveDescription>
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
     <pathAddDescription>Create new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
-    <saveAttachmentDescription>Save attachment of the message in documents of selected space</saveAttachmentDescription>
+    <saveAttachmentDescription>Save attachment of the message in documents of selected space
+    </saveAttachmentDescription>
     <cancel>Cancel</cancel>
     <cancelSaveAttachmentDescription>Don't save attachment of the message</cancelSaveAttachmentDescription>
     <savingAttachment>Saving your files...</savingAttachment>
@@ -33,15 +37,46 @@
     <enterFolderNameAndCreate>Provide a name for new folder and click Add button.</enterFolderNameAndCreate>
     <folderName>Folder name</folderName>
     <add>Add</add>
-    
+
     <selectDocumentSpace>Select space</selectDocumentSpace>
     <selectedDocuments>Selected documents</selectedDocuments>
     <selectDocument>Select document</selectDocument>
-    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoDescription>
+    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.
+    </pathInfoDescription>
     <attach>Attach</attach>
     <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
     <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
+
+    <convertToStatusDescription>Current message can be converted to a post in activity stream. By default it will go your user stream. If you'll choose target space then it will appear as selected space activity.</convertToStatusDescription>
+    <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
+    <targetSpaceDescription>If selected, it's a space where this message will be posted in activity stream.</targetSpaceDescription>
+    <activityTitle>Title</activityTitle>
+    <activityTitleDescription>This text will be an activity title in the stream</activityTitleDescription>
+    <activityText>Activity text</activityText>
+    <activityTextDescription>It's activity text make from your email message</activityTextDescription>
+    <convert>Convert</convert>
+    <convertingToStatus>Converting message to activity status...</convertingToStatus>
+    <convertedToStatus>Your message was successfully converted to an activity status</convertedToStatus>
+    <convertToStatusError>Error converting message to activity stream post</convertToStatusError>
+    <convertedToUserActivity>Your message successfully posted in personal activity stream</convertedToUserActivity>
+    <convertedToSpaceActivity>Your message successfully posted in {SPACE_NAME} activity stream</convertedToSpaceActivity>
+    <openActivity>Open activity</openActivity>
+    
+    <messages>
+      <folderHasNoPath>Error selecting folder - path not found. Please reload page.</folderHasNoPath>
+      <spacePathNotFound>Space and/or path not found</spacePathNotFound>
+      <nothingSavedTryAgain>Nothing was saved. Please submit form again or contact administrator.</nothingSavedTryAgain>
+      <gettingTokenError>Error getting access token for mail server</gettingTokenError>
+      <attachmentNotSelected>Attachment not selected. Select at least an one and then submit form again.</attachmentNotSelected>
+      <folderNameRequired>Folder name required</folderNameRequired>
+      <menuNameUndefined>Menu name undefined. Please contact administrator.</menuNameUndefined>
+      <youDontHaveSpaces>You are not a member of any space.</youDontHaveSpaces>
+      <joinSpaces>You can join spaces</joinSpaces>
+      <atThisPage>at this page</atThisPage>
+      <messageItemReadError>Error reading message item.</messageItemReadError>
+      <convertToStatusError>Error converting message to activity status.</convertToStatusError>
+    </messages>
   </Outlook>
 </bundle>

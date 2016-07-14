@@ -23,7 +23,9 @@
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "outlook.css", value = "skin/outlook.css", location = AssetLocation.SERVER),
-    @Stylesheet(id = "jquery-ui.css", value = "skin/jquery-ui.css", location = AssetLocation.SERVER)})
+    @Stylesheet(id = "jquery-ui.css", value = "skin/jquery-ui.min.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "jquery-ui.structure.css", value = "skin/jquery-ui.structure.min.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "jquery-ui.theme.css", value = "skin/jquery-ui.theme.min.css", location = AssetLocation.SERVER) })
 @Scripts({ @Script(id = "jquery", value = "js/jquery.min.js", location = AssetLocation.SERVER),
     @Script(id = "jquery-ui", value = "js/jquery-ui.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
     @Script(id = "fabric", value = "js/jquery.fabric.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
@@ -32,8 +34,9 @@
             depends = { "jquery" }),
     @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),
-    @Script(id = "outlook-login", value = "js/outlook-login.js", location = AssetLocation.SERVER, depends = { "jquery",
-        "fabric", "office", "juzu-ajax", "jquery-ui", "outlook.css", "fabric.css", "fabric.components.css", "jquery-ui.css" }) })
+    @Script(id = "outlook-login", value = "js/outlook-login.js", location = AssetLocation.SERVER,
+            depends = { "jquery", "fabric", "office", "juzu-ajax", "jquery-ui", "jquery-ui.css", "jquery-ui.structure.css",
+                "jquery-ui.theme.css", "fabric.css", "fabric.components.css", "outlook.css" }) })
 
 @Assets("*")
 

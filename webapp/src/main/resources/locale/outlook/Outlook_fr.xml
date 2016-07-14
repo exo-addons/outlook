@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+  <Outlook>
+    <command>
+      <home>Accueil</home>
+      <saveAttachment>Enregistrer la pièce jointe</saveAttachment>
+      <search>Chercher</search>
+      <create>Créer</create>
+      <convertTo>Convertir</convertTo>
+      <addAttachment>Joindre le document</addAttachment>
+      <userInfo>Utilisateurs</userInfo>
+      <postStatus>état post</postStatus>
+      <startDiscussion>Démarrer Discussion</startDiscussion>
+      <convertToStatus>Convertir en état</convertToStatus>
+      <convertToWiki>Convertir en Wiki</convertToWiki>
+      <convertToForum>Convertir au Forum</convertToForum>
+    </command>
+    <selectAttachment>Select attachment</selectAttachment>
+    <youDontHaveSpaces>You are not a member of any space</youDontHaveSpaces>
+    <selectSaveSpace>Save to space</selectSaveSpace>
+    <selectFolder>Destination folder</selectFolder>
+    <save>Save</save>
+    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoSaveDescription>
+    <pathUpDescription>Navigate to parent folder</pathUpDescription>
+    <pathAddDescription>Create new folder</pathAddDescription>
+    <pathOpenDescription>Open in new window</pathOpenDescription>
+    <saveAttachmentDescription>Save attachment of the message in documents of selected space</saveAttachmentDescription>
+    <cancel>Cancel</cancel>
+    <cancelSaveAttachmentDescription>Don't save attachment of the message</cancelSaveAttachmentDescription>
+    <savingAttachment>Saving your files...</savingAttachment>
+    <savedAttachment>Your files successfully saved in space </savedAttachment>
+    <addingNewFolder>Adding new folder</addingNewFolder>
+    <enterFolderNameAndCreate>Provide a name for new folder and click Add button.</enterFolderNameAndCreate>
+    <folderName>Folder name</folderName>
+    <add>Add</add>
+    
+    <selectDocumentSpace>Select space</selectDocumentSpace>
+    <selectedDocuments>Selected documents</selectedDocuments>
+    <selectDocument>Select document</selectDocument>
+    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoDescription>
+    <attach>Attach</attach>
+    <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
+    <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
+    <addingAttachment>Attaching documents...</addingAttachment>
+    <addedAttachment>Documents successfully attached to your message</addedAttachment>
+    
+    <messages>
+      <folderHasNoPath>Error selecting folder - path not found. Please reload page.</folderHasNoPath>
+      <spacePathNotFound>Space and/or path not found</spacePathNotFound>
+      <nothingSavedTryAgain>Nothing was saved. Please submit form again or contact administrator.</nothingSavedTryAgain>
+      <gettingTokenError>Error getting access token for mail server</gettingTokenError>
+      <attachmentNotSelected>Attachment not selected. Select at least an one and then submit form again.</attachmentNotSelected>
+      <folderNameRequired>Folder name required</folderNameRequired>
+      <menuNameUndefined>Menu name undefined. Please contact administrator.</menuNameUndefined>
+    </messages>
+  </Outlook>
+</bundle>

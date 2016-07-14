@@ -1,3 +1,13 @@
+body {
+	margin: 0;
+  padding: 0;
+}
+
+#outlook-pane input {
+	border-radius: 0px !important;
+	box-shadow: none !important;
+}
+
 /* Error banner (common) */
 #outlook-error>div.ms-MessageBanner {
 	min-width: 290px;
@@ -45,6 +55,10 @@
 
 /* Portlet */
 
+#outlook-menu-container {
+	margin-bottom: 10px;
+}
+
 span[disabled] {
 	pointer-events: none;
 }
@@ -87,19 +101,6 @@ span[disabled] {
 	color: #a80000;
 }
 
-.waitThrobber {
-	display: inline-block;
-	width: 50%;
-	height: 320px;
-	margin-right: auto;
-	margin-left: auto;
-	pointer-events: none;
-	background: url('icons/oxygen/32/animations/throbber.gif') no-repeat
-		left center !important; /* orientation=lt */
-	background: url('icons/oxygen/32/animations/throbber.gif') no-repeat
-		right center !important; /* orientation=rt */
-}
-
 .savedAttachment {
 	margin-left: 5px;
 	margin-right: 5px;
@@ -138,4 +139,15 @@ span[disabled] {
 
 div.form-buttons {
 	marging-top: 10px;
+}
+
+#activityText {
+	height: 150px;
+	max-height: 250px;
+  overflow: auto;
+  padding: 5px;
+}
+
+#converted .ms-MessageBar {
+	width: 100%;
 }

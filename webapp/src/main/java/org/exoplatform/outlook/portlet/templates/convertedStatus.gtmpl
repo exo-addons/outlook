@@ -1,0 +1,15 @@
+#{param name=status/}
+<div class="ms-MessageBar ms-MessageBar--success">
+	<div class="ms-MessageBar-content">
+		<div class="ms-MessageBar-icon">
+			<i class="ms-Icon ms-Icon--checkboxCheck ms-Icon--circle"></i>
+		</div>
+		<div class="ms-MessageBar-text">
+			<% if (status.isSpace()) { %>
+			${status.convertedToUserActivityMessage}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
+			<% } else { %>
+			&{Outlook.convertedToUserActivity}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
+			<% } %>
+		</div>
+	</div>
+</div>

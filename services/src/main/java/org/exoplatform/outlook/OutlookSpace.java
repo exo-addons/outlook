@@ -20,6 +20,7 @@
 package org.exoplatform.outlook;
 
 import org.exoplatform.outlook.jcr.Folder;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 
 import javax.jcr.RepositoryException;
 
@@ -68,5 +69,7 @@ public abstract class OutlookSpace {
   public abstract Folder getFolder(String path) throws OutlookException, RepositoryException;
 
   public abstract Folder getRootFolder() throws OutlookException, RepositoryException;
+  
+  public abstract ExoSocialActivity postActivity(String userEmail, String messageId, String title, String text) throws Exception;
 
 }

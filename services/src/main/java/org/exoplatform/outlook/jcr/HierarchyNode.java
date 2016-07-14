@@ -216,7 +216,7 @@ public abstract class HierarchyNode {
       Locale locale = userLocale();
       if (locale == null) {
         locale = Locale.getDefault();
-        LOG.warn("User locale not found, will use a default one " + locale);
+        LOG.warn("OutlookUser locale not found, will use a default one " + locale);
       }
       SimpleDateFormat dateFormat = new SimpleDateFormat(MODIFIED_FORMAT, locale);
       return dateFormat.format(lastModified.getTime());

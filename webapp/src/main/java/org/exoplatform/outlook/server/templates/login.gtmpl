@@ -24,7 +24,7 @@
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">Welcome to eXo Platform</p>
+					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcomeTitle}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -33,8 +33,7 @@
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">It is eXo Platform add-in for Microsoft Outlook. Use it to enhance
-						your conversations with collaborative tools from eXo Platform.</p>
+					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">&{Outlook.aboutAddin}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -55,7 +54,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">Save attachments in collaborative spaces and attach documents from them</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.aboutSaveAttachment}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -79,7 +78,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">Convert message to activity status, forum post or wiki page</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.aboutConvertTo}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -91,7 +90,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">Post to activity streams, create forum posts and wiki pages from message window</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.aboutCreate}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -103,7 +102,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">Search in collaborative spaces directly from message window</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.aboutSearch}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>

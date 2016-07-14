@@ -23,12 +23,15 @@
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.min.css", location = AssetLocation.SERVER),
-    @Stylesheet(id = "outlook.css", value = "skin/outlook.css", location = AssetLocation.SERVER) })
+    @Stylesheet(id = "outlook.css", value = "skin/outlook.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "jquery-ui.css", value = "skin/jquery-ui.min.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "jquery-ui.structure.css", value = "skin/jquery-ui.structure.min.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "jquery-ui.theme.css", value = "skin/jquery-ui.theme.min.css", location = AssetLocation.SERVER) })
 @Scripts({
-    @Script(id = "outlook.js", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
+    @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),
-    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER,
-            depends = { "outlook.css", "fabric.css", "fabric.components.css", "outlook.js" }) })
+    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER, depends = { "office", "jquery-ui.css",
+        "jquery-ui.structure.css", "jquery-ui.theme.css", "fabric.css", "fabric.components.css", "outlook.css" }) })
 
 @Assets({ "*" })
 

@@ -30,23 +30,32 @@ import org.exoplatform.outlook.jcr.HierarchyNode;
 import org.exoplatform.outlook.jcr.NodeFinder;
 import org.exoplatform.outlook.mail.MailAPI;
 import org.exoplatform.outlook.mail.MailServerException;
+import org.exoplatform.outlook.social.SharedOutlookMessageActivity;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
+import org.exoplatform.services.cms.drives.DriveData;
+import org.exoplatform.services.cms.drives.ManageDriveService;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.access.PermissionType;
+import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.organization.UserProfileHandler;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -62,6 +71,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -73,12 +83,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -90,17 +103,25 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OutlookServiceImpl implements OutlookService, Startable {
 
-  public static final String            MAILSERVER_URL   = "mailserver-url";
+  public static final String            MAILSERVER_URL     = "mailserver-url";
 
-  public static final String            EXO_DATETIME     = "exo:datetime";
+  protected static final String         EXO_DATETIME       = "exo:datetime";
 
-  public static final String            EXO_MODIFY       = "exo:modify";
+  protected static final String         EXO_MODIFY         = "exo:modify";
 
-  protected static final Log            LOG              = ExoLogger.getLogger(OutlookServiceImpl.class);
+  protected static final String         EXO_OWNEABLE       = "exo:owneable";
 
-  protected static final Random         RANDOM           = new Random();
+  protected static final String         EXO_PRIVILEGEABLE  = "exo:privilegeable";
 
-  protected static final Transliterator accentsConverter = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
+  protected static final String[]       READER_PERMISSION  = new String[] { PermissionType.READ };
+
+  protected static final String[]       MANAGER_PERMISSION = new String[] { PermissionType.READ, PermissionType.REMOVE };
+
+  protected static final Log            LOG                = ExoLogger.getLogger(OutlookServiceImpl.class);
+
+  protected static final Random         RANDOM             = new Random();
+
+  protected static final Transliterator accentsConverter   = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
 
   protected class UserFolder extends Folder {
 
@@ -172,6 +193,88 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  protected class UserImpl extends OutlookUser {
+
+    protected final IdentityManager socialIdentityManager;
+
+    protected final ActivityManager socialActivityManager;
+
+    protected UserImpl(String userName) {
+      super(userName);
+      this.socialIdentityManager = socialIdentityManager();
+      this.socialActivityManager = socialActivityManager();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(String userEmail, String messageId, String title, String text) throws Exception {
+      // save text to user documents
+      Node messagesFolder;
+      Node userDocs = userDocumentsNode(getUserName());
+      if (!userDocs.hasNode("outlook-messages")) {
+        messagesFolder = userDocs.addNode("outlook-messages", "nt:folder");
+        messagesFolder.setProperty("exo:title", "Outlook Messages");
+        try {
+          messagesFolder.setProperty("exo:name", title);
+        } catch (ConstraintViolationException | ValueFormatException e) {
+          LOG.warn("Cannot set exo:name property for folder " + messagesFolder.getPath() + ": " + e);
+        }
+        setPermissions(messagesFolder, getUserName(), "member:/platform/users");
+        userDocs.save();
+      } else {
+        messagesFolder = userDocs.getNode("outlook-messages");
+      }
+      try (InputStream content = new ByteArrayInputStream(text.getBytes("UTF8"))) {
+        Node messageFile = addMessageFile(messagesFolder, userEmail, messageId, title, content);
+        setPermissions(messageFile, getUserName(), "member:/platform/users");
+        messagesFolder.save();
+
+        // post activity to user status stream
+        // Identity userIdentity =
+        // socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+        // this.userName,
+        // true);
+        // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+        // //UIDocActivityBuilder.ACTIVITY_TYPE,
+        // "files:spaces",
+        // title);
+        // Map<String, String> templateParams = new HashMap<String, String>();
+        // templateParams.put(UIDocActivity.WORKSPACE, messagesFolder.getSession().getWorkspace().getName());
+        // templateParams.put(UIDocActivity.REPOSITORY,
+        // jcrService.getCurrentRepository().getConfiguration().getName());
+        // templateParams.put(UIDocActivity.MESSAGE, title);
+        // templateParams.put("MESSAGE", title);
+        // //
+        // templateParams.put(UIDocActivity.DOCLINK,"/portal/rest/jcr/repository/collaboration/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf,
+        // // DOCNAME=samir.pdf, DOCPATH=/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf");
+        // templateParams.put(UIDocActivity.DOCNAME, title);
+        // templateParams.put(UIDocActivity.DOCUMENT_TITLE, title);
+        // templateParams.put(UIDocActivity.IS_SYMLINK, "false");
+        // templateParams.put(UIDocActivity.MIME_TYPE, "text/html");
+        // templateParams.put(UIDocActivity.DOCPATH, messageFile.getPath());
+        // activity.setTemplateParams(templateParams);
+        // socialActivityManager.saveActivityNoReturn(activity);
+        // // TODO LinkProvider.getSingleActivityUrl(activityId)
+        // messageStore.saveMessage(activity.getId(), text);
+        final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+        try {
+          org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
+          ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                  "SocialIntegration.messages.createdBy",
+                                                                                                                  true,
+                                                                                                                  false,
+                                                                                                                  "");
+          return activity;
+        } finally {
+          org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
+        }
+      }
+    }
+
+  }
+
   protected class OutlookSpaceImpl extends OutlookSpace {
 
     class SpaceFolder extends UserFolder {
@@ -197,11 +300,17 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
-    protected final String rootPath;
+    protected final String          rootPath;
+
+    protected final IdentityManager socialIdentityManager;
+
+    protected final ActivityManager socialActivityManager;
 
     protected OutlookSpaceImpl(Space socialSpace) {
       super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName());
       this.rootPath = groupDocsPath(groupId);
+      this.socialIdentityManager = socialIdentityManager();
+      this.socialActivityManager = socialActivityManager();
     }
 
     /**
@@ -232,30 +341,86 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       initDocumentLink(this, root);
       return root;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(String userEmail, String messageId, String title, String text) throws Exception {
+      // post activity to space status stream under current user
+      // Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+      // this.groupId,
+      // true);
+      // Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+      // currentUserId(),
+      // true);
+      // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+      // UIOutlookMessageActivity.ACTIVITY_TYPE,
+      // title);
+      // socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
+      // messageStore.saveMessage(activity.getId(), text);
+      // return activity;
+
+      Node messagesFolder;
+      Node spaceDocs = spaceDocumentsNode(groupId);
+      if (!spaceDocs.hasNode("outlook-messages")) {
+        messagesFolder = spaceDocs.addNode("outlook-messages", "nt:folder");
+        messagesFolder.setProperty("exo:title", "Outlook Messages");
+        try {
+          messagesFolder.setProperty("exo:name", title);
+        } catch (ConstraintViolationException | ValueFormatException e) {
+          LOG.warn("Cannot set exo:name property for folder " + messagesFolder.getPath() + ": " + e);
+        }
+        setPermissions(messagesFolder, getGroupId());
+        spaceDocs.save();
+      } else {
+        messagesFolder = spaceDocs.getNode("outlook-messages");
+      }
+      final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+      try (InputStream content = new ByteArrayInputStream(text.getBytes("UTF8"))) {
+        Node messageFile = addMessageFile(messagesFolder, userEmail, messageId, title, content);
+        setPermissions(messageFile, new StringBuilder("member:").append(getGroupId()).toString());
+        messagesFolder.save();
+
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
+        ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                "SocialIntegration.messages.createdBy",
+                                                                                                                true,
+                                                                                                                false,
+                                                                                                                "");
+        return activity;
+      } finally {
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
+      }
+    }
   }
 
-  protected final RepositoryService                          jcrService;
+  protected final RepositoryService                           jcrService;
 
-  protected final SessionProviderService                     sessionProviders;
+  protected final SessionProviderService                      sessionProviders;
 
-  protected final IdentityRegistry                           identityRegistry;
+  protected final IdentityRegistry                            identityRegistry;
 
-  protected final NodeFinder                                 finder;
+  protected final NodeFinder                                  finder;
 
-  protected final NodeHierarchyCreator                       hierarchyCreator;
+  protected final NodeHierarchyCreator                        hierarchyCreator;
 
-  protected final OrganizationService                        organization;
-  
-  protected final CookieTokenService tokenService;
+  protected final OrganizationService                         organization;
+
+  protected final CookieTokenService                          tokenService;
+
+  protected final ManageDriveService                          driveService;
 
   /**
    * Authenticated users.
    */
-  protected final ConcurrentHashMap<String, User>            authenticated = new ConcurrentHashMap<String, User>();
+  protected final ConcurrentHashMap<String, OutlookUser>      authenticated = new ConcurrentHashMap<String, OutlookUser>();
 
   protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces        = new ConcurrentHashMap<String, OutlookSpaceImpl>();
 
-  protected MailAPI                                          mailserverApi;
+  // protected final OutlookMessageStore messageStore;
+
+  protected MailAPI                                           mailserverApi;
 
   /**
    * Outlook service with storage in JCR and with managed features.
@@ -269,13 +434,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws ConfigurationException
    * @throws MailServerException
    */
-  public OutlookServiceImpl(RepositoryService jcrService,
-                           SessionProviderService sessionProviders,
-                           IdentityRegistry identityRegistry,
-                           NodeHierarchyCreator hierarchyCreator,
-                           NodeFinder finder,
-                           OrganizationService organization, CookieTokenService tokenService,
-                           InitParams params) throws ConfigurationException, MailServerException {
+  public OutlookServiceImpl(// OutlookMessageStore messageStore,
+                            RepositoryService jcrService,
+                            SessionProviderService sessionProviders,
+                            IdentityRegistry identityRegistry,
+                            NodeHierarchyCreator hierarchyCreator,
+                            NodeFinder finder,
+                            OrganizationService organization,
+                            CookieTokenService tokenService,
+                            ManageDriveService driveService,
+                            InitParams params) throws ConfigurationException, MailServerException {
+    // this.messageStore = messageStore;
+
     this.jcrService = jcrService;
     this.sessionProviders = sessionProviders;
     this.identityRegistry = identityRegistry;
@@ -283,6 +453,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.finder = finder;
     this.organization = organization;
     this.tokenService = tokenService;
+    this.driveService = driveService;
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -315,7 +486,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   @Override
   public List<File> saveAttachment(OutlookSpace space,
                                    Folder destFolder,
-                                   User user,
+                                   OutlookUser user,
                                    String messageId,
                                    String attachmentToken,
                                    String... attachmentIds) throws OutlookException, RepositoryException {
@@ -349,6 +520,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // Save in JCR
       try (InputStream content = decode(contentBytes)) {
         Node attachmentNode = addFile(parent, name, contentType, content);
+        setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
         files.add(new UserFile(destFolder, attachmentNode));
       } catch (IOException e) {
         throw new OutlookException("Error saving attachment in a file " + name, e);
@@ -369,7 +541,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   @Override
   public List<File> saveAttachment(Folder destFolder,
-                                   User user,
+                                   OutlookUser user,
                                    String messageId,
                                    String attachmentToken,
                                    String... attachmentIds) throws OutlookException, RepositoryException {
@@ -380,23 +552,47 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public User getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException {
-    try {
-      URI ewsUri = new URI(ewsUrl);
-      String host = ewsUri.getHost();
-      int port = ewsUri.getPort();
-      String scheme = ewsUri.getScheme();
-      if (port <= 0) {
-        port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
+  public OutlookUser getUser(String email, String ewsUrl) throws OutlookException, RepositoryException {
+    ConversationState contextState = ConversationState.getCurrent();
+    if (contextState != null) {
+      String exoUsername = contextState.getIdentity().getUserId();
+      if (!IdentityConstants.ANONIM.equals(exoUsername)) {
+        URI mailServerUrl;
+        if (ewsUrl != null) {
+          try {
+            URI ewsUri = new URI(ewsUrl);
+            String host = ewsUri.getHost();
+            int port = ewsUri.getPort();
+            String scheme = ewsUri.getScheme();
+            if (port <= 0) {
+              port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
+            }
+
+            mailServerUrl = new URI(scheme, null, host, port, null, null, null);
+          } catch (URISyntaxException e) {
+            throw new MailServerException("Error parsing EWS API URL " + ewsUrl, e);
+          }
+        } else {
+          mailServerUrl = null;
+        }
+
+        OutlookUser user = authenticated.get(exoUsername);
+        if (user == null) {
+          // new user instance
+          user = new UserImpl(exoUsername);
+          // save user in map of authenticated for later use (multi-thread)
+          authenticated.put(exoUsername, user);
+        }
+        if (email != null) {
+          user.setEmail(email);
+        }
+        if (mailServerUrl != null) {
+          user.setMailServerUrl(mailServerUrl);
+        }
+        return user;
       }
-
-      URI mailServerUrl = new URI(scheme, null, host, port, null, null, null);
-
-      // TODO cache users?
-      return new User(userEmail, mailServerUrl);
-    } catch (URISyntaxException e) {
-      throw new MailServerException("Error parsing EWS API URL " + ewsUrl, e);
     }
+    return null;
   }
 
   /**
@@ -487,38 +683,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return new StringBuilder().append(workspace).append(":").append(path).toString();
   }
 
-  protected User getCurrentUser() throws OutlookException {
-    ConversationState contextState = ConversationState.getCurrent();
-    if (contextState != null) {
-      String exoUsername = contextState.getIdentity().getUserId();
-      if (!IdentityConstants.ANONIM.equals(exoUsername)) {
-        User user = authenticated.get(exoUsername);
-        if (user == null) {
-          // ensure user credentials aren't saved already in eXo user profile
-          // TODO
-          // BasicCredentials anaplanCreds = getUserCredentials(exoUsername);
-          // if (anaplanCreds != null) {
-          // // already loged-in, check valid credentials and cache them
-          // checkCredentials(anaplanCreds.getUsername(), anaplanCreds.getPassword());
-          //
-          // // new user instance
-          // user = new UserImpl(exoUsername, anaplanCreds.getUsername());
-          //
-          // // save user in map of authenticated for later use (multi-thread)
-          // authenticated.put(exoUsername, user);
-          // }
-        }
-        return user;
-      }
-    }
-    return null;
-  }
-
-  protected org.exoplatform.services.organization.User getExoUser(String username) throws OutlookException {
+  protected org.exoplatform.services.organization.User getExoUser(String userName) throws OutlookException {
     try {
-      return organization.getUserHandler().findUserByName(username);
+      return organization.getUserHandler().findUserByName(userName);
     } catch (Exception e) {
-      throw new OutlookException("Error searching user " + username, e);
+      throw new OutlookException("Error searching user " + userName, e);
     }
   }
 
@@ -580,15 +749,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
         return lang;
       } else {
-        throw new BadParameterException("User profile not found for " + userId);
+        throw new BadParameterException("OutlookUser profile not found for " + userId);
       }
     } catch (Exception e) {
       throw new OutlookException("Error searching user profile " + userId, e);
     }
-  }
-
-  protected String userKey(String exoUsername, String officeUsername) {
-    return new StringBuilder(exoUsername).append(officeUsername).toString();
   }
 
   protected boolean isNull(JsonValue json) {
@@ -782,6 +947,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
 
+  protected IdentityManager socialIdentityManager() {
+    return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
+  }
+
+  protected ActivityManager socialActivityManager() {
+    return (ActivityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ActivityManager.class);
+  }
+
   protected List<OutlookSpace> userSpaces(String userId) throws OutlookSpaceException {
     List<OutlookSpace> spaces = new ArrayList<OutlookSpace>();
     ListAccess<Space> list = spaceService().getMemberSpaces(userId);
@@ -811,6 +984,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
+   * Generate the user documents (as /Users/${userId}/Private/Documents).<br>
+   * 
+   * @param userId {@link String}
+   * @return {@link String}
+   * @throws Exception
+   */
+  protected String userDocsPath(String userId) {
+    // XXX we do here as ECMS does in ManageDriveServiceImpl
+    return PERSONAL_DRIVE_PARRTEN.replace("${userId}", userId) + "/Documents";
+  }
+
+  /**
    * Generate the group node path (as /Groups/spaces/$SPACE_GROUP_ID).<br>
    * 
    * @param groupId {@link String}
@@ -827,8 +1012,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // We need like the following:
     // https://peter.exoplatform.com.ua:8443/portal/g/:spaces:product_team/product_team/documents?path=.spaces.product_team/Groups/spaces/product_team/Documents/uploads/page_management_https_loading.png
 
-    StringBuilder url = new StringBuilder(); 
-    
+    StringBuilder url = new StringBuilder();
+
     String groupDriveName = space.getGroupId().replace("/", ".");
     String nodePath = node.getPath().replaceAll("/+", "/");
 
@@ -862,6 +1047,149 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
 
     node.setUrl(url.toString());
+  }
+
+  /**
+   * Find given user Personal Documents folder using user session.
+   * 
+   * @param userName {@link String}
+   * @return {@link Node} Personal Documents folder node or <code>null</code>
+   * @throws Exception
+   */
+  protected Node userDocumentsNode(String userName) throws Exception {
+    // code idea based on ECMS's UIJCRExplorerPortlet.getUserDrive()
+    for (DriveData userDrive : driveService.getPersonalDrives(userName)) {
+      String homePath = userDrive.getHomePath();
+      if (homePath.endsWith("/Private")) {
+        // TODO
+        // SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
+        // Node userNode = hierarchyCreator.getUserNode(sessionProvider, userName);
+        String driveRootPath = org.exoplatform.services.cms.impl.Utils.getPersonalDrivePath(homePath, userName);
+        // int uhlen = userNode.getPath().length();
+        // if (homePath.length() > uhlen) {
+        // it should be w/o leading slash, e.g. "Private"
+        // String driveSubPath = driveRootPath.substring(uhlen + 1);
+        return node(driveRootPath).getParent().getNode("Public");
+        // }
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find given group Documents folder using current user session.
+   *
+   * @param groupName {@link String}
+   * @return {@link Node} space's Documents folder node or <code>null</code>
+   * @throws Exception
+   */
+  protected Node spaceDocumentsNode(String groupId) throws Exception {
+    // String groupDriveName = groupId.replace("/", ".");
+    // DriveData groupDrive = driveService.getDriveByName(groupDriveName);
+    // if (groupDrive != null) {
+    // // TODO
+    // //SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
+    // // we actually don't need user home node, just a JCR session
+    // //Session session = hierarchyCreator.getUserNode(sessionProvider, userName).getSession();
+    // //return (Node) session.getItem(groupDrive.getHomePath());
+    // return node(groupDrive.getHomePath());
+    // } else {
+    // return null;
+    // }
+    return node(groupDocsPath(groupId));
+  }
+
+  /**
+   * Set read permissions on the target node to all given identities (e.g. space group members). If node not
+   * yet <code>exo:privilegeable</code> it will add such mixin to allow set the permissions first. Requested
+   * permissions will not be set to the children nodes.<br>
+   * 
+   * @param node {@link Node} link target node
+   * @param identities array of {@link String} with user identifiers (names or memberships)
+   * @throws AccessControlException
+   * @throws RepositoryException
+   */
+  protected void setPermissions(Node node, String... identities) throws AccessControlException, RepositoryException {
+    setPermissions(node, true, false, identities);
+  }
+
+  /**
+   * Set read permissions on the target node to all given identities (e.g. space group members). Permissions
+   * will not be set if target not <code>exo:privilegeable</code> and <code>forcePrivilegeable</code> is
+   * <code>false</code>. If <code>deep</code> is <code>true</code> the target children nodes will be checked
+   * also for a need to set the requested permissions. <br>
+   * 
+   * @param node {@link Node} link target node
+   * @param deep {@link Boolean} if <code>true</code> then also children nodes will be set to the requested
+   *          permissions
+   * @param forcePrivilegeable {@link Boolean} if <code>true</code> and node not yet
+   *          <code>exo:privilegeable</code> it will add such mixin to allow set the permissions.
+   * @param identities array of {@link String} with user identifiers (names or memberships)
+   * @throws AccessControlException
+   * @throws RepositoryException
+   */
+  protected void setPermissions(Node node,
+                                boolean deep,
+                                boolean forcePrivilegeable,
+                                String... identities) throws AccessControlException, RepositoryException {
+    ExtendedNode target = (ExtendedNode) node;
+    boolean setPermissions = true;
+    if (target.canAddMixin(EXO_PRIVILEGEABLE)) {
+      if (forcePrivilegeable) {
+        target.addMixin(EXO_PRIVILEGEABLE);
+      } else {
+        // will not set permissions on this node, but will check the child nodes
+        setPermissions = false;
+      }
+    } // else, already exo:privilegeable
+    if (setPermissions) {
+      for (String identity : identities) {
+        // It is for special debug cases
+        // if (LOG.isDebugEnabled()) {
+        // LOG.debug(">>> hasPermission " + identity + " identity: "
+        // + IdentityHelper.hasPermission(target.getACL(), identity, PermissionType.READ));
+        // }
+        String[] ids = identity.split(":");
+        if (ids.length == 2) {
+          // it's group and we want allow given identity read only and additionally let managers remove the
+          // link
+          String managerMembership;
+          try {
+            MembershipType managerType = organization.getMembershipTypeHandler().findMembershipType("manager");
+            managerMembership = managerType.getName();
+          } catch (Exception e) {
+            LOG.error("Error finding manager membership in organization service. "
+                + "Will use any (*) to allow remove shared cloud file link", e);
+            managerMembership = "*";
+          }
+          target.setPermission(new StringBuilder(managerMembership).append(':').append(ids[1]).toString(),
+                               MANAGER_PERMISSION);
+          target.setPermission(identity, READER_PERMISSION);
+        } else {
+          // in other cases, we assume it's user identity and user should be able to remove the node
+          target.setPermission(identity, MANAGER_PERMISSION);
+        }
+      }
+    }
+    if (deep) {
+      // check the all children also, but don't force adding exo:privilegeable
+      for (NodeIterator niter = target.getNodes(); niter.hasNext();) {
+        Node child = niter.nextNode();
+        setPermissions(child, true, false, identities);
+      }
+    }
+  }
+
+  protected Node addMessageFile(Node parent,
+                                String userEmail,
+                                String messageId,
+                                String title,
+                                InputStream content) throws RepositoryException {
+    Node messageFile = addFile(parent, title, "text/html", content);
+    messageFile.addMixin(MESSAGE_NODETYPE);
+    messageFile.setProperty("mso:userEmail", userEmail);
+    messageFile.setProperty("mso:messageId", messageId);
+    return messageFile;
   }
 
   /**
