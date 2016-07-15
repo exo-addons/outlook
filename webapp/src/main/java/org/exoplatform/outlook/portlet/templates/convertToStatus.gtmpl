@@ -46,13 +46,13 @@
 					<%	if (spaces.size() > 0) {%>
 					<span class="ms-TextField-description">&{Outlook.targetSpaceDescription}</span>
 					<%	} else { %>
-					<div class="ms-MessageBar ms-MessageBar--severeWarning">
+					<div class="ms-MessageBar ms-MessageBar--severeWarning noSpacesMessage">
 						<div class="ms-MessageBar-content">
 							<div class="ms-MessageBar-icon">
 								<i class="ms-Icon ms-Icon--alert"></i>
 							</div>
 							<div class="ms-MessageBar-text">
-								&{Outlook.messages.youDontHaveSpaces}&nbsp;&{Outlook.messages.joinSpaces}&nbsp;<a href="#" class="ms-Link">&{Outlook.messages.atThisPage}</a>
+								&{Outlook.messages.youDontHaveSpaces}&nbsp;&{Outlook.messages.joinSpaces}&nbsp;<a href="#" target="_blank" class="ms-Link">&{Outlook.messages.atThisPage}</a>
 							</div>
 						</div>
 					</div>

@@ -56,6 +56,7 @@ import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -266,6 +267,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                                   true,
                                                                                                                   false,
                                                                                                                   "");
+          // TODO care about activity removal with the message file
+          activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
           return activity;
         } finally {
           org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
@@ -388,6 +391,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                                 true,
                                                                                                                 false,
                                                                                                                 "");
+        // TODO care about activity removal with the message file
+        activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
         return activity;
       } finally {
         org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);

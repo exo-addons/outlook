@@ -3,7 +3,7 @@
 }
 
 .outlookMessagePreview .uiPreviewWebContent {
-	overflow-y: hidden;
+	overflow-y: hidden !important;
 }
 
 .outlookMessagePreview .fileContent {
@@ -11,17 +11,17 @@
 }
 
 .outlookMessagePreview .fileContent, 
-	.outlookMessagePreview #OutlookMessageViewer,
-	#OutlookMessageViewer .textContent,
-	#OutlookMessageViewer iframe {
+	.outlookMessagePreview .outlookMessageViewer,
+	.outlookMessageViewer .textContent,
+	.outlookMessageViewer iframe {
 	height: 100%;
 	width: 100%;
 }
 
-#UIDocumentContainer #OutlookMessageViewer {
+#UIDocumentContainer .outlookMessageViewer {
 	height: 400px;
 }
 
-.outlookMessageActivityContent #OutlookMessageViewer {
-	height: 160px;
+.outlookMessageActivityContent .outlookMessageViewer {
+	height: 200px;
 }

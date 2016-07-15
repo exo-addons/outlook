@@ -5,7 +5,20 @@ require(
     [ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/outlookJqueryValidate", "SHARED/juzu-ajax" ],
     function($, fabric) {
 
-	    function getMessage(key) {
+  		function pageBaseUrl() {
+  			var theLocation = window.location;
+
+  			var theHostName = theLocation.hostname;
+  			var theQueryString = theLocation.search;
+
+  			if (theLocation.port) {
+  				theHostName += ":" + theLocation.port;
+  			}
+
+  			return theLocation.protocol + "//" + theHostName;
+  		}
+	    
+    	function getMessage(key) {
 		    if (outlookBundle) {
 			    return outlookBundle.messages[key];
 		    } else {
@@ -26,6 +39,7 @@ require(
 
 		    $(function() {
 			    // context data
+		    	var serverUrl = pageBaseUrl(location);
 			    var userEmail = Office.context.mailbox.userProfile.emailAddress;
 			    console.log("> userEmail: " + userEmail);
 			    // The itemId property returns null in compose mode for items that have not been saved to
@@ -83,7 +97,13 @@ require(
 
 				    var $menu = $pane.find("#outlook-menu");
 				    var $container = $pane.find("#outlook-menu-container");
-
+				    function initNoSpacesLink() {
+				    	var $noSpacesLink = $container.find(".noSpacesMessage .ms-MessageBar-text a");
+				    	// should replace /portal/intranet/outlook to /portal/intranet/all-spaces 
+				    	var allSpacesPath = location.pathname.replace(/\/[^\/]*$/, "/all-spaces");
+				    	$noSpacesLink.attr("href", allSpacesPath);
+				    }
+				    
 				    function homeInit() {
 					    // TODO something?
 				    }
@@ -509,6 +529,7 @@ require(
 											    // safe to use the function
 											    eval(commandFunc + "()");
 										    }
+										    initNoSpacesLink();
 										    process.resolve(response, status, jqXHR);
 									    } catch(e) {
 										    console.log(e);

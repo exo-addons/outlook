@@ -27,7 +27,7 @@ def rcontext = _ctx.getRequestContext()
 def uiParent = uicomponent.getParent()
 def currentNode = uicomponent.getCurrentNode()
 %>
-<div id="OutlookMessageViewer">
+<div class="outlookMessageViewer">
 	<%
   if (currentNode) {
     def title = org.exoplatform.services.cms.impl.Utils.getTitle(currentNode)
@@ -39,7 +39,6 @@ def currentNode = uicomponent.getCurrentNode()
 			strContent = ContentReader.getEscapeHtmlContent(Utils.sanitize(strContent))	        	  
 	%>
 	<div class="textContent">
-		<!-- link href="/outlook/skin/outlook-message-view.css" type="text/css" rel="stylesheet" / -->
 		<textarea id="<%=iframeId%>"><%=strContent%></textarea> 
 		<% 
       def jsManager = rcontext.getJavascriptManager()
