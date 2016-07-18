@@ -1,7 +1,20 @@
 #{param name=files/}
+<div class="ms-MessageBar ms-MessageBar--success">
+	<div class="ms-MessageBar-content">
+		<div class="ms-MessageBar-icon">
+			<i class="ms-Icon ms-Icon--checkboxCheck ms-Icon--circle"></i>
+		</div>
+		<div class="ms-MessageBar-text">
+			<snap class="savedSpaceTitle">&{Outlook.savedAttachment}</snap><br>&{Outlook.savedClickToOpen}
+		</div>
+	</div>
+</div>
+<ul class="ms-List">
 <% for (f in files) { %>
-<li class="ms-ListItem selectableItem" data-path="${f.path}" data-portalurl="${f.url}">
-	<span class="ms-ListItem-primaryText">${f.name}</span>
-	<span class="ms-ListItem-metaText lastModified">${f.lastModified}</span>
-</li>
+	<li class="ms-ListItem selectableItem" data-portalurl="${f.url}">
+		<span class="ms-ListItem-primaryText">
+			<i class="ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green"></i>${f.name}
+		</span>
+	</li>
 <% } %>
+</ul>

@@ -101,9 +101,12 @@ span[disabled] {
 	color: #a80000;
 }
 
-.savedAttachment {
-	margin-left: 5px;
-	margin-right: 5px;
+.savingSpaceTitle, .savedSpaceTitle {
+	padding-bottom: 15px;
+}
+
+#savedAttachment .ms-Icon {
+	padding-right: 10px;
 }
 
 .selectableItem:hover {
@@ -141,13 +144,31 @@ div.form-buttons {
 	marging-top: 10px;
 }
 
-#activityText {
-	height: 150px;
-	max-height: 250px;
+.activityText {
+	height: 60px;	
   overflow: auto;
-  padding: 5px;
+  padding: 0px;
+  position: relative;
 }
 
-#converted .ms-MessageBar {
+/*.activityText:before {
+  content:"";
+  width:100%;
+  height:100%;    
+  position:absolute;
+  left:0;
+  top:0;
+  background:linear-gradient(transparent 50px, white);
+}*/
+
+.activityEditor {
+	height: 150px;
+	max-height: 250px;
+	overflow: auto;
+  padding: 0px;
+}
+
+
+#outlook-pane .ms-MessageBar {
 	width: 100%;
 }

@@ -18,21 +18,23 @@
 
     <noActionsAvailable>You have no actions available for this context.</noActionsAvailable>
 
+    <saveAttachmentDescription>Here you can save attachments of this message to files in collaborative space.</saveAttachmentDescription>
     <selectAttachment>Select attachment</selectAttachment>
+    <selectAttachmentDescription>Selected attachments will be saved in target space.</selectAttachmentDescription>
     <selectSaveSpace>Save to space</selectSaveSpace>
+    <selectSaveSpaceDescription>A space where attachments to save</selectSaveSpaceDescription>
     <selectFolder>Destination folder</selectFolder>
     <save>Save</save>
-    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.
-    </pathInfoSaveDescription>
+    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoSaveDescription>
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
     <pathAddDescription>Create new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
-    <saveAttachmentDescription>Save attachment of the message in documents of selected space
-    </saveAttachmentDescription>
+    <saveAttachmentDescription>Save attachment of the message in documents of selected space</saveAttachmentDescription>
     <cancel>Cancel</cancel>
     <cancelSaveAttachmentDescription>Don't save attachment of the message</cancelSaveAttachmentDescription>
     <savingAttachment>Saving your files...</savingAttachment>
     <savedAttachment>Your files successfully saved in space </savedAttachment>
+    <savedClickToOpen>Click file in the list below to open it in collaborative space</savedClickToOpen>
     <addingNewFolder>Adding new folder</addingNewFolder>
     <enterFolderNameAndCreate>Provide a name for new folder and click Add button.</enterFolderNameAndCreate>
     <folderName>Folder name</folderName>
@@ -41,8 +43,7 @@
     <selectDocumentSpace>Select space</selectDocumentSpace>
     <selectedDocuments>Selected documents</selectedDocuments>
     <selectDocument>Select document</selectDocument>
-    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.
-    </pathInfoDescription>
+    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoDescription>
     <attach>Attach</attach>
     <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
     <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
@@ -54,6 +55,7 @@
     <targetSpaceDescription>If selected, it's a space where this message will be posted in activity stream.</targetSpaceDescription>
     <activityTitle>Title</activityTitle>
     <activityTitleDescription>This text will be an activity title in the stream</activityTitleDescription>
+    <editActivityText>Click to edit</editActivityText>
     <activityText>Activity text</activityText>
     <activityTextDescription>It's activity text make from your email message</activityTextDescription>
     <convert>Convert</convert>

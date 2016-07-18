@@ -135,8 +135,8 @@ public class Outlook {
   OutlookTokenService                                       outlookTokens;
 
   @Inject
-  @Path("index2.gtmpl")
-  org.exoplatform.outlook.portlet.templates.index2          index;
+  @Path("index.gtmpl")
+  org.exoplatform.outlook.portlet.templates.index          index;
 
   @Inject
   @Path("saveAttachment.gtmpl")

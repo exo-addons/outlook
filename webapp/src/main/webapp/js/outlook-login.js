@@ -129,7 +129,7 @@
 								var signinFailMessage = $data.find(".signinFail").text();
 								if (signinFailMessage) {
 									// FYI wrong user/pwd will come as 200 with message in the body html
-									showError($signinFail.text());
+									showError(signinFailMessage);
 									$welcome.show();
 								} else {
 									setCookie("remembermeoutlook", "_init_me", 120000, document, "/portal/intranet/outlook");

@@ -59,7 +59,7 @@
       <module>jquery</module>
     </depends>
   </module>
-  <module>
+  <!-- module>
     <name>outlookJqueryValidate</name>
     <load-group>outlookGRP</load-group>
     <script>
@@ -72,7 +72,7 @@
     <depends>
       <module>jquery</module>
     </depends>
-  </module>
+  </module -->
   <module>
     <name>outlookFabricUI</name>
     <load-group>outlookGRP</load-group>
