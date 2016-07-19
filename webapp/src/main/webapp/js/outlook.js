@@ -1,13 +1,18 @@
 /**
- * Outlook read pane app script.
+ * Hide PLF's toolbar.
  */
-require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/juzu-ajax" ], function($, fabric) {
-
-	// hide PLF's toolbar
+require([ "SHARED/jquery" ], function($) {
+	// do in dedicated require to do not wait for other scripts load
 	$("#PlatformAdminToolbarContainer").css("display", "none");
 	$(function() {
 		$("#PlatformAdminToolbarContainer").css("display", "none");
 	});
+});
+
+/**
+ * Outlook read pane app script.
+ */
+require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/juzu-ajax" ], function($, fabric) {
 
 	function pageBaseUrl() {
 		var theLocation = window.location;
