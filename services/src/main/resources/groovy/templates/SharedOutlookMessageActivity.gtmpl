@@ -228,7 +228,7 @@
 	  def size = uicomponent.getSize(currentNode);
 	  def fileSize = uicomponent.getFileSize(currentNode);
 	  def description = uicomponent.getSummary(currentNode); 
-      description = ContentReader.simpleEscapeHtml(description);
+    //description = ContentReader.simpleEscapeHtml(description);
 
 	  def openInOfficeConnector = WCMCoreUtils.getService(OpenInOfficeConnector.class);
 	  def _documentInfos = openInOfficeConnector.getDocumentInfos(currentNode.getName());

@@ -27,6 +27,8 @@ import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.outlook.BadParameterException;
+import org.exoplatform.outlook.OutlookEmail;
+import org.exoplatform.outlook.OutlookMessage;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.OutlookSpace;
 import org.exoplatform.outlook.OutlookUser;
@@ -136,7 +138,7 @@ public class Outlook {
 
   @Inject
   @Path("index.gtmpl")
-  org.exoplatform.outlook.portlet.templates.index          index;
+  org.exoplatform.outlook.portlet.templates.index           index;
 
   @Inject
   @Path("saveAttachment.gtmpl")
@@ -211,6 +213,8 @@ public class Outlook {
 
   @Inject
   ResourceBundleSerializer                                  i18nJSON;
+
+  DateFormat                                                dateFormat    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   private final Map<String, MenuItem>                       allMenuItems  = new LinkedHashMap<String, MenuItem>();
 
@@ -377,6 +381,7 @@ public class Outlook {
                                  String path,
                                  String ewsUrl,
                                  String userEmail,
+                                 String userName,
                                  String messageId,
                                  String attachmentToken,
                                  String attachmentIds,
@@ -396,7 +401,7 @@ public class Outlook {
           }
           if (attachments.size() > 0) {
             Folder folder = space.getFolder(path);
-            OutlookUser user = outlook.getUser(userEmail, ewsUrl);
+            OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
             List<File> files = outlook.saveAttachment(space,
                                                       folder,
                                                       user,
@@ -508,25 +513,42 @@ public class Outlook {
 
   @Ajax
   @Resource
-  public Response convertToStatus(String groupId, String title, String body, String userEmail, String messageId) {
+  public Response convertToStatus(String groupId,
+                                  String messageId,
+                                  String subject,
+                                  String body,
+                                  String created,
+                                  String modified,
+                                  String userName,
+                                  String userEmail,
+                                  String fromName,
+                                  String fromEmail) {
     try {
+      OutlookUser user = outlook.getUser(userEmail, userName, null);
+      OutlookEmail from = outlook.getAddress(fromEmail, fromName);
+      Calendar createdDate = Calendar.getInstance();
+      createdDate.setTime(dateFormat.parse(created));
+      Calendar modifiedDate = Calendar.getInstance();
+      modifiedDate.setTime(dateFormat.parse(modified));
+      OutlookMessage message = outlook.getMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+
       if (groupId != null && groupId.length() > 0) {
         // space activity requested
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
-          ExoSocialActivity activity = space.postActivity(userEmail, messageId, title, body);
+          ExoSocialActivity activity = space.postActivity(message);
           return convertedStatus.with().status(new Status(null, space.getGroupId(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
-            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser " + userEmail);
+            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
+                + userEmail);
           }
           return errorMessage("Error converting message to activity status : space not found " + groupId, 404);
         }
       } else {
-        // TODO user activity requested
-        OutlookUser user = outlook.getUser(userEmail, null);
-        ExoSocialActivity activity = user.postActivity(userEmail, messageId, title, body);
-        return convertedStatus.with().status(new Status(user.getUserName(), null, activity.getPermaLink())).ok();
+        // user activity requested
+        ExoSocialActivity activity = user.postActivity(message);
+        return convertedStatus.with().status(new Status(user.getLocalUser(), null, activity.getPermaLink())).ok();
       }
     } catch (Throwable e) {
       LOG.error("Error converting message to activity status for " + userEmail, e);

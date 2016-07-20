@@ -5,24 +5,44 @@
   <!-- Editor mixin nodetype for adding to nt:file like nodetype when editing its content and need keep unconfirmed content changes -->
   <nodeType name="mso:message" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
     <propertyDefinitions>
+      <propertyDefinition name="mso:messageId" requiredType="String" autoCreated="false"
+        mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
       <propertyDefinition name="mso:userEmail" requiredType="String" autoCreated="false"
         mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints />
       </propertyDefinition>
-      <propertyDefinition name="mso:messageId" requiredType="String" autoCreated="false"
-        mandatory="true" onParentVersion="COPY" protected="false" multiple="false">
+      <propertyDefinition name="mso:userName" requiredType="String" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="mso:fromEmail" requiredType="String" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="mso:fromName" requiredType="String" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="mso:created" requiredType="Date" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints />
+      </propertyDefinition>
+      <propertyDefinition name="mso:modified" requiredType="String" autoCreated="false"
+        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints />
       </propertyDefinition>
       <propertyDefinition name="mso:internetMessageId" requiredType="String" autoCreated="false"
         mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
         <valueConstraints />
       </propertyDefinition>
-      <propertyDefinition name="mso:shareDate" requiredType="Date" autoCreated="false"
-        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+      <propertyDefinition name="*" requiredType="Underfined" autoCreated="false" mandatory="false"
+        onParentVersion="ABORT" protected="false" multiple="false">
         <valueConstraints />
       </propertyDefinition>
-      <propertyDefinition name="mso:shareUser" requiredType="String" autoCreated="false"
-        mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+      <propertyDefinition name="*" requiredType="Underfined" autoCreated="false" mandatory="false"
+        onParentVersion="ABORT" protected="false" multiple="true">
         <valueConstraints />
       </propertyDefinition>
     </propertyDefinitions>

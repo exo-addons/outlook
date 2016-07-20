@@ -80,5 +80,11 @@
       <messageItemReadError>Error reading message item.</messageItemReadError>
       <convertToStatusError>Error converting message to activity status.</convertToStatusError>
     </messages>
+    
+    <activity>
+      <from>From</from>
+      <on>on</on>
+      <at>at</at>
+    </activity>
   </Outlook>
 </bundle>

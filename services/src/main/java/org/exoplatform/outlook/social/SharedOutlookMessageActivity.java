@@ -20,12 +20,16 @@
 package org.exoplatform.outlook.social;
 
 import org.exoplatform.ecm.webui.utils.Utils;
+import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.SharedOutlookMessageActivity.ViewDocumentActionListener;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
-import org.exoplatform.wcm.ext.component.activity.UIDocumentPreview;
+import org.exoplatform.wcm.webui.reader.ContentReader;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -36,11 +40,15 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * Created by The eXo Platform SAS
@@ -50,7 +58,7 @@ import javax.jcr.Node;
  * 
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
-                                     // template =
+                                     // FYI original template:
                                      // "classpath:groovy/ecm/social-integration/UISharedFile.gtmpl",
                                      template = "classpath:groovy/templates/SharedOutlookMessageActivity.gtmpl",
                                      events = { @EventConfig(listeners = ViewDocumentActionListener.class),
@@ -63,10 +71,13 @@ import javax.jcr.Node;
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
 public class SharedOutlookMessageActivity extends FileUIActivity {
 
-  public static final String             ACTIVITY_TYPE   = "outlook:sharemessage";
+  public static final String ACTIVITY_TYPE       = "outlook:sharemessage";
 
-  @Deprecated
-  private static final ThreadLocal<Node> viewContextNode = new ThreadLocal<Node>();
+  public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
+
+  public static final String DEFAULT_TIME_FORMAT = "HH:mm";
+
+  protected static final Log LOG                 = ExoLogger.getLogger(SharedOutlookMessageActivity.class);
 
   public static class ViewDocumentActionListener extends EventListener<SharedOutlookMessageActivity> {
     @Override
@@ -85,26 +96,6 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
       uiPopupContainer.activate(preview, 0, 0, true);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
     }
-
-    // TODO clenaup
-    // /**
-    // * {@inheritDoc}
-    // */
-    // @Override
-    // public void execute(Event<FileUIActivity> event) throws Exception {
-    // try {
-    // viewContextNode.set(event.getSource().getContentNode());
-    // super.execute(event);
-    // } finally {
-    // viewContextNode.set(null);
-    // }
-    // }
-
-  }
-
-  @Deprecated
-  protected static Node getViewDocumentNode() {
-    return viewContextNode.get();
   }
 
   public SharedOutlookMessageActivity() throws Exception {
@@ -134,6 +125,71 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
       }
     }
     return super.isFileSupportPreview(data);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getSummary(Node node) {
+    try {
+      if (node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
+        // TODO use eXo's formats or Java's ones 
+        // String userDateFormat;
+        // String userTimeFormat;
+        // 
+        // ForumService forumService = getApplicationComponent(ForumService.class);
+        // try {
+        // UserProfile forumProfile = forumService.getUserInfo(context.getRemoteUser());
+        // userDateFormat = forumProfile.getLongDateFormat();
+        // } catch (Exception e) {
+        // LOG.warn("Error getting current user forum profile", e);
+        // userDateFormat = userTimeFormat = null;
+        // }
+        //
+        // if (userDateFormat == null) {
+        // userDateFormat = DEFAULT_DATE_FORMAT;
+        // }
+        // DateFormat dateFormat = new SimpleDateFormat(userDateFormat, context.getLocale());
+
+        String fromEmail = node.getProperty("mso:fromEmail").getString();
+        String fromName  = node.getProperty("mso:fromName").getString();
+        Date time = node.getProperty("mso:modified").getDate().getTime();
+        
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getLocale());
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.FULL, context.getLocale());
+
+        ResourceBundle res = context.getApplicationResourceBundle();
+
+        StringBuilder fromLine = new StringBuilder();
+        fromLine.append(fromName);
+        fromLine.append('<');
+        fromLine.append(fromEmail);
+        fromLine.append('>');
+        
+        StringBuilder summary = new StringBuilder();  
+        summary.append(res.getString("Outlook.activity.from"));
+        summary.append(": <a href='mailto:");
+        summary.append(fromEmail);
+        summary.append("' target='_top'>");
+        summary.append(ContentReader.simpleEscapeHtml(fromLine.toString()));
+        summary.append("</a> ");
+        summary.append(res.getString("Outlook.activity.on"));
+        summary.append(' ');
+        summary.append(dateFormat.format(time));
+        summary.append(' ');
+        summary.append(res.getString("Outlook.activity.at"));
+        summary.append(' ');
+        summary.append(timeFormat.format(time));
+        
+        return summary.toString();
+      }
+    } catch (RepositoryException e) {
+      LOG.error("Error generating summary for Outlook message activity node " + node, e);
+    }
+
+    return super.getSummary(node);
   }
 
   public void renderContentPresentation() throws Exception {

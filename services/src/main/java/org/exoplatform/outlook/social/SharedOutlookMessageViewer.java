@@ -42,12 +42,12 @@ public class SharedOutlookMessageViewer extends BaseOutlookMessageViewer {
 
   public static final String                     EVENT_NAME      = "ShowOutlookMessage";
 
-  protected static final List<UIExtensionFilter> DEFAULT_FILTERS = Arrays.asList(new UIExtensionFilter[] {
+  protected static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
       new OutlookMessageFileFilter() });
 
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
-    return DEFAULT_FILTERS;
+    return FILTERS;
   }
 
 }

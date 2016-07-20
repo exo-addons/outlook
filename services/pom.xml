@@ -53,7 +53,7 @@
       <type>jar</type>
     </dependency>
     
-    <!-- Portal & ECMS & Social -->
+    <!-- Portal & ECMS & Social & Forum -->
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-webui-ext</artifactId>
@@ -87,6 +87,11 @@
     <dependency>
       <groupId>org.exoplatform.integration</groupId>
       <artifactId>integ-ecms-social</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.forum</groupId>
+      <artifactId>forum-forum-service</artifactId>
       <scope>provided</scope>
     </dependency>
     

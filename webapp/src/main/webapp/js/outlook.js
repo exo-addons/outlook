@@ -38,6 +38,34 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 	function fixId(msId) {
 		return msId ? msId.replace(/\//g, "-") : msId;
 	}
+	
+	function formatISODate(date) {
+		if (date) {
+			// adapted script from
+			// http://stackoverflow.com/questions/17415579/how-to-iso-8601-format-a-date-with-timezone-offset-in-javascript
+	    var tzo = -date.getTimezoneOffset(),
+	        dif = tzo >= 0 ? '+' : '-',
+	        pad2 = function(num) {
+	            var norm = Math.abs(Math.floor(num));
+	            return (norm < 10 ? '0' : '') + norm;
+	        },
+	        pad3 = function(num) {
+	          var norm = Math.abs(Math.floor(num));
+	          return (norm < 10 ? '00' : (norm < 100 ? '0' : '')) + norm;
+	        };
+	    return date.getFullYear() 
+	        + '-' + pad2(date.getMonth()+1)
+	        + '-' + pad2(date.getDate())
+	        + 'T' + pad2(date.getHours())
+	        + ':' + pad2(date.getMinutes()) 
+	        + ':' + pad2(date.getSeconds()) 
+	        + '.' + pad3(date.getMilliseconds())
+	        + dif + pad2(tzo / 60) // + ':' 
+	        + pad2(tzo % 60);
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * Method adapted from org.exoplatform.services.cms.impl.Utils.fileSize().
@@ -69,7 +97,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 			// context data
 			var serverUrl = pageBaseUrl(location);
 			var userEmail = Office.context.mailbox.userProfile.emailAddress;
-			console.log("> userEmail: " + userEmail);
+			var userName = Office.context.mailbox.userProfile.displayName;
+			console.log("> user: " + userName + "<" + userEmail + ">");
 			// The itemId property returns null in compose mode for items that have not been saved to
 			// the server.
 			var messageId = fixId(Office.context.mailbox.item.itemId);
@@ -310,6 +339,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 											  path : path,
 											  ewsUrl : ewsUrl,
 											  userEmail : userEmail,
+											  userName : userName,
 											  messageId : messageId,
 											  attachmentToken : attachmentToken,
 											  attachmentIds : attachmentIds.join()
@@ -450,7 +480,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					$convertToStatus.find(".editActivityText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						//$text.attr("contenteditable", "true");
+						// $text.attr("contenteditable", "true");
 					});
 
 					var subject = Office.context.mailbox.item.subject;
@@ -490,12 +520,39 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 								if ($cancelButton.data("cancel")) {
 									loadMenu("home");
 								} else {
+									var created = Office.context.mailbox.item.dateTimeCreated;
+									var modified = Office.context.mailbox.item.dateTimeModified;
+									// from and to (it's array) have following interesting fields: displayName,
+									// emailAddress
+									var from = Office.context.mailbox.item.from;
+									// var to = Office.context.mailbox.item.to;
+									
 									$convertedInfo.jzLoad("Outlook.convertToStatus()", {
 									  groupId : groupId,
-									  title : $title.val(),
+									  messageId : messageId,
+									  subject : $title.val(),
 									  body : asyncResult.value,
+									  created : formatISODate(created),
+									  modified : formatISODate(modified),
+									  userName : userName,
 									  userEmail : userEmail,
-									  messageId : messageId
+									  fromName : from.displayName,
+									  fromEmail : from.emailAddress
+									  // message : JSON.stringify({
+									  	// id : messageId,
+									  	// subject : $title.val(),
+									  	// body : asyncResult.value,
+									  	// created : formatISODate(created),
+									  	// modified : formatISODate(modified),
+									  	// user : {
+									  		// name : userName,
+									  		// email : userEmail 
+									  	// },
+									  	// from : {
+									  		// name : from.displayName,
+									  		// email : from.emailAddress 
+									  	// }
+									  // })
 									}, function(response, status, jqXHR) {
 										if (status == "error") {
 											showError(jqXHR);
@@ -534,9 +591,11 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					var process = $.Deferred();
 					var newMenu;
 					if (menuName) {
+						console.log(">> loadMenu: " + menuName);
 						newMenu = menuName != $container.data("menu-name");
 					} else {
 						menuName = $container.data("menu-name");
+						console.log(">> loadMenu: " + menuName + " (new from container)");
 						newMenu = true;
 					}
 					// load only if not already loaded

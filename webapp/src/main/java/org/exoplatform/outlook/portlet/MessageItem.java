@@ -17,51 +17,44 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.outlook;
+package org.exoplatform.outlook.portlet;
 
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import juzu.Format;
 
-import java.net.URI;
+import java.util.Date;
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * Office user API.
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OutlookUser.java 00000 JUn 14, 2016 pnedonosko $
+ * @version $Id: MessageItem.java 00000 Jul 11, 2016 pnedonosko $
  * 
  */
-public abstract class OutlookUser extends OutlookEmail {
+@Deprecated // TODO not used as Juzu doesn't work with such bean structure
+public class MessageItem {
 
-  protected final String localUser;
+  public String                    id;
+  
+  public String                    body;
 
-  protected URI          mailServerUrl;
+  @NotNull
+  public String                    subject;
 
-  protected OutlookUser(String email, String displayName, String localUser) {
-    super(email, displayName);
-    this.localUser = localUser;
-  }
+  @NotNull
+  public EmailAddressDetails       user;
 
-  /**
-   * @return the localUser
-   */
-  public String getLocalUser() {
-    return localUser;
-  }
+  @NotNull
+  public EmailAddressDetails       from;
 
-  /**
-   * @return the mailServerUrl
-   */
-  public URI getMailServerUrl() {
-    return mailServerUrl;
-  }
+  public List<EmailAddressDetails> to;
 
-  protected void setMailServerUrl(URI mailServerUrl) {
-    this.mailServerUrl = mailServerUrl;
-  }
+  @Format("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+  public Date                      created;
 
-  // ****** abstract *****
+  @Format("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+  public Date                      modified;
 
-  public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
 }

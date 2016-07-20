@@ -21,7 +21,6 @@ package org.exoplatform.outlook.social;
 
 import org.exoplatform.ecm.webui.component.explorer.UIJCRExplorer;
 import org.exoplatform.ecm.webui.component.explorer.UIJcrExplorerContainer;
-import org.exoplatform.ecm.webui.presentation.UIBaseNodePresentation;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIApplication;
@@ -44,27 +43,20 @@ public class OutlookMessageFileFilter extends org.exoplatform.webui.ext.filter.i
    */
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
-    Node contextNode = SharedOutlookMessageActivity.getViewDocumentNode();
+    Node contextNode = (Node) context.get(Node.class.getName());
     if (contextNode == null) {
-      if (context == null) {
-        return true;
+      UIJCRExplorer uiExplorer = (UIJCRExplorer) context.get(UIJCRExplorer.class.getName());
+      if (uiExplorer != null) {
+        contextNode = uiExplorer.getCurrentNode();
       }
-      
-      contextNode = (Node) context.get(Node.class.getName());
-      if (contextNode == null) {
-        UIJCRExplorer uiExplorer = (UIJCRExplorer) context.get(UIJCRExplorer.class.getName());
-        if (uiExplorer != null) {
-          contextNode = uiExplorer.getCurrentNode();
-        }
 
-        if (contextNode == null) {
-          WebuiRequestContext reqContext = WebuiRequestContext.getCurrentInstance();
-          UIApplication uiApp = reqContext.getUIApplication();
-          UIJcrExplorerContainer jcrExplorerContainer = uiApp.getChild(UIJcrExplorerContainer.class);
-          if (jcrExplorerContainer != null) {
-            UIJCRExplorer jcrExplorer = jcrExplorerContainer.getChild(UIJCRExplorer.class);
-            contextNode = jcrExplorer.getCurrentNode();
-          }
+      if (contextNode == null) {
+        WebuiRequestContext reqContext = WebuiRequestContext.getCurrentInstance();
+        UIApplication uiApp = reqContext.getUIApplication();
+        UIJcrExplorerContainer jcrExplorerContainer = uiApp.getChild(UIJcrExplorerContainer.class);
+        if (jcrExplorerContainer != null) {
+          UIJCRExplorer jcrExplorer = jcrExplorerContainer.getChild(UIJCRExplorer.class);
+          contextNode = jcrExplorer.getCurrentNode();
         }
       }
     }

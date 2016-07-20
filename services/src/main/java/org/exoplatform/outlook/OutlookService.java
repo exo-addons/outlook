@@ -19,6 +19,7 @@ package org.exoplatform.outlook;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -34,17 +35,53 @@ public interface OutlookService {
   final String PERSONAL_DRIVE_PARRTEN = "/Users/${userId}/Private";
 
   final String GROUP_DRIVE_PARRTEN    = "/Groups${groupId}/Documents";
-  
-  final String MESSAGE_NODETYPE    = "mso:message";
-  
+
+  final String MESSAGE_NODETYPE       = "mso:message";
+
   /**
-   * Create Outlook user.
+   * Build Outlook user object and associate it with current user in eXo portal.
    * 
+   * @param email
+   * @param userName
+   * @param ewsUrl
    * @return {@link OutlookUser} object to access Outlook Mail API
    * @throws OutlookException
    * @throws RepositoryException
    */
-  OutlookUser getUser(String userEmail, String ewsUrl) throws OutlookException, RepositoryException;
+  OutlookUser getUser(String email, String userName, String ewsUrl) throws OutlookException, RepositoryException;
+
+  /**
+   * Build Outlook Email address object.
+   * 
+   * @param email
+   * @param displayName
+   * @return
+   * @throws OutlookException
+   */
+  OutlookEmail getAddress(String email, String displayName) throws OutlookException;
+
+  /**
+   * Build Outlook message object.
+   * 
+   * @param messageId
+   * @param user
+   * @param from
+   * @param to
+   * @param created
+   * @param modified
+   * @param subject
+   * @param body
+   * @return
+   * @throws OutlookException
+   */
+  OutlookMessage getMessage(String messageId,
+                            OutlookEmail user,
+                            OutlookEmail from,
+                            List<OutlookEmail> to,
+                            Calendar created,
+                            Calendar modified,
+                            String subject,
+                            String body) throws OutlookException;
 
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 

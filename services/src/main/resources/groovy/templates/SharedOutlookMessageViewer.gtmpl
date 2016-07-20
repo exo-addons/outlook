@@ -30,26 +30,24 @@ def currentNode = uicomponent.getCurrentNode()
 <div class="outlookMessageViewer">
 	<%
   if (currentNode) {
-    def title = org.exoplatform.services.cms.impl.Utils.getTitle(currentNode)
-   %>
-	<!-- h6 class="topTitle">$title</h6 -->
-	<%
-			def iframeId = uiParent.getId() + "iframe" ;
-			def strContent = currentNode.getNode("jcr:content").getProperty("jcr:data").getString()
-			strContent = ContentReader.getEscapeHtmlContent(Utils.sanitize(strContent))	        	  
+		def iframeId = uiParent.getId() + 'iframe'
+		def strContent = currentNode.getNode('jcr:content').getProperty('jcr:data').getString()
+		strContent = ContentReader.getEscapeHtmlContent(Utils.sanitize(strContent))	        	  
 	%>
 	<div class="textContent">
-		<textarea id="<%=iframeId%>"><%=strContent%></textarea> 
-		<% 
-      def jsManager = rcontext.getJavascriptManager()
-      jsManager.require("SHARED/wcm-utils", "wcmutil").addScripts("wcmutil.WCMUtils.replaceToIframe('$iframeId');")
-		 %>
+		<div class="messageBody">
+			<textarea id="$iframeId">$strContent</textarea>
+		</div> 
+	<% 
+    def jsManager = rcontext.getJavascriptManager()
+    jsManager.require('SHARED/wcm-utils', 'wcmutil').addScripts("wcmutil.WCMUtils.replaceToIframe('$iframeId');")
+	%>
 	</div>
 	<%
   } else { 
 	%>
 	<div class="textContent">
-		<span><%=_ctx.appRes("File.view.label.not-viewable")%></span><span> (File node cannot be found)</span>
+		<span><%=_ctx.appRes('File.view.label.not-viewable')%></span><span> (File node cannot be found)</span>
 	</div>
 	<%
   }%>

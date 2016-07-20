@@ -65,14 +65,4 @@ public class OutlookMessagePresentation extends ContentPresentation {
 
     return null;
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String encodeHTML(String text) throws Exception {
-    // TODO Auto-generated method stub
-    return super.encodeHTML(text);
-  }
-
 }

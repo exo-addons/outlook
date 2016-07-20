@@ -17,51 +17,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.outlook;
-
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-
-import java.net.URI;
+package org.exoplatform.outlook.portlet;
 
 /**
- * Office user API.
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OutlookUser.java 00000 JUn 14, 2016 pnedonosko $
+ * @version $Id: EmailAddressDetails.java 00000 Jul 11, 2016 pnedonosko $
  * 
  */
-public abstract class OutlookUser extends OutlookEmail {
+@Deprecated // TODO not used 
+public class EmailAddressDetails {
 
-  protected final String localUser;
+  public String name;
 
-  protected URI          mailServerUrl;
+  public String email;
 
-  protected OutlookUser(String email, String displayName, String localUser) {
-    super(email, displayName);
-    this.localUser = localUser;
-  }
-
-  /**
-   * @return the localUser
-   */
-  public String getLocalUser() {
-    return localUser;
-  }
-
-  /**
-   * @return the mailServerUrl
-   */
-  public URI getMailServerUrl() {
-    return mailServerUrl;
-  }
-
-  protected void setMailServerUrl(URI mailServerUrl) {
-    this.mailServerUrl = mailServerUrl;
-  }
-
-  // ****** abstract *****
-
-  public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
 }

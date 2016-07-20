@@ -80,7 +80,7 @@ public interface NodeFinder {
   /**
    * Return user home node of given user.
    * 
-   * @param userName String with user name in organization
+   * @param localUser String with user name in organization
    * @return {@link Node} user home node
    * @throws Exception
    */

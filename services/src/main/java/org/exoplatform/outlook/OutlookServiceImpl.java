@@ -24,6 +24,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationException;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.HierarchyNode;
@@ -38,12 +39,14 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
 import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.cms.drives.ManageDriveService;
+import org.exoplatform.services.cms.jcrext.activity.ActivityCommonService;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
+import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.MembershipType;
@@ -70,6 +73,7 @@ import org.picocontainer.Startable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessControlException;
@@ -90,9 +94,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
-import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -104,25 +106,29 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OutlookServiceImpl implements OutlookService, Startable {
 
-  public static final String            MAILSERVER_URL     = "mailserver-url";
+  public static final String            MAILSERVER_URL         = "mailserver-url";
 
-  protected static final String         EXO_DATETIME       = "exo:datetime";
+  protected static final String         EXO_DATETIME           = "exo:datetime";
 
-  protected static final String         EXO_MODIFY         = "exo:modify";
+  protected static final String         EXO_MODIFY             = "exo:modify";
 
-  protected static final String         EXO_OWNEABLE       = "exo:owneable";
+  protected static final String         EXO_OWNEABLE           = "exo:owneable";
 
-  protected static final String         EXO_PRIVILEGEABLE  = "exo:privilegeable";
+  protected static final String         EXO_PRIVILEGEABLE      = "exo:privilegeable";
 
-  protected static final String[]       READER_PERMISSION  = new String[] { PermissionType.READ };
+  protected static final String         OUTLOOK_MESSAGES_TITLE = "Outlook Messages";
 
-  protected static final String[]       MANAGER_PERMISSION = new String[] { PermissionType.READ, PermissionType.REMOVE };
+  protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
 
-  protected static final Log            LOG                = ExoLogger.getLogger(OutlookServiceImpl.class);
+  protected static final String[]       READER_PERMISSION      = new String[] { PermissionType.READ };
 
-  protected static final Random         RANDOM             = new Random();
+  protected static final String[]       MANAGER_PERMISSION     = new String[] { PermissionType.READ, PermissionType.REMOVE };
 
-  protected static final Transliterator accentsConverter   = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
+  protected static final Log            LOG                    = ExoLogger.getLogger(OutlookServiceImpl.class);
+
+  protected static final Random         RANDOM                 = new Random();
+
+  protected static final Transliterator accentsConverter       = Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
 
   protected class UserFolder extends Folder {
 
@@ -200,8 +206,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     protected final ActivityManager socialActivityManager;
 
-    protected UserImpl(String userName) {
-      super(userName);
+    protected UserImpl(String email, String displayName, String userName) {
+      super(email, displayName, userName);
       this.socialIdentityManager = socialIdentityManager();
       this.socialActivityManager = socialActivityManager();
     }
@@ -210,69 +216,56 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public ExoSocialActivity postActivity(String userEmail, String messageId, String title, String text) throws Exception {
+    public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
       // save text to user documents
-      Node messagesFolder;
-      Node userDocs = userDocumentsNode(getUserName());
-      if (!userDocs.hasNode("outlook-messages")) {
-        messagesFolder = userDocs.addNode("outlook-messages", "nt:folder");
-        messagesFolder.setProperty("exo:title", "Outlook Messages");
-        try {
-          messagesFolder.setProperty("exo:name", title);
-        } catch (ConstraintViolationException | ValueFormatException e) {
-          LOG.warn("Cannot set exo:name property for folder " + messagesFolder.getPath() + ": " + e);
-        }
-        setPermissions(messagesFolder, getUserName(), "member:/platform/users");
-        userDocs.save();
-      } else {
-        messagesFolder = userDocs.getNode("outlook-messages");
-      }
-      try (InputStream content = new ByteArrayInputStream(text.getBytes("UTF8"))) {
-        Node messageFile = addMessageFile(messagesFolder, userEmail, messageId, title, content);
-        setPermissions(messageFile, getUserName(), "member:/platform/users");
-        messagesFolder.save();
+      Node userDocs = userDocumentsNode(localUser);
+      Node messagesFolder = messagesFolder(userDocs, localUser, "member:/platform/users");
+      Node messageFile = addMessageFile(messagesFolder, message);
+      setPermissions(messageFile, localUser, "member:/platform/users");
+      messagesFolder.save();
 
-        // post activity to user status stream
-        // Identity userIdentity =
-        // socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-        // this.userName,
-        // true);
-        // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
-        // //UIDocActivityBuilder.ACTIVITY_TYPE,
-        // "files:spaces",
-        // title);
-        // Map<String, String> templateParams = new HashMap<String, String>();
-        // templateParams.put(UIDocActivity.WORKSPACE, messagesFolder.getSession().getWorkspace().getName());
-        // templateParams.put(UIDocActivity.REPOSITORY,
-        // jcrService.getCurrentRepository().getConfiguration().getName());
-        // templateParams.put(UIDocActivity.MESSAGE, title);
-        // templateParams.put("MESSAGE", title);
-        // //
-        // templateParams.put(UIDocActivity.DOCLINK,"/portal/rest/jcr/repository/collaboration/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf,
-        // // DOCNAME=samir.pdf, DOCPATH=/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf");
-        // templateParams.put(UIDocActivity.DOCNAME, title);
-        // templateParams.put(UIDocActivity.DOCUMENT_TITLE, title);
-        // templateParams.put(UIDocActivity.IS_SYMLINK, "false");
-        // templateParams.put(UIDocActivity.MIME_TYPE, "text/html");
-        // templateParams.put(UIDocActivity.DOCPATH, messageFile.getPath());
-        // activity.setTemplateParams(templateParams);
-        // socialActivityManager.saveActivityNoReturn(activity);
-        // // TODO LinkProvider.getSingleActivityUrl(activityId)
-        // messageStore.saveMessage(activity.getId(), text);
-        final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
-        try {
-          org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
-          ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                                  "SocialIntegration.messages.createdBy",
-                                                                                                                  true,
-                                                                                                                  false,
-                                                                                                                  "");
-          // TODO care about activity removal with the message file
-          activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
-          return activity;
-        } finally {
-          org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
-        }
+      // post activity to user status stream
+      // Identity userIdentity =
+      // socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+      // this.userName,
+      // true);
+      // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+      // //UIDocActivityBuilder.ACTIVITY_TYPE,
+      // "files:spaces",
+      // title);
+      // Map<String, String> templateParams = new HashMap<String, String>();
+      // templateParams.put(UIDocActivity.WORKSPACE, messagesFolder.getSession().getWorkspace().getName());
+      // templateParams.put(UIDocActivity.REPOSITORY,
+      // jcrService.getCurrentRepository().getConfiguration().getName());
+      // templateParams.put(UIDocActivity.MESSAGE, title);
+      // templateParams.put("MESSAGE", title);
+      // //
+      // templateParams.put(UIDocActivity.DOCLINK,"/portal/rest/jcr/repository/collaboration/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf,
+      // // DOCNAME=samir.pdf, DOCPATH=/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf");
+      // templateParams.put(UIDocActivity.DOCNAME, title);
+      // templateParams.put(UIDocActivity.DOCUMENT_TITLE, title);
+      // templateParams.put(UIDocActivity.IS_SYMLINK, "false");
+      // templateParams.put(UIDocActivity.MIME_TYPE, "text/html");
+      // templateParams.put(UIDocActivity.DOCPATH, messageFile.getPath());
+      // activity.setTemplateParams(templateParams);
+      // socialActivityManager.saveActivityNoReturn(activity);
+      // // TODO LinkProvider.getSingleActivityUrl(activityId)
+      // messageStore.saveMessage(activity.getId(), text);
+
+      // TODO use listener service to generate activity?
+      final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+      try {
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
+        ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                "SocialIntegration.messages.createdBy",
+                                                                                                                true,
+                                                                                                                false,
+                                                                                                                "");
+        // TODO care about activity removal with the message file
+        activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+        return activity;
+      } finally {
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
       }
     }
 
@@ -349,7 +342,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public ExoSocialActivity postActivity(String userEmail, String messageId, String title, String text) throws Exception {
+    public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
       // post activity to space status stream under current user
       // Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
       // this.groupId,
@@ -364,27 +357,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // messageStore.saveMessage(activity.getId(), text);
       // return activity;
 
-      Node messagesFolder;
       Node spaceDocs = spaceDocumentsNode(groupId);
-      if (!spaceDocs.hasNode("outlook-messages")) {
-        messagesFolder = spaceDocs.addNode("outlook-messages", "nt:folder");
-        messagesFolder.setProperty("exo:title", "Outlook Messages");
-        try {
-          messagesFolder.setProperty("exo:name", title);
-        } catch (ConstraintViolationException | ValueFormatException e) {
-          LOG.warn("Cannot set exo:name property for folder " + messagesFolder.getPath() + ": " + e);
-        }
-        setPermissions(messagesFolder, getGroupId());
-        spaceDocs.save();
-      } else {
-        messagesFolder = spaceDocs.getNode("outlook-messages");
-      }
-      final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
-      try (InputStream content = new ByteArrayInputStream(text.getBytes("UTF8"))) {
-        Node messageFile = addMessageFile(messagesFolder, userEmail, messageId, title, content);
-        setPermissions(messageFile, new StringBuilder("member:").append(getGroupId()).toString());
-        messagesFolder.save();
+      Node messagesFolder = messagesFolder(spaceDocs, groupId);
+      Node messageFile = addMessageFile(messagesFolder, message);
+      setPermissions(messageFile, new StringBuilder("member:").append(getGroupId()).toString());
+      messagesFolder.save();
 
+      final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+      try {
+        // TODO use listener service to generate activity?
         org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
         ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
                                                                                                                 "SocialIntegration.messages.createdBy",
@@ -415,6 +396,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final CookieTokenService                          tokenService;
 
   protected final ManageDriveService                          driveService;
+
+  protected final ListenerService                             listenerService;
+
+  protected final ForumService                                forumService;
 
   /**
    * Authenticated users.
@@ -448,6 +433,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             OrganizationService organization,
                             CookieTokenService tokenService,
                             ManageDriveService driveService,
+                            ListenerService listenerService,
+                            ForumService forumService,
                             InitParams params) throws ConfigurationException, MailServerException {
     // this.messageStore = messageStore;
 
@@ -459,6 +446,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.organization = organization;
     this.tokenService = tokenService;
     this.driveService = driveService;
+    this.listenerService = listenerService;
+    this.forumService = forumService;
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -533,6 +522,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
     parent.save(); // save everything at the end only
 
+    // fire listener service to generate social activities
+    for (File f : files) {
+      try {
+        listenerService.broadcast(ActivityCommonService.FILE_CREATED_ACTIVITY, null, f.getNode());
+      } catch (Exception e) {
+        LOG.warn("Error broadcasting the attachment file created activity for " + f.getPath(), e);
+      }
+    }
+
     if (space != null) {
       for (File f : files) {
         initDocumentLink(space, f);
@@ -557,7 +555,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public OutlookUser getUser(String email, String ewsUrl) throws OutlookException, RepositoryException {
+  public OutlookEmail getAddress(String email, String displayName) throws OutlookException {
+    return new OutlookEmail(email, displayName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public OutlookUser getUser(String email, String displayName, String ewsUrl) throws OutlookException, RepositoryException {
     ConversationState contextState = ConversationState.getCurrent();
     if (contextState != null) {
       String exoUsername = contextState.getIdentity().getUserId();
@@ -584,7 +590,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         OutlookUser user = authenticated.get(exoUsername);
         if (user == null) {
           // new user instance
-          user = new UserImpl(exoUsername);
+          user = new UserImpl(email, displayName, exoUsername);
           // save user in map of authenticated for later use (multi-thread)
           authenticated.put(exoUsername, user);
         }
@@ -598,6 +604,28 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
     return null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public OutlookMessage getMessage(String id,
+                                   OutlookEmail user,
+                                   OutlookEmail from,
+                                   List<OutlookEmail> to,
+                                   Calendar created,
+                                   Calendar modified,
+                                   String subject,
+                                   String body) throws OutlookException {
+    OutlookMessage message = new OutlookMessage(user, from);
+    message.setId(id);
+    message.setTo(to);
+    message.setSubject(subject);
+    message.setBody(body);
+    message.setCreated(created);
+    message.setModified(modified);
+    return message;
   }
 
   /**
@@ -1057,7 +1085,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /**
    * Find given user Personal Documents folder using user session.
    * 
-   * @param userName {@link String}
+   * @param displayName {@link String}
    * @return {@link Node} Personal Documents folder node or <code>null</code>
    * @throws Exception
    */
@@ -1068,7 +1096,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       if (homePath.endsWith("/Private")) {
         // TODO
         // SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
-        // Node userNode = hierarchyCreator.getUserNode(sessionProvider, userName);
+        // Node userNode = hierarchyCreator.getUserNode(sessionProvider, displayName);
         String driveRootPath = org.exoplatform.services.cms.impl.Utils.getPersonalDrivePath(homePath, userName);
         // int uhlen = userNode.getPath().length();
         // if (homePath.length() > uhlen) {
@@ -1095,7 +1123,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // // TODO
     // //SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
     // // we actually don't need user home node, just a JCR session
-    // //Session session = hierarchyCreator.getUserNode(sessionProvider, userName).getSession();
+    // //Session session = hierarchyCreator.getUserNode(sessionProvider, displayName).getSession();
     // //return (Node) session.getItem(groupDrive.getHomePath());
     // return node(groupDrive.getHomePath());
     // } else {
@@ -1185,16 +1213,42 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
-  protected Node addMessageFile(Node parent,
-                                String userEmail,
-                                String messageId,
-                                String title,
-                                InputStream content) throws RepositoryException {
-    Node messageFile = addFile(parent, title, "text/html", content);
-    messageFile.addMixin(MESSAGE_NODETYPE);
-    messageFile.setProperty("mso:userEmail", userEmail);
-    messageFile.setProperty("mso:messageId", messageId);
-    return messageFile;
+  protected Node messagesFolder(Node parent, String... identity) throws RepositoryException {
+    Node messagesFolder;
+    if (!parent.hasNode("outlook-messages")) {
+      messagesFolder = parent.addNode(OUTLOOK_MESSAGES_NAME, "nt:folder");
+      messagesFolder.setProperty("exo:title", OUTLOOK_MESSAGES_TITLE);
+      try {
+        messagesFolder.setProperty("exo:name", OUTLOOK_MESSAGES_TITLE);
+      } catch (ConstraintViolationException | ValueFormatException e) {
+        LOG.warn("Cannot set exo:name property for folder " + messagesFolder.getPath() + ": " + e);
+      }
+      if (identity != null) {
+        setPermissions(messagesFolder, identity);
+      }
+      parent.save();
+    } else {
+      messagesFolder = parent.getNode(OUTLOOK_MESSAGES_NAME);
+    }
+    return messagesFolder;
+  }
+
+  protected Node addMessageFile(Node parent, OutlookMessage message) throws RepositoryException,
+                                                                     UnsupportedEncodingException,
+                                                                     IOException {
+    try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF8"))) {
+      Node messageFile = addFile(parent, message.getSubject(), "text/html", content);
+      messageFile.addMixin(MESSAGE_NODETYPE);
+      messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
+      messageFile.setProperty("mso:userName", message.getUser().getDisplayName());
+      messageFile.setProperty("mso:fromEmail", message.getFrom().getEmail());
+      messageFile.setProperty("mso:fromName", message.getFrom().getDisplayName());
+      // messageFile.setProperty("mso:toEmail", userEmail);
+      messageFile.setProperty("mso:created", message.getCreated());
+      messageFile.setProperty("mso:modified", message.getModified());
+      messageFile.setProperty("mso:messageId", message.getId());
+      return messageFile;
+    }
   }
 
   /**

@@ -19,57 +19,53 @@
  */
 package org.exoplatform.outlook;
 
-import org.exoplatform.outlook.jcr.Folder;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-
-import javax.jcr.RepositoryException;
-
 /**
+ * Office user API.
+ * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OutlookSpace.java 00000 May 28, 2016 pnedonosko $
+ * @version $Id: OutlookEmail.java 00000 JUn 14, 2016 pnedonosko $
  * 
  */
-public abstract class OutlookSpace {
+public class OutlookEmail {
 
-  protected final String groupId;
+  protected final String displayName;
 
-  protected final String title;
+  protected String       email;
 
-  protected final String shortName;
-
-  public OutlookSpace(String groupId, String title, String shortName) {
-    this.groupId = groupId;
-    this.title = title;
-    this.shortName = shortName;
+  protected OutlookEmail(String email, String displayName) {
+    this.email = email;
+    this.displayName = displayName;
   }
 
   /**
-   * @return group id
+   * {@inheritDoc}
    */
-  public String getGroupId() {
-    return groupId;
+  @Override
+  public String toString() {
+    return displayName != null ? new StringBuilder(displayName).append('<').append(email).append('>').toString() : email;
   }
 
   /**
-   * @return title
+   * @return the userEmail
    */
-  public String getTitle() {
-    return title;
+  public String getEmail() {
+    return email;
   }
 
   /**
-   * @return the shortName
+   * @return the displayName
    */
-  public String getShortName() {
-    return shortName;
+  public String getDisplayName() {
+    return displayName;
   }
 
-  public abstract Folder getFolder(String path) throws OutlookException, RepositoryException;
-
-  public abstract Folder getRootFolder() throws OutlookException, RepositoryException;
+  /**
+   * @param email the email to set
+   */
+  protected void setEmail(String email) {
+    this.email = email;
+  }
   
-  public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
-
 }

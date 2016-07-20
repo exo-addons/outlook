@@ -127,16 +127,6 @@
       <set-method>registerUIExtensionPlugin</set-method>
       <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
-        <!-- object-param>
-          <name>Outlook Message Activity</name>
-          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
-            <field name="type"><string>org.exoplatform.social.webui.activity.BaseUIActivity</string></field>
-            <field name="name"><string>OUTLOOK_MESSAGE_ACTIVITY</string></field>
-            <field name="component"><string>org.exoplatform.outlook.social.UIOutlookMessageActivity</string></field>
-            <field name="activityBuiderClass"><string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string></field>
-          </object>
-        </object-param -->
-
         <object-param>
           <name>Share File Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
