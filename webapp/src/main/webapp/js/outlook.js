@@ -169,6 +169,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					var $saveAttachment = $("#outlook-saveAttachment");
 					var $form = $saveAttachment.find("form");
 					var $attachments = $form.find("ul#attachments");
+					var $comment = $form.find("textarea[name='comment']");
 
 					// init spaces dropdown
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
@@ -244,7 +245,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 							}
 							groupId = $space.val();
 							groupTitle = $space.text();
-							groupRootPath = path = $space.data("path");
+							groupRootPath = $space.data("rootpath");
+							path = $space.data("path");
 							loadFolder();
 						}
 					});
@@ -337,6 +339,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 											$savedSpaceInfo.jzLoad("Outlook.saveAttachment()", {
 											  groupId : groupId,
 											  path : path,
+											  comment : $comment.val(),
 											  ewsUrl : ewsUrl,
 											  userEmail : userEmail,
 											  userName : userName,
@@ -538,21 +541,6 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 									  userEmail : userEmail,
 									  fromName : from.displayName,
 									  fromEmail : from.emailAddress
-									  // message : JSON.stringify({
-									  	// id : messageId,
-									  	// subject : $title.val(),
-									  	// body : asyncResult.value,
-									  	// created : formatISODate(created),
-									  	// modified : formatISODate(modified),
-									  	// user : {
-									  		// name : userName,
-									  		// email : userEmail 
-									  	// },
-									  	// from : {
-									  		// name : from.displayName,
-									  		// email : from.emailAddress 
-									  	// }
-									  // })
 									}, function(response, status, jqXHR) {
 										if (status == "error") {
 											showError(jqXHR);

@@ -133,11 +133,8 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
   @Override
   public String getSummary(Node node) {
     try {
-      if (node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
-        // TODO use eXo's formats or Java's ones 
-        // String userDateFormat;
-        // String userTimeFormat;
-        // 
+      if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
+        // TODO use eXo's formats or Java's ones
         // ForumService forumService = getApplicationComponent(ForumService.class);
         // try {
         // UserProfile forumProfile = forumService.getUserInfo(context.getRemoteUser());
@@ -153,9 +150,9 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         // DateFormat dateFormat = new SimpleDateFormat(userDateFormat, context.getLocale());
 
         String fromEmail = node.getProperty("mso:fromEmail").getString();
-        String fromName  = node.getProperty("mso:fromName").getString();
+        String fromName = node.getProperty("mso:fromName").getString();
         Date time = node.getProperty("mso:modified").getDate().getTime();
-        
+
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getLocale());
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.FULL, context.getLocale());
@@ -167,8 +164,8 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         fromLine.append('<');
         fromLine.append(fromEmail);
         fromLine.append('>');
-        
-        StringBuilder summary = new StringBuilder();  
+
+        StringBuilder summary = new StringBuilder();
         summary.append(res.getString("Outlook.activity.from"));
         summary.append(": <a href='mailto:");
         summary.append(fromEmail);
@@ -182,7 +179,7 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         summary.append(res.getString("Outlook.activity.at"));
         summary.append(' ');
         summary.append(timeFormat.format(time));
-        
+
         return summary.toString();
       }
     } catch (RepositoryException e) {

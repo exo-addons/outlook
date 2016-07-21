@@ -379,6 +379,7 @@ public class Outlook {
   @Resource
   public Response saveAttachment(String groupId,
                                  String path,
+                                 String comment,
                                  String ewsUrl,
                                  String userEmail,
                                  String userName,
@@ -405,6 +406,7 @@ public class Outlook {
             List<File> files = outlook.saveAttachment(space,
                                                       folder,
                                                       user,
+                                                      comment,
                                                       messageId,
                                                       attachmentToken,
                                                       attachments.toArray(new String[attachments.size()]));

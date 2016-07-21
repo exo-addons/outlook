@@ -112,6 +112,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected static final String         EXO_MODIFY             = "exo:modify";
 
+  protected static final String         EXO_RSSENABLE          = "exo:rss-enable";
+
   protected static final String         EXO_OWNEABLE           = "exo:owneable";
 
   protected static final String         EXO_PRIVILEGEABLE      = "exo:privilegeable";
@@ -119,6 +121,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected static final String         OUTLOOK_MESSAGES_TITLE = "Outlook Messages";
 
   protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
+
+  protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
 
   protected static final String[]       READER_PERMISSION      = new String[] { PermissionType.READ };
 
@@ -146,7 +150,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public Folder addSubfolder(String name) throws RepositoryException, OutlookException {
       final Node parent = getNode();
-      Node subfolderNode = addFolder(parent, name);
+      Node subfolderNode = addFolder(parent, name, true);
       Folder subfolder = newFolder(this, subfolderNode);
       parent.save();
       Set<Folder> subfolders = this.subfolders.get();
@@ -296,13 +300,51 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
-    protected final String          rootPath;
+    class RootFolder extends SpaceFolder {
 
+      protected RootFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
+        super(rootPath, node);
+        initDocumentLink(OutlookSpaceImpl.this, this);
+        hasSubfolders(); // force child reading to init default folder in readSubnodes()
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
+        Set<Folder> subfolders = super.readSubnodes();
+        boolean addUploads = true;
+        for (Folder sf : subfolders) {
+          if (sf.getTitle().equals(UPLAODS_FOLDER_TITLE)) {
+            addUploads = false;
+            break;
+          }
+        }
+        if (addUploads) {
+          final Node parent = getNode();
+          Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
+          Folder uploads = newFolder(this, subfolderNode);
+          parent.save();
+          initDocumentLink(OutlookSpaceImpl.this, uploads);
+          subfolders.add(uploads);
+          defaultSubfolder = uploads;
+        }
+        return subfolders;
+      }
+      
+      
+    }
+
+    protected final String rootPath;
+    
+    protected final ThreadLocal<RootFolder> rootFolder = new ThreadLocal<RootFolder>();
+    
     protected final IdentityManager socialIdentityManager;
 
     protected final ActivityManager socialActivityManager;
 
-    protected OutlookSpaceImpl(Space socialSpace) {
+    protected OutlookSpaceImpl(Space socialSpace) throws RepositoryException, OutlookException {
       super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName());
       this.rootPath = groupDocsPath(groupId);
       this.socialIdentityManager = socialIdentityManager();
@@ -332,9 +374,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      */
     @Override
     public Folder getRootFolder() throws OutlookException, RepositoryException {
-      Folder root = new SpaceFolder(rootPath, node(rootPath));
-      // TODO root.init(rootPath);
-      initDocumentLink(this, root);
+      RootFolder root = rootFolder.get();
+      if (root == null) {
+        root = new RootFolder(rootPath, node(rootPath));
+        rootFolder.set(root);
+      }
       return root;
     }
 
@@ -360,7 +404,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Node spaceDocs = spaceDocumentsNode(groupId);
       Node messagesFolder = messagesFolder(spaceDocs, groupId);
       Node messageFile = addMessageFile(messagesFolder, message);
-      setPermissions(messageFile, new StringBuilder("member:").append(getGroupId()).toString());
+      setPermissions(messageFile, new StringBuilder("member:").append(groupId).toString());
       messagesFolder.save();
 
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
@@ -481,6 +525,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   public List<File> saveAttachment(OutlookSpace space,
                                    Folder destFolder,
                                    OutlookUser user,
+                                   String comment,
                                    String messageId,
                                    String attachmentToken,
                                    String... attachmentIds) throws OutlookException, RepositoryException {
@@ -513,8 +558,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       // Save in JCR
       try (InputStream content = decode(contentBytes)) {
-        Node attachmentNode = addFile(parent, name, contentType, content);
-        setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
+        Node attachmentNode = addFile(parent, name, comment, contentType, content);
+        if (space != null) {
+          setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
+        } else {
+          setPermissions(attachmentNode, user.getLocalUser(), "member:/platform/users");
+        }
         files.add(new UserFile(destFolder, attachmentNode));
       } catch (IOException e) {
         throw new OutlookException("Error saving attachment in a file " + name, e);
@@ -545,10 +594,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   @Override
   public List<File> saveAttachment(Folder destFolder,
                                    OutlookUser user,
+                                   String comment,
                                    String messageId,
                                    String attachmentToken,
                                    String... attachmentIds) throws OutlookException, RepositoryException {
-    return saveAttachment(null, destFolder, user, messageId, attachmentToken, attachmentIds);
+    return saveAttachment(null, destFolder, user, comment, messageId, attachmentToken, attachmentIds);
   }
 
   /**
@@ -654,7 +704,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public OutlookSpace getSpace(String groupId) throws OutlookSpaceException {
+  public OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException {
     OutlookSpaceImpl space = spaces.get(groupId);
     if (space == null) {
       Space socialSpace = spaceService().getSpaceByGroupId(groupId);
@@ -817,7 +867,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return
    * @throws RepositoryException
    */
-  protected Node addFile(Node parent, String title, String contentType, InputStream content) throws RepositoryException {
+  protected Node addFile(Node parent,
+                         String title,
+                         String summary,
+                         String contentType,
+                         InputStream content) throws RepositoryException {
     Node file;
     String baseName = cleanName(title);
     String name = baseName;
@@ -861,7 +915,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
+    if (!file.hasProperty("exo:title")) {
+      file.addMixin(EXO_RSSENABLE);
+    }
     file.setProperty("exo:title", title);
+    file.setProperty("exo:summary", summary);
     try {
       file.setProperty("exo:name", title);
     } catch (ConstraintViolationException | ValueFormatException e) {
@@ -881,17 +939,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Add nt:folder node with given title. If a node with such name exists a new name will be
-   * generated by adding a numerical index to the end.
+   * Add nt:folder node with given title. If a node with such name exists and <code>forceNew</code> is
+   * <code>true</code> a new name will be generated by adding a numerical index to the end, otherwise existing
+   * node will be returned.
    * 
    * @param parent
    * @param title
-   * @param contentType
-   * @param content
+   * @param forceNew if <code>true</code> then a new folder will be created with index in suffix, if
+   *          <code>false</code> then existing folder will be returned
    * @return
    * @throws RepositoryException
    */
-  protected Node addFolder(Node parent, String title) throws RepositoryException {
+  protected Node addFolder(Node parent, String title, boolean forceNew) throws RepositoryException {
     Node folder;
     String baseName = cleanName(title);
     String name = baseName;
@@ -900,15 +959,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     do {
       try {
         folder = parent.getNode(name);
-        // such node already exists - find new name for the file (by adding sibling index to the end)
-        siblingNumber++;
-        int extIndex = baseName.lastIndexOf(".");
-        if (extIndex > 0 && extIndex < title.length()) {
-          String jcrName = baseName.substring(0, extIndex);
-          String jcrExt = baseName.substring(extIndex + 1);
-          name = new StringBuilder(jcrName).append('-').append(siblingNumber).append('.').append(jcrExt).toString();
+        if (forceNew) {
+          // such node already exists - find new name for the file (by adding sibling index to the end)
+          siblingNumber++;
+          int extIndex = baseName.lastIndexOf(".");
+          if (extIndex > 0 && extIndex < title.length()) {
+            String jcrName = baseName.substring(0, extIndex);
+            String jcrExt = baseName.substring(extIndex + 1);
+            name = new StringBuilder(jcrName).append('-').append(siblingNumber).append('.').append(jcrExt).toString();
+          } else {
+            name = new StringBuilder(baseName).append('-').append(siblingNumber).toString();
+          }
         } else {
-          name = new StringBuilder(baseName).append('-').append(siblingNumber).toString();
+          break;
         }
       } catch (PathNotFoundException e) {
         // no such node exists, add it using internalName created by CD's cleanName()
@@ -917,33 +980,35 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     } while (true);
 
-    if (siblingNumber > 0) {
-      int extIndex = title.lastIndexOf(".");
-      if (extIndex > 0 && extIndex < title.length()) {
-        String titleName = title.substring(0, extIndex);
-        String titleExt = title.substring(extIndex + 1);
-        title = new StringBuilder(titleName).append(" (").append(siblingNumber).append(").").append(titleExt).toString();
-      } else {
-        title = new StringBuilder(title).append(" (").append(siblingNumber).append(')').toString();
+    if (folder.isNew()) {
+      if (siblingNumber > 0) {
+        int extIndex = title.lastIndexOf(".");
+        if (extIndex > 0 && extIndex < title.length()) {
+          String titleName = title.substring(0, extIndex);
+          String titleExt = title.substring(extIndex + 1);
+          title = new StringBuilder(titleName).append(" (").append(siblingNumber).append(").").append(titleExt).toString();
+        } else {
+          title = new StringBuilder(title).append(" (").append(siblingNumber).append(')').toString();
+        }
       }
-    }
 
-    folder.setProperty("exo:title", title);
-    try {
-      folder.setProperty("exo:name", title);
-    } catch (ConstraintViolationException | ValueFormatException e) {
-      LOG.warn("Cannot set exo:name property to '" + title + "' for folder " + folder.getPath() + ": " + e);
-    }
+      folder.setProperty("exo:title", title);
+      try {
+        folder.setProperty("exo:name", title);
+      } catch (ConstraintViolationException | ValueFormatException e) {
+        LOG.warn("Cannot set exo:name property to '" + title + "' for folder " + folder.getPath() + ": " + e);
+      }
 
-    Calendar folderDate = Calendar.getInstance();
-    if (folder.isNodeType(EXO_DATETIME)) {
-      folder.setProperty("exo:dateCreated", folderDate);
-      folder.setProperty("exo:dateModified", folderDate);
-    }
+      Calendar folderDate = Calendar.getInstance();
+      if (folder.isNodeType(EXO_DATETIME)) {
+        folder.setProperty("exo:dateCreated", folderDate);
+        folder.setProperty("exo:dateModified", folderDate);
+      }
 
-    if (folder.isNodeType(EXO_MODIFY)) {
-      folder.setProperty("exo:lastModifiedDate", folderDate);
-      folder.setProperty("exo:lastModifier", folder.getSession().getUserID());
+      if (folder.isNodeType(EXO_MODIFY)) {
+        folder.setProperty("exo:lastModifiedDate", folderDate);
+        folder.setProperty("exo:lastModifier", folder.getSession().getUserID());
+      }
     }
     return folder;
   }
@@ -1237,7 +1302,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                      UnsupportedEncodingException,
                                                                      IOException {
     try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF8"))) {
-      Node messageFile = addFile(parent, message.getSubject(), "text/html", content);
+      // message file goes w/o summary, it will be generated in UI (SharedOutlookMessageActivity)
+      Node messageFile = addFile(parent, message.getSubject(), null, "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
       messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
       messageFile.setProperty("mso:userName", message.getUser().getDisplayName());

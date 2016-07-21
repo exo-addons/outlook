@@ -1,14 +1,89 @@
-<div class="container-fluid">
-	<div id="outlook-home" class="row-fluid">
-		<div class="span8 offset2">
-			<div>
-				<br>
+<div id="outlook-home" class="ms-Grid">
+	<div class="ms-Grid-row text-centered">
+		<h4>&{Outlook.command.home}</h4>
+	</div>
+	<!-- div class="ms-Grid-row welcomeTitle">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
+			<div class="ms-Dialog-header welcomeHeader">
+				<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcome.title}</p>
 			</div>
-			<div class="text-centered">
-				<h4>&{Outlook.command.home}</h4>
-			</div>
-			TODO
 		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div -->
+	<div class="ms-Grid-row aboutAddin">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
+			<div class="ms-Dialog-header welcomeHeader">
+				<p class="ms-Dialog-title ms-font-m">&{Outlook.welcome.aboutAddin}</p>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div>
+	<div class="ms-Grid-row firstFeatureRow">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-ChoiceField">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+				<span class="ms-font-l">
+					<i class="ms-Icon ms-Icon--check"></i>
+				</span>
+			</div>
+			<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+				<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutSaveAttachment}</span>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-ChoiceField">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+				<span class="ms-font-l">
+					<i class="ms-Icon ms-Icon--check"></i>
+				</span>
+			</div>
+			<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+				<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutConvertTo}</span>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-ChoiceField">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+				<span class="ms-font-l">
+					<i class="ms-Icon ms-Icon--check"></i>
+				</span>
+			</div>
+			<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+				<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutCreate}</span>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-ChoiceField">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md1 ms-u-lg1 featureCheck">
+				<span class="ms-font-l">
+					<i class="ms-Icon ms-Icon--check"></i>
+				</span>
+			</div>
+			<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
+				<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutSearch}</span>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
+		<div class="ms-ChoiceField">
+			<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7 openPortalLink">
+				<a href="/portal" target="_blank" class="ms-Link">&{Outlook.homeOpenPortal}</a>
+			</div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 	</div>
 </div>
 

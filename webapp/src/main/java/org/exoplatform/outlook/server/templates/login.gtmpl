@@ -24,7 +24,7 @@
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcomeTitle}</p>
+					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcome.title}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -33,7 +33,7 @@
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">&{Outlook.aboutAddin}</p>
+					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">&{Outlook.welcome.aboutAddin}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -54,7 +54,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">&{Outlook.aboutSaveAttachment}</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutSaveAttachment}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -78,7 +78,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">&{Outlook.aboutConvertTo}</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutConvertTo}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -90,7 +90,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">&{Outlook.aboutCreate}</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutCreate}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -102,7 +102,7 @@
 					<span class="ms-font-l"><i class="ms-Icon ms-Icon--check"></i></span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm9 ms-u-md7 ms-u-lg7">
-					<span class="featureText ms-font-s-plus">&{Outlook.aboutSearch}</span>
+					<span class="featureText ms-font-s-plus">&{Outlook.welcome.aboutSearch}</span>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
@@ -112,7 +112,7 @@
 			<div class="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg4">
 				<div class="ms-Dialog-actions text-centered">
 					<button class="ms-Dialog-action ms-Button ms-Button--primary signInExo" data-dismiss="modal">
-						<span class="ms-Button-label" title="&{Outlook.signInExoDescription}">&{Outlook.signInExo}</span>
+						<span class="ms-Button-label" title="&{Outlook.welcome.signInExoDescription}">&{Outlook.login.signInExo}</span>
 					</button>
 				</div>
 			</div>
@@ -128,25 +128,25 @@
 				<i class="ms-Icon ms-Icon--x"></i>
 			</button>
 			<div class="ms-Dialog-header">
-				<p class="ms-Dialog-title text-centered">&{Outlook.signInExoTitle}</p>
+				<p class="ms-Dialog-title text-centered">&{Outlook.login.signInExoTitle}</p>
 			</div>
 			<div class="ms-Dialog-inner">
 				<form role="form">
 					<div class="ms-Dialog-content">
-						<p class="ms-Dialog-subText">&{Outlook.signInDescription}</p>
+						<p class="ms-Dialog-subText">&{Outlook.login.signInDescription}</p>
 						<div class="ms-TextField">
-							<label for="userName" class="ms-Label">&{Outlook.userName}</label><input name="userName" class="ms-TextField-field" type="text">
+							<label for="userName" class="ms-Label">&{Outlook.login.userName}</label><input name="userName" class="ms-TextField-field" type="text">
 						</div>
 						<div class="ms-TextField">
-							<label for="password" class="ms-Label">&{Outlook.password}</label><input name="password" class="ms-TextField-field" type="password">
+							<label for="password" class="ms-Label">&{Outlook.login.password}</label><input name="password" class="ms-TextField-field" type="password">
 						</div>
 					</div>
 					<div class="ms-Dialog-actions text-centered">
 						<button class="ms-Dialog-action ms-Button ms-Button--primary signIn" disabled>
-							<span class="ms-Button-label" title="&{Outlook.doSignInDescription}">&{Outlook.signIn}</span>
+							<span class="ms-Button-label" title="&{Outlook.welcome.doSignInDescription}">&{Outlook.login.signIn}</span>
 						</button>
 						<button class="ms-Dialog-action ms-Button cancel">
-							<span class="ms-Button-label" title="&{Outlook.cancelSignInDescription}">&{Outlook.cancel}</span>
+							<span class="ms-Button-label" title="&{Outlook.welcome.cancelSignInDescription}">&{Outlook.login.cancel}</span>
 						</button>
 					</div>
 				</form>
@@ -166,7 +166,7 @@
 			<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered ms-font-m-plus ">
 					<div class="ms-Spinner ms-Spinner--large ms-fontColor-themeLighterAlt progressSpinner" style="display: inline-block;"></div>
-					<div class="ms-fontColor-themeLight">&{Outlook.signingIn}</div>
+					<div class="ms-fontColor-themeLight">&{Outlook.login.signingIn}</div>
 				</div>
 			</div>
 		</div>	

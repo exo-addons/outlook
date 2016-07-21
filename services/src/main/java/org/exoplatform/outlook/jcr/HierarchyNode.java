@@ -63,8 +63,8 @@ public abstract class HierarchyNode {
     return node.isNodeType("nt:file");
   }
 
-  protected final String   rootPath;
-
+  protected final String   parentPath;
+  
   protected final String   path;
 
   protected final String   name;
@@ -85,27 +85,27 @@ public abstract class HierarchyNode {
    * @throws RepositoryException
    * 
    */
-  protected HierarchyNode(String rootPath, Node node) throws RepositoryException, OutlookException {
+  protected HierarchyNode(String parentPath, Node node) throws RepositoryException, OutlookException {
     this.path = node.getPath();
     this.node = node;
     this.name = node.getName();
 
-    if (rootPath == null) {
+    if (parentPath == null) {
       throw new BadParameterException("Node  '" + name + "' should have root path or parent folder");
       // TODO
       // if (parent == null) {
       // } else {
       // // grab root path from given parent
-      // rootPath = parent.getRootPath();
+      // parentPath = parent.getRootPath();
       // }
     }
 
-    this.rootPath = rootPath;
+    this.parentPath = parentPath;
     this.title = nodeTitle(node);
-    if (path.equals(rootPath)) {
+    if (path.equals(parentPath)) {
       this.pathLabel = ROOT_PATH_LABEL;
     } else {
-      this.pathLabel = pathLabel(rootPath, node);
+      this.pathLabel = pathLabel(parentPath, node);
       // this.pathLabel = new
       // StringBuilder(parent.getPathLabel()).append(PATH_SEPARATOR).append(this.title).toString();
     }
@@ -128,28 +128,7 @@ public abstract class HierarchyNode {
   }
 
   protected HierarchyNode(Folder parent, Node node) throws RepositoryException, OutlookException {
-    this(parent != null ? parent.getRootPath() : null, node);
-  }
-
-  /**
-   * Optionally init path label.
-   * 
-   * @throws BadParameterException if given path isn't a parent path for this node.
-   */
-  @Deprecated // NOT USED
-  public void init(String rootPath) throws BadParameterException {
-    if (path.startsWith(rootPath)) {
-      int rootLength = rootPath.length();
-      if (rootLength < path.length()) {
-        // this.pathLabel = new
-        // StringBuilder(parent.getPathLabel()).append(PATH_SEPARATOR).append(title).toString();
-        this.pathLabel = pathLabel.substring(rootLength);
-      } else {
-        this.pathLabel = ROOT_PATH_LABEL;
-      }
-    } else {
-      throw new BadParameterException("Node '" + path + "' does not belong to given root path '" + rootPath + "'");
-    }
+    this(parent != null ? parent.getPath() : null, node);
   }
 
   /**
@@ -223,13 +202,6 @@ public abstract class HierarchyNode {
     } else {
       return EMPTY;
     }
-  }
-
-  /**
-   * @return the rootPath
-   */
-  protected String getRootPath() {
-    return rootPath;
   }
 
   protected static String nodeTitle(Node node) throws RepositoryException {

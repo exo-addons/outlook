@@ -43,6 +43,8 @@ public abstract class Folder extends HierarchyNode {
 
   protected final ThreadLocal<Set<Folder>> subfolders = new ThreadLocal<Set<Folder>>();
 
+  protected Folder                         defaultSubfolder;
+
   public Folder(Folder parent, Node node) throws RepositoryException, OutlookException {
     super(parent, node);
     if (!isFolder(node)) {
@@ -50,15 +52,22 @@ public abstract class Folder extends HierarchyNode {
     }
   }
 
-  public Folder(String rootPath, Node node) throws RepositoryException, OutlookException {
-    super(rootPath, node);
+  public Folder(String parentPath, Node node) throws RepositoryException, OutlookException {
+    super(parentPath, node);
     if (!isFolder(node)) {
       throw new OutlookException("Not a folder node");
     }
   }
 
   public boolean isRoot() {
-    return rootPath.equals(path);
+    return parentPath.equals(path);
+  }
+
+  /**
+   * @return the defaultSubfolder
+   */
+  public Folder getDefaultSubfolder() {
+    return defaultSubfolder;
   }
 
   public boolean hasSubfolders() throws RepositoryException, OutlookException {
@@ -76,8 +85,6 @@ public abstract class Folder extends HierarchyNode {
     }
     return Collections.unmodifiableSet(subfolders);
   }
-
-  public abstract Folder addSubfolder(String name) throws RepositoryException, OutlookException;
 
   protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = new LinkedHashSet<Folder>();
@@ -98,4 +105,6 @@ public abstract class Folder extends HierarchyNode {
   protected abstract Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException;
 
   protected abstract Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException;
+
+  public abstract Folder addSubfolder(String name) throws RepositoryException, OutlookException;
 }

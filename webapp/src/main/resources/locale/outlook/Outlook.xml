@@ -16,11 +16,15 @@
       <convertToForum>Convert To Forum</convertToForum>
     </command>
 
+    <homeOpenPortal>Open eXo Platform portal page in new window</homeOpenPortal>
+
     <noActionsAvailable>You have no actions available for this context.</noActionsAvailable>
 
     <saveAttachmentDescription>Here you can save attachments of this message to files in collaborative space.</saveAttachmentDescription>
     <selectAttachment>Select attachment</selectAttachment>
     <selectAttachmentDescription>Selected attachments will be saved in target space.</selectAttachmentDescription>
+    <commentAttachment>Leave a message (optional)</commentAttachment>
+    <commentAttachmentDescription>This message will be added as a comment to activity status generated for the saved attachment</commentAttachmentDescription>
     <selectSaveSpace>Save to space</selectSaveSpace>
     <selectSaveSpaceDescription>A space where attachments to save</selectSaveSpaceDescription>
     <selectFolder>Destination folder</selectFolder>

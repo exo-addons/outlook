@@ -18,6 +18,10 @@ body {
 	width: 25px;
 }
 
+.openPortalLink {
+	margin-top: 20px;
+}
+
 /* Login/Welcome page */
 
 .featureCheck {

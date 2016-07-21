@@ -16,9 +16,20 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-					<label for="activityTitle" class="ms-Label">&{Outlook.selectAttachment}</label>
-					<ul id="attachments" class="form-control ms-List"></ul>
+					<label for="attachments" class="ms-Label">&{Outlook.selectAttachment}</label>
+					<ul id="attachments" class="ms-List"></ul>
 					<span class="ms-TextField-description">&{Outlook.selectAttachmentDescription}</span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			</div>
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
+					<div class="ms-TextField--multiline">
+						<label for="comment" class="ms-Label">&{Outlook.commentAttachment}</label>
+						<textarea name="comment" class="ms-TextField-field"></textarea>
+					</div>
+					<span class="ms-TextField-description">&{Outlook.commentAttachmentDescription}</span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 			</div>
@@ -30,7 +41,8 @@
 						<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
 						<select name="groupId" class="ms-Dropdown-select">
 							<%	for(s in spaces) { %>
-							<option value="${s.groupId}" data-path="${s.rootFolder.path}">${s.title ? s.title : s.groupId}</option>
+							<option value="${s.groupId}" data-rootpath="${s.rootFolder.path}"
+								data-path="${s.rootFolder.defaultSubfolder ? s.rootFolder.defaultSubfolder.path : s.rootFolder.path}">${s.title ? s.title : s.groupId}</option>
 							<%	} %>
 						</select>
 					</div>

@@ -90,12 +90,14 @@ public interface OutlookService {
   List<File> saveAttachment(OutlookSpace space,
                             Folder folder,
                             OutlookUser user,
+                            String comment,
                             String messageId,
                             String attachmentToken,
                             String... attachmentIds) throws OutlookSpaceException, OutlookException, RepositoryException;
 
   List<File> saveAttachment(Folder destFolder,
                             OutlookUser user,
+                            String comment,
                             String messageId,
                             String attachmentToken,
                             String... attachmentIds) throws OutlookException, RepositoryException;
@@ -105,9 +107,11 @@ public interface OutlookService {
    * 
    * @return {@link OutlookSpace}
    * @throws OutlookSpaceException
+   * @throws OutlookException 
+   * @throws RepositoryException 
    */
-  OutlookSpace getSpace(String groupId) throws OutlookSpaceException;
+  OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException;
 
-  List<OutlookSpace> getUserSpaces() throws OutlookSpaceException;
+  List<OutlookSpace> getUserSpaces() throws OutlookSpaceException, RepositoryException, OutlookException;
 
 }
