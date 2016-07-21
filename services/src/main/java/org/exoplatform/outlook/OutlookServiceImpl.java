@@ -313,18 +313,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
        */
       @Override
       protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
+        Folder uploads = null;
         Set<Folder> subfolders = super.readSubnodes();
-        boolean addUploads = true;
         for (Folder sf : subfolders) {
           if (sf.getTitle().equals(UPLAODS_FOLDER_TITLE)) {
-            addUploads = false;
+            uploads = defaultSubfolder = sf;
             break;
           }
         }
-        if (addUploads) {
+        if (uploads == null) {
           final Node parent = getNode();
           Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
-          Folder uploads = newFolder(this, subfolderNode);
+          uploads = newFolder(this, subfolderNode);
           parent.save();
           initDocumentLink(OutlookSpaceImpl.this, uploads);
           subfolders.add(uploads);
@@ -571,6 +571,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
     parent.save(); // save everything at the end only
 
+    // TODO specified activity as in US_001_5
+    
     // fire listener service to generate social activities
     for (File f : files) {
       try {
