@@ -36,7 +36,7 @@
   float: left;
 }
 
-.outlookMessageActivityContent .messageFooter {
+.outlookMessageActivityContent .messageFooter, .UIDocumentWorkspace .messageFooter {
 	height: 0px;
 	display: none;
 }
@@ -45,7 +45,7 @@
 	height: 97%;
 }
 
-.outlookMessageActivityContent .messageBody {
+.outlookMessageActivityContent .messageBody, .UIDocumentWorkspace .messageBody {
 	height: 100%;
 }
 
