@@ -2,7 +2,6 @@
  * Outlook Login and Welcome screen.
  */
 (function() {
-
 	Office.initialize = function(reason) {
 		function getRequestParameter(name) {
 			var url = window.location.href;
@@ -41,15 +40,15 @@
 			} else {
 				expires = "";
 			}
-			(toDocument ? toDocument : document).cookie = name + "=" + encodeURIComponent(value) + expires + "; path="
-			    + (toPath ? toPath : "/") + (toDomain ? "; domain=" + toDomain : "");
+			(toDocument ? toDocument : document).cookie = name + "=" + encodeURIComponent(value) + expires + "; path=" + (toPath ? toPath : "/")
+			    + (toDomain ? "; domain=" + toDomain : "");
 		}
 
 		var $welcome = $("#welcomePage");
 		var $signInProgress = $("#signInProgress");
 		var spinner = new fabric.Spinner($signInProgress.find(".ms-Spinner").get(0));
 		var $error = $("#outlook-error");
-		
+
 		var $messageBanner = $error.find(".ms-MessageBanner");
 		var messageBanner;
 		if ($messageBanner.size() > 0) {
@@ -59,12 +58,12 @@
 
 		function showError(message) {
 			console.log("ERROR: " + message + ". ");
-			
+
 			if ($signInProgress.is(":visible")) {
 				$signInProgress.hide("blind");
 				spinner.stop();
 			}
-			
+
 			$errorText.empty();
 			$("<i class='uiIconError'></i><span>" + message + "</span>").appendTo($errorText);
 			$error.scrollTop();
@@ -107,11 +106,11 @@
 						if (userName && userName.length > 0) {
 							var password = $password.val();
 							var initialURI = getRequestParameter("initialURI");
-							
-					    spinner.start();
+
+							spinner.start();
 							$welcome.hide();
 							$signInProgress.show("blind");
-							
+
 							var $portalLogin = $.ajax({
 							  async : true,
 							  type : "POST",
@@ -133,7 +132,7 @@
 									$welcome.show();
 								} else {
 									setCookie("remembermeoutlook", "_init_me", 120000, document, "/portal/intranet/outlook");
-									window.location = initialURI;									
+									window.location = initialURI;
 								}
 							});
 							$portalLogin.fail(function(jqXHR, textStatus, errorThrown) {
@@ -158,5 +157,5 @@
 				$signInExoButton.prop("disabled", false);
 			}
 		}
-	}
+	};
 })();

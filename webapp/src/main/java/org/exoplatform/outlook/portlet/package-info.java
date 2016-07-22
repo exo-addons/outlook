@@ -30,8 +30,10 @@
 @Scripts({
     @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),
-    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER, depends = { "office", "jquery-ui.css",
-        "jquery-ui.structure.css", "jquery-ui.theme.css", "fabric.css", "fabric.components.css", "outlook.css" }) })
+    @Script(id = "plf-utils", value = "js/plf-utils.js", location = AssetLocation.SERVER),
+    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER,
+            depends = { "plf-utils", "office", "jquery-ui.css", "jquery-ui.structure.css", "jquery-ui.theme.css",
+                "fabric.css", "fabric.components.css", "outlook.css" }) })
 
 @Assets({ "*" })
 
