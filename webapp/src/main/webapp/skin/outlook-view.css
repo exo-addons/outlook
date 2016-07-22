@@ -29,7 +29,7 @@
 
 .outlookMessagePreview .messageFooter {
 	height: 25px;
-  max-height: 5%;
+  max-height: 3%;
   width: 100%;
   background-color: white;
   position: relative;
@@ -42,7 +42,7 @@
 }
 
 .outlookMessagePreview .messageBody {
-	height: 95%;
+	height: 97%;
 }
 
 .outlookMessageActivityContent .messageBody {
