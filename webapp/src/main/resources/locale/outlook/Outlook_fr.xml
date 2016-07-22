@@ -53,5 +53,11 @@
       <folderNameRequired>Folder name required</folderNameRequired>
       <menuNameUndefined>Menu name undefined. Please contact administrator.</menuNameUndefined>
     </messages>
+    
+    <activity>
+      <from>De</from>
+      <on>le</on>
+      <at>à</at>
+    </activity>
   </Outlook>
 </bundle>
