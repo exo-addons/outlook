@@ -151,7 +151,7 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
 
         String fromEmail = node.getProperty("mso:fromEmail").getString();
         String fromName = node.getProperty("mso:fromName").getString();
-        Date time = node.getProperty("mso:modified").getDate().getTime();
+        Date time = node.getProperty("mso:created").getDate().getTime();
 
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getLocale());
