@@ -70,6 +70,8 @@
     <convertedToSpaceActivity>Your message successfully posted in {SPACE_NAME} activity stream</convertedToSpaceActivity>
     <openActivity>Open activity</openActivity>
     
+    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
+    
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Please reload page.</folderHasNoPath>
       <spacePathNotFound>Space and/or path not found</spacePathNotFound>

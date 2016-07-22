@@ -332,8 +332,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
         return subfolders;
       }
-      
-      
     }
 
     protected final String rootPath;

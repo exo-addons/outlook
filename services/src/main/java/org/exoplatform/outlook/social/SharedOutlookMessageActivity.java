@@ -22,6 +22,7 @@ package org.exoplatform.outlook.social;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.SharedOutlookMessageActivity.ViewDocumentActionListener;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
@@ -29,7 +30,6 @@ import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -153,9 +153,9 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         String fromName = node.getProperty("mso:fromName").getString();
         Date time = node.getProperty("mso:created").getDate().getTime();
 
-        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getLocale());
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.FULL, context.getLocale());
+        PortalRequestContext context = PortalRequestContext.getCurrentInstance();
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getRequestLocale());
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.FULL, context.getRequestLocale());
 
         ResourceBundle res = context.getApplicationResourceBundle();
 
