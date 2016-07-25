@@ -12,7 +12,10 @@
   <ProviderName>eXo Platform SAS</ProviderName>
   <DefaultLocale>en-us</DefaultLocale>
   <DisplayName DefaultValue="eXo Platform (Demo)" />
-  <Description DefaultValue="eXo Platform collaboration tools for Outlook"/>
+  <Description DefaultValue="eXo Platform add-in for Outlook">
+  	<Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif directement depuis Outlook."/>
+</Description>
+  </Description>
   <IconUrl DefaultValue="https://demo-outlook.exoplatform.org/outlook/images/exo-icon-64.png" />
   <HighResolutionIconUrl DefaultValue="https://demo-outlook.exoplatform.org/outlook/images/exo-icon-80.png" />
   <Hosts>
