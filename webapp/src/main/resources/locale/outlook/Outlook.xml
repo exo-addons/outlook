@@ -3,86 +3,86 @@
   <Outlook>
     <command>
       <home>Home</home>
-      <saveAttachment>Save Attachment</saveAttachment>
+      <saveAttachment>Save Attachments</saveAttachment>
       <search>Search</search>
       <create>Create</create>
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
       <userInfo>Users</userInfo>
-      <postStatus>Post status</postStatus>
-      <startDiscussion>Start Discussion</startDiscussion>
-      <convertToStatus>Convert To Status</convertToStatus>
-      <convertToWiki>Convert To Wiki</convertToWiki>
-      <convertToForum>Convert To Forum</convertToForum>
+      <postStatus>Post Activity</postStatus>
+      <startDiscussion>Start a Discussion</startDiscussion>
+      <convertToStatus>Convert to Activity</convertToStatus>
+      <convertToWiki>Convert to Wiki</convertToWiki>
+      <convertToForum>Convert to Forum</convertToForum>
     </command>
 
-    <homeOpenPortal>Open eXo Platform portal page in new window</homeOpenPortal>
+    <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
-    <noActionsAvailable>You have no actions available for this context.</noActionsAvailable>
+    <noActionsAvailable>No actions are available for this context.</noActionsAvailable>
 
-    <saveAttachmentDescription>Here you can save attachments of this message to files in collaborative space.</saveAttachmentDescription>
-    <selectAttachment>Select attachment</selectAttachment>
-    <selectAttachmentDescription>Selected attachments will be saved in target space.</selectAttachmentDescription>
+    <saveAttachmentDescription>Here you can save attachments as documents in the intranet.</saveAttachmentDescription>
+    <selectAttachment>Select attachments</selectAttachment>
+    <selectAttachmentDescription>Selected attachments will be saved in the target space.</selectAttachmentDescription>
     <commentAttachment>Leave a message (optional)</commentAttachment>
-    <commentAttachmentDescription>This message will be added as a comment to activity status generated for the saved attachment</commentAttachmentDescription>
+    <commentAttachmentDescription>This message will be posted in the activity generated for the saved attachment</commentAttachmentDescription>
     <selectSaveSpace>Save to space</selectSaveSpace>
-    <selectSaveSpaceDescription>A space where attachments to save</selectSaveSpaceDescription>
+    <selectSaveSpaceDescription>Select the space where attachments should be saved</selectSaveSpaceDescription>
     <selectFolder>Destination folder</selectFolder>
     <save>Save</save>
-    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoSaveDescription>
+    <pathInfoSaveDescription>Target folder in space's Documents where your attachments will be saved.</pathInfoSaveDescription>
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
-    <pathAddDescription>Create new folder</pathAddDescription>
+    <pathAddDescription>Create a new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
-    <saveAttachmentDescription>Save attachment of the message in documents of selected space</saveAttachmentDescription>
+    <saveAttachmentDescription>Save the attachments of this message as documents in the selected space</saveAttachmentDescription>
     <cancel>Cancel</cancel>
-    <cancelSaveAttachmentDescription>Don't save attachment of the message</cancelSaveAttachmentDescription>
+    <cancelSaveAttachmentDescription>Don't save attachments of this message</cancelSaveAttachmentDescription>
     <savingAttachment>Saving your files...</savingAttachment>
-    <savedAttachment>Your files successfully saved in space </savedAttachment>
-    <savedClickToOpen>Click file in the list below to open it in collaborative space</savedClickToOpen>
+    <savedAttachment>Your files were successfully saved</savedAttachment>
+    <savedClickToOpen>Click a file in the list below to open it in teh intranet</savedClickToOpen>
     <addingNewFolder>Adding new folder</addingNewFolder>
-    <enterFolderNameAndCreate>Provide a name for new folder and click Add button.</enterFolderNameAndCreate>
+    <enterFolderNameAndCreate>Give a name to this new folder and click the Add button.</enterFolderNameAndCreate>
     <folderName>Folder name</folderName>
     <add>Add</add>
 
     <selectDocumentSpace>Select space</selectDocumentSpace>
     <selectedDocuments>Selected documents</selectedDocuments>
     <selectDocument>Select document</selectDocument>
-    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoDescription>
+    <pathInfoDescription>Target folder in space's Documentswhere your attachments will be saved.</pathInfoDescription>
     <attach>Attach</attach>
     <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
     <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
 
-    <convertToStatusDescription>Current message can be converted to a post in activity stream. By default it will go your user stream. If you'll choose target space then it will appear as selected space activity.</convertToStatusDescription>
+    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Chosing atarget space will generate the activity in the space's stream.</convertToStatusDescription>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
-    <targetSpaceDescription>If selected, it's a space where this message will be posted in activity stream.</targetSpaceDescription>
+    <targetSpaceDescription>If selected, your message will be saved in the space's activity stream.</targetSpaceDescription>
     <activityTitle>Title</activityTitle>
-    <activityTitleDescription>This text will be an activity title in the stream</activityTitleDescription>
+    <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
     <editActivityText>Click to edit</editActivityText>
-    <activityText>Activity text</activityText>
-    <activityTextDescription>It's activity text make from your email message</activityTextDescription>
+    <activityText>Activity body</activityText>
+    <activityTextDescription>This will be displayed in the activity's body on the stream</activityTextDescription>
     <convert>Convert</convert>
-    <convertingToStatus>Converting message to activity status...</convertingToStatus>
-    <convertedToStatus>Your message was successfully converted to an activity status</convertedToStatus>
-    <convertToStatusError>Error converting message to activity stream post</convertToStatusError>
-    <convertedToUserActivity>Your message successfully posted in personal activity stream</convertedToUserActivity>
-    <convertedToSpaceActivity>Your message successfully posted in {SPACE_NAME} activity stream</convertedToSpaceActivity>
-    <openActivity>Open activity</openActivity>
+    <convertingToStatus>Converting message to activity...</convertingToStatus>
+    <convertedToStatus>The activity was successfully posted</convertedToStatus>
+    <convertToStatusError>Error converting the message to an activity</convertToStatusError>
+    <convertedToUserActivity>The activity was successfully posted in your personal activity stream</convertedToUserActivity>
+    <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME} space</convertedToSpaceActivity>
+    <openActivity>Display the activity</openActivity>
     
     <messages>
-      <folderHasNoPath>Error selecting folder - path not found. Please reload page.</folderHasNoPath>
-      <spacePathNotFound>Space and/or path not found</spacePathNotFound>
-      <nothingSavedTryAgain>Nothing was saved. Please submit form again or contact administrator.</nothingSavedTryAgain>
+      <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
+      <spacePathNotFound>Space or path not found</spacePathNotFound>
+      <nothingSavedTryAgain>Nothing was saved. Please submit the form again or contact your administrator.</nothingSavedTryAgain>
       <gettingTokenError>Error getting access token for mail server</gettingTokenError>
-      <attachmentNotSelected>Attachment not selected. Select at least an one and then submit form again.</attachmentNotSelected>
+      <attachmentNotSelected>No attachment selected. Check at least one and then submit the form again.</attachmentNotSelected>
       <folderNameRequired>Folder name required</folderNameRequired>
-      <menuNameUndefined>Menu name undefined. Please contact administrator.</menuNameUndefined>
+      <menuNameUndefined>Menu name undefined. Please contact your administrator.</menuNameUndefined>
       <youDontHaveSpaces>You are not a member of any space.</youDontHaveSpaces>
       <joinSpaces>You can join spaces</joinSpaces>
-      <atThisPage>at this page</atThisPage>
+      <atThisPage>on this page</atThisPage>
       <messageItemReadError>Error reading message item.</messageItemReadError>
-      <convertToStatusError>Error converting message to activity status.</convertToStatusError>
+      <convertToStatusError>Error converting message to activity.</convertToStatusError>
     </messages>
     
     <activity>
