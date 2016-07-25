@@ -474,7 +474,7 @@
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour enregistrer les pièces jointes dans eXo" />
         </bt:String>
         <bt:String id="convertMenuTipDescription" DefaultValue="Open the pane to convert this message to a conversation in eXo.">
-          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en conversation dans eXo. />
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en conversation dans eXo." />
         </bt:String>
         <bt:String id="convertToStatusTipDescription" DefaultValue="Open the pane to convert this message an activity in the stream.">
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en activité dans le flux." />
