@@ -13,7 +13,7 @@
 <% for (f in files) { %>
 	<li class="ms-ListItem selectableItem" data-portalurl="${f.url}">
 		<span class="ms-ListItem-primaryText">
-			<i class="ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green"></i>${f.name}
+			<a href="${f.url}" target="_blank" class="ms-Link"><i class="ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green"></i>${f.name}</a>
 		</span>
 	</li>
 <% } %>

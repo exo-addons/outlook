@@ -271,6 +271,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 									$(this).find("input[name='attachmentIds']").val("");
 								}
 							});
+							// add preselect it by default
+							$li.click();
 						}
 						var $attachmentIds = $attachments.find("input[name='attachmentIds']");
 						var $savingAttachment = $saveAttachment.find("#savingAttachment");
@@ -347,10 +349,10 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 														$savedSpaceTitle.text($savedSpaceTitle.text() + " " + groupTitle);
 														$litems.each(function() {
 															$(this).ListItem(); // init FabricUI JS
-															$(this).click(function() {
-																var fileUrl = $(this).data("portalurl");
-																window.open(fileUrl, "_blank");
-															});
+															// $(this).click(function() {
+																// var fileUrl = $(this).data("portalurl");
+																// window.open(fileUrl, "_blank");
+															// });
 														});
 														spinner.stop();
 														$savingAttachment.hide("blind");

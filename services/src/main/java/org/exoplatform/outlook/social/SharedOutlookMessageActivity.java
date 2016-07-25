@@ -135,11 +135,13 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
     return super.isFileSupportPreview(data);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getSummary(Node node) {
+  // TODO change logic
+  // /**
+  // * {@inheritDoc}
+  // */
+  // @Override
+  // public String getSummary(Node node) {
+  public String getUserComment(Node node) {
     try {
       if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
         // TODO use eXo's formats or Java's ones
@@ -200,7 +202,7 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         // TODO we could find and use user's timezone: dateFormat.setTimeZone(zone);
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, userLocale);
         // TODO we could find and use user's timezone: timeFormat.setTimeZone(zone);
-        
+
         ResourceBundle res = context.getApplicationResourceBundle();
 
         StringBuilder fromLine = new StringBuilder();
