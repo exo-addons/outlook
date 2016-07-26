@@ -22,14 +22,20 @@ package org.exoplatform.outlook.social;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.SharedOutlookMessageActivity.ViewDocumentActionListener;
+import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.resources.LocaleContextInfo;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -44,6 +50,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -127,11 +134,13 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
     return super.isFileSupportPreview(data);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getSummary(Node node) {
+  // TODO change logic
+  // /**
+  // * {@inheritDoc}
+  // */
+  // @Override
+  // public String getSummary(Node node) {
+  public String getUserComment(Node node) {
     try {
       if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
         // TODO use eXo's formats or Java's ones
@@ -153,9 +162,45 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
         String fromName = node.getProperty("mso:fromName").getString();
         Date time = node.getProperty("mso:created").getDate().getTime();
 
-        PortalRequestContext context = PortalRequestContext.getCurrentInstance();
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, context.getRequestLocale());
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.FULL, context.getRequestLocale());
+        Locale userLocale = null;
+        RequestContext context = RequestContext.getCurrentInstance();
+        OrganizationService orgService = getApplicationComponent(OrganizationService.class);
+        try {
+          UserProfile userProfile = orgService.getUserProfileHandler().findUserProfileByName(context.getRemoteUser());
+          if (userProfile != null) {
+            String lang = userProfile.getUserInfoMap().get(Constants.USER_LANGUAGE);
+            if (lang != null) {
+              userLocale = LocaleContextInfo.getLocale(lang);
+            }
+          } else {
+            LOG.warn("User profile not found for " + context.getRemoteUser());
+          }
+        } catch (Exception e) {
+          LOG.warn("Error getting user profile for " + context.getRemoteUser(), e);
+        }
+
+        if (userLocale == null) {
+          // try find locale from user request
+          if (PortletRequestContext.class.isAssignableFrom(context.getClass())) {
+            userLocale = ((PortalRequestContext) PortletRequestContext.class.cast(context)
+                                                                            .getParentAppRequestContext()).getRequest()
+                                                                                                          .getLocale();
+          } else if (PortalRequestContext.class.isAssignableFrom(context.getClass())) {
+            userLocale = PortalRequestContext.class.cast(context).getRequest().getLocale();
+          }
+          if (userLocale == null) {
+            // it's server locale in most cases
+            userLocale = context.getLocale();
+            if (userLocale == null) {
+              userLocale = Locale.ENGLISH;
+            }
+          }
+        }
+
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, userLocale);
+        // TODO we could find and use user's timezone: dateFormat.setTimeZone(zone);
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, userLocale);
+        // TODO we could find and use user's timezone: timeFormat.setTimeZone(zone);
 
         ResourceBundle res = context.getApplicationResourceBundle();
 

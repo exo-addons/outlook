@@ -12,7 +12,9 @@
   <ProviderName>eXo Platform SAS</ProviderName>
   <DefaultLocale>en-us</DefaultLocale>
   <DisplayName DefaultValue="eXo Platform" />
-  <Description DefaultValue="eXo Platform collaboration tools for Outlook"/>
+  <Description DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
+    <Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook"/>
+  </Description>
   <IconUrl DefaultValue="https://peter.exoplatform.com.ua:8443/outlook/images/exo-icon-64.png" />
   <HighResolutionIconUrl DefaultValue="https://peter.exoplatform.com.ua:8443/outlook/images/exo-icon-80.png" />
   <!-- AppDomains>
@@ -366,54 +368,123 @@
         <bt:Url id="convertToForumUrl" DefaultValue="https://peter.exoplatform.com.ua:8443/portal/intranet/outlook?command=convertToForum"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="appDescription" DefaultValue="eXo Platform collaboration tools for Outlook"/>
-        <bt:String id="groupLabel" DefaultValue="eXo Platform"/>
+        <bt:String id="appDescription" DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
+          <bt:Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook" /> 
+        </bt:String>
+        <bt:String id="groupLabel" DefaultValue="eXo Platform">
+          <bt:Override Locale="fr-fr" Value="eXo Platform" />
+        </bt:String>
         
         <!-- Common -->
-        <bt:String id="searchLabel" DefaultValue="Search"/>
-        <bt:String id="searchTipTitle" DefaultValue="Search in eXo content"/>
-        <bt:String id="createMenuLabel" DefaultValue="Create in eXo..."/>
-        <bt:String id="createMenuTipTitle" DefaultValue="Create Conversation in eXo"/>
-        <bt:String id="postStatusLabel" DefaultValue="Post Status"/>
-        <bt:String id="postStatusTipTitle" DefaultValue="Post Status in eXo Activity Stream"/>
-        <bt:String id="startDiscussionLabel" DefaultValue="Start Discussion"/>
-        <bt:String id="startDiscussionTipTitle" DefaultValue="Start Discussion in eXo Forum"/>
-        <bt:String id="userInfoLabel" DefaultValue="User profiles"/>
-        <bt:String id="userInfoTipTitle" DefaultValue="Find participants in your eXo Connections"/>
+        <bt:String id="searchLabel" DefaultValue="Search">
+          <bt:Override Locale="fr-fr" Value="Rechercher" />
+        </bt:String>
+        <bt:String id="searchTipTitle" DefaultValue="Search in eXo content">
+          <bt:Override Locale="fr-fr" Value="Rechercher dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuLabel" DefaultValue="Create in eXo...">
+          <bt:Override Locale="fr-fr" Value="Créer dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuTipTitle" DefaultValue="Start a Conversation">
+          <bt:Override Locale="fr-fr" Value="Démarrer une discussion" />
+        </bt:String>
+        <bt:String id="postStatusLabel" DefaultValue="Post Activity">
+          <bt:Override Locale="fr-fr" Value="Publier une Activité" />
+        </bt:String>
+        <bt:String id="postStatusTipTitle" DefaultValue="Post a status update in the activity stream">
+          <bt:Override Locale="fr-fr" Value="Publier un message dans le flux d'activité" />
+        </bt:String>
+        <bt:String id="startDiscussionLabel" DefaultValue="Start Discussion">
+          <bt:Override Locale="fr-fr" Value="Démarrer une Conversation" />
+        </bt:String>
+        <bt:String id="startDiscussionTipTitle" DefaultValue="Start a discussion in the forums">
+          <bt:Override Locale="fr-fr" Value="Démarrer une discussion dans les forums" />	
+        </bt:String>
+        <bt:String id="userInfoLabel" DefaultValue="People">
+          <bt:Override Locale="fr-fr" Value="Personnes" />
+        </bt:String>
+        <bt:String id="userInfoTipTitle" DefaultValue="Trouvez vos contacts parmis les membre de l'intranet">
+        </bt:String>
         
         <!-- Compose mode -->
-        <bt:String id="addAttachmentLabel" DefaultValue="Attach Document"/>
-        <bt:String id="addAttachmentTipTitle" DefaultValue="Attach Document from eXo"/>
+        <bt:String id="addAttachmentLabel" DefaultValue="Attach a Document">
+          <bt:Override Locale="fr-fr" Value="Attacher un document" />
+        </bt:String>
+        <bt:String id="addAttachmentTipTitle" DefaultValue="Attach a document from eXo">
+          <bt:Override Locale="fr-fr" Value="Attachez un document depuis eXo" />
+        </bt:String>
         
         <!-- Read mode -->
-        <bt:String id="saveAttachmentLabel" DefaultValue="Save Attachments"/>
-        <bt:String id="saveAttachmentTipTitle" DefaultValue="Save Attachments in eXo"/>
-        <bt:String id="convertMenuLabel" DefaultValue="Convert"/>
-        <bt:String id="convertMenuTipTitle" DefaultValue="Convert Message"/>
-        <bt:String id="convertToStatusLabel" DefaultValue="To eXo Status"/>
-        <bt:String id="convertToStatusTipTitle" DefaultValue="To a Status in eXo Activity Stream"/>
-        <bt:String id="convertToWikiLabel" DefaultValue="To eXo Wiki Page"/>
-        <bt:String id="convertToWikiTipTitle" DefaultValue="To a page in eXo Wiki"/>
-        <bt:String id="convertToForumLabel" DefaultValue="To eXo Forum"/>
-        <bt:String id="convertToForumTipTitle" DefaultValue="To a Discussion in eXo Forum"/>
+        <bt:String id="saveAttachmentLabel" DefaultValue="Save Attachments">
+          <bt:Override Locale="fr-fr" Value="Enregistrer pièces jointes" />
+        </bt:String>
+        <bt:String id="saveAttachmentTipTitle" DefaultValue="Save attachments in eXo">
+            <bt:Override Locale="fr-fr" Value="Enregistrer les pièces jointes dans eXo" />
+        </bt:String>
+        <bt:String id="convertMenuLabel" DefaultValue="Convert">
+          <bt:Override Locale="fr-fr" Value="Convertir" />
+        </bt:String>
+        <bt:String id="convertMenuTipTitle" DefaultValue="Convert a message">
+          <bt:Override Locale="fr-fr" Value="Convertir un message" />
+        </bt:String>
+        <bt:String id="convertToStatusLabel" DefaultValue="to Activity">
+          <bt:Override Locale="fr-fr" Value="en Activité" />
+        </bt:String>
+        <bt:String id="convertToStatusTipTitle" DefaultValue="convert a message to an activity">
+          <bt:Override Locale="fr-fr" Value="convertir un message en activité" />
+        </bt:String>
+        <bt:String id="convertToWikiLabel" DefaultValue="to Wiki">
+          <bt:Override Locale="fr-fr" Value="en Wiki" />
+        </bt:String>
+        <bt:String id="convertToWikiTipTitle" DefaultValue="convert a message to a wiki page">
+          <bt:Override Locale="fr-fr" Value="convertir un message en page wiki" />
+        </bt:String>
+        <bt:String id="convertToForumLabel" DefaultValue="to Discussion">
+          <bt:Override Locale="fr-fr" Value="en Discussion" />
+        </bt:String>
+        <bt:String id="convertToForumTipTitle" DefaultValue="convert a message to a forum discussion">
+          <bt:Override Locale="fr-fr" Value="convertir un message en discussion dans les forums" />
+        </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
         <!-- Common -->
-        <bt:String id="searchTipDescription" DefaultValue="Open pane for searching content in eXo"/>
-        <bt:String id="createMenuTipDescription" DefaultValue="Open pane to create new conversation in eXo"/>
-        <bt:String id="postStatusTipDescription" DefaultValue="Open pane to post status in eXo actvity stream"/>
-        <bt:String id="startDiscussionTipDescription" DefaultValue="Open pane to start discussion in eXo Forum"/>
-        <bt:String id="userInfoTipDescription" DefaultValue="Open pane to show participant profiles from eXo Connections"/>
+        <bt:String id="searchTipDescription" DefaultValue="Open the pane to search for content in eXo">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau de recherhe de contenu dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuTipDescription" DefaultValue="Open the pane to create a new discussion in eXo">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour démarrer une discussion dans eXo" />
+        </bt:String>
+        <bt:String id="postStatusTipDescription" DefaultValue="Open the pane to post an activity in the stream">
+            <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour publier une activité dans le flux" />
+        </bt:String>
+        <bt:String id="startDiscussionTipDescription" DefaultValue="Open the pane to start a discussion in the forums">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour démarrer une discussion dans les forums" />
+        </bt:String>
+        <bt:String id="userInfoTipDescription" DefaultValue="Open the pane to show intranet people">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour voir les personnes de l'intranet" />
+        </bt:String>
         
         <!-- Compose mode -->
-        <bt:String id="addAttachmentTipDescription" DefaultValue="Open pane to select eXo document to attach to the message."/>
+        <bt:String id="addAttachmentTipDescription" DefaultValue="Open the pane select eXo documents to attach to the message.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour sélectionner les documents eXo à attacher en pièce jointe" />
+        </bt:String>
         
         <!-- Read mode -->
-        <bt:String id="saveAttachmentTipDescription" DefaultValue="Open pane to save attachments in eXo documents."/>
-        <bt:String id="convertMenuTipDescription" DefaultValue="Open pane to convert this message to a conversation in eXo."/>
-        <bt:String id="convertToStatusTipDescription" DefaultValue="Open pane to convert this message to a status in eXo activity stream."/>
-        <bt:String id="convertToWikiTipDescription" DefaultValue="Open pane to convert this message to a page in eXo Wiki."/>
-        <bt:String id="convertToForumTipDescription" DefaultValue="Open pane to convert this message to a discussion in eXo Forum."/>
+        <bt:String id="saveAttachmentTipDescription" DefaultValue="Open the pane to save attachments in eXo documents.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour enregistrer les pièces jointes dans eXo" />
+        </bt:String>
+        <bt:String id="convertMenuTipDescription" DefaultValue="Open the pane to convert this message to a conversation in eXo.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en conversation dans eXo." />
+        </bt:String>
+        <bt:String id="convertToStatusTipDescription" DefaultValue="Open the pane to convert this message an activity in the stream.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en activité dans le flux." />
+        </bt:String>
+        <bt:String id="convertToWikiTipDescription" DefaultValue="Open the pane to convert this message to a wiki page.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en page wiki" />
+        </bt:String>
+        <bt:String id="convertToForumTipDescription" DefaultValue="Open the pane to convert this message to a discussion in the forums.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en discussion dans les forums." />
+        </bt:String>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

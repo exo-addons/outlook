@@ -38,6 +38,7 @@ def currentNode = uicomponent.getCurrentNode()
 		<div class="messageBody">
 			<textarea id="$iframeId">$strContent</textarea>
 		</div> 
+		<div class="messageFooter">&nbsp;</div>
 	<% 
     def jsManager = rcontext.getJavascriptManager()
     jsManager.require('SHARED/wcm-utils', 'wcmutil').addScripts("wcmutil.WCMUtils.replaceToIframe('$iframeId');")

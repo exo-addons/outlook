@@ -15,6 +15,10 @@
 	width: 100%;
 }
 
+.outlookMessagePreview .UIUnResizableBlock {
+	height: 100%;
+}
+
 #UIDocumentContainer .outlookMessageViewer {
 	height: 400px;
 }
@@ -23,22 +27,35 @@
 	height: 200px !important;
 }
 
-/*.messageQuote {
-	max-width: 7px;
-	width: 7px;
-	height: 100%;
-	background-color: #999999;
-	position: relative;
+.outlookMessagePreview .messageFooter {
+	height: 25px;
+  max-height: 3%;
+  width: 100%;
+  background-color: white;
+  position: relative;
   float: left;
-  box-sizing: border-box;
-}*/
+}
+
+.outlookMessageActivityContent .messageFooter, .UIDocumentWorkspace .messageFooter {
+	height: 0px;
+	display: none;
+}
+
+.outlookMessagePreview .messageBody {
+	height: 97%;
+}
+
+.outlookMessageActivityContent .messageBody, .UIDocumentWorkspace .messageBody {
+	height: 100%;
+}
+
 .messageBody {
 	position: relative;
 	float: left;
 	box-sizing: border-box;
 	padding-left: 7px;
 	min-width: 100%;
-	height: 100%;
+	max-height: 100%;
 	border-width: 0px 0px 0px 12px;
 	border-style: solid;
 	border-color: #999999;

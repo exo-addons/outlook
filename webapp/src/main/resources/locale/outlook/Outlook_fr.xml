@@ -3,55 +3,92 @@
   <Outlook>
     <command>
       <home>Accueil</home>
-      <saveAttachment>Enregistrer la pièce jointe</saveAttachment>
+      <saveAttachment>Enregistrer les pièces jointes</saveAttachment>
       <search>Chercher</search>
       <create>Créer</create>
-      <convertTo>Convertir</convertTo>
-      <addAttachment>Joindre le document</addAttachment>
+      <convertTo>Convertire</convertTo>
+      <addAttachment>Attacher un document</addAttachment>
       <userInfo>Utilisateurs</userInfo>
-      <postStatus>état post</postStatus>
-      <startDiscussion>Démarrer Discussion</startDiscussion>
-      <convertToStatus>Convertir en état</convertToStatus>
-      <convertToWiki>Convertir en Wiki</convertToWiki>
-      <convertToForum>Convertir au Forum</convertToForum>
+      <postStatus>Partager une activité</postStatus>
+      <startDiscussion>Démarer une discussion</startDiscussion>
+      <convertToStatus>Convertir en activité</convertToStatus>
+      <convertToWiki>Convertir en wiki</convertToWiki>
+      <convertToForum>Convertir en discussion</convertToForum>
     </command>
-    <selectAttachment>Select attachment</selectAttachment>
-    <youDontHaveSpaces>You are not a member of any space</youDontHaveSpaces>
-    <selectSaveSpace>Save to space</selectSaveSpace>
-    <selectFolder>Destination folder</selectFolder>
-    <save>Save</save>
-    <pathInfoSaveDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoSaveDescription>
-    <pathUpDescription>Navigate to parent folder</pathUpDescription>
-    <pathAddDescription>Create new folder</pathAddDescription>
-    <pathOpenDescription>Open in new window</pathOpenDescription>
-    <saveAttachmentDescription>Save attachment of the message in documents of selected space</saveAttachmentDescription>
-    <cancel>Cancel</cancel>
-    <cancelSaveAttachmentDescription>Don't save attachment of the message</cancelSaveAttachmentDescription>
-    <savingAttachment>Saving your files...</savingAttachment>
-    <savedAttachment>Your files successfully saved in space </savedAttachment>
-    <addingNewFolder>Adding new folder</addingNewFolder>
-    <enterFolderNameAndCreate>Provide a name for new folder and click Add button.</enterFolderNameAndCreate>
-    <folderName>Folder name</folderName>
-    <add>Add</add>
-    
-    <selectDocumentSpace>Select space</selectDocumentSpace>
-    <selectedDocuments>Selected documents</selectedDocuments>
-    <selectDocument>Select document</selectDocument>
-    <pathInfoDescription>It's a folder in space Documents where your attachment will be saved.</pathInfoDescription>
-    <attach>Attach</attach>
-    <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
-    <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
-    <addingAttachment>Attaching documents...</addingAttachment>
-    <addedAttachment>Documents successfully attached to your message</addedAttachment>
+
+    <homeOpenPortal>Ouvrir l'intranet dans une nouvelle fenêtre</homeOpenPortal>
+
+    <noActionsAvailable>Aucune action disponible dans ce contexte.</noActionsAvailable>
+
+    <saveAttachmentDescription>Ici vous pouvez enregistrer les pièces jointes comme documents dans votre intranet.</saveAttachmentDescription>
+    <selectAttachment>Selectionner les pièces jointes</selectAttachment>
+    <selectAttachmentDescription>Les pièces jointes sélectionnées seront enregistrées dans l'espace cible.</selectAttachmentDescription>
+    <commentAttachment>Laissez un message (optionel)</commentAttachment>
+    <commentAttachmentDescription>Ce message sera contenu dans l'activité générée pour les pièces jointes.</commentAttachmentDescription>
+    <selectSaveSpace>Espace cible</selectSaveSpace>
+    <selectSaveSpaceDescription>Sélectionnez l'espace où seront enregistrées vos pièces jointes</selectSaveSpaceDescription>
+    <selectFolder>Dossier destinataire</selectFolder>
+    <save>Enregistrer</save>
+    <pathInfoSaveDescription>Le dossier destinataire dans l'espace documentaire cibleoù vos pièces jointes seront enregistrées.</pathInfoSaveDescription>
+    <pathUpDescription>Naviguer au dossier parent</pathUpDescription>
+    <pathAddDescription>Créer un nouveau dossier</pathAddDescription>
+    <pathOpenDescription>Ouvrir dans une nouvelle fenêtre</pathOpenDescription>
+    <saveAttachmentDescription>Enregistrer les pièces jointes de ce message dans l'espace cible</saveAttachmentDescription>
+    <cancel>Annuler</cancel>
+    <cancelSaveAttachmentDescription>Ne pas enregister les pièces jointes de ce message.</cancelSaveAttachmentDescription>
+    <savingAttachment>Enregistrement de vos documents...</savingAttachment>
+    <savedAttachment>Vos documents ont été enregistrés avec succès</savedAttachment>
+    <savedClickToOpen>Clickez un nim de fichier dans la liste pour l'ouvrir dans l'intranet</savedClickToOpen>
+    <addingNewFolder>Création du nouveau dossier</addingNewFolder>
+    <enterFolderNameAndCreate>Donnez un nom à ce dossier puis cliquez sur le bouton Ajouter.</enterFolderNameAndCreate>
+    <folderName>Nom du dossier</folderName>
+    <add>Ajouter</add>
+
+    <selectDocumentSpace>Sélectionnez un espace</selectDocumentSpace>
+    <selectedDocuments>Selectionnez des documents</selectedDocuments>
+    <selectDocument>Selectionnez un document</selectDocument>
+    <pathInfoDescription>Dossier dans l'espace documentaire cible où vos pièces jointers seront enregistrées.</pathInfoDescription>
+    <attach>Joindre</attach>
+    <addAttachmentDescription>Attacher les documents sélectionnés en pièce jointe</addAttachmentDescription>
+    <cancelAddAttachmentDescription>Annuler l'attachement des pièces jointes</cancelAddAttachmentDescription>
+    <addingAttachment>Attachement en cours...</addingAttachment>
+    <addedAttachment>Les documents ont été attachés en pièce jointe</addedAttachment>
+
+    <convertToStatusDescription>Ce message sera convertit en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activvité utilisateur. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
+    <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
+    <targetSpaceDescription>Si un espace est sélectionné, ce message sera ublié dans son flux d'activité.</targetSpaceDescription>
+    <activityTitle>Titre</activityTitle>
+    <activityTitleDescription>Ce sera le titre de votre activité dans le flux</activityTitleDescription>
+    <editActivityText>Cliquez pour modifier</editActivityText>
+    <activityText>Corps du message</activityText>
+    <activityTextDescription>Ceci s'affichera dans le corps de l'activité au sein du flux</activityTextDescription>
+    <convert>Convertir</convert>
+    <convertingToStatus>Conversion du message en cours..</convertingToStatus>
+    <convertedToStatus>L'activité a été publiée avec succès</convertedToStatus>
+    <convertToStatusError>Erreur à la conversion du message en activité</convertToStatusError>
+    <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux </convertedToUserActivity>
+    <convertedToSpaceActivity>L'activité a été publiée avec succès dans le flux de l'espace {SPACE_NAME}</convertedToSpaceActivity>
+    <openActivity>Afficher l'activity</openActivity>
     
     <messages>
-      <folderHasNoPath>Error selecting folder - path not found. Please reload page.</folderHasNoPath>
-      <spacePathNotFound>Space and/or path not found</spacePathNotFound>
-      <nothingSavedTryAgain>Nothing was saved. Please submit form again or contact administrator.</nothingSavedTryAgain>
-      <gettingTokenError>Error getting access token for mail server</gettingTokenError>
-      <attachmentNotSelected>Attachment not selected. Select at least an one and then submit form again.</attachmentNotSelected>
-      <folderNameRequired>Folder name required</folderNameRequired>
-      <menuNameUndefined>Menu name undefined. Please contact administrator.</menuNameUndefined>
+      <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
+      <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
+      <nothingSavedTryAgain>Rien n'a été enregistré. Veuillez resoumettre le formulaire ou contactez votre administrateur.</nothingSavedTryAgain>
+      <gettingTokenError>Erreur à la récupération du jeton d'accès sur le serveur email.</gettingTokenError>
+      <attachmentNotSelected>Aucune pièce jointe sélectionnée. Cochez-en au moins une et resoumettez le formulaire à nouveau.</attachmentNotSelected>
+      <folderNameRequired>Nom du dossier requis</folderNameRequired>
+      <menuNameUndefined>nom du menu indéfini. Veuillez contacter votre administrateur.</menuNameUndefined>
+      <youDontHaveSpaces>Vous n'êtes membre d'aucun espace.</youDontHaveSpaces>
+      <joinSpaces>You pouvez rejoindre des espaces</joinSpaces>
+      <atThisPage>sur cette page</atThisPage>
+      <messageItemReadError>Erreur à la lecture du message.</messageItemReadError>
+      <convertToStatusError>Erreur à la conversion du message en activité.</convertToStatusError>
     </messages>
+    
+    <activity>
+      <from>De la part de</from>
+      <on>le</on>
+      <at>à</at>
+    </activity>
   </Outlook>
 </bundle>
