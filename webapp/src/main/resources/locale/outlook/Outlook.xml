@@ -72,6 +72,8 @@
     
     <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
     
+    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
+    
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
       <spacePathNotFound>Space or path not found</spacePathNotFound>
