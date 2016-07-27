@@ -80,3 +80,7 @@
     border-image: linear-gradient(to left, gray, rgba(0, 0, 0, 0)) 1 75%; */
 	z-index: 10;
 }
+
+.attachmentFiles {
+	margin-left: 15px;
+}

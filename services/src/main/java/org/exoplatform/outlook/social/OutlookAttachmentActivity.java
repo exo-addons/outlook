@@ -19,7 +19,9 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
@@ -34,6 +36,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.LocaleContextInfo;
+import org.exoplatform.services.wcm.core.NodetypeConstant;
+import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
@@ -52,6 +56,8 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,9 +68,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 
 /**
  * Created by The eXo Platform SAS
@@ -138,28 +149,208 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
-  protected List<String> fileUUIDs;
+  public class ImageDimension {
+    final int height;
 
-  protected List<Node>   files;
+    final int width;
+
+    protected ImageDimension(int height, int width) {
+      super();
+      this.height = height;
+      this.width = width;
+    }
+
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+      return height;
+    }
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+      return width;
+    }
+  }
+
+  protected List<String>            fileUUIDs;
+
+  protected ManageableRepository    repository;
+
+  protected ThreadLocal<List<Node>> files = new ThreadLocal<List<Node>>();
 
   public OutlookAttachmentActivity() throws Exception {
-    super();
+    RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
+    this.repository = repositoryService.getCurrentRepository();
   }
 
   public List<Node> getFiles() throws RepositoryException, RepositoryConfigurationException {
-    if (this.files == null) {
+    List<Node> files = this.files.get();
+    if (files == null) {
       List<String> uuids = getFileUUIDs();
-      RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
-      ManageableRepository repository = repositoryService.getCurrentRepository();
       SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
       Session session = sessionProvider.getSession(getWorkspace(), repository);
-      List<Node> files = new ArrayList<Node>();
+      files = new ArrayList<Node>();
       for (String uuid : uuids) {
         files.add(session.getNodeByUUID(uuid));
       }
-      this.files = files;
+      this.files.set(files);
     }
-    return Collections.unmodifiableList(this.files);
+    return Collections.unmodifiableList(files);
+  }
+
+  public boolean isImage(String mimeType) throws Exception {
+    return mimeType.startsWith("image") || mimeType.indexOf("icon") >= 0;
+  }
+
+  protected String getSize(Node node) {
+    double size = 0;
+    try {
+      if (node.hasNode(Utils.JCR_CONTENT)) {
+        Node contentNode = node.getNode(Utils.JCR_CONTENT);
+        if (contentNode.hasProperty(Utils.JCR_DATA)) {
+          size = contentNode.getProperty(Utils.JCR_DATA).getLength();
+        }
+
+        return FileUtils.byteCountToDisplaySize((long) size);
+      }
+    } catch (PathNotFoundException e) {
+      return StringUtils.EMPTY;
+    } catch (ValueFormatException e) {
+      return StringUtils.EMPTY;
+    } catch (RepositoryException e) {
+      return StringUtils.EMPTY;
+    } catch (NullPointerException e) {
+      return StringUtils.EMPTY;
+    }
+    return StringUtils.EMPTY;
+  }
+
+  public String getPdfThumbnailImageLink(Node node) throws RepositoryException, UnsupportedEncodingException {
+    String portalName = PortalContainer.getCurrentPortalContainerName();
+    String restContextName = PortalContainer.getCurrentRestContextName();
+    String repositoryName = repository.getConfiguration().getName();
+    String workspaceName = getWorkspace();
+
+    String encodedPath = URLEncoder.encode(node.getPath(), "utf-8");
+    encodedPath = encodedPath.replaceAll("%2F", "/");
+
+    StringBuilder link = new StringBuilder();
+    link.append('/');
+    link.append(portalName);
+    link.append('/');
+    link.append(restContextName);
+    link.append("/thumbnailImage/big/");
+    link.append(repositoryName);
+    link.append('/');
+    link.append(workspaceName);
+    link.append(encodedPath);
+
+    return link.toString();
+  }
+
+  public String getThumbnailImageLink(Node node, String mimeType) throws RepositoryException, UnsupportedEncodingException {
+    String portalName = PortalContainer.getCurrentPortalContainerName();
+    String restContextName = PortalContainer.getCurrentRestContextName();
+    String repositoryName = repository.getConfiguration().getName();
+    String workspaceName = getWorkspace();
+
+    StringBuilder link = new StringBuilder();
+    // we use relative URL
+    // PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
+    // PortletRequest portletRequest = portletRequestContext.getRequest();
+    // link.append(portletRequest.getScheme());
+    // link.append("://");
+    // link.append(portletRequest.getServerName());
+    // link.append(':');
+    // link.append(portletRequest.getServerPort());
+
+    link.append('/');
+    link.append(portalName);
+    link.append('/');
+    link.append(restContextName);
+
+    if (mimeType.indexOf("icon") >= 0) {
+      // Icon will be rendered directly from JCR
+      link.append("/jcr/");
+      link.append(repositoryName);
+      link.append('/');
+      link.append(workspaceName);
+
+      FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
+      if (node.isNodeType("nt:frozenNode")) {
+        String uuid = node.getProperty("jcr:frozenUuid").getString();
+        Node originalNode = node.getSession().getNodeByUUID(uuid);
+        link.append(originalNode.getPath());
+        link.append("?version=");
+        link.append(node.getParent().getName());
+      } else {
+        link.append(node.getPath());
+      }
+
+      return friendlyService.getFriendlyUri(link.toString());
+    } else {
+      String path = node.getPath();
+      int imageHeight, imageWidth;
+      try {
+        if (node.hasNode(NodetypeConstant.JCR_CONTENT)) {
+          node = node.getNode(NodetypeConstant.JCR_CONTENT);
+        }
+        ImageReader reader = ImageIO.getImageReadersByMIMEType(mimeType).next();
+        ImageInputStream iis = ImageIO.createImageInputStream(node.getProperty("jcr:data").getStream());
+        reader.setInput(iis, true);
+        imageHeight = reader.getHeight(0);
+        imageWidth = reader.getWidth(0);
+        iis.close();
+        reader.dispose();
+
+        // align sizes
+        if (imageHeight > imageWidth && imageHeight > 300) {
+          imageWidth = (300 * imageWidth) / imageHeight;
+          imageHeight = 300;
+        } else if (imageWidth > imageHeight && imageWidth > 300) {
+          imageHeight = (300 * imageHeight) / imageWidth;
+          imageWidth = 300;
+        } else if (imageWidth == imageHeight && imageHeight > 300) {
+          imageWidth = imageHeight = 300;
+        }
+      } catch (Exception e) {
+        LOG.error("Cannot read node " + node, e);
+        imageWidth = imageHeight = 300;
+      }
+
+      link.append('/');
+      link.append(portalName);
+      link.append('/');
+      link.append(restContextName);
+      link.append("/thumbnailImage/custom/");
+      link.append(imageWidth);
+      link.append('x');
+      link.append(imageHeight);
+      link.append('/');
+      link.append(repositoryName);
+      link.append('/');
+      link.append(workspaceName);
+
+      String encodedPath = URLEncoder.encode(path, "utf-8");
+      encodedPath = encodedPath.replaceAll("%2F", "/");
+      link.append(encodedPath);
+    }
+    return link.toString();
+  }
+
+  public String getCssClassIconFile(Node node) {
+    try {
+      return org.exoplatform.ecm.webui.utils.Utils.getNodeTypeIcon(node, "uiIcon64x64");
+    } catch (RepositoryException e) {
+      return "uiIcon64x64Templatent_file uiIcon64x64nt_file";
+    }
+  }
+
+  public boolean isSupportThumbnailView(String mimeType) throws Exception {
+    return org.exoplatform.services.cms.impl.Utils.isSupportThumbnailView(mimeType);
   }
 
   public boolean isFileSupportPreview(Node data) throws Exception {

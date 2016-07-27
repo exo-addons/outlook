@@ -294,42 +294,80 @@
        		if (files.size() == 1) {
 	          file = files[0];
 	          fileTitle = uicomponent.getTitle(file)
-          	fileSupportPreview = uicomponent.isFileSupportPreview(file)
-	          fileLink = fileSupportPreview ? uicomponent.getViewLink(file) : uicomponent.getDownloadLink(file)
+            fileType = uicomponent.getMimeType(file)
+          	fileIsSupportPreview = uicomponent.isFileSupportPreview(file)
+	          fileLink = fileIsSupportPreview ? uicomponent.getViewLink(file) : uicomponent.getDownloadLink(file)
           	def labelHasSavedFile = _ctx.appRes("Outlook.label.hasSavedFile")
 	         %>
-	           <div class="text">
-	            <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFile</div>
-	            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle" href="$fileLink"> $fileTitle </a>
-	            <div class="descriptionText"><% uicomponent.getSummary(file) %></div>
-	          </div><!--end text-->
-	        <%if (fileSupportPreview) { %>
+					<%if (uicomponent.isImage(fileType)) { %>
+            <div id="MediaContent${activity.id}" class=" pull-left mediaContent ">
+        	  <%
+					    def thumbnailImage = uicomponent.getThumbnailImageLink(file, fileType);
+					    def classIconName = uicomponent.getCssClassIconFile(file)
+				   	%>
+					   <a href="$fileLink" style="cursor:pointer"  rel="tooltip" data-placement="bottom" data-original-title="$fileTitle">
+					   	<img src="$thumbnailImage" retryCount="0"  onerror="loadImageOnError(this);" alt="$fileTitle" />
+					   </a>
+					   <a href="$fileLink" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle"><i class="$classIconName"></i></a>
+					 </div>
+					<%} else if(uicomponent.isSupportThumbnailView(fileType)){%>
+            <div id="MediaContent${activity.id}" class="pull-left mediaContent docTypeContent">
+              <%
+                def pdfThumbnailImage = uicomponent.getPdfThumbnailImageLink(file)
+                def classIconName = uicomponent.getCssClassIconFile(file)               
+              %>
+              <a href="$fileLink" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle">
+              	<img src="$pdfThumbnailImage" retryCount="0"  onerror="loadImageOnError(this);" class="pdfImageBorder"/>
+              </a>
+              <a href="$fileLink" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle"><i class="$classIconName"></i></a>
+            </div>
+	        <%} else if (fileSupportPreview) { %>
 	          <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
 	            <% uicomponent.renderAttachmentPresentation(file) %>
 	          </div>
-	        <%}
-       		} else {
+	        <%} else { %>
+            <div id="MediaContent${activity.id}" class="fileTypeContent">
+              <% def classIconName = uicomponent.getCssClassIconFile(file) %>
+              <a href="$fileLink"  data-original-title="$fileTitle" rel="tooltip" data-placement="bottom"><i class="$classIconName"></i></a>
+          	</div>
+          <%}%>
+          	<div class="text">
+	            <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFile</div>
+	            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle" href="$fileLink"> $fileTitle </a>
+	            <div class="descriptionText"><% uicomponent.getSummary(file) %></div>
+	            <div class="inforFile">				        
+								<div class="versionFile">	
+									<%
+                  def fileSize = uicomponent.getSize(file)
+									if(fileSize.length() > 0) {
+									%>
+									<%=_ctx.appRes("SocialIntegration.titles.fileSize"); %>:&nbsp; $fileSize
+								<%}%>
+								</div>
+							</div>
+	          </div><!--end text-->
+       	<%} else {
             def labelHasSavedFiles = _ctx.appRes("Outlook.label.hasSavedNFiles")
-            labelHasSavedFiles.replaceAll('{N}', files.size())
+            labelHasSavedFiles = labelHasSavedFiles.replace('{N}', String.valueOf(files.size()))
           %>
             <div class="text">
             <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFiles</div>
             </div><!--end text-->
             <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
+            	<ul class="attachmentFiles">
           <%
             for (f in files) {
               def title = uicomponent.getTitle(f)
-              def supportPreview = uicomponent.isFileSupportPreview(f)
-              def link = supportPreview ? uicomponent.getViewLink(f) : uicomponent.getDownloadLink(f)
+              def isSupportPreview = uicomponent.isFileSupportPreview(f)
+              def link = isSupportPreview ? uicomponent.getViewLink(f) : uicomponent.getDownloadLink(f)
             %>
-             	<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$title" href="$link"> $title </a><br>
-            <% 
-            }
-            %>
-            	</div>
-          <%
-      		}
-       		%>
+	             	<li>
+	             		<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$title" href="$link"> $title </a>
+	             	</li>
+          <%}%>
+          		</ul>
+            </div>
+        <%}%>
 					</div>	
 				</div><!--end introBox,contentShare-->	
 				<% /* ============================ */ %>						
@@ -364,7 +402,7 @@
 					 <ul class="pull-left statusAction">
 				<%
           if (file) {
-						if (fileSupportPreview) { 
+						if (fileIsSupportPreview) { 
 				%> 	<li><a href="$fileLink"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
 					<%} else { %>
           	<li><a href="$fileLink"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
