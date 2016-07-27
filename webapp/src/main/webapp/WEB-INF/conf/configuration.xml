@@ -128,19 +128,36 @@
       <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
       <init-params>
         <object-param>
-          <name>Share File Activity</name>
+          <name>Outlook Message Activity</name>
           <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
             <field name="type">
               <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
             </field>
             <field name="name">
-              <string>outlook:sharemessage</string>
+              <string>outlook:message</string>
             </field>
             <field name="component">
-              <string>org.exoplatform.outlook.social.SharedOutlookMessageActivity</string>
+              <string>org.exoplatform.outlook.social.OutlookMessageActivity</string>
             </field>
             <field name="activityBuiderClass">
-              <string>org.exoplatform.wcm.ext.component.activity.FileUIActivityBuilder</string>
+              <string>org.exoplatform.outlook.social.OutlookActivityBuilder</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Outlook Attachment Activity</name>
+          <object type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type">
+              <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
+            </field>
+            <field name="name">
+              <string>outlook:attachment</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.outlook.social.OutlookAttachmentActivity</string>
+            </field>
+            <field name="activityBuiderClass">
+              <string>org.exoplatform.outlook.social.OutlookActivityBuilder</string>
             </field>
           </object>
         </object-param>
@@ -155,7 +172,7 @@
               <string>ShowOutlookMessage</string>
             </field>
             <field name="component">
-              <string>org.exoplatform.outlook.social.SharedOutlookMessageViewer</string>
+              <string>org.exoplatform.outlook.social.OutlookMessageViewer</string>
             </field>
             <field name="category">
               <string>FileViewer</string>

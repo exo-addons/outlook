@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bundle>
   <Outlook>
+    <label>
+      <hasSavedFile>has saved file:</hasSavedFile>
+      <hasSavedNFiles>has saved {N} files:</hasSavedNFiles>
+    </label>
+  
     <command>
       <home>Home</home>
       <saveAttachment>Save Attachments</saveAttachment>

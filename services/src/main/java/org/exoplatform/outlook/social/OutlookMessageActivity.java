@@ -21,7 +21,7 @@ package org.exoplatform.outlook.social;
 
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
-import org.exoplatform.outlook.social.SharedOutlookMessageActivity.ViewDocumentActionListener;
+import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.log.ExoLogger;
@@ -61,13 +61,13 @@ import javax.jcr.RepositoryException;
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: SharedOutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
+ * @version $Id: OutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
  * 
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      // FYI original template:
                                      // "classpath:groovy/ecm/social-integration/UISharedFile.gtmpl",
-                                     template = "classpath:groovy/templates/SharedOutlookMessageActivity.gtmpl",
+                                     template = "classpath:groovy/templates/OutlookMessageActivity.gtmpl",
                                      events = { @EventConfig(listeners = ViewDocumentActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
@@ -76,24 +76,24 @@ import javax.jcr.RepositoryException;
                                          @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
-public class SharedOutlookMessageActivity extends FileUIActivity {
+public class OutlookMessageActivity extends FileUIActivity {
 
-  public static final String ACTIVITY_TYPE       = "outlook:sharemessage";
+  public static final String ACTIVITY_TYPE       = "outlook:message";
 
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
 
-  protected static final Log LOG                 = ExoLogger.getLogger(SharedOutlookMessageActivity.class);
+  protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
 
-  public static class ViewDocumentActionListener extends EventListener<SharedOutlookMessageActivity> {
+  public static class ViewDocumentActionListener extends EventListener<OutlookMessageActivity> {
     @Override
-    public void execute(Event<SharedOutlookMessageActivity> event) throws Exception {
+    public void execute(Event<OutlookMessageActivity> event) throws Exception {
       // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
-      SharedOutlookMessageActivity activity = event.getSource();
+      OutlookMessageActivity activity = event.getSource();
       UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
       PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
-
+      
       OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
                                                                                  null,
                                                                                  "UIDocumentPreview");
@@ -105,7 +105,7 @@ public class SharedOutlookMessageActivity extends FileUIActivity {
     }
   }
 
-  public SharedOutlookMessageActivity() throws Exception {
+  public OutlookMessageActivity() throws Exception {
     super();
   }
 

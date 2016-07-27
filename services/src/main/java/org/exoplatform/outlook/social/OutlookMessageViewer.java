@@ -32,13 +32,13 @@ import java.util.List;
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: SharedOutlookMessageViewer.java 00000 Jul 12, 2016 pnedonosko $
+ * @version $Id: OutlookMessageViewer.java 00000 Jul 12, 2016 pnedonosko $
  * 
  */
-@ComponentConfig(template = "classpath:groovy/templates/SharedOutlookMessageViewer.gtmpl")
-public class SharedOutlookMessageViewer extends BaseOutlookMessageViewer {
+@ComponentConfig(template = "classpath:groovy/templates/OutlookMessageViewer.gtmpl")
+public class OutlookMessageViewer extends BaseOutlookMessageViewer {
 
-  protected static final Log                     LOG             = ExoLogger.getLogger(SharedOutlookMessageViewer.class);
+  protected static final Log                     LOG             = ExoLogger.getLogger(OutlookMessageViewer.class);
 
   public static final String                     EVENT_NAME      = "ShowOutlookMessage";
 

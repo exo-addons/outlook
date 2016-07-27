@@ -19,21 +19,26 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.application.UserProfileLifecycle;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
+import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.LocaleContextInfo;
+import org.exoplatform.services.wcm.utils.WCMCoreUtils;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -48,6 +53,8 @@ import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,17 +64,16 @@ import java.util.ResourceBundle;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: SharedOutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
+ * @version $Id: OutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
  * 
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
-                                     // FYI original template:
-                                     // "classpath:groovy/ecm/social-integration/UISharedFile.gtmpl",
                                      template = "classpath:groovy/templates/OutlookAttachmentActivity.gtmpl",
                                      events = { @EventConfig(listeners = ViewDocumentActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
@@ -77,9 +83,23 @@ import javax.jcr.RepositoryException;
                                          @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
-public class OutlookAttachmentActivity extends FileUIActivity {
+public class OutlookAttachmentActivity extends BaseUIActivity {
 
   public static final String ACTIVITY_TYPE       = "outlook:attachment";
+
+  public static final String COMMENT             = "comment";
+
+  public static final String REPOSITORY          = "repository";
+
+  public static final String WORKSPACE           = "workspace";
+
+  public static final String FILE_UUIDS          = "fileUUIDs";
+
+  public static final String AUTHOR              = "author";
+
+  public static final String DATE_CREATED        = "dateCreated";
+
+  public static final String DATE_LAST_MODIFIED  = "lastModified";
 
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
@@ -92,28 +112,56 @@ public class OutlookAttachmentActivity extends FileUIActivity {
     public void execute(Event<OutlookAttachmentActivity> event) throws Exception {
       // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
       OutlookAttachmentActivity activity = event.getSource();
-      UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
-      PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
+      String fileUUID = event.getRequestContext().getRequestParameter(OBJECTID);
+      if (fileUUID != null && fileUUID.length() > 0) {
+        UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
+        PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
 
-      OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
-                                                                                 null,
-                                                                                 "UIDocumentPreview");
-      preview.setBaseUIActivity(activity);
-      preview.setContentInfo(activity.docPath, activity.repository, activity.workspace, activity.getContentNode());
+        RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
+        ManageableRepository repository = repositoryService.getCurrentRepository();
+        SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
+        Session session = sessionProvider.getSession(activity.getWorkspace(), repository);
+        Node file = session.getNodeByUUID(fileUUID);
 
-      uiPopupContainer.activate(preview, 0, 0, true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
+        OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
+                                                                                   null,
+                                                                                   "UIDocumentPreview");
+        preview.setBaseUIActivity(activity);
+        preview.setContentInfo(file.getPath(), repository.getConfiguration().getName(), activity.getWorkspace(), file);
+
+        uiPopupContainer.activate(preview, 0, 0, true);
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
+      } else {
+        LOG.warn(OBJECTID + " doesn't contain file UUID for ViewDocument event in activity '" + activity + "'");
+        event.getRequestContext().addUIComponentToUpdateByAjax(activity);
+      }
     }
   }
+
+  protected List<String> fileUUIDs;
+
+  protected List<Node>   files;
 
   public OutlookAttachmentActivity() throws Exception {
     super();
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
+  public List<Node> getFiles() throws RepositoryException, RepositoryConfigurationException {
+    if (this.files == null) {
+      List<String> uuids = getFileUUIDs();
+      RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
+      ManageableRepository repository = repositoryService.getCurrentRepository();
+      SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
+      Session session = sessionProvider.getSession(getWorkspace(), repository);
+      List<Node> files = new ArrayList<Node>();
+      for (String uuid : uuids) {
+        files.add(session.getNodeByUUID(uuid));
+      }
+      this.files = files;
+    }
+    return Collections.unmodifiableList(this.files);
+  }
+
   public boolean isFileSupportPreview(Node data) throws Exception {
     if (data != null) {
       // code adapted from the super's method but with adding a node in to context
@@ -132,16 +180,11 @@ public class OutlookAttachmentActivity extends FileUIActivity {
         }
       }
     }
-    return super.isFileSupportPreview(data);
+    return false;
   }
 
-  // TODO change logic
-  // /**
-  // * {@inheritDoc}
-  // */
-  // @Override
-  // public String getSummary(Node node) {
-  public String getUserComment(Node node) {
+  @Deprecated
+  public String getComment(Node node) {
     try {
       if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
         // TODO use eXo's formats or Java's ones
@@ -231,15 +274,142 @@ public class OutlookAttachmentActivity extends FileUIActivity {
     } catch (RepositoryException e) {
       LOG.error("Error generating summary for Outlook message activity node " + node, e);
     }
-
-    return super.getSummary(node);
+    return null;
   }
 
-  public void renderContentPresentation() throws Exception {
+  public void renderAttachmentPresentation(Node node) throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
-    uicontentpresentation.setNode(getContentNode());
-    UIComponent fileComponent = uicontentpresentation.getUIComponent(getMimeType());
+    uicontentpresentation.setNode(node);
+
+    String mimeType = node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+
+    UIComponent fileComponent = uicontentpresentation.getUIComponent(mimeType);
     uicontentpresentation.renderUIComponent(fileComponent);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setActivity(ExoSocialActivity activity) {
+    super.setActivity(activity);
+    // TODO post init?
+  }
+
+  public List<String> getFileUUIDs() {
+    if (fileUUIDs == null) {
+      ExoSocialActivity activity = getActivity();
+      if (activity != null) {
+        String uuidsLine = activity.getTemplateParams().get(FILE_UUIDS);
+        if (uuidsLine != null && uuidsLine.length() > 0) {
+          List<String> uuids = new ArrayList<String>();
+          for (String uuid : uuidsLine.split(",")) {
+            uuids.add(uuid);
+          }
+          this.fileUUIDs = uuids;
+        } else {
+          throw new IllegalArgumentException("Activity files empty");
+        }
+      } else {
+        throw new IllegalArgumentException("Activity not set");
+      }
+    }
+    return Collections.unmodifiableList(fileUUIDs);
+  }
+
+  public String getWorkspace() {
+    ExoSocialActivity activity = getActivity();
+    if (activity != null) {
+      return activity.getTemplateParams().get(WORKSPACE);
+    } else {
+      throw new IllegalArgumentException("Activity not set");
+    }
+  }
+
+  public String getComment() {
+    ExoSocialActivity activity = getActivity();
+    if (activity != null) {
+      return activity.getTemplateParams().get(COMMENT);
+    } else {
+      throw new IllegalArgumentException("Activity not set");
+    }
+  }
+
+  /**
+   * Gets the summary.
+   * 
+   * @param node the node
+   * @return the summary of Node. Return empty string if catch an exception.
+   */
+  public String getSummary(Node node) {
+    return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSummary(node);
+  }
+
+  /**
+   * Gets file title.
+   * 
+   * @param node the node
+   * @return the title of Node.
+   */
+  public String getTitle(Node node) {
+    try {
+      return org.exoplatform.ecm.webui.utils.Utils.getTitle(node);
+    } catch (Exception e) {
+      try {
+        return node.getName();
+      } catch (RepositoryException e1) {
+        LOG.error("Error reading node name " + node, e);
+        return StringUtils.EMPTY;
+      }
+    }
+  }
+
+  public String getViewLink(Node node) {
+    try {
+      if (isFileSupportPreview(node)) {
+        return this.event("ViewDocument", this.getId(), node.getUUID());
+      } else {
+        // TODO do we want "edit" functionality here? what can be else?
+        return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
+      }
+    } catch (Exception e) {
+      LOG.error("Error getting node view link " + node, e);
+      return StringUtils.EMPTY;
+    }
+  }
+
+  public String getDownloadLink(Node node) {
+    try {
+      return org.exoplatform.wcm.webui.Utils.getDownloadLink(node);
+    } catch (Exception e) {
+      LOG.error("Error getting node download link " + node, e);
+      return StringUtils.EMPTY;
+    }
+  }
+
+  public String getMimeType(Node node) {
+    try {
+      return node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+    } catch (RepositoryException e) {
+      LOG.error("Error getting node mime type " + node, e);
+      return StringUtils.EMPTY;
+    }
+  }
+
+  public String toString() {
+    ExoSocialActivity activity = getActivity();
+    if (activity != null) {
+      String title = activity.getTitle();
+      return new StringBuilder(title != null ? title : activity.getName()).append(" (")
+                                                                          .append(activity.getId())
+                                                                          .append(", ")
+                                                                          .append(activity.getPermaLink())
+                                                                          .append(' ')
+                                                                          .append(")")
+                                                                          .toString();
+    } else {
+      return super.toString();
+    }
   }
 
 }

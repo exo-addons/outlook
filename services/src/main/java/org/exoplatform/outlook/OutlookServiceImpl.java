@@ -19,19 +19,22 @@ package org.exoplatform.outlook;
 import com.ibm.icu.text.Transliterator;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
+import org.exoplatform.commons.utils.ActivityTypeUtils;
+import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationException;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.forum.service.ForumService;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.HierarchyNode;
 import org.exoplatform.outlook.jcr.NodeFinder;
 import org.exoplatform.outlook.mail.MailAPI;
 import org.exoplatform.outlook.mail.MailServerException;
-import org.exoplatform.outlook.social.SharedOutlookMessageActivity;
+import org.exoplatform.outlook.social.OutlookAttachmentActivity;
+import org.exoplatform.outlook.social.OutlookMessageActivity;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
@@ -39,7 +42,6 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
 import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.cms.drives.ManageDriveService;
-import org.exoplatform.services.cms.jcrext.activity.ActivityCommonService;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.core.ExtendedNode;
@@ -57,6 +59,9 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
@@ -77,10 +82,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessControlException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -256,10 +265,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // // TODO LinkProvider.getSingleActivityUrl(activityId)
       // messageStore.saveMessage(activity.getId(), text);
 
-      // TODO use listener service to generate activity?
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
-        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
         ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
                                                                                                                 "SocialIntegration.messages.createdBy",
                                                                                                                 true,
@@ -334,13 +342,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
-    protected final String rootPath;
-    
-    protected final ThreadLocal<RootFolder> rootFolder = new ThreadLocal<RootFolder>();
-    
-    protected final IdentityManager socialIdentityManager;
+    protected final String                  rootPath;
 
-    protected final ActivityManager socialActivityManager;
+    protected final ThreadLocal<RootFolder> rootFolder = new ThreadLocal<RootFolder>();
+
+    protected final IdentityManager         socialIdentityManager;
+
+    protected final ActivityManager         socialActivityManager;
 
     protected OutlookSpaceImpl(Space socialSpace) throws RepositoryException, OutlookException {
       super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName());
@@ -407,8 +415,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
-        // TODO use listener service to generate activity?
-        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(SharedOutlookMessageActivity.ACTIVITY_TYPE);
+        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
         ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
                                                                                                                 "SocialIntegration.messages.createdBy",
                                                                                                                 true,
@@ -440,8 +447,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final ManageDriveService                          driveService;
 
   protected final ListenerService                             listenerService;
-
-  protected final ForumService                                forumService;
 
   /**
    * Authenticated users.
@@ -476,7 +481,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             CookieTokenService tokenService,
                             ManageDriveService driveService,
                             ListenerService listenerService,
-                            ForumService forumService,
                             InitParams params) throws ConfigurationException, MailServerException {
     // this.messageStore = messageStore;
 
@@ -489,7 +493,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.tokenService = tokenService;
     this.driveService = driveService;
     this.listenerService = listenerService;
-    this.forumService = forumService;
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -570,15 +573,32 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     parent.save(); // save everything at the end only
 
     // TODO specified activity as in US_001_5
-    
+
     // fire listener service to generate social activities
-    for (File f : files) {
-      try {
-        listenerService.broadcast(ActivityCommonService.FILE_CREATED_ACTIVITY, null, f.getNode());
-      } catch (Exception e) {
-        LOG.warn("Error broadcasting the attachment file created activity for " + f.getPath(), e);
-      }
-    }
+    // for (File f : files) {
+    // try {
+    // // This makes call:
+    // // Utils.postFileActivity(currentNode, RESOURCE_BUNDLE_KEY_CREATED_BY, true, false, "");
+    // listenerService.broadcast(ActivityCommonService.FILE_CREATED_ACTIVITY, null, f.getNode());
+    // } catch (Exception e) {
+    // LOG.warn("Error broadcasting the attachment file created activity for " + f.getPath(), e);
+    // }
+    // }
+
+    // final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+    // try {
+    // org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookAttachmentActivity.ACTIVITY_TYPE);
+    // org.exoplatform.wcm.ext.component.activity.listener.Utils.postActivity(parent, comment, false, false,
+    // "");
+    // // TODO care about activity removal with the message file
+    // } catch (Exception e) {
+    // throw new OutlookException("Error posting activity for attachment files in " + destFolder.getName(),
+    // e);
+    // } finally {
+    // org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
+    // }
+
+    postAttachmentActivity(destFolder, files, user, comment);
 
     if (space != null) {
       for (File f : files) {
@@ -1302,7 +1322,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                      UnsupportedEncodingException,
                                                                      IOException {
     try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF8"))) {
-      // message file goes w/o summary, it will be generated in UI (SharedOutlookMessageActivity)
+      // message file goes w/o summary, it will be generated in UI (OutlookMessageActivity)
       Node messageFile = addFile(parent, message.getSubject(), null, "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
       messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
@@ -1315,6 +1335,73 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       messageFile.setProperty("mso:messageId", message.getId());
       return messageFile;
     }
+  }
+
+  protected ExoSocialActivity postAttachmentActivity(Folder destFolder,
+                                                     List<File> files,
+                                                     OutlookUser user,
+                                                     String comment) throws RepositoryException {
+    String author = user.getLocalUser();
+
+    // FYI Code inspired by UIDocActivityComposer
+    Map<String, String> activityParams = new LinkedHashMap<String, String>();
+
+    StringBuilder uuidsLine = new StringBuilder();
+    for (File f : files) {
+      if (uuidsLine.length() > 0) {
+        uuidsLine.append(',');
+      }
+      uuidsLine.append(f.getNode().getUUID());
+    }
+
+    activityParams.put(OutlookAttachmentActivity.FILE_UUIDS, uuidsLine.toString());
+    activityParams.put(OutlookAttachmentActivity.WORKSPACE, destFolder.getNode().getSession().getWorkspace().getName());
+    activityParams.put(OutlookAttachmentActivity.COMMENT, comment);
+    activityParams.put(OutlookAttachmentActivity.AUTHOR, author);
+
+    Calendar activityDate = Calendar.getInstance();
+    DateFormat dateFormatter = new SimpleDateFormat(ISO8601.SIMPLE_DATETIME_FORMAT);
+    String dateString = dateFormatter.format(activityDate.getTime());
+    activityParams.put(OutlookAttachmentActivity.DATE_CREATED, dateString);
+    activityParams.put(OutlookAttachmentActivity.DATE_LAST_MODIFIED, dateString);
+
+    // if NT_FILE
+    // activityParams.put(UIDocActivity.ID, node.isNodeType(NodetypeConstant.MIX_REFERENCEABLE) ?
+    // node.getUUID() : "");
+    // activityParams.put(UIDocActivity.CONTENT_NAME, node.getName());
+    // activityParams.put(UIDocActivity.AUTHOR, activityOwnerId);
+    // activityParams.put(UIDocActivity.DATE_CREATED, strDateCreated);
+    // activityParams.put(UIDocActivity.LAST_MODIFIED, strLastModified);
+    // activityParams.put(UIDocActivity.CONTENT_LINK, UIDocActivity.getContentLink(node));
+
+    //
+    IdentityManager identityManager = socialIdentityManager();
+    Identity authorIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, author, true);
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
+                                                           OutlookAttachmentActivity.ACTIVITY_TYPE,
+                                                           comment,
+                                                           null);
+    activity.setTemplateParams(activityParams);
+
+    //
+    ActivityManager activityManager = socialActivityManager();
+    activityManager.saveActivityNoReturn(authorIdentity, activity);
+
+    activity = activityManager.getActivity(activity.getId());
+
+    String activityId = activity.getId();
+    if (!StringUtils.isEmpty(activityId)) {
+      for (File f : files) {
+        Node n = f.getNode();
+        ActivityTypeUtils.attachActivityId(n, activityId);
+        n.save();
+      }
+    }
+
+    //
+    return activity;
   }
 
   /**
