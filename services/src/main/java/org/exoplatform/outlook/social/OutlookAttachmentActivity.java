@@ -487,6 +487,14 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     // TODO post init?
   }
 
+  public String[] getSystemCommentBundle(Map<String, String> activityParams) {
+    return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSystemCommentBundle(activityParams);
+  }
+
+  public String[] getSystemCommentTitle(Map<String, String> activityParams) {
+    return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSystemCommentTitle(activityParams);
+  }
+
   public List<String> getFileUUIDs() {
     if (fileUUIDs == null) {
       ExoSocialActivity activity = getActivity();
