@@ -75,7 +75,7 @@ public interface OutlookService {
    * @throws OutlookException
    */
   OutlookMessage getMessage(String messageId,
-                            OutlookEmail user,
+                            OutlookUser user,
                             OutlookEmail from,
                             List<OutlookEmail> to,
                             Calendar created,

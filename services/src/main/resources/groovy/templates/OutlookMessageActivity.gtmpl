@@ -228,7 +228,7 @@
 	  def size = uicomponent.getSize(currentNode);
 	  def fileSize = uicomponent.getFileSize(currentNode);
 	  def description = uicomponent.getSummary(currentNode); 
-    description = ContentReader.simpleEscapeHtml(description);
+    //description = ContentReader.simpleEscapeHtml(description); // FYI do not escape it
 
 	  def openInOfficeConnector = WCMCoreUtils.getService(OpenInOfficeConnector.class);
 	  def _documentInfos = openInOfficeConnector.getDocumentInfos(currentNode.getName());
@@ -263,7 +263,7 @@
 				<img alt="$ownerName" src="$ownerAvatar"/>
 			</a>
 		</div>
-		<div class="activityType"><span><i class="uiIconSocFileSharing uiIconSocWhite"></i></span></div>
+		<div class="activityType"><span><i class="uiIconOutlookMail uiIconSocWhite"></i></span></div>
 	</div><!--end activityTimeLine-->
 	<div class="boxContainer" id="boxContainer">
 		<div id="ContextBox${activity.id}"class="uiBox contentBox">

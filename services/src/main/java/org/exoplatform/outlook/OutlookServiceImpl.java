@@ -62,9 +62,11 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
@@ -236,6 +238,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Node messageFile = addMessageFile(messagesFolder, message);
       setPermissions(messageFile, localUser, "member:/platform/users");
       messagesFolder.save();
+      message.setFileNode(messageFile);
+
+      // TODO
+      // return postMessageActivity(message);
 
       // post activity to user status stream
       // Identity userIdentity =
@@ -412,6 +418,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Node messageFile = addMessageFile(messagesFolder, message);
       setPermissions(messageFile, new StringBuilder("member:").append(groupId).toString());
       messagesFolder.save();
+      message.setFileNode(messageFile);
+
+      // TODO
+      // return postMessageActivity(message);
 
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
@@ -559,7 +569,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       // Save in JCR
       try (InputStream content = decode(contentBytes)) {
-        Node attachmentNode = addFile(parent, name, comment, contentType, content);
+        Node attachmentNode = addFile(parent, name, contentType, content);
         if (space != null) {
           setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
         } else {
@@ -681,7 +691,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   @Override
   public OutlookMessage getMessage(String id,
-                                   OutlookEmail user,
+                                   OutlookUser user,
                                    OutlookEmail from,
                                    List<OutlookEmail> to,
                                    Calendar created,
@@ -887,11 +897,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return
    * @throws RepositoryException
    */
-  protected Node addFile(Node parent,
-                         String title,
-                         String summary,
-                         String contentType,
-                         InputStream content) throws RepositoryException {
+  protected Node addFile(Node parent, String title, String contentType, InputStream content) throws RepositoryException {
     Node file;
     String baseName = cleanName(title);
     String name = baseName;
@@ -939,7 +945,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       file.addMixin(EXO_RSSENABLE);
     }
     file.setProperty("exo:title", title);
-    file.setProperty("exo:summary", summary);
+    // file.setProperty("exo:summary", summary);
     try {
       file.setProperty("exo:name", title);
     } catch (ConstraintViolationException | ValueFormatException e) {
@@ -1323,7 +1329,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                      IOException {
     try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF8"))) {
       // message file goes w/o summary, it will be generated in UI (OutlookMessageActivity)
-      Node messageFile = addFile(parent, message.getSubject(), null, "text/html", content);
+      Node messageFile = addFile(parent, message.getSubject(), "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
       messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
       messageFile.setProperty("mso:userName", message.getUser().getDisplayName());
@@ -1379,16 +1385,33 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     Identity authorIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, author, true);
 
     //
+    String title = comment != null && comment.length() > 0 ? comment
+                                                           : new StringBuilder("User ").append(author)
+                                                                                       .append(" has saved ")
+                                                                                       .append(files.size())
+                                                                                       .append(files.size() > 1 ? " files"
+                                                                                                                : " file")
+                                                                                       .toString();
     ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
                                                            OutlookAttachmentActivity.ACTIVITY_TYPE,
-                                                           comment,
+                                                           title,
                                                            null);
     activity.setTemplateParams(activityParams);
 
-    //
+    // activity destination (user or space)
     ActivityManager activityManager = socialActivityManager();
-    activityManager.saveActivityNoReturn(authorIdentity, activity);
+    String spaceGroupName = getSpaceName(destFolder.getNode());
+    Space space = spaceService().getSpaceByGroupId(SpaceUtils.SPACE_GROUP + "/" + spaceGroupName);
+    if (spaceGroupName != null && spaceGroupName.length() > 0 && space != null) {
+      // post activity to space stream
+      Identity spaceIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, space.getPrettyName(), true);
+      activityManager.saveActivityNoReturn(spaceIdentity, activity);
+    } else {
+      // post activity to user status stream
+      activityManager.saveActivityNoReturn(authorIdentity, activity);
+    }
 
+    //
     activity = activityManager.getActivity(activity.getId());
 
     String activityId = activity.getId();
@@ -1400,8 +1423,78 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
+    return activity;
+  }
+
+  protected ExoSocialActivity postMessageActivity(OutlookMessage message) throws RepositoryException {
+    Node node = message.getFileNode();
+    if (node == null) {
+      throw new IllegalArgumentException("Message node not set in '" + message + "'");
+    }
+
+    String author = message.getUser().getLocalUser();
+
+    // FYI Code inspired by UIDocActivityComposer
+    Map<String, String> activityParams = new LinkedHashMap<String, String>();
+
+    activityParams.put(OutlookMessageActivity.FILE_UUID, node.getUUID());
+    activityParams.put(OutlookMessageActivity.WORKSPACE, node.getSession().getWorkspace().getName());
+    activityParams.put(OutlookMessageActivity.AUTHOR, author);
+
+    Calendar activityDate = Calendar.getInstance();
+    DateFormat dateFormatter = new SimpleDateFormat(ISO8601.SIMPLE_DATETIME_FORMAT);
+    String dateString = dateFormatter.format(activityDate.getTime());
+    activityParams.put(OutlookMessageActivity.DATE_CREATED, dateString);
+    activityParams.put(OutlookMessageActivity.DATE_LAST_MODIFIED, dateString);
+
+    //
+    IdentityManager identityManager = socialIdentityManager();
+    Identity authorIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, author, true);
+
+    //
+    ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
+                                                           OutlookMessageActivity.ACTIVITY_TYPE,
+                                                           message.getSubject(),
+                                                           null);
+    activity.setTemplateParams(activityParams);
+
+    //
+    ActivityManager activityManager = socialActivityManager();
+    activityManager.saveActivityNoReturn(authorIdentity, activity);
+
+    activity = activityManager.getActivity(activity.getId());
+
+    String activityId = activity.getId();
+    if (!StringUtils.isEmpty(activityId)) {
+      ActivityTypeUtils.attachActivityId(node, activityId);
+      node.save();
+    }
+
     //
     return activity;
+  }
+
+  /**
+   * get the space name of node
+   * 
+   * @param node
+   * @return the group name
+   * @throws RepositoryException
+   * @throws Exception
+   */
+  private static String getSpaceName(Node node) throws RepositoryException {
+    NodeHierarchyCreator nodeHierarchyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer()
+                                                                                          .getComponentInstanceOfType(NodeHierarchyCreator.class);
+    String groupPath = nodeHierarchyCreator.getJcrPath(BasePath.CMS_GROUPS_PATH);
+    String spacesFolder = groupPath + "/spaces/";
+    String spaceName = "";
+    String nodePath = node.getPath();
+    if (nodePath.startsWith(spacesFolder)) {
+      spaceName = nodePath.substring(spacesFolder.length());
+      spaceName = spaceName.substring(0, spaceName.indexOf("/"));
+    }
+
+    return spaceName;
   }
 
   /**

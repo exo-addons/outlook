@@ -290,7 +290,7 @@
 				<% 
           def activityTitle = Text.unescapeIllegalJcrChars(activity.title)
        		def files = uicomponent.files
-          def file, fileTitle, fileLink, fileSupportPreview
+          def file, fileTitle, fileLink, fileIsSupportPreview
        		if (files.size() == 1) {
 	          file = files[0];
 	          fileTitle = uicomponent.getTitle(file)
@@ -321,7 +321,7 @@
               </a>
               <a href="$fileLink" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle"><i class="$classIconName"></i></a>
             </div>
-	        <%} else if (fileSupportPreview) { %>
+	        <%} else if (fileIsSupportPreview) { %>
 	          <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
 	            <% uicomponent.renderAttachmentPresentation(file) %>
 	          </div>

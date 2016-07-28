@@ -140,7 +140,8 @@
               <string>org.exoplatform.outlook.social.OutlookMessageActivity</string>
             </field>
             <field name="activityBuiderClass">
-              <string>org.exoplatform.outlook.social.OutlookActivityBuilder</string>
+              <!-- string>org.exoplatform.outlook.social.OutlookActivityBuilder</string -->
+              <string>org.exoplatform.wcm.ext.component.activity.FileUIActivityBuilder</string>
             </field>
           </object>
         </object-param>

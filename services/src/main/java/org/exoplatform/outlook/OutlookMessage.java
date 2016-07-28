@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import javax.jcr.Node;
+
 /**
  * Office user API.
  * 
@@ -35,7 +37,7 @@ import java.util.List;
  */
 public class OutlookMessage {
 
-  protected final OutlookEmail user;
+  protected final OutlookUser  user;
 
   protected final OutlookEmail from;
 
@@ -51,12 +53,14 @@ public class OutlookMessage {
 
   protected Calendar           modified;
 
-  protected OutlookMessage(OutlookEmail user) {
+  protected Node               fileNode;
+
+  protected OutlookMessage(OutlookUser user) {
     this.user = user;
     this.from = user;
   }
 
-  protected OutlookMessage(OutlookEmail user, OutlookEmail from) {
+  protected OutlookMessage(OutlookUser user, OutlookEmail from) {
     this.user = user;
     this.from = from;
   }
@@ -104,9 +108,23 @@ public class OutlookMessage {
   }
 
   /**
+   * @return the fileNode
+   */
+  protected Node getFileNode() {
+    return fileNode;
+  }
+
+  /**
+   * @param fileNode the fileNode to set
+   */
+  protected void setFileNode(Node fileNode) {
+    this.fileNode = fileNode;
+  }
+
+  /**
    * @return the user
    */
-  public OutlookEmail getUser() {
+  public OutlookUser getUser() {
     return user;
   }
 

@@ -317,7 +317,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
           imageWidth = imageHeight = 300;
         }
       } catch (Exception e) {
-        LOG.error("Cannot read node " + node, e);
+        LOG.warn("Cannot read node " + node + ":" + e.getMessage());
         imageWidth = imageHeight = 300;
       }
 

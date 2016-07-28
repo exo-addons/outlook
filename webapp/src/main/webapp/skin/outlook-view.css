@@ -84,3 +84,7 @@
 .attachmentFiles {
 	margin-left: 15px;
 }
+
+.uiIconOutlookMail:before {
+    content: "\e6b8";
+}

@@ -524,7 +524,8 @@ public class Outlook {
                                   String userName,
                                   String userEmail,
                                   String fromName,
-                                  String fromEmail) {
+                                  String fromEmail,
+                                  RequestContext context) {
     try {
       OutlookUser user = outlook.getUser(userEmail, userName, null);
       OutlookEmail from = outlook.getAddress(fromEmail, fromName);
@@ -534,7 +535,7 @@ public class Outlook {
       modifiedDate.setTime(dateFormat.parse(modified));
       OutlookMessage message = outlook.getMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
 
-      if (groupId != null && groupId.length() > 0) {
+      if (groupId != null && groupId.length() > 0) {//new String(body.getBytes(""), "utf-8")
         // space activity requested
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {

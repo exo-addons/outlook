@@ -19,6 +19,7 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
@@ -80,6 +81,18 @@ public class OutlookMessageActivity extends FileUIActivity {
 
   public static final String ACTIVITY_TYPE       = "outlook:message";
 
+  public static final String FILE_UUID           = "fileUUID";
+
+  public static final String REPOSITORY          = "repository";
+
+  public static final String WORKSPACE           = "workspace";
+
+  public static final String AUTHOR              = "author";
+
+  public static final String DATE_CREATED        = "dateCreated";
+
+  public static final String DATE_LAST_MODIFIED  = "lastModified";
+
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
@@ -93,7 +106,7 @@ public class OutlookMessageActivity extends FileUIActivity {
       OutlookMessageActivity activity = event.getSource();
       UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
       PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
-      
+
       OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
                                                                                  null,
                                                                                  "UIDocumentPreview");
@@ -134,15 +147,13 @@ public class OutlookMessageActivity extends FileUIActivity {
     return super.isFileSupportPreview(data);
   }
 
-  // TODO change logic
-  // /**
-  // * {@inheritDoc}
-  // */
-  // @Override
-  // public String getSummary(Node node) {
-  public String getUserComment(Node node) {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getSummary(Node node) {
     try {
-      if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
+      if (node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
         // TODO use eXo's formats or Java's ones
         // ForumService forumService = getApplicationComponent(ForumService.class);
         // try {
@@ -228,7 +239,7 @@ public class OutlookMessageActivity extends FileUIActivity {
         return summary.toString();
       }
     } catch (RepositoryException e) {
-      LOG.error("Error generating summary for Outlook message activity node " + node, e);
+      LOG.warn("Error generating info for Outlook message activity node " + node, e);
     }
 
     return super.getSummary(node);
