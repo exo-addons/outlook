@@ -1352,15 +1352,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // FYI Code inspired by UIDocActivityComposer
     Map<String, String> activityParams = new LinkedHashMap<String, String>();
 
-    StringBuilder uuidsLine = new StringBuilder();
+    StringBuilder filesLine = new StringBuilder();
     for (File f : files) {
-      if (uuidsLine.length() > 0) {
-        uuidsLine.append(',');
+      if (filesLine.length() > 0) {
+        filesLine.append(',');
       }
-      uuidsLine.append(f.getNode().getUUID());
+      filesLine.append(OutlookAttachmentActivity.attachmentString(f.getNode().getUUID(), f.getTitle()));
     }
 
-    activityParams.put(OutlookAttachmentActivity.FILE_UUIDS, uuidsLine.toString());
+    activityParams.put(OutlookAttachmentActivity.FILES, filesLine.toString());
     activityParams.put(OutlookAttachmentActivity.WORKSPACE, destFolder.getNode().getSession().getWorkspace().getName());
     activityParams.put(OutlookAttachmentActivity.COMMENT, comment);
     activityParams.put(OutlookAttachmentActivity.AUTHOR, author);
@@ -1414,14 +1414,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     //
     activity = activityManager.getActivity(activity.getId());
 
-    String activityId = activity.getId();
-    if (!StringUtils.isEmpty(activityId)) {
-      for (File f : files) {
-        Node n = f.getNode();
-        ActivityTypeUtils.attachActivityId(n, activityId);
-        n.save();
-      }
-    }
+    // TODO we don't add activity info nodetype to do not remove the activity when attachment file(s) removed
+    // String activityId = activity.getId();
+    // if (!StringUtils.isEmpty(activityId)) {
+    // for (File f : files) {
+    // Node n = f.getNode();
+    // ActivityTypeUtils.attachActivityId(n, activityId);
+    // n.save();
+    // }
+    // }
 
     return activity;
   }
@@ -1464,11 +1465,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     activity = activityManager.getActivity(activity.getId());
 
-    String activityId = activity.getId();
-    if (!StringUtils.isEmpty(activityId)) {
-      ActivityTypeUtils.attachActivityId(node, activityId);
-      node.save();
-    }
+    // TODO we don't add activity info nodetype to do not remove the activity when message file removed
+    // String activityId = activity.getId();
+    // if (!StringUtils.isEmpty(activityId)) {
+    // ActivityTypeUtils.attachActivityId(node, activityId);
+    // node.save();
+    // }
 
     //
     return activity;

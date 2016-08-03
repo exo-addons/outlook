@@ -290,50 +290,37 @@
 				<% 
           def activityTitle = Text.unescapeIllegalJcrChars(activity.title)
        		def files = uicomponent.files
-          def file, fileTitle, fileLink, fileIsSupportPreview
+          def file
        		if (files.size() == 1) {
-	          file = files[0];
-	          fileTitle = uicomponent.getTitle(file)
-            fileType = uicomponent.getMimeType(file)
-          	fileIsSupportPreview = uicomponent.isFileSupportPreview(file)
-	          fileLink = fileIsSupportPreview ? uicomponent.getViewLink(file) : uicomponent.getDownloadLink(file)
+	          file = files[0]
           	def labelHasSavedFile = _ctx.appRes("Outlook.label.hasSavedFile")
-	         %>
-					<%if (uicomponent.isImage(fileType)) { %>
+          	if (file.isExists()) {
+							if (file.isImage()) { %>
             <div id="MediaContent${activity.id}" class=" pull-left mediaContent ">
-        	  <%
-					    def thumbnailImage = uicomponent.getThumbnailImageLink(file, fileType);
-					    def classIconName = uicomponent.getCssClassIconFile(file)
-				   	%>
-					   <a href="$fileLink" style="cursor:pointer"  rel="tooltip" data-placement="bottom" data-original-title="$fileTitle">
-					   	<img src="$thumbnailImage" retryCount="0"  onerror="loadImageOnError(this);" alt="$fileTitle" />
+					   <a href="${file.link}" style="cursor:pointer"  rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
+					   	<img src="${file.thumbnailImageLink}" retryCount="0"  onerror="loadImageOnError(this);" alt="${file.title}" />
 					   </a>
-					   <a href="$fileLink" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle"><i class="$classIconName"></i></a>
+					   <a href="${file.link}" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="${file.title}"><i class="${file.cssClassIcon}"></i></a>
 					 </div>
-					<%} else if(uicomponent.isSupportThumbnailView(fileType)){%>
+						<%} else if(file.isSupportThumbnailView()){%>
             <div id="MediaContent${activity.id}" class="pull-left mediaContent docTypeContent">
-              <%
-                def pdfThumbnailImage = uicomponent.getPdfThumbnailImageLink(file)
-                def classIconName = uicomponent.getCssClassIconFile(file)               
-              %>
-              <a href="$fileLink" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle">
-              	<img src="$pdfThumbnailImage" retryCount="0"  onerror="loadImageOnError(this);" class="pdfImageBorder"/>
+              <a href="${file.link}" rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
+              	<img src="${file.pdfThumbnailImageLink}" retryCount="0"  onerror="loadImageOnError(this);" class="pdfImageBorder"/>
               </a>
-              <a href="$fileLink" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle"><i class="$classIconName"></i></a>
+              <a href="${file.link}" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="${file.title}"><i class="${file.cssClassIcon}"></i></a>
             </div>
-	        <%} else if (fileIsSupportPreview) { %>
+	        	<%} else if (file.isSupportPreview()) { %>
 	          <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
 	            <% uicomponent.renderAttachmentPresentation(file) %>
 	          </div>
-	        <%} else { %>
+	        	<%} else { %>
             <div id="MediaContent${activity.id}" class="fileTypeContent">
-              <% def classIconName = uicomponent.getCssClassIconFile(file) %>
-              <a href="$fileLink"  data-original-title="$fileTitle" rel="tooltip" data-placement="bottom"><i class="$classIconName"></i></a>
+              <a href="${file.link}"  data-original-title="${file.title}" rel="tooltip" data-placement="bottom"><i class="${file.cssClassIcon}"></i></a>
           	</div>
-          <%}%>
+          	<%}%>
           	<div class="text">
 	            <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFile</div>
-	            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$fileTitle" href="$fileLink"> $fileTitle </a>
+	            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${file.title}" href="${file.link}"> ${file.title} </a>
 	            <div class="descriptionText"><% uicomponent.getSummary(file) %></div>
 	            <div class="inforFile">				        
 								<div class="versionFile">	
@@ -346,7 +333,16 @@
 								</div>
 							</div>
 	          </div><!--end text-->
-       	<%} else {
+       		<%} else { // when file not found %>
+       			<div id="MediaContent${activity.id}" class="fileTypeContent">
+							<i class="${file.cssClassIcon}"></i>
+					  </div>
+					  <div class="text">
+					    <span>${file.title}</span>
+							<div class="inforFile"></div>				
+					  </div><!--end text-->
+          <%}
+          } else {
             def labelHasSavedFiles = _ctx.appRes("Outlook.label.hasSavedNFiles")
             labelHasSavedFiles = labelHasSavedFiles.replace('{N}', String.valueOf(files.size()))
           %>
@@ -357,14 +353,16 @@
             	<ul class="attachmentFiles">
           <%
             for (f in files) {
-              def title = uicomponent.getTitle(f)
-              def isSupportPreview = uicomponent.isFileSupportPreview(f)
-              def link = isSupportPreview ? uicomponent.getViewLink(f) : uicomponent.getDownloadLink(f)
-            %>
+            	if (f.isExists()) {%>
 	             	<li>
-	             		<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$title" href="$link"> $title </a>
+	             		<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${f.title}" href="${f.link}"> ${f.title} </a>
 	             	</li>
-          <%}%>
+          	<%} else {%>
+          			<li>
+	             		<span> ${f.title} </span>
+	             	</li>
+          	<%}
+          	}%>
           		</ul>
             </div>
         <%}%>
@@ -402,10 +400,10 @@
 					 <ul class="pull-left statusAction">
 				<%
           if (file) {
-						if (fileIsSupportPreview) { 
-				%> 	<li><a href="$fileLink"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
+						if (file.isSupportPreview()) { 
+				%> 	<li><a href="${file.viewLink}"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
 					<%} else { %>
-          	<li><a href="$fileLink"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
+          	<li><a href="${file.downloadLink}"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
           <%}
 					}%>
 					</ul>

@@ -525,7 +525,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 									  groupId : groupId,
 									  messageId : messageId,
 									  subject : $title.val(),
-									  body : asyncResult.value,
+									  body : $text.html(),
 									  created : formatISODate(created),
 									  modified : formatISODate(modified),
 									  userName : userName,

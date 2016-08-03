@@ -27,6 +27,7 @@ import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 import org.exoplatform.services.jcr.core.ManageableRepository;
@@ -71,6 +72,9 @@ import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.LoginException;
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -104,7 +108,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
   public static final String WORKSPACE           = "workspace";
 
-  public static final String FILE_UUIDS          = "fileUUIDs";
+  public static final String FILES               = "files";
 
   public static final String AUTHOR              = "author";
 
@@ -149,229 +153,375 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
-  public class ImageDimension {
-    final int height;
+  public class Attachment {
+    final String      fileUUID;
 
-    final int width;
+    String            name;
 
-    protected ImageDimension(int height, int width) {
+    String            mimeType;
+
+    ThreadLocal<Node> node = new ThreadLocal<Node>();
+
+    protected Attachment(String fileUUID, String name) {
       super();
-      this.height = height;
-      this.width = width;
+      this.fileUUID = fileUUID;
+      this.name = name;
     }
 
     /**
-     * @return the height
+     * @return the name
      */
-    public int getHeight() {
-      return height;
+    public String getName() {
+      return name;
     }
 
     /**
-     * @return the width
+     * @return the fileUUID
      */
-    public int getWidth() {
-      return width;
+    public String getFileUUID() {
+      return fileUUID;
     }
+
+    /**
+     * Gets file title.
+     * 
+     * @param node the node
+     * @return the title of Node.
+     */
+    public String getTitle() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return org.exoplatform.ecm.webui.utils.Utils.getTitle(node);
+        }
+      } catch (Exception e) {
+        LOG.error("Error reading node name " + node, e);
+      }
+      return getName();
+    }
+
+    /**
+     * @return the mimeType
+     */
+    public String getMimeType() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+        }
+      } catch (RepositoryException e) {
+        LOG.error("Error getting node mime type " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public boolean isImage() throws Exception {
+      String mimeType = getMimeType();
+      return mimeType.startsWith("image") || mimeType.indexOf("icon") >= 0;
+    }
+
+    public String getSize() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null && node.hasNode(Utils.JCR_CONTENT)) {
+          Node contentNode = node.getNode(Utils.JCR_CONTENT);
+          double size = 0;
+          if (contentNode.hasProperty(Utils.JCR_DATA)) {
+            size = contentNode.getProperty(Utils.JCR_DATA).getLength();
+          }
+          return FileUtils.byteCountToDisplaySize((long) size);
+        }
+      } catch (RepositoryException e) {
+        LOG.error("Error getting node mime type " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public boolean isSupportPreview() throws Exception {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          // code adapted from the super's method but with adding a node in to context
+          UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
+          List<UIExtension> extensions = manager.getUIExtensions(Utils.FILE_VIEWER_EXTENSION_TYPE);
+
+          Map<String, Object> context = new HashMap<String, Object>();
+          context.put(Utils.MIME_TYPE, node.getNode(Utils.JCR_CONTENT).getProperty(Utils.JCR_MIMETYPE).getString());
+          // add node in the context to help view filter recognize Outlook Message file
+          context.put(Node.class.getName(), node);
+
+          for (UIExtension extension : extensions) {
+            if (manager.accept(Utils.FILE_VIEWER_EXTENSION_TYPE, extension.getName(), context)
+                && !"Text".equals(extension.getName())) {
+              return true;
+            }
+          }
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node download link " + node, e);
+      }
+      return false;
+    }
+
+    public String getDownloadLink() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return org.exoplatform.wcm.webui.Utils.getDownloadLink(node);
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node download link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public String getPdfThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          String portalName = PortalContainer.getCurrentPortalContainerName();
+          String restContextName = PortalContainer.getCurrentRestContextName();
+          String repositoryName = repository.getConfiguration().getName();
+          String workspaceName = getWorkspace();
+
+          String encodedPath = URLEncoder.encode(node.getPath(), "utf-8");
+          encodedPath = encodedPath.replaceAll("%2F", "/");
+
+          StringBuilder link = new StringBuilder();
+          link.append('/');
+          link.append(portalName);
+          link.append('/');
+          link.append(restContextName);
+          link.append("/thumbnailImage/big/");
+          link.append(repositoryName);
+          link.append('/');
+          link.append(workspaceName);
+          link.append(encodedPath);
+
+          return link.toString();
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node PDF thumbnail link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public String getThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          String portalName = PortalContainer.getCurrentPortalContainerName();
+          String restContextName = PortalContainer.getCurrentRestContextName();
+          String repositoryName = repository.getConfiguration().getName();
+          String workspaceName = getWorkspace();
+
+          StringBuilder link = new StringBuilder();
+          // we use relative URL
+          // PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
+          // PortletRequest portletRequest = portletRequestContext.getRequest();
+          // link.append(portletRequest.getScheme());
+          // link.append("://");
+          // link.append(portletRequest.getServerName());
+          // link.append(':');
+          // link.append(portletRequest.getServerPort());
+
+          link.append('/');
+          link.append(portalName);
+          link.append('/');
+          link.append(restContextName);
+
+          if (mimeType.indexOf("icon") >= 0) {
+            // Icon will be rendered directly from JCR
+            link.append("/jcr/");
+            link.append(repositoryName);
+            link.append('/');
+            link.append(workspaceName);
+
+            FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
+            if (node.isNodeType("nt:frozenNode")) {
+              String uuid = node.getProperty("jcr:frozenUuid").getString();
+              Node originalNode = node.getSession().getNodeByUUID(uuid);
+              link.append(originalNode.getPath());
+              link.append("?version=");
+              link.append(node.getParent().getName());
+            } else {
+              link.append(node.getPath());
+            }
+
+            return friendlyService.getFriendlyUri(link.toString());
+          } else {
+            String path = node.getPath();
+            int imageHeight, imageWidth;
+            try {
+              if (node.hasNode(NodetypeConstant.JCR_CONTENT)) {
+                node = node.getNode(NodetypeConstant.JCR_CONTENT);
+              }
+              ImageReader reader = ImageIO.getImageReadersByMIMEType(mimeType).next();
+              ImageInputStream iis = ImageIO.createImageInputStream(node.getProperty("jcr:data").getStream());
+              reader.setInput(iis, true);
+              imageHeight = reader.getHeight(0);
+              imageWidth = reader.getWidth(0);
+              iis.close();
+              reader.dispose();
+
+              // align sizes
+              if (imageHeight > imageWidth && imageHeight > 300) {
+                imageWidth = (300 * imageWidth) / imageHeight;
+                imageHeight = 300;
+              } else if (imageWidth > imageHeight && imageWidth > 300) {
+                imageHeight = (300 * imageHeight) / imageWidth;
+                imageWidth = 300;
+              } else if (imageWidth == imageHeight && imageHeight > 300) {
+                imageWidth = imageHeight = 300;
+              }
+            } catch (Exception e) {
+              LOG.warn("Cannot read node " + node + ":" + e.getMessage());
+              imageWidth = imageHeight = 300;
+            }
+
+            link.append('/');
+            link.append(portalName);
+            link.append('/');
+            link.append(restContextName);
+            link.append("/thumbnailImage/custom/");
+            link.append(imageWidth);
+            link.append('x');
+            link.append(imageHeight);
+            link.append('/');
+            link.append(repositoryName);
+            link.append('/');
+            link.append(workspaceName);
+
+            String encodedPath = URLEncoder.encode(path, "utf-8");
+            encodedPath = encodedPath.replaceAll("%2F", "/");
+            link.append(encodedPath);
+          }
+          return link.toString();
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node thumbnail link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public String getViewLink() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          if (isSupportPreview()) {
+            return event("ViewDocument", getId(), node.getUUID());
+          } else {
+            // TODO do we want "edit" functionality here? what can be else?
+            return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
+          }
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node view link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+    
+    public String getLink() throws Exception {
+      return isSupportPreview() ? getViewLink() : getDownloadLink();
+    }
+
+    public String getCssClassIcon() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return org.exoplatform.ecm.webui.utils.Utils.getNodeTypeIcon(node, "uiIcon64x64");
+        }
+      } catch (Exception e) {
+        return "uiIcon64x64Templatent_file uiIcon64x64nt_file";
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public boolean isSupportThumbnailView() throws Exception {
+      return org.exoplatform.services.cms.impl.Utils.isSupportThumbnailView(getMimeType());
+    }
+
+    /**
+     * @return <code>true</code> when node exists, <code>false</code> otherwise
+     * @throws RepositoryException
+     */
+    public boolean isExists() throws RepositoryException {
+      return node() != null;
+    }
+
+    /**
+     * @return attachment file node or <code>null</code>
+     * @throws RepositoryException
+     * @throws NoSuchWorkspaceException
+     * @throws LoginException
+     */
+    public Node getNode() throws RepositoryException {
+      return node();
+    }
+
+    protected Node node() throws RepositoryException {
+      Node node = this.node.get();
+      if (node == null) {
+        SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
+        Session session = sessionProvider.getSession(getWorkspace(), repository);
+        try {
+          node = session.getNodeByUUID(fileUUID);
+          TrashService trashService = WCMCoreUtils.getService(TrashService.class);
+          if (trashService.isInTrash(node)) {
+            node = null;
+          } else {
+            this.node.set(node);
+          }
+        } catch (ItemNotFoundException e) {
+          // node was removed
+        }
+      }
+      return node;
+    }
+
   }
 
-  protected List<String>            fileUUIDs;
+  protected List<Attachment>     files;
 
-  protected ManageableRepository    repository;
-
-  protected ThreadLocal<List<Node>> files = new ThreadLocal<List<Node>>();
+  protected ManageableRepository repository;
 
   public OutlookAttachmentActivity() throws Exception {
     RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
     this.repository = repositoryService.getCurrentRepository();
   }
 
-  public List<Node> getFiles() throws RepositoryException, RepositoryConfigurationException {
-    List<Node> files = this.files.get();
-    if (files == null) {
-      List<String> uuids = getFileUUIDs();
-      SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
-      Session session = sessionProvider.getSession(getWorkspace(), repository);
-      files = new ArrayList<Node>();
-      for (String uuid : uuids) {
-        files.add(session.getNodeByUUID(uuid));
+  public List<Attachment> getFiles() throws RepositoryException, RepositoryConfigurationException {
+    if (this.files == null) {
+      synchronized (this) {
+        if (this.files == null) {
+          ExoSocialActivity activity = getActivity();
+          if (activity != null) {
+            String filesLine = activity.getTemplateParams().get(FILES);
+            if (filesLine != null && filesLine.length() > 0) {
+              List<Attachment> files = new ArrayList<Attachment>();
+              for (String fline : filesLine.split(",")) {
+                files.add(parseAttachment(fline));
+              }
+              this.files = files;
+            } else {
+              throw new IllegalArgumentException("Activity files empty");
+            }
+          } else {
+            throw new IllegalArgumentException("Activity not set");
+          }
+        }
       }
-      this.files.set(files);
     }
     return Collections.unmodifiableList(files);
-  }
-
-  public boolean isImage(String mimeType) throws Exception {
-    return mimeType.startsWith("image") || mimeType.indexOf("icon") >= 0;
-  }
-
-  protected String getSize(Node node) {
-    double size = 0;
-    try {
-      if (node.hasNode(Utils.JCR_CONTENT)) {
-        Node contentNode = node.getNode(Utils.JCR_CONTENT);
-        if (contentNode.hasProperty(Utils.JCR_DATA)) {
-          size = contentNode.getProperty(Utils.JCR_DATA).getLength();
-        }
-
-        return FileUtils.byteCountToDisplaySize((long) size);
-      }
-    } catch (PathNotFoundException e) {
-      return StringUtils.EMPTY;
-    } catch (ValueFormatException e) {
-      return StringUtils.EMPTY;
-    } catch (RepositoryException e) {
-      return StringUtils.EMPTY;
-    } catch (NullPointerException e) {
-      return StringUtils.EMPTY;
-    }
-    return StringUtils.EMPTY;
-  }
-
-  public String getPdfThumbnailImageLink(Node node) throws RepositoryException, UnsupportedEncodingException {
-    String portalName = PortalContainer.getCurrentPortalContainerName();
-    String restContextName = PortalContainer.getCurrentRestContextName();
-    String repositoryName = repository.getConfiguration().getName();
-    String workspaceName = getWorkspace();
-
-    String encodedPath = URLEncoder.encode(node.getPath(), "utf-8");
-    encodedPath = encodedPath.replaceAll("%2F", "/");
-
-    StringBuilder link = new StringBuilder();
-    link.append('/');
-    link.append(portalName);
-    link.append('/');
-    link.append(restContextName);
-    link.append("/thumbnailImage/big/");
-    link.append(repositoryName);
-    link.append('/');
-    link.append(workspaceName);
-    link.append(encodedPath);
-
-    return link.toString();
-  }
-
-  public String getThumbnailImageLink(Node node, String mimeType) throws RepositoryException, UnsupportedEncodingException {
-    String portalName = PortalContainer.getCurrentPortalContainerName();
-    String restContextName = PortalContainer.getCurrentRestContextName();
-    String repositoryName = repository.getConfiguration().getName();
-    String workspaceName = getWorkspace();
-
-    StringBuilder link = new StringBuilder();
-    // we use relative URL
-    // PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
-    // PortletRequest portletRequest = portletRequestContext.getRequest();
-    // link.append(portletRequest.getScheme());
-    // link.append("://");
-    // link.append(portletRequest.getServerName());
-    // link.append(':');
-    // link.append(portletRequest.getServerPort());
-
-    link.append('/');
-    link.append(portalName);
-    link.append('/');
-    link.append(restContextName);
-
-    if (mimeType.indexOf("icon") >= 0) {
-      // Icon will be rendered directly from JCR
-      link.append("/jcr/");
-      link.append(repositoryName);
-      link.append('/');
-      link.append(workspaceName);
-
-      FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
-      if (node.isNodeType("nt:frozenNode")) {
-        String uuid = node.getProperty("jcr:frozenUuid").getString();
-        Node originalNode = node.getSession().getNodeByUUID(uuid);
-        link.append(originalNode.getPath());
-        link.append("?version=");
-        link.append(node.getParent().getName());
-      } else {
-        link.append(node.getPath());
-      }
-
-      return friendlyService.getFriendlyUri(link.toString());
-    } else {
-      String path = node.getPath();
-      int imageHeight, imageWidth;
-      try {
-        if (node.hasNode(NodetypeConstant.JCR_CONTENT)) {
-          node = node.getNode(NodetypeConstant.JCR_CONTENT);
-        }
-        ImageReader reader = ImageIO.getImageReadersByMIMEType(mimeType).next();
-        ImageInputStream iis = ImageIO.createImageInputStream(node.getProperty("jcr:data").getStream());
-        reader.setInput(iis, true);
-        imageHeight = reader.getHeight(0);
-        imageWidth = reader.getWidth(0);
-        iis.close();
-        reader.dispose();
-
-        // align sizes
-        if (imageHeight > imageWidth && imageHeight > 300) {
-          imageWidth = (300 * imageWidth) / imageHeight;
-          imageHeight = 300;
-        } else if (imageWidth > imageHeight && imageWidth > 300) {
-          imageHeight = (300 * imageHeight) / imageWidth;
-          imageWidth = 300;
-        } else if (imageWidth == imageHeight && imageHeight > 300) {
-          imageWidth = imageHeight = 300;
-        }
-      } catch (Exception e) {
-        LOG.warn("Cannot read node " + node + ":" + e.getMessage());
-        imageWidth = imageHeight = 300;
-      }
-
-      link.append('/');
-      link.append(portalName);
-      link.append('/');
-      link.append(restContextName);
-      link.append("/thumbnailImage/custom/");
-      link.append(imageWidth);
-      link.append('x');
-      link.append(imageHeight);
-      link.append('/');
-      link.append(repositoryName);
-      link.append('/');
-      link.append(workspaceName);
-
-      String encodedPath = URLEncoder.encode(path, "utf-8");
-      encodedPath = encodedPath.replaceAll("%2F", "/");
-      link.append(encodedPath);
-    }
-    return link.toString();
-  }
-
-  public String getCssClassIconFile(Node node) {
-    try {
-      return org.exoplatform.ecm.webui.utils.Utils.getNodeTypeIcon(node, "uiIcon64x64");
-    } catch (RepositoryException e) {
-      return "uiIcon64x64Templatent_file uiIcon64x64nt_file";
-    }
-  }
-
-  public boolean isSupportThumbnailView(String mimeType) throws Exception {
-    return org.exoplatform.services.cms.impl.Utils.isSupportThumbnailView(mimeType);
-  }
-
-  public boolean isFileSupportPreview(Node data) throws Exception {
-    if (data != null) {
-      // code adapted from the super's method but with adding a node in to context
-      UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
-      List<UIExtension> extensions = manager.getUIExtensions(Utils.FILE_VIEWER_EXTENSION_TYPE);
-
-      Map<String, Object> context = new HashMap<String, Object>();
-      context.put(Utils.MIME_TYPE, data.getNode(Utils.JCR_CONTENT).getProperty(Utils.JCR_MIMETYPE).getString());
-      // add node in the context to help view filter recognize Outlook Message file
-      context.put(Node.class.getName(), data);
-
-      for (UIExtension extension : extensions) {
-        if (manager.accept(Utils.FILE_VIEWER_EXTENSION_TYPE, extension.getName(), context)
-            && !"Text".equals(extension.getName())) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   @Deprecated
@@ -495,27 +645,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSystemCommentTitle(activityParams);
   }
 
-  public List<String> getFileUUIDs() {
-    if (fileUUIDs == null) {
-      ExoSocialActivity activity = getActivity();
-      if (activity != null) {
-        String uuidsLine = activity.getTemplateParams().get(FILE_UUIDS);
-        if (uuidsLine != null && uuidsLine.length() > 0) {
-          List<String> uuids = new ArrayList<String>();
-          for (String uuid : uuidsLine.split(",")) {
-            uuids.add(uuid);
-          }
-          this.fileUUIDs = uuids;
-        } else {
-          throw new IllegalArgumentException("Activity files empty");
-        }
-      } else {
-        throw new IllegalArgumentException("Activity not set");
-      }
-    }
-    return Collections.unmodifiableList(fileUUIDs);
-  }
-
   public String getWorkspace() {
     ExoSocialActivity activity = getActivity();
     if (activity != null) {
@@ -544,57 +673,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSummary(node);
   }
 
-  /**
-   * Gets file title.
-   * 
-   * @param node the node
-   * @return the title of Node.
-   */
-  public String getTitle(Node node) {
-    try {
-      return org.exoplatform.ecm.webui.utils.Utils.getTitle(node);
-    } catch (Exception e) {
-      try {
-        return node.getName();
-      } catch (RepositoryException e1) {
-        LOG.error("Error reading node name " + node, e);
-        return StringUtils.EMPTY;
-      }
-    }
-  }
-
-  public String getViewLink(Node node) {
-    try {
-      if (isFileSupportPreview(node)) {
-        return this.event("ViewDocument", this.getId(), node.getUUID());
-      } else {
-        // TODO do we want "edit" functionality here? what can be else?
-        return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
-      }
-    } catch (Exception e) {
-      LOG.error("Error getting node view link " + node, e);
-      return StringUtils.EMPTY;
-    }
-  }
-
-  public String getDownloadLink(Node node) {
-    try {
-      return org.exoplatform.wcm.webui.Utils.getDownloadLink(node);
-    } catch (Exception e) {
-      LOG.error("Error getting node download link " + node, e);
-      return StringUtils.EMPTY;
-    }
-  }
-
-  public String getMimeType(Node node) {
-    try {
-      return node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
-    } catch (RepositoryException e) {
-      LOG.error("Error getting node mime type " + node, e);
-      return StringUtils.EMPTY;
-    }
-  }
-
   public String toString() {
     ExoSocialActivity activity = getActivity();
     if (activity != null) {
@@ -609,6 +687,27 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     } else {
       return super.toString();
     }
+  }
+
+  Attachment parseAttachment(String line) {
+    int i = line.indexOf('=');
+    String fileUUID, name;
+    if (i > 0) {
+      fileUUID = line.substring(0, i);
+      name = line.substring(++i);
+    } else {
+      fileUUID = line;
+      name = null;
+    }
+    return new Attachment(fileUUID, name);
+  }
+
+  public static String attachmentString(String fileUUID, String name) {
+    StringBuilder line = new StringBuilder();
+    line.append(fileUUID);
+    line.append('=');
+    line.append(name);
+    return line.toString();
   }
 
 }

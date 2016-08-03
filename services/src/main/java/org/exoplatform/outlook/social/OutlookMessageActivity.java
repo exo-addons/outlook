@@ -19,7 +19,6 @@
  */
 package org.exoplatform.outlook.social;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
