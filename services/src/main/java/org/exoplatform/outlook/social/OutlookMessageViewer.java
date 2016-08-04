@@ -19,14 +19,23 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.wcm.friendly.FriendlyService;
+import org.exoplatform.services.wcm.utils.WCMCoreUtils;
+import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.jcr.Node;
+import javax.portlet.PortletRequest;
 
 /**
  * Created by The eXo Platform SAS
@@ -48,6 +57,47 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
+  }
+  
+  /**
+   * Gets the webdav url (adopted code from FileUIActivity).
+   * 
+   * @return the webdav url
+   * @throws Exception the exception
+   */
+  public String getWebdavLink() throws Exception {
+    final Node node = getCurrentNode();
+    
+    PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
+    PortletRequest portletRequest = portletRequestContext.getRequest();
+    String repository = ((ManageableRepository)node.getSession().getRepository()).getConfiguration().getName();
+    String workspace = node.getSession().getWorkspace().getName();
+    String baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
+        + String.format("%s", portletRequest.getServerPort());
+
+    FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
+
+    StringBuilder link = new StringBuilder(baseURI); 
+    link.append('/');
+    link.append(PortalContainer.getCurrentPortalContainerName());
+    link.append('/');
+    link.append(PortalContainer.getCurrentRestContextName());
+    link.append("/jcr/");
+    link.append(repository);
+    link.append('/');
+    link.append(workspace);
+    
+    if (node.isNodeType("nt:frozenNode")) {
+      String uuid = node.getProperty("jcr:frozenUuid").getString();
+      Node originalNode = node.getSession().getNodeByUUID(uuid);
+      link.append(originalNode.getPath());
+      link.append("?version=");
+      link.append(node.getParent().getName());
+    } else {
+      link.append(node.getPath());
+    }
+
+    return friendlyService.getFriendlyUri(link.toString());
   }
 
 }

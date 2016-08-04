@@ -23,10 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.utils.Utils;
-import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
-import org.exoplatform.portal.Constants;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
@@ -34,9 +31,6 @@ import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.UserProfile;
-import org.exoplatform.services.resources.LocaleContextInfo;
 import org.exoplatform.services.wcm.core.NodetypeConstant;
 import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
@@ -44,9 +38,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.wcm.webui.reader.ContentReader;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -59,27 +50,22 @@ import org.exoplatform.webui.ext.UIExtensionManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
 
 /**
  * Created by The eXo Platform SAS
@@ -428,7 +414,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       }
       return StringUtils.EMPTY;
     }
-    
+
     public String getLink() throws Exception {
       return isSupportPreview() ? getViewLink() : getDownloadLink();
     }
@@ -459,6 +445,25 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
 
     /**
+     * Gets the summary.
+     * 
+     * @param node the node
+     * @return the summary of Node. Return empty string if catch an exception.
+     */
+    public String getSummary() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSummary(node);
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting node summary " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    /**
      * @return attachment file node or <code>null</code>
      * @throws RepositoryException
      * @throws NoSuchWorkspaceException
@@ -470,6 +475,14 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
     protected Node node() throws RepositoryException {
       Node node = this.node.get();
+      if (node != null) {
+        try {
+          // check node/session is valid
+          node.getIndex();
+        } catch(InvalidItemStateException e) {
+          node = null;
+        }
+      }
       if (node == null) {
         SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
         Session session = sessionProvider.getSession(getWorkspace(), repository);
@@ -524,100 +537,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     return Collections.unmodifiableList(files);
   }
 
-  @Deprecated
-  public String getComment(Node node) {
-    try {
-      if (!node.hasProperty("exo:summary") && node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
-        // TODO use eXo's formats or Java's ones
-        // ForumService forumService = getApplicationComponent(ForumService.class);
-        // try {
-        // UserProfile forumProfile = forumService.getUserInfo(context.getRemoteUser());
-        // userDateFormat = forumProfile.getLongDateFormat();
-        // } catch (Exception e) {
-        // LOG.warn("Error getting current user forum profile", e);
-        // userDateFormat = userTimeFormat = null;
-        // }
-        //
-        // if (userDateFormat == null) {
-        // userDateFormat = DEFAULT_DATE_FORMAT;
-        // }
-        // DateFormat dateFormat = new SimpleDateFormat(userDateFormat, context.getLocale());
-
-        String fromEmail = node.getProperty("mso:fromEmail").getString();
-        String fromName = node.getProperty("mso:fromName").getString();
-        Date time = node.getProperty("mso:created").getDate().getTime();
-
-        Locale userLocale = null;
-        RequestContext context = RequestContext.getCurrentInstance();
-        OrganizationService orgService = getApplicationComponent(OrganizationService.class);
-        try {
-          UserProfile userProfile = orgService.getUserProfileHandler().findUserProfileByName(context.getRemoteUser());
-          if (userProfile != null) {
-            String lang = userProfile.getUserInfoMap().get(Constants.USER_LANGUAGE);
-            if (lang != null) {
-              userLocale = LocaleContextInfo.getLocale(lang);
-            }
-          } else {
-            LOG.warn("User profile not found for " + context.getRemoteUser());
-          }
-        } catch (Exception e) {
-          LOG.warn("Error getting user profile for " + context.getRemoteUser(), e);
-        }
-
-        if (userLocale == null) {
-          // try find locale from user request
-          if (PortletRequestContext.class.isAssignableFrom(context.getClass())) {
-            userLocale = ((PortalRequestContext) PortletRequestContext.class.cast(context)
-                                                                            .getParentAppRequestContext()).getRequest()
-                                                                                                          .getLocale();
-          } else if (PortalRequestContext.class.isAssignableFrom(context.getClass())) {
-            userLocale = PortalRequestContext.class.cast(context).getRequest().getLocale();
-          }
-          if (userLocale == null) {
-            // it's server locale in most cases
-            userLocale = context.getLocale();
-            if (userLocale == null) {
-              userLocale = Locale.ENGLISH;
-            }
-          }
-        }
-
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, userLocale);
-        // TODO we could find and use user's timezone: dateFormat.setTimeZone(zone);
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, userLocale);
-        // TODO we could find and use user's timezone: timeFormat.setTimeZone(zone);
-
-        ResourceBundle res = context.getApplicationResourceBundle();
-
-        StringBuilder fromLine = new StringBuilder();
-        fromLine.append(fromName);
-        fromLine.append('<');
-        fromLine.append(fromEmail);
-        fromLine.append('>');
-
-        StringBuilder summary = new StringBuilder();
-        summary.append(res.getString("Outlook.activity.from"));
-        summary.append(": <a href='mailto:");
-        summary.append(fromEmail);
-        summary.append("' target='_top'>");
-        summary.append(ContentReader.simpleEscapeHtml(fromLine.toString()));
-        summary.append("</a> ");
-        summary.append(res.getString("Outlook.activity.on"));
-        summary.append(' ');
-        summary.append(dateFormat.format(time));
-        summary.append(' ');
-        summary.append(res.getString("Outlook.activity.at"));
-        summary.append(' ');
-        summary.append(timeFormat.format(time));
-
-        return summary.toString();
-      }
-    } catch (RepositoryException e) {
-      LOG.error("Error generating summary for Outlook message activity node " + node, e);
-    }
-    return null;
-  }
-
   public void renderAttachmentPresentation(Node node) throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
     uicontentpresentation.setNode(node);
@@ -661,16 +580,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     } else {
       throw new IllegalArgumentException("Activity not set");
     }
-  }
-
-  /**
-   * Gets the summary.
-   * 
-   * @param node the node
-   * @return the summary of Node. Return empty string if catch an exception.
-   */
-  public String getSummary(Node node) {
-    return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSummary(node);
   }
 
   public String toString() {

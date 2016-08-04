@@ -46,7 +46,12 @@ import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -213,8 +218,6 @@ public class Outlook {
 
   @Inject
   ResourceBundleSerializer                                  i18nJSON;
-
-  DateFormat                                                dateFormat    = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   private final Map<String, MenuItem>                       allMenuItems  = new LinkedHashMap<String, MenuItem>();
 
@@ -527,15 +530,23 @@ public class Outlook {
                                   String fromEmail,
                                   RequestContext context) {
     try {
+      // TODO for debug purpose only
+      java.io.File temp = java.io.File.createTempFile("outlook_convertToStatus_body", ".html");
+      try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(temp))) {
+        osw.write(body);
+        temp.deleteOnExit();
+      }
+      // ********
+
       OutlookUser user = outlook.getUser(userEmail, userName, null);
       OutlookEmail from = outlook.getAddress(fromEmail, fromName);
       Calendar createdDate = Calendar.getInstance();
-      createdDate.setTime(dateFormat.parse(created));
+      createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
       Calendar modifiedDate = Calendar.getInstance();
-      modifiedDate.setTime(dateFormat.parse(modified));
-      OutlookMessage message = outlook.getMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+      modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
+      OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
 
-      if (groupId != null && groupId.length() > 0) {//new String(body.getBytes(""), "utf-8")
+      if (groupId != null && groupId.length() > 0) {// new String(body.getBytes(""), "utf-8")
         // space activity requested
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
@@ -556,6 +567,32 @@ public class Outlook {
     } catch (Throwable e) {
       LOG.error("Error converting message to activity status for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response getMessage(String ewsUrl, String userEmail, String userName, String messageId, String messageToken) {
+
+    if (ewsUrl != null && userEmail != null && messageId != null && messageToken != null) {
+      try {
+        OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
+        OutlookMessage message = outlook.getMessage(user, messageId, messageToken);
+        return Response.ok(message.getBody()).withHeader("X-MessageBodyContentType", message.getType()).withCharset(Charset.forName("UTF-8"));
+      } catch (BadParameterException e) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Error reading message " + messageId + ". " + e.getMessage());
+        }
+        return errorMessage(e.getMessage(), 400);
+      } catch (Throwable e) {
+        LOG.error("Error reading message " + messageId, e);
+        return errorMessage(e.getMessage(), 500);
+      }
+    } else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Null or zero-length message ID or user parameters to read message");
+      }
+      return errorMessage("Message ID and user parameters required", 400);
     }
   }
 

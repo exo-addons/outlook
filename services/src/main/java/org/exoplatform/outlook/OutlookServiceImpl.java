@@ -19,9 +19,7 @@ package org.exoplatform.outlook;
 import com.ibm.icu.text.Transliterator;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
-import org.exoplatform.commons.utils.ActivityTypeUtils;
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainerContext;
@@ -85,9 +83,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessControlException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -690,19 +690,96 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  public OutlookMessage getMessage(String id,
-                                   OutlookUser user,
-                                   OutlookEmail from,
-                                   List<OutlookEmail> to,
-                                   Calendar created,
-                                   Calendar modified,
-                                   String subject,
-                                   String body) throws OutlookException {
+  public OutlookMessage buildMessage(String id,
+                                     OutlookUser user,
+                                     OutlookEmail from,
+                                     List<OutlookEmail> to,
+                                     Calendar created,
+                                     Calendar modified,
+                                     String subject,
+                                     String body) throws OutlookException {
     OutlookMessage message = new OutlookMessage(user, from);
     message.setId(id);
     message.setTo(to);
     message.setSubject(subject);
     message.setBody(body);
+    message.setCreated(created);
+    message.setModified(modified);
+    return message;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException {
+
+    // Read message from Exchange server by ID
+    JsonValue vatt = mailserverApi.getMessage(user, messageId, messageToken);
+    JsonValue vSubject = vatt.getElement("Subject");
+    if (isNull(vSubject)) {
+      throw new OutlookFormatException("Message " + messageId + " doesn't contain Subject");
+    }
+    String subject = vSubject.getStringValue();
+    JsonValue vTo = vatt.getElement("ToRecipients");
+    if (isNull(vTo)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain ToRecipients");
+    }
+    if (!vTo.isArray()) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ")'s ToRecipients isn't an array");
+    }
+    List<OutlookEmail> to = new ArrayList<OutlookEmail>(vTo.size());
+    for (Iterator<JsonValue> toiter = vTo.getElements(); toiter.hasNext();) {
+      to.add(readEmail(toiter.next()));
+    }
+    JsonValue vFrom = vatt.getElement("From");
+    if (isNull(vFrom)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain From");
+    }
+    OutlookEmail from = readEmail(vFrom);
+    JsonValue vCreatedDateTime = vatt.getElement("CreatedDateTime");
+    if (isNull(vCreatedDateTime)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain CreatedDateTime");
+    }
+    Calendar created = Calendar.getInstance();
+    try {
+      created.setTime(OutlookMessage.DATE_FORMAT.parse(vCreatedDateTime.getStringValue()));
+    } catch (ParseException e) {
+      LOG.error("Error parsing message date " + vCreatedDateTime.getStringValue(), e);
+    }
+    JsonValue vLastModifiedDateTime = vatt.getElement("LastModifiedDateTime");
+    if (isNull(vLastModifiedDateTime)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain LastModifiedDateTime");
+    }
+    Calendar modified = Calendar.getInstance();
+    try {
+      modified.setTime(OutlookMessage.DATE_FORMAT.parse(vLastModifiedDateTime.getStringValue()));
+    } catch (ParseException e) {
+      LOG.error("Error parsing message date " + vCreatedDateTime.getStringValue(), e);
+    }
+    JsonValue vBody = vatt.getElement("Body");
+    if (isNull(vBody)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain Body");
+    }
+    JsonValue vContentType = vBody.getElement("ContentType");
+    if (isNull(vContentType)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ")'s body doesn't contain ContentType");
+    }
+    String contentType = vContentType.getStringValue();
+    JsonValue vContent = vBody.getElement("Content");
+    if (isNull(vContent)) {
+      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ")'s body doesn't contain Content");
+    }
+    String content = vContent.getStringValue();
+    // TODO if contentType is HTML do sanitize the HTML
+
+    //
+    OutlookMessage message = new OutlookMessage(user, from);
+    message.setId(messageId);
+    message.setTo(to);
+    message.setSubject(subject);
+    message.setBody(content);
+    message.setType(contentType);
     message.setCreated(created);
     message.setModified(modified);
     return message;
@@ -1327,7 +1404,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected Node addMessageFile(Node parent, OutlookMessage message) throws RepositoryException,
                                                                      UnsupportedEncodingException,
                                                                      IOException {
-    try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF8"))) {
+    try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF-8"))) {
       // message file goes w/o summary, it will be generated in UI (OutlookMessageActivity)
       Node messageFile = addFile(parent, message.getSubject(), "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
@@ -1474,6 +1551,28 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     //
     return activity;
+  }
+
+  protected OutlookEmail readEmail(JsonValue vElem) throws OutlookException {
+    JsonValue vEmailAddress = vElem.getElement("EmailAddress");
+    if (isNull(vEmailAddress)) {
+      throw new OutlookFormatException("Element doesn't contain EmailAddress");
+    }
+    String email;
+    JsonValue vAddress = vEmailAddress.getElement("Address");
+    if (isNull(vAddress)) {
+      throw new OutlookFormatException("Element doesn't contain Address");
+    } else {
+      email = vAddress.getStringValue();
+    }
+    String name;
+    JsonValue vName = vEmailAddress.getElement("Name");
+    if (isNull(vName)) {
+      name = "".intern();
+    } else {
+      name = vName.getStringValue();
+    }
+    return getAddress(email, name);
   }
 
   /**

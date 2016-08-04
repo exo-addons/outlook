@@ -71,6 +71,8 @@ public class MailAPI {
   protected static final Log          LOG                   = ExoLogger.getLogger(MailAPI.class);
 
   protected static final String       READ_ATTACHMENT_ERROR = "Error requesting message attachment";
+  
+  protected static final String       READ_MESSAGE_ERROR = "Error requesting message";
 
   protected static final String       MODELS_ERROR          = "Error requesting workspace models";
 
@@ -186,6 +188,35 @@ public class MailAPI {
       throw new MailServerException("Error establishing message attachment request", e);
     } catch (IOException e) {
       throw new MailServerException("Error reading message attachment", e);
+    }
+  }
+
+  public JsonValue getMessage(OutlookUser user,
+                           String messageId,
+                           String messageToken) throws BadCredentialsException, ForbiddenException, MailServerException {
+    URI uri = user.getMailServerUrl().resolve(new StringBuilder("/api/v2.0/me/messages/").append(messageId).toString());
+    HttpGet get = new HttpGet(uri);
+    get.setHeader(acceptJsonHeader);
+    get.setHeader(new BasicHeader("Authorization", new StringBuilder("Bearer ").append(messageToken).toString()));
+    get.setHeader(new BasicHeader("x-AnchorMailbox", user.getEmail()));
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(">> getMessage() " + get.getRequestLine());
+    }
+    try (CloseableHttpResponse response = httpClient.execute(get, httpContext);
+        InputStream content = response.getEntity().getContent()) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("<< getMessage() " + response.getStatusLine());
+      }
+      checkError(response, READ_MESSAGE_ERROR);
+      // TODO should we care about redirects (proxy etc)?
+      return readJson(content);
+    } catch (JsonException e) {
+      throw new MailServerException("Error parsing message response", e);
+    } catch (ClientProtocolException e) {
+      throw new MailServerException("Error establishing message request", e);
+    } catch (IOException e) {
+      throw new MailServerException("Error reading message", e);
     }
   }
 

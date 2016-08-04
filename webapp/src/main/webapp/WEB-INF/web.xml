@@ -33,6 +33,10 @@
     <param-name>juzu.inject</param-name>
     <param-value>guice</param-value>
   </context-param>
+  <context-param>
+    <param-name>juzu.request_encoding</param-name>
+    <param-value>UTF-8</param-value>
+  </context-param>
   
   <filter>
     <filter-name>ResourceRequestFilter</filter-name>

@@ -19,6 +19,8 @@
  */
 package org.exoplatform.outlook;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -37,23 +39,29 @@ import javax.jcr.Node;
  */
 public class OutlookMessage {
 
-  protected final OutlookUser  user;
+  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+  // TODO was used when message was read in JS
+  //public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-  protected final OutlookEmail from;
+  protected final OutlookUser    user;
 
-  protected List<OutlookEmail> to = new ArrayList<OutlookEmail>();
+  protected final OutlookEmail   from;
 
-  protected String             id;
+  protected List<OutlookEmail>   to          = new ArrayList<OutlookEmail>();
 
-  protected String             subject;
+  protected String               id;
 
-  protected String             body;
+  protected String               subject;
 
-  protected Calendar           created;
+  protected String               body;
 
-  protected Calendar           modified;
+  protected String               type;
 
-  protected Node               fileNode;
+  protected Calendar             created;
+
+  protected Calendar             modified;
+
+  protected Node                 fileNode;
 
   protected OutlookMessage(OutlookUser user) {
     this.user = user;
@@ -77,6 +85,13 @@ public class OutlookMessage {
    */
   protected void setBody(String body) {
     this.body = body;
+  }
+
+  /**
+   * @param type the type to set
+   */
+  protected void setType(String type) {
+    this.type = type;
   }
 
   /**
@@ -161,6 +176,13 @@ public class OutlookMessage {
    */
   public String getBody() {
     return body;
+  }
+
+  /**
+   * @return the type
+   */
+  public String getType() {
+    return type;
   }
 
   /**

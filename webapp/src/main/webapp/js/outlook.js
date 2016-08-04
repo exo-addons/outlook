@@ -48,13 +48,49 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 	        + 'T' + pad2(date.getHours())
 	        + ':' + pad2(date.getMinutes()) 
 	        + ':' + pad2(date.getSeconds()) 
-	        + '.' + pad3(date.getMilliseconds())
+	        //+ '.' + pad3(date.getMilliseconds())
 	        + dif + pad2(tzo / 60) // + ':' 
 	        + pad2(tzo % 60);
 		} else {
 			return null;
 		}
 	}
+	
+	NON_LATIN_REGEXP = /[^\u0000-\u007F]+/g;
+	SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  // Match everything outside of normal chars and " (quote character)
+  NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g;
+	
+	/**
+	 * Code inspired by https://github.com/angular/angular.js/blob/v1.3.14/src/ngSanitize/sanitize.js#L435
+	 */
+	function udecode(text) {
+		//decodeURIComponent(escape(text))
+		// var uchars = text.match(/[^\u0000-\u007F]+/gi);
+		// for (i=0; i<uchars.length; i++) {
+		// var uc = uchars[i];
+		// text = text.replace(uc, decodeURIComponent(escape(uc)));
+		// }
+		// return text;
+
+		return text.replace(SURROGATE_PAIR_REGEXP, function(value) {
+			var hi = value.charCodeAt(0);
+			var low = value.charCodeAt(1);
+			return '&#' + (((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000) + ';';
+		})
+		// .replace(NON_ALPHANUMERIC_REGEXP, function(value) {
+			// return '&#' + value.charCodeAt(0) + ';';
+		// })
+		.replace(NON_LATIN_REGEXP, function(value) {
+			return '&#' + value.charCodeAt(0) + ';';
+		});
+	}
+
+	function isWindows() {
+		// Outlook for Windows (10): 							Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
+		// Outlook for Web in IE11 (Windows 10): 	Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
+	}
+
 
 	/**
 	 * Method adapted from org.exoplatform.services.cms.impl.Utils.fileSize().
@@ -458,6 +494,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					var $convertToStatus = $("#outlook-convertToStatus");
 					var $title = $convertToStatus.find("input[name='activityTitle']");
 					var $text = $convertToStatus.find("div.activityText");
+					var $editor = $convertToStatus.find("div.activityEditor");
 					var $form = $convertToStatus.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
 					var $groupId = $groupIdDropdown.find("select[name='groupId']");
@@ -475,7 +512,133 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						event.preventDefault();
 						$(this).parent().hide();
 						// $text.attr("contenteditable", "true");
+						$editor.append($text.children());
+						$text.hide();
+						$editor.show();
+						$text = $editor;
 					});
+
+					var subject = Office.context.mailbox.item.subject;
+					$title.val(subject);
+
+					// init spaces dropdown
+					$groupId.val([]); // initially no spaces selected
+					var groupId;
+					$groupId.change(function() {
+						var $space = $groupId.find("option:selected");
+						if ($space.size() > 0) {
+							groupId = $space.val();
+						}
+					});
+					$groupIdDropdown.Dropdown();
+					
+					// get a token to read message from server side
+					Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
+						if (asyncResult.status === "succeeded") {
+							var messageToken = asyncResult.value;
+							console.log(">> getMessage: " + messageId + " token:" + messageToken);
+							var ewsUrl = Office.context.mailbox.ewsUrl;
+							console.log(">> ewsUrl: " + ewsUrl);
+							$text.jzLoad("Outlook.getMessage()", {
+								ewsUrl : ewsUrl,
+								userEmail : userEmail,
+								userName : userName,
+								messageId : messageId,
+								messageToken : messageToken
+							}, function(response, status, jqXHR) {
+								if (status == "error") {
+									showError(jqXHR);
+								} else {
+									clearError();
+									groupId = groupId ? groupId : "";
+									console.log(">> groupId: " + groupId);
+									console.log(">> title: " + $title.val());
+									var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
+									textType = textType ? textType : "html";
+									console.log(">> convertToStatus textType: " + textType);
+									$form.submit(function(event) {
+										event.preventDefault();
+										clearError();
+										$form.hide("blind");
+										$converting.show("blind");
+										var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
+										spinner.start();
+										if ($cancelButton.data("cancel")) {
+											loadMenu("home");
+										} else {
+											var created = Office.context.mailbox.item.dateTimeCreated;
+											var modified = Office.context.mailbox.item.dateTimeModified;
+											// from and to (it's array) have following interesting fields: displayName,
+											// emailAddress
+											var from = Office.context.mailbox.item.from;
+											$convertedInfo.jzLoad("Outlook.convertToStatus()", {
+												groupId : groupId,
+												messageId : messageId,
+												subject : $title.val(),
+												body : $text.html(),
+												created : formatISODate(created),
+												modified : formatISODate(modified),
+												userName : userName,
+												userEmail : userEmail,
+												fromName : from.displayName,
+												fromEmail : from.emailAddress
+											}, function(response, status, jqXHR) {
+												if (status == "error") {
+													showError(jqXHR);
+													spinner.stop();
+													$converting.hide("blind", {
+														"direction" : "down"
+													});
+													$form.show("blind", {
+														"direction" : "down"
+													});
+												} else {
+													clearError();
+													spinner.stop();
+													$converting.hide("blind");
+													$converted.show("blind");
+												}
+											}); 
+										}
+									});
+									$convertButton.prop("disabled", false);
+								}
+							});
+						} else {
+							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
+						}
+					});
+				}
+				
+				function convertToStatusInit_Prev() {
+					var $convertToStatus = $("#outlook-convertToStatus");
+					var $title = $convertToStatus.find("input[name='activityTitle']");
+					var $text = $convertToStatus.find("div.activityText");
+					var $editor = $convertToStatus.find("div.activityEditor");
+					var $form = $convertToStatus.find("form");
+					var $groupIdDropdown = $form.find(".ms-Dropdown");
+					var $groupId = $groupIdDropdown.find("select[name='groupId']");
+					// $groupId.combobox(); // jQueryUI combo w/ autocompletion
+					var $convertButton = $form.find("button.convertButton");
+					$convertButton.prop("disabled", true);
+					var $cancelButton = $form.find("button.cancelButton");
+					var $converting = $convertToStatus.find("#converting");
+					var $converted = $convertToStatus.find("#converted");
+					var $convertedInfo = $converted.find(".convertedInfo");
+					$cancelButton.click(function() {
+						$cancelButton.data("cancel", true);
+					});
+					$convertToStatus.find(".editActivityText>a").click(function(event) {
+						event.preventDefault();
+						$(this).parent().hide();
+						// $text.attr("contenteditable", "true");
+						$editor.append($text.children());
+						$text.hide();
+						$editor.show();
+						$text = $editor;
+					});
+					$convertToStatus.append(" as " + document.characterSet);
 
 					var subject = Office.context.mailbox.item.subject;
 					$title.val(subject);
@@ -503,7 +666,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 							console.log(">> groupId: " + groupId);
 							console.log(">> title: " + $title.val());
 							// console.log(">> text: " + asyncResult.value);
-							$text.html(asyncResult.value);
+							$text.empty();
+							$text.html(udecode(asyncResult.value));
 							$form.submit(function(event) {
 								event.preventDefault();
 								clearError();
@@ -520,37 +684,41 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 									// emailAddress
 									var from = Office.context.mailbox.item.from;
 									// var to = Office.context.mailbox.item.to;
-									
-									$convertedInfo.jzLoad("Outlook.convertToStatus()", {
-									  groupId : groupId,
-									  messageId : messageId,
-									  subject : $title.val(),
-									  body : $text.html(),
-									  created : formatISODate(created),
-									  modified : formatISODate(modified),
-									  userName : userName,
-									  userEmail : userEmail,
-									  fromName : from.displayName,
-									  fromEmail : from.emailAddress
-									}, function(response, status, jqXHR) {
-										if (status == "error") {
-											showError(jqXHR);
-											spinner.stop();
-											$converting.hide("blind", {
-												"direction" : "down"
-											});
-											$form.show("blind", {
-												"direction" : "down"
-											});
-										} else {
-											clearError();
-											spinner.stop();
-											$converting.hide("blind");
-											$converted.show("blind");
-											// TODO
-											// var $activityLink = $convertedInfo.find("a.ms-Link");
+									$convertedInfo.jzAjax("Outlook.convertToStatus()", {
+										dataType : "html",
+										type : "POST",
+										data : {
+											groupId : groupId,
+											messageId : messageId,
+											subject : $title.val(),
+											body : $text.html(),
+											bodyOriginal : asyncResult.value,
+											created : formatISODate(created),
+											modified : formatISODate(modified),
+											userName : userName,
+											userEmail : userEmail,
+											fromName : from.displayName,
+											fromEmail : from.emailAddress
+										},
+										success : function(response, status, jqXHR) {
+											if (status == "error") {
+												showError(jqXHR);
+												spinner.stop();
+												$converting.hide("blind", {
+													"direction" : "down"
+												});
+												$form.show("blind", {
+													"direction" : "down"
+												});
+											} else {
+												clearError();
+												spinner.stop();
+												$converting.hide("blind");
+												$converted.show("blind");
+												// TODO var $activityLink = $convertedInfo.find("a.ms-Link");
+											}
 										}
-									});
+									}); 
 								}
 							});
 							$convertButton.prop("disabled", false);

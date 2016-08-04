@@ -19,12 +19,19 @@
 
 package org.exoplatform.outlook.server;
 
+import juzu.MimeType;
 import juzu.Path;
 import juzu.Response;
 import juzu.Route;
 import juzu.View;
+import juzu.request.RequestContext;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -49,15 +56,31 @@ public class OutlookServer {
   }
 
   @View
+  @MimeType.HTML
   @Route("/menu")
   public Response index() throws IOException {
     return index.ok();
   }
 
   @View
+  @MimeType.HTML
   @Route("/")
-  public Response login() throws IOException {
-    return login.ok();
+  public Response login(RequestContext context) throws IOException {
+    Charset charset;
+    try {
+      charset = Charset.forName("UTF-8");
+    } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+      charset = Charset.defaultCharset();
+      if (LOG.isLoggable(Level.FINE)) {
+        LOG.fine("Encoding not supported: UTF-8. " + e.getMessage() + ". Will use " + charset);
+      }
+    }
+    ResourceBundle i18n = context.getApplicationContext().resolveBundle(context.getUserContext().getLocale());
+    String title = i18n.getString("Outlook.welcome.title");
+    if (title == null || title.length() == 0) {
+      title = "Welcome to eXo Platform Add-in";
+    }
+    return login.ok().withCharset(charset).withTitle(title);
   }
 
 }

@@ -27,8 +27,9 @@
 					<label for="activityText" class="ms-Label">
 						&{Outlook.activityText}&nbsp;<span class="editActivityText">(<a class="ms-Link">&{Outlook.editActivityText}</a>)</span>
 					</label>
-					<div class="ms-TextField-field activityText" contenteditable="true">
-						<div class="activityEditor" contenteditable="true" style="display: none;"></div>
+					<div class="ms-TextField-field activityText">
+					</div>
+					<div class="ms-TextField-field activityEditor" contenteditable="true" style="display: none;">
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>
 				</div>

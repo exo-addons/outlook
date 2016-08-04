@@ -74,7 +74,7 @@ public interface OutlookService {
    * @return
    * @throws OutlookException
    */
-  OutlookMessage getMessage(String messageId,
+  OutlookMessage buildMessage(String messageId,
                             OutlookUser user,
                             OutlookEmail from,
                             List<OutlookEmail> to,
@@ -82,6 +82,20 @@ public interface OutlookService {
                             Calendar modified,
                             String subject,
                             String body) throws OutlookException;
+
+  /**
+   * Read Outlook message from server.
+   * @param user
+   * @param messageId
+   * @param messageId
+   * @param messageToken
+   * 
+   * @return
+   * @throws OutlookException
+   */
+  OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException;
+  
+  //OutlookMessage getUserMessage(OutlookUser user, String messageId) throws OutlookException;
 
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
@@ -107,8 +121,8 @@ public interface OutlookService {
    * 
    * @return {@link OutlookSpace}
    * @throws OutlookSpaceException
-   * @throws OutlookException 
-   * @throws RepositoryException 
+   * @throws OutlookException
+   * @throws RepositoryException
    */
   OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException;
 

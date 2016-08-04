@@ -321,11 +321,11 @@
           	<div class="text">
 	            <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFile</div>
 	            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${file.title}" href="${file.link}"> ${file.title} </a>
-	            <div class="descriptionText"><% uicomponent.getSummary(file) %></div>
+	            <div class="descriptionText">${file.summary}</div>
 	            <div class="inforFile">				        
 								<div class="versionFile">	
 									<%
-                  def fileSize = uicomponent.getSize(file)
+                  def fileSize = file.size
 									if(fileSize.length() > 0) {
 									%>
 									<%=_ctx.appRes("SocialIntegration.titles.fileSize"); %>:&nbsp; $fileSize
