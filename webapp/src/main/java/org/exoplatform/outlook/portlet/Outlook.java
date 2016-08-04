@@ -46,11 +46,7 @@ import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -531,11 +527,11 @@ public class Outlook {
                                   RequestContext context) {
     try {
       // TODO for debug purpose only
-      java.io.File temp = java.io.File.createTempFile("outlook_convertToStatus_body", ".html");
-      try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(temp))) {
-        osw.write(body);
-        temp.deleteOnExit();
-      }
+      // java.io.File temp = java.io.File.createTempFile("outlook_convertToStatus_body", ".html");
+      // try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(temp))) {
+      // osw.write(body);
+      // temp.deleteOnExit();
+      // }
       // ********
 
       OutlookUser user = outlook.getUser(userEmail, userName, null);
@@ -578,7 +574,9 @@ public class Outlook {
       try {
         OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
         OutlookMessage message = outlook.getMessage(user, messageId, messageToken);
-        return Response.ok(message.getBody()).withHeader("X-MessageBodyContentType", message.getType()).withCharset(Charset.forName("UTF-8"));
+        return Response.ok(message.getBody())
+                       .withHeader("X-MessageBodyContentType", message.getType())
+                       .withCharset(Charset.forName("UTF-8"));
       } catch (BadParameterException e) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Error reading message " + messageId + ". " + e.getMessage());
