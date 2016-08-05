@@ -18,33 +18,15 @@
   02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 %>
-<%
-import org.exoplatform.services.deployment.Utils
-import org.exoplatform.wcm.webui.reader.ContentReader
-
-def rcontext = _ctx.getRequestContext()
-
-def uiParent = uicomponent.getParent()
-def currentNode = uicomponent.getCurrentNode()
-%>
 <div class="outlookMessageViewer">
 	<%
-  if (currentNode) {
-		def iframeId = uiParent.getId() + '-iframe'
-    def strContent = ''
-		//def strContent = currentNode.getNode('jcr:content').getProperty('jcr:data').getString()
-		//strContent = ContentReader.getEscapeHtmlContent(Utils.sanitize(strContent))	        	  
+  if (uicomponent.currentNode) {
 	%>
 	<div class="textContent">
 		<div class="messageBody">
-			<!-- textarea id="$iframeId">$strContent</textarea -->
-			<iframe scrolling="auto" frameBorder=0 class="$iframeId ECMIframe" src="${uicomponent.webdavLink}"></iframe>
+			<iframe scrolling="auto" frameBorder=0 class="outlookMessageIframe" src="${uicomponent.webdavLink}"></iframe>
 		</div> 
 		<div class="messageFooter">&nbsp;</div>
-	<% 
-    //def jsManager = rcontext.getJavascriptManager()
-    //jsManager.require('SHARED/wcm-utils', 'wcmutil').addScripts("wcmutil.WCMUtils.replaceToIframe('$iframeId');")
-	%>
 	</div>
 	<%
   } else { 

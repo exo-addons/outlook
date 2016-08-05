@@ -310,7 +310,7 @@
               <a href="${file.link}" style="display: none;" rel="tooltip" data-placement="bottom" data-original-title="${file.title}"><i class="${file.cssClassIcon}"></i></a>
             </div>
 	        	<%} else if (file.isSupportPreview()) { %>
-	          <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
+	          <div id="MediaContent${activity.id}" class="outlookAttachmentActivityContent PlayerContianer">
 	            <% uicomponent.renderAttachmentPresentation(file) %>
 	          </div>
 	        	<%} else { %>
@@ -349,7 +349,7 @@
             <div class="text">
             <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFiles</div>
             </div><!--end text-->
-            <div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
+            <div id="MediaContent${activity.id}" class="outlookAttachmentActivityContent PlayerContianer">
             	<ul class="attachmentFiles">
           <%
             for (f in files) {

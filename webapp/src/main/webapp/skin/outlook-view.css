@@ -2,6 +2,22 @@
 	width: 100% !important;
 }
 
+.outlookMessageActivityContent .messageBody:before {
+	content:"";
+  width:100%;
+  height:100%;    
+  position:absolute;
+  left:0;
+  top:0;
+  background:linear-gradient(transparent 100px, white);
+  cursor:pointer;
+  z-index: 20;
+}
+
+.outlookMessageActivityContent .outlookMessageIframe {
+	z-index: -10;
+}
+
 .outlookMessagePreview .uiPreviewWebContent {
 	overflow-y: hidden !important;
 }

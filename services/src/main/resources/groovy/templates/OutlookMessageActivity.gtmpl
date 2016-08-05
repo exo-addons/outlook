@@ -312,7 +312,7 @@
 							<div class="descriptionText">$description</div><!-- TODO -->		
 						</div><!--end text-->
           
-          	<div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer">
+          	<div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer" data-activitylink="$contentActivityUri">
 							<% uicomponent.renderContentPresentation() %>
 					 	</div>
 					</div>	

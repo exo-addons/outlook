@@ -19,7 +19,6 @@
  */
 package org.exoplatform.outlook.social;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
@@ -30,13 +29,12 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.LocaleContextInfo;
-import org.exoplatform.services.wcm.friendly.FriendlyService;
-import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
+import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -60,7 +58,6 @@ import java.util.ResourceBundle;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.portlet.PortletRequest;
 
 /**
  * Created by The eXo Platform SAS
@@ -121,6 +118,8 @@ public class OutlookMessageActivity extends FileUIActivity {
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
     }
   }
+
+  protected static ThreadLocal<Boolean> scriptInitialized = new ThreadLocal<Boolean>();
 
   public OutlookMessageActivity() throws Exception {
     super();
@@ -248,12 +247,45 @@ public class OutlookMessageActivity extends FileUIActivity {
 
     return super.getSummary(node);
   }
-  
+
   public void renderContentPresentation() throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
     uicontentpresentation.setNode(getContentNode());
     UIComponent fileComponent = uicontentpresentation.getUIComponent(getMimeType());
     uicontentpresentation.renderUIComponent(fileComponent);
+
+    // init script for UI tuning once
+    WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
+    Object init = rcontext.getAttribute(getClass());
+    if (init == null || Boolean.FALSE.equals(init)) {
+      rcontext.setAttribute(getClass(), Boolean.TRUE);
+      JavascriptManager jsManager = rcontext.getJavascriptManager();
+      jsManager.require("SHARED/jquery", "$")
+               .addScripts("$(function() {\n" //
+                   // do in timeout to run after stream refresh (by user)
+                   + "  setTimeout(function() {\n" //
+                   + "    $('.outlookMessageActivityContent').each(function(ai, activity) {\n" //
+                   + "      var $activity = $(activity);\n" //
+                   + "      $activity.find('.outlookMessageIframe').each(function(ii, iframe) {\n" //
+      // + " console.log('init iframe >> [' + i + '] ' + iframe.src);\n" //
+                   + "        var $iframe = $(iframe);\n" //
+                   + "        $iframe.ready(function() {\n" //
+                   + "          var $body = $iframe.contents().find('body,div:first');\n" //
+                   + "          $body.first().css('overflow', 'hidden');\n" //
+      // + " console.log('init iframe << [' + i + '] ' + $body.size() + ' ' + $body.first().size() + ' ' +
+      // iframe.src);\n" //
+                   + "        });\n" //
+                   + "        $iframe.parents('.messageBody').click(function(event) {\n" //
+                   + "          event.stopPropagation();\n" //
+                   + "          var activitylink = $activity.data('activitylink');\n" //
+                   + "          eval(activitylink);\n" //
+                   + "        });\n" //
+                   + "      });\n" //
+                   + "    });\n" //
+                   + "  }, 1500);\n" //
+                   + "});\n" //
+      );
+    }
   }
 
 }
