@@ -114,6 +114,66 @@
                     <SourceLocation resid="searchUrl" />
                   </Action>
                 </Control>
+                <!-- Convert to: Menu (dropdown) button -->
+                <!-- Control xsi:type="Menu" id="composeConvertMenuButton">
+                  <Label resid="convertMenuLabel" />
+                  <Supertip>
+                    <Title resid="convertMenuTipTitle" />
+                    <Description resid="convertMenuTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="exo-icon-16" />
+                    <bt:Image size="32" resid="exo-icon-32" />
+                    <bt:Image size="80" resid="exo-icon-80" />
+                  </Icon>
+                  <Items>
+                    <Item id="composeConvertToStatus">
+                      <Label resid="convertToStatusLabel" />
+                      <Supertip>
+                        <Title resid="convertToStatusTipTitle" />
+                        <Description resid="convertToStatusTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="exo-icon-16" />
+                        <bt:Image size="32" resid="exo-icon-32" />
+                        <bt:Image size="80" resid="exo-icon-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToStatusUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="composeConvertToWiki">
+                      <Label resid="convertToWikiLabel" />
+                      <Supertip>
+                        <Title resid="convertToWikiTipTitle" />
+                        <Description resid="convertToWikiTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="exo-icon-16" />
+                        <bt:Image size="32" resid="exo-icon-32" />
+                        <bt:Image size="80" resid="exo-icon-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToWikiUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="composeConvertToForum">
+                      <Label resid="convertToForumLabel" />
+                      <Supertip>
+                        <Title resid="convertToForumTipTitle" />
+                        <Description resid="convertToForumTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="exo-icon-16" />
+                        <bt:Image size="32" resid="exo-icon-32" />
+                        <bt:Image size="80" resid="exo-icon-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToForumUrl" />
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control -->
                 <!-- Create status, discussion etc: Menu (dropdown) button -->
                 <Control xsi:type="Menu" id="composeCreateMenuButton">
                   <Label resid="createMenuLabel" />

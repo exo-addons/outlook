@@ -15,7 +15,7 @@
 		<ul class="ms-NavBar-items">
 			<%	for (m in menu) {
 						if (m.hasSubmenu()) { %>
-			<li class="ms-NavBar-item ms-NavBar-item--hasMenu"><a class="ms-NavBar-link">${m.title}</a><i
+			<li class="ms-NavBar-item ms-NavBar-item--hasMenu"><a class="ms-NavBar-link outlookGroupMenu ${m.name}" data-name="${m.name}">${m.title}</a><i
 				class="ms-NavBar-chevronDown ms-Icon ms-Icon--chevronDown"></i>
 				<ul class="ms-ContextualMenu">
 					<%	for (sm in m.submenu) { %>

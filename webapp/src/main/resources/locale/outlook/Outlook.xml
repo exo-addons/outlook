@@ -92,6 +92,9 @@
       <atThisPage>on this page</atThisPage>
       <messageItemReadError>Error reading message item.</messageItemReadError>
       <convertToStatusError>Error converting message to activity.</convertToStatusError>
+      <gettingSubjectError>Error getting message subject.</gettingSubjectError>
+      <messageIdNotFound>Cannot find ID for current message</messageIdNotFound>
+      <savingMessageError>Error saving message (as a draft).</savingMessageError>
     </messages>
     
     <activity>

@@ -124,14 +124,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 			var userEmail = Office.context.mailbox.userProfile.emailAddress;
 			var userName = Office.context.mailbox.userProfile.displayName;
 			console.log("> user: " + userName + "<" + userEmail + ">");
-			// The itemId property returns null in compose mode for items that have not been saved to
-			// the server.
-			var messageId = fixId(Office.context.mailbox.item.itemId);
-			console.log("> messageId: " + messageId);
-			// Internet message identifier for an email message. Read mode only.
-			var internetMessageId = Office.context.mailbox.item.internetMessageId;
-			console.log("> internetMessageId: " + internetMessageId);
-
+			
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.size() > 0) {
@@ -144,7 +137,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 				}
 				var $errorText = $error.find(".ms-MessageBanner-clipper");
 
-				function showError(source, cause) {
+				var showError = function(source, cause) {
 					var message;
 					// check if source is i18n key or jqXHR (of jQuery ajax request)
 					if (typeof source === "string" && source.indexOf("Outlook.messages") === 0) {
@@ -171,11 +164,53 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						"direction" : "down"
 					});
 					return message;
-				}
-				function clearError() {
+				};
+				var clearError = function() {
 					$error.hide("blind");
 					$errorText.empty();
-				}
+				};
+				
+				var messageId;
+				var internetMessageId;
+				var readMessageId = function(force) {
+					var process = $.Deferred();
+					if (force) {
+						// Get the currently selected item's ID
+						var ewsId = Office.context.mailbox.item.itemId;
+						if (ewsId) {
+							// Convert to a REST ID for the v2.0 version of the Outlook Mail API
+							messageId = Office.context.mailbox.convertToRestId(ewsId, Office.MailboxEnums.RestVersion.v2_0);
+							//messageId = fixId(Office.context.mailbox.item.itemId);
+							console.log("> messageId: " + messageId);
+							internetMessageId = Office.context.mailbox.item.internetMessageId;
+							console.log("> internetMessageId: " + internetMessageId);
+						}
+					}
+					if (messageId) {
+						process.resolve(messageId);
+					} else if (!internetMessageId) {
+						// If in compose form: save (as draft) and then get message ID
+						Office.context.mailbox.item.saveAsync(function(asyncResult) {
+							if (asyncResult.status === "succeeded") {
+								messageId = Office.context.mailbox.convertToRestId(asyncResult.value, Office.MailboxEnums.RestVersion.v2_0);
+								console.log(">> messageId: " + messageId);
+								internetMessageId = Office.context.mailbox.item.internetMessageId;
+								console.log(">> internetMessageId: " + internetMessageId);
+								process.resolve(messageId);
+							} else {
+								console.log(">> Office.context.mailbox.item.saveAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								showError("Outlook.messages.savingMessageError", asyncResult.error.message);
+								process.reject();
+							}
+						});
+					} else {
+						console.log("> itemId not found for " + internetMessageId);
+						showError("Outlook.messages.messageIdNotFound", internetMessageId);
+						process.reject();
+					}
+					return process.promise();
+				}; 
+				readMessageId(true);
 
 				var $menu = $pane.find("#outlook-menu");
 				var $container = $pane.find("#outlook-menu-container");
@@ -518,9 +553,6 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						$text = $editor;
 					});
 
-					var subject = Office.context.mailbox.item.subject;
-					$title.val(subject);
-
 					// init spaces dropdown
 					$groupId.val([]); // initially no spaces selected
 					var groupId;
@@ -532,77 +564,101 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					});
 					$groupIdDropdown.Dropdown();
 					
+					var subject = Office.context.mailbox.item.subject;
+					if (internetMessageId) {
+						$title.val(subject);
+					} else {
+						Office.context.mailbox.item.subject.getAsync(function callback(asyncResult) {
+							if (asyncResult.status === "succeeded") {
+								$title.val(asyncResult.value);
+							} else {
+								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+							}
+						}); 
+					}
+					
 					// get a token to read message from server side
 					Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
 						if (asyncResult.status === "succeeded") {
 							var messageToken = asyncResult.value;
-							console.log(">> getMessage: " + messageId + " token:" + messageToken);
-							var ewsUrl = Office.context.mailbox.ewsUrl;
-							console.log(">> ewsUrl: " + ewsUrl);
-							$text.jzLoad("Outlook.getMessage()", {
-								ewsUrl : ewsUrl,
-								userEmail : userEmail,
-								userName : userName,
-								messageId : messageId,
-								messageToken : messageToken
-							}, function(response, status, jqXHR) {
-								if (status == "error") {
-									showError(jqXHR);
-								} else {
-									clearError();
-									groupId = groupId ? groupId : "";
-									console.log(">> groupId: " + groupId);
-									console.log(">> title: " + $title.val());
-									var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
-									textType = textType ? textType : "html";
-									console.log(">> convertToStatus textType: " + textType);
-									$form.submit(function(event) {
-										event.preventDefault();
-										clearError();
-										$form.hide("blind");
-										$converting.show("blind");
-										var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
-										spinner.start();
-										if ($cancelButton.data("cancel")) {
-											loadMenu("home");
+							var midProcess = readMessageId();
+							midProcess.done(function(mid) {
+								console.log(">> getMessage(): " + mid + " token:" + messageToken);
+								if (mid) {
+									var ewsUrl = Office.context.mailbox.ewsUrl;
+									console.log(">> ewsUrl: " + ewsUrl);								
+									$text.jzLoad("Outlook.getMessage()", {
+										ewsUrl : ewsUrl,
+										userEmail : userEmail,
+										userName : userName,
+										messageId : mid,
+										messageToken : messageToken
+									}, function(response, status, jqXHR) {
+										if (status == "error") {
+											showError(jqXHR);
 										} else {
-											var created = Office.context.mailbox.item.dateTimeCreated;
-											var modified = Office.context.mailbox.item.dateTimeModified;
-											// from and to (it's array) have following interesting fields: displayName,
-											// emailAddress
-											var from = Office.context.mailbox.item.from;
-											$convertedInfo.jzLoad("Outlook.convertToStatus()", {
-												groupId : groupId,
-												messageId : messageId,
-												subject : $title.val(),
-												body : $text.html(),
-												created : formatISODate(created),
-												modified : formatISODate(modified),
-												userName : userName,
-												userEmail : userEmail,
-												fromName : from.displayName,
-												fromEmail : from.emailAddress
-											}, function(response, status, jqXHR) {
-												if (status == "error") {
-													showError(jqXHR);
-													spinner.stop();
-													$converting.hide("blind", {
-														"direction" : "down"
-													});
-													$form.show("blind", {
-														"direction" : "down"
-													});
+											clearError();
+											groupId = groupId ? groupId : "";
+											console.log(">> groupId: " + groupId);
+											console.log(">> title: " + $title.val());
+											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
+											textType = textType ? textType : "html";
+											console.log(">> convertToStatus textType: " + textType);
+											$convertButton.prop("disabled", false);
+											$form.submit(function(event) {
+												event.preventDefault();
+												clearError();
+												$form.hide("blind");
+												$converting.show("blind");
+												var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
+												spinner.start();
+												if ($cancelButton.data("cancel")) {
+													loadMenu("home");
 												} else {
-													clearError();
-													spinner.stop();
-													$converting.hide("blind");
-													$converted.show("blind");
+													var created = Office.context.mailbox.item.dateTimeCreated;
+													var modified = Office.context.mailbox.item.dateTimeModified;
+													// from and to (it's array) have following interesting fields: displayName,
+													// emailAddress
+													var from = Office.context.mailbox.item.from;
+													$convertedInfo.jzLoad("Outlook.convertToStatus()", {
+														groupId : groupId,
+														messageId : mid,
+														subject : $title.val(),
+														body : $text.html(),
+														created : formatISODate(created),
+														modified : formatISODate(modified),
+														userName : userName,
+														userEmail : userEmail,
+														fromName : from.displayName,
+														fromEmail : from.emailAddress
+													}, function(response, status, jqXHR) {
+														if (status == "error") {
+															showError(jqXHR);
+															spinner.stop();
+															$converting.hide("blind", {
+																"direction" : "down"
+															});
+															$form.show("blind", {
+																"direction" : "down"
+															});
+														} else {
+															clearError();
+															spinner.stop();
+															$converting.hide("blind");
+															$converted.show("blind");
+														}
+													}); 
 												}
-											}); 
+											});
 										}
 									});
-									$convertButton.prop("disabled", false);
-								}
+								} else {
+									showError("Outlook.messages.messageIdNotFound", internetMessageId);
+								}		
+							});
+							midProcess.fail(function() {
+								console.log(">> getMessage() failed to read messageId ");
 							});
 						} else {
 							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
@@ -611,6 +667,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					});
 				}
 				
+				// TODO not used
 				function convertToStatusInit_Prev() {
 					var $convertToStatus = $("#outlook-convertToStatus");
 					var $title = $convertToStatus.find("input[name='activityTitle']");
@@ -795,17 +852,15 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					    && (!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
 						$saveAttachment.parent().remove();
 					}
-					// special login for item addAttachment - show it only in compose mode
+					// special logic for item addAttachment - show it only in compose mode
 					// FYI internetMessageId will be found for sent/received message
 					var $addAttachment = $menuItems.filter(".addAttachment");
 					if ($addAttachment.size() > 0 && internetMessageId) {
 						$addAttachment.parent().remove();
 					}
-
-					// remove convert* menus for new messages (messageId not null for messages saved on
-					// the server)
+					// remove convert* menus for compose form (internetMessageId will be null)
 					var $convertTo = $menuGroups.filter(".convertTo");
-					if ($convertTo.size() > 0 && !messageId) {
+					if ($convertTo.size() > 0 && !internetMessageId) {
 						$convertTo.parent().remove();
 					}
 

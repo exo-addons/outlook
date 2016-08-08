@@ -41,11 +41,11 @@ public class OutlookMessage {
 
   public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
   // TODO was used when message was read in JS
-  //public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+  // public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   protected final OutlookUser    user;
 
-  protected final OutlookEmail   from;
+  protected OutlookEmail         from;
 
   protected List<OutlookEmail>   to          = new ArrayList<OutlookEmail>();
 
@@ -66,11 +66,6 @@ public class OutlookMessage {
   protected OutlookMessage(OutlookUser user) {
     this.user = user;
     this.from = user;
-  }
-
-  protected OutlookMessage(OutlookUser user, OutlookEmail from) {
-    this.user = user;
-    this.from = from;
   }
 
   /**
@@ -106,6 +101,13 @@ public class OutlookMessage {
    */
   protected void setTo(List<OutlookEmail> to) {
     this.to = to;
+  }
+
+  /**
+   * @param from the from to set
+   */
+  protected void setFrom(OutlookEmail from) {
+    this.from = from;
   }
 
   /**

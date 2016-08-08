@@ -149,7 +149,7 @@ div.form-buttons {
 }
 
 .activityText {
-	height: 75px;	
+	height: 125px;	
   overflow: hidden;
   padding: 0px;
   position: relative;
@@ -166,7 +166,7 @@ div.form-buttons {
 }
 
 .activityEditor {
-	height: 175px;
+	height: 200px;
 	max-height: 250px;
 	overflow: auto;
   padding: 0px;

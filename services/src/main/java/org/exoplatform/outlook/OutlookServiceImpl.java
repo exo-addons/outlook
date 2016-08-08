@@ -698,8 +698,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                      Calendar modified,
                                      String subject,
                                      String body) throws OutlookException {
-    OutlookMessage message = new OutlookMessage(user, from);
+    OutlookMessage message = new OutlookMessage(user);
     message.setId(id);
+    message.setFrom(from);
     message.setTo(to);
     message.setSubject(subject);
     message.setBody(body);
@@ -732,11 +733,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     for (Iterator<JsonValue> toiter = vTo.getElements(); toiter.hasNext();) {
       to.add(readEmail(toiter.next()));
     }
+    OutlookEmail from;
     JsonValue vFrom = vatt.getElement("From");
     if (isNull(vFrom)) {
-      throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain From");
+      // TODO throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain
+      // From");
+      // It's possible for saved draft messages
+      from = null;
+    } else {
+      from = readEmail(vFrom);
     }
-    OutlookEmail from = readEmail(vFrom);
     JsonValue vCreatedDateTime = vatt.getElement("CreatedDateTime");
     if (isNull(vCreatedDateTime)) {
       throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain CreatedDateTime");
@@ -774,8 +780,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // TODO if contentType is HTML do sanitize the HTML
 
     //
-    OutlookMessage message = new OutlookMessage(user, from);
+    OutlookMessage message = new OutlookMessage(user);
     message.setId(messageId);
+    message.setFrom(from);
     message.setTo(to);
     message.setSubject(subject);
     message.setBody(content);
