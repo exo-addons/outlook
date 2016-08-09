@@ -399,7 +399,8 @@
         <bt:String id="userInfoLabel" DefaultValue="People">
           <bt:Override Locale="fr-fr" Value="Personnes" />
         </bt:String>
-        <bt:String id="userInfoTipTitle" DefaultValue="Trouvez vos contacts parmis les membre de l'intranet">
+        <bt:String id="userInfoTipTitle" DefaultValue="Find participants among Intranet members">
+          <bt:Override Locale="fr-fr" Value="Trouvez vos contacts parmis les membre de l'intranet" />
         </bt:String>
         
         <!-- Compose mode -->
@@ -461,7 +462,7 @@
         </bt:String>
         
         <!-- Compose mode -->
-        <bt:String id="addAttachmentTipDescription" DefaultValue="Open the pane select eXo documents to attach to the message.">
+        <bt:String id="addAttachmentTipDescription" DefaultValue="Open the pane to attach eXo documents to the message">
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour sélectionner les documents eXo à attacher en pièce jointe" />
         </bt:String>
         
