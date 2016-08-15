@@ -1,4 +1,4 @@
-.outlookMessageActivityContent {
+.outlookMessageActivityContent, .outlookAttachmentActivityContent {
 	width: 100% !important;
 }
 

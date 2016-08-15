@@ -458,12 +458,19 @@ public class Outlook {
   @Resource
   public Response addAttachmentForm() {
     try {
-      // TODO sources
       List<AttachmentSource> sources = new ArrayList<AttachmentSource>();
       sources.add(new AttachmentSource(SOURCE_ID_ALL_SPACES, i18n.getString("Outlook.allSpaces")));
-      sources.add(new AttachmentSource(SOURCE_ID_PERSONAL, i18n.getString("Outlook.personalDocuments")));
+      Folder userFolder = outlook.getUserDocuments().getRootFolder();
+      sources.add(new AttachmentSource(SOURCE_ID_PERSONAL,
+                                       i18n.getString("Outlook.personalDocuments"),
+                                       userFolder.getPath(),
+                                       userFolder.getPathLabel()));
       for (OutlookSpace space : outlook.getUserSpaces()) {
-        sources.add(new AttachmentSource(space.getGroupId(), space.getTitle()));
+        Folder spaceFolder = space.getRootFolder();
+        sources.add(new AttachmentSource(space.getGroupId(),
+                                         space.getTitle(),
+                                         spaceFolder.getPath(),
+                                         spaceFolder.getPathLabel()));
       }
       return addAttachment.with().sources(sources).ok();
     } catch (Throwable e) {
@@ -552,7 +559,7 @@ public class Outlook {
         }
 
         String userId = context.getSecurityContext().getRemoteUser();
-        
+
         String link = contentLink.createUrl(userId, nodePath, prefix.toString());
 
         return Response.ok().content("{\"link\":\"" + link + "\"}").withMimeType("application/json");
@@ -878,19 +885,5 @@ public class Outlook {
     DateFormat fmt = new SimpleDateFormat(COOKIE_DATE_FORMAT_STRING, Locale.US);
     fmt.setTimeZone(tz);
     return fmt.format(date);
-  }
-
-  private AttachmentSource parseSource(String line) {
-    if (line.startsWith("/")) {
-      // it's user Personal Docs or any other path in the JCR
-      return new AttachmentSource(line, line);
-    } else if (line.equals("*")) {
-      return new AttachmentSource(line, null);
-    } else {
-      int i = line.indexOf("@");
-      String groupId = line.substring(0, i);
-      // TODO get space by groupId
-      throw new IllegalArgumentException("Line '" + line + "' cannot be a source");
-    }
   }
 }

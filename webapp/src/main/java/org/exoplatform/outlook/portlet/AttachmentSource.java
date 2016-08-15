@@ -32,10 +32,20 @@ public class AttachmentSource {
 
   protected final String title;
 
-  protected AttachmentSource(String id, String title) {
+  protected final String rootPath;
+
+  protected final String rootLabel;
+
+  protected AttachmentSource(String id, String title, String rootPath, String rootLabel) {
     super();
     this.id = id;
     this.title = title;
+    this.rootPath = rootPath;
+    this.rootLabel = rootLabel;
+  }
+
+  protected AttachmentSource(String id, String title) {
+    this(id, title, null, null);
   }
 
   /**
@@ -50,6 +60,20 @@ public class AttachmentSource {
    */
   public String getTitle() {
     return title;
+  }
+
+  /**
+   * @return the rootPath
+   */
+  public String getRootPath() {
+    return rootPath;
+  }
+
+  /**
+   * @return the rootLabel
+   */
+  public String getRootLabel() {
+    return rootLabel;
   }
 
 }

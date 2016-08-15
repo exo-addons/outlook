@@ -20,11 +20,10 @@
 					<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
 					<select name="source" class="ms-Dropdown-select">
 						<%	for(s in sources) { %>
-						<option value="${s.id}">${s.title}</option>
+						<option value="${s.id}" data-rootpath="${s.rootPath}">${s.title}</option>
 						<%	} %>
 					</select>
 				</div>
-				<span class="ms-TextField-description">&{Outlook.documentSourceDescription}</span>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		</div>
@@ -56,7 +55,6 @@
 					<ul class="ms-List currentFolder">
 						<li class="ms-ListItem">
 							<div class="ms-TextField ms-ListItem-primaryText">
-								<span class="ms-TextField-description">&{Outlook.currentFolder}:</span>
 								<input class="ms-TextField-field pathInfo" type="text" style="font-size: 14px !important;" readonly>
 							</div>
 							<div class="ms-ListItem-actions pathControls">

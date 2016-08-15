@@ -196,7 +196,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $groupIdSelect = $groupIdDropdown.find("select[name='groupId']");
 					$groupIdSelect.val([]);
 					// initially no spaces selected
-					var $groupPath = $form.find(".group-path");
+					var $groupPath = $form.find(".groupPath");
 					var $folders = $groupPath.find("ul.folders");
 					var $path = $groupPath.find("input[name='path']");
 					var $pathInfo = $groupPath.find("input.pathInfo");
@@ -669,10 +669,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var sourceId, sourceTitle, sourceRootPath;
 					var path, pathLabel, portalUrl;
 					
-					var isSelected = function(fpath) {
-						return $documents.find("li.ms-ListItem").filter(function() {
+					var findByPath = function($items, fpath) {
+						return $items.filter(function() {
 							return $(this).data("path") == fpath;
-						}).size() > 0;
+						});
+					};
+					
+					var isSelected = function(fpath) {
+						return findByPath($documents.find("li.ms-ListItem"), fpath).size() > 0;
 					};
 					
 					var initFiles = function($files, loadChildred) {
@@ -699,7 +703,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var $child = $(this);
 							var fpath = $child.data("path");
 							var isFolder = $child.data("isfolder");
-							if (isFolder === "true") {
+							if (isFolder) {
 								// navigate into this folder
 								if (fpath) {
 									path = fpath;
@@ -733,9 +737,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											$selected.toggleClass("is-selected");
 											// here also check/uncheck in $folderFiles
 											if ($selected.hasClass("is-selected")) {
-												$child.addClass("is-selected");
+												//$child.addClass("is-selected");
+												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).addClass("is-selected");
 											} else {
-												$child.removeClass("is-selected");
+												//$child.removeClass("is-selected");
+												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).removeClass("is-selected");
 											}
 										});
 										$selected.find(".pathControls").click(function(event) {
@@ -758,7 +764,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 
 					var searchFiles = function(text) {
-						var process = $.Deferred();
 						$documentSearchResults.jzLoad("Outlook.searchFiles()", {
 							sourceId : sourceId,
 							text : text
@@ -774,7 +779,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					
 					// init sources dropdown
-					//$source.val([]);
 					$source.change(function() {
 						var $s = $source.find("option:selected");
 						if ($s.size() > 0) {
@@ -813,43 +817,67 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					});
 					
 					// init Explore Tab
+					var loadChildred = function() {
+						var process = $.Deferred();
+						if (sourceId && path) {
+							console.log(">> loadChildred: " + sourceId + " >> " + path);
+							$folderFiles.jzLoad("Outlook.exploreFiles()", {
+								sourceId : sourceId,
+								path : path
+							}, function(response, status, jqXHR) {
+								if (status == "error") {
+									process.reject();
+									showError(jqXHR);
+								} else {
+									clearError();
+									// show children
+									var $parentFolder = $folderFiles.find(".parentFolder");
+									path = $parentFolder.data("path");
+									pathLabel = $parentFolder.data("pathlabel");
+									portalUrl = $parentFolder.data("portalurl");
+									if (sourceRootPath == path) {
+										$pathUp.attr("disabled", "true");
+									} else {
+										$pathUp.removeAttr("disabled");
+									}
+									$pathInfo.val(pathLabel);
+									initFiles($folderFiles, loadChildred);
+									process.resolve();
+								}
+							});
+						} else {
+							process.reject();
+							console.log(">> loadChildred: sourceId and/or path not found");
+							showError("Outlook.messages.sourcePathNotFound");
+						}
+						return process.promise();
+					};
 					$explorerTab.click(function() {
 						clearError();
 						$explorerTab.toggleClass("ms-Button--primary");
 						$searchTab.toggleClass("ms-Button--primary");
 						$documentSearch.hide();
 						$documentExplorer.show();
-						var loadChildred = function() {
-							if (sourceId && path) {
-								console.log(">> loadChildred: " + sourceId + " >> " + path);
-								$folderFiles.jzLoad("Outlook.exploreFiles()", {
-									sourceId : sourceId,
-									path : path
-								}, function(response, status, jqXHR) {
-									if (status == "error") {
-										showError(jqXHR);
-									} else {
-										clearError();
-										// show children
-										var $parentFolder = $folderFiles.find(".parentFolder");
-										path = $parentFolder.data("path");
-										pathLabel = $parentFolder.data("pathlabel");
-										portalUrl = $parentFolder.data("portalurl");
-										if (sourceRootPath == path) {
-											$pathUp.attr("disabled", "true");
-										} else {
-											$pathUp.removeAttr("disabled");
-										}
-										$pathInfo.val(pathLabel);
-										initFiles($folderFiles, loadChildred);
-									}
-								});
-							} else {
-								console.log(">> loadChildred: sourceId and/or path not found");
-								showError("Outlook.messages.sourcePathNotFound");
-							}
-						};
 						loadChildred(); 
+					});
+					// init Explorer pathInfo
+					$pathUp.click(function() {
+						if (!$pathUp.attr("disabled")) {
+							var lastElemIndex = path.lastIndexOf("/");
+							if (lastElemIndex > 0) {
+								var origPath = path;
+								path = path.substring(0, lastElemIndex);
+								var process = loadChildred();
+								process.fail(function() {
+									path = origPath;
+								});
+							}
+						}
+					});
+					$pathOpen.click(function() {
+						if (portalUrl) {
+							window.open(portalUrl);
+						}
 					});
 					
 					// init Cancel button

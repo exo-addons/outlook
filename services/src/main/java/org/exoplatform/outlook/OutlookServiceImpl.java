@@ -101,6 +101,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -266,8 +267,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       if (text == null || text.length() == 0) {
         Query q = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
-            + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
-                                 Query.SQL);
+            + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         fetchQuery(q.execute(), 20, res);
       } else {
         Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
@@ -303,8 +303,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
             + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
       } else {
-        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
-            + "/%' AND exo:title LIKE '%" + text + "%'", Query.SQL);
+        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text
+            + "%'", Query.SQL);
       }
       fetchQuery(q.execute(), 20, res);
 
@@ -524,10 +524,17 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public Folder getRootFolder() throws OutlookException, RepositoryException {
       RootFolder root = rootFolder.get();
-      if (root == null) {
-        root = new RootFolder(rootPath, node(rootPath));
-        rootFolder.set(root);
+      if (root != null) {
+        // ensure folder's node valid
+        try {
+          root.getNode().getIndex();
+          return root;
+        } catch (InvalidItemStateException e) {
+          // it's invalid
+        }
       }
+      root = new RootFolder(rootPath, node(rootPath));
+      rootFolder.set(root);
       return root;
     }
 
@@ -643,9 +650,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected final ConcurrentHashMap<String, OutlookUser>      authenticated = new ConcurrentHashMap<String, OutlookUser>();
 
+  /**
+   * Spaces cache.
+   * TODO There is an issue with threads when different requests reuse them. Space's root node may be already
+   * invalid. See also in getRootFolder().
+   */
   protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces        = new ConcurrentHashMap<String, OutlookSpaceImpl>();
-
-  // protected final OutlookMessageStore messageStore;
 
   protected MailAPI                                           mailserverApi;
 
@@ -1867,8 +1877,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         if ("root".equals(owner)) {
           limit++;
           continue;
-        } 
-      } catch(RepositoryException e) {
+        }
+      } catch (RepositoryException e) {
         // ignore it
         if (LOG.isDebugEnabled()) {
           LOG.debug("Error getting node ACL/owner", e);
