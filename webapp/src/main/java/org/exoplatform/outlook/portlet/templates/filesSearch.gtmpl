@@ -1,0 +1,17 @@
+#{param name=files/}
+<% for (c in files) { %>
+<li class="ms-ListItem selectableItem" data-path="${c.path}" data-pathlabel="${c.pathLabel}" data-portalurl="${c.url}"
+	data-downloadurl="${c.webdavUrl}" data-isfolder="${c.isFolder()}">
+	<div class="ms-ListItem-primaryText">${c.title}</div>
+	<% 
+  	/* <span class="ms-ListItem-metaText lastModified">${c.lastModified}</span> 
+		&nbsp;<span class="ms-ListItem-metaText size">${c.size}</span> */
+	%>
+	<div class='ms-ListItem-selectionTarget js-toggleSelection'></div>
+	<div class="ms-ListItem-actions pathControls">
+		<span class="ms-ListItem-action pathOpen" title="&{Outlook.pathOpenDescription}">
+			<a href="${c.url}" target="_blank"><i class="ms-Icon ms-Icon--arrowUpRight"></i></a>
+		</span>
+	</div> 
+</li>
+<% } %>

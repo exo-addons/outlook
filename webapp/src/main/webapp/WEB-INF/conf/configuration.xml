@@ -38,6 +38,22 @@
     <key>org.exoplatform.outlook.jcr.NodeFinder</key>
     <type>org.exoplatform.outlook.jcr.CMSNodeFinder</type>
   </component>
+  
+  <component>
+    <key>org.exoplatform.outlook.jcr.ContentLink</key>
+    <type>org.exoplatform.outlook.jcr.ContentLink</type>
+    <init-params>
+      <properties-param>
+        <name>link-configuration</name>
+        <property name="server-host" value="${outlook.exo.server.host:}" />
+        <property name="server-schema" value="${outlook.exo.server.schema:http}" />
+      </properties-param>
+    </init-params>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.outlook.rest.ContentService</type>
+  </component>
 
   <component>
     <key>org.exoplatform.outlook.security.OutlookTokenService</key>

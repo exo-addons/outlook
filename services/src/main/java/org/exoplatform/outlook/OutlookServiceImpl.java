@@ -29,6 +29,7 @@ import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.HierarchyNode;
 import org.exoplatform.outlook.jcr.NodeFinder;
+import org.exoplatform.outlook.jcr.UserDocuments;
 import org.exoplatform.outlook.mail.MailAPI;
 import org.exoplatform.outlook.mail.MailServerException;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity;
@@ -38,6 +39,7 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
+import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.cms.drives.ManageDriveService;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -87,8 +89,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -106,6 +110,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -151,8 +158,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       super(parent, node);
     }
 
-    protected UserFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
-      super(rootPath, node);
+    protected UserFolder(String parentPath, Node node) throws RepositoryException, OutlookException {
+      super(parentPath, node);
+    }
+
+    protected UserFolder(Node node) throws RepositoryException, OutlookException {
+      super(node.getPath(), node);
     }
 
     /**
@@ -198,12 +209,127 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // initDocumentLink(space, folder);
       return folder;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected File newFile(Folder parent, Node node) throws RepositoryException, OutlookException {
+      File file = new UserFile(parent, node);
+      return file;
+    }
+
+  }
+
+  protected class PersonalDocumentsFolder extends UserFolder implements UserDocuments {
+
+    protected PersonalDocumentsFolder(Node node) throws RepositoryException, OutlookException {
+      super(node);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Folder getRootFolder() throws OutlookException {
+      return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public Folder getFolder(String path) throws OutlookException, RepositoryException {
+      String rootPath = getPath();
+      Folder folder;
+      if (rootPath.equals(path)) {
+        folder = this;
+      } else if (path.startsWith(rootPath)) {
+        Node node = node(path);
+        folder = new UserFolder(node.getParent().getPath(), node);
+      } else {
+        throw new BadParameterException("Path does not belong to space documents: " + path);
+      }
+      initDocumentLink(this, folder);
+      return folder;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<File> findAllLastDocuments(String text) throws RepositoryException, OutlookException {
+      QueryManager qm = getNode().getSession().getWorkspace().getQueryManager();
+
+      Set<File> res = new LinkedHashSet<File>();
+
+      if (text == null || text.length() == 0) {
+        Query q = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
+            + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                 Query.SQL);
+        fetchQuery(q.execute(), 20, res);
+      } else {
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
+            + "' AND jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text
+            + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        // fetch first three modified by this user only
+        fetchQuery(qOwn.execute(), 3, res);
+        // and add all others up to total 20 files
+        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
+            + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        fetchQuery(qOthers.execute(), 17, res);
+      }
+
+      // init links
+      for (File f : res) {
+        initDocumentLink(this, f);
+      }
+
+      return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException {
+      QueryManager qm = getNode().getSession().getWorkspace().getQueryManager();
+
+      Set<File> res = new LinkedHashSet<File>();
+
+      Query q;
+      if (text == null || text.length() == 0) {
+        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
+            + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+      } else {
+        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
+            + "/%' AND exo:title LIKE '%" + text + "%'", Query.SQL);
+      }
+      fetchQuery(q.execute(), 20, res);
+
+      // init links
+      for (File f : res) {
+        initDocumentLink(this, f);
+      }
+
+      return res;
+    }
+
+    protected String getDriveName() {
+      // XXX we use what pointed in XML config
+      return "Personal Documents";
+    }
   }
 
   protected class UserFile extends File {
 
     protected UserFile(Folder parent, Node node) throws RepositoryException, OutlookException {
       super(parent, node);
+    }
+
+    protected UserFile(String parentPath, Node node) throws RepositoryException, OutlookException {
+      super(parentPath, node);
     }
 
     /**
@@ -231,62 +357,71 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
+    public ExoSocialActivity postActivity(OutlookMessage message) throws OutlookException {
       // save text to user documents
-      Node userDocs = userDocumentsNode(localUser);
-      Node messagesFolder = messagesFolder(userDocs, localUser, "member:/platform/users");
-      Node messageFile = addMessageFile(messagesFolder, message);
-      setPermissions(messageFile, localUser, "member:/platform/users");
-      messagesFolder.save();
-      message.setFileNode(messageFile);
-
-      // TODO
-      // return postMessageActivity(message);
-
-      // post activity to user status stream
-      // Identity userIdentity =
-      // socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-      // this.userName,
-      // true);
-      // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
-      // //UIDocActivityBuilder.ACTIVITY_TYPE,
-      // "files:spaces",
-      // title);
-      // Map<String, String> templateParams = new HashMap<String, String>();
-      // templateParams.put(UIDocActivity.WORKSPACE, messagesFolder.getSession().getWorkspace().getName());
-      // templateParams.put(UIDocActivity.REPOSITORY,
-      // jcrService.getCurrentRepository().getConfiguration().getName());
-      // templateParams.put(UIDocActivity.MESSAGE, title);
-      // templateParams.put("MESSAGE", title);
-      // //
-      // templateParams.put(UIDocActivity.DOCLINK,"/portal/rest/jcr/repository/collaboration/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf,
-      // // DOCNAME=samir.pdf, DOCPATH=/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf");
-      // templateParams.put(UIDocActivity.DOCNAME, title);
-      // templateParams.put(UIDocActivity.DOCUMENT_TITLE, title);
-      // templateParams.put(UIDocActivity.IS_SYMLINK, "false");
-      // templateParams.put(UIDocActivity.MIME_TYPE, "text/html");
-      // templateParams.put(UIDocActivity.DOCPATH, messageFile.getPath());
-      // activity.setTemplateParams(templateParams);
-      // socialActivityManager.saveActivityNoReturn(activity);
-      // // TODO LinkProvider.getSingleActivityUrl(activityId)
-      // messageStore.saveMessage(activity.getId(), text);
-
-      final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
-        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
-        ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                                "SocialIntegration.messages.createdBy",
-                                                                                                                true,
-                                                                                                                false,
-                                                                                                                "");
-        // TODO care about activity removal with the message file
-        activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
-        return activity;
-      } finally {
-        org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
+        Node userDocs = userDocumentsNode(localUser);
+        if (userDocs != null) {
+          Node userPublicFolder = userDocs.getParent().getNode("Public");
+          Node messagesFolder = messagesFolder(userPublicFolder, localUser, "member:/platform/users");
+          Node messageFile = addMessageFile(messagesFolder, message);
+          setPermissions(messageFile, localUser, "member:/platform/users");
+          messagesFolder.save();
+          message.setFileNode(messageFile);
+
+          // TODO
+          // return postMessageActivity(message);
+
+          // post activity to user status stream
+          // Identity userIdentity =
+          // socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+          // this.userName,
+          // true);
+          // ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+          // //UIDocActivityBuilder.ACTIVITY_TYPE,
+          // "files:spaces",
+          // title);
+          // Map<String, String> templateParams = new HashMap<String, String>();
+          // templateParams.put(UIDocActivity.WORKSPACE,
+          // messagesFolder.getSession().getWorkspace().getName());
+          // templateParams.put(UIDocActivity.REPOSITORY,
+          // jcrService.getCurrentRepository().getConfiguration().getName());
+          // templateParams.put(UIDocActivity.MESSAGE, title);
+          // templateParams.put("MESSAGE", title);
+          // //
+          // templateParams.put(UIDocActivity.DOCLINK,"/portal/rest/jcr/repository/collaboration/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf,
+          // // DOCNAME=samir.pdf, DOCPATH=/Users/t___/th___/tho___/thomas/Private/Documents/samir.pdf");
+          // templateParams.put(UIDocActivity.DOCNAME, title);
+          // templateParams.put(UIDocActivity.DOCUMENT_TITLE, title);
+          // templateParams.put(UIDocActivity.IS_SYMLINK, "false");
+          // templateParams.put(UIDocActivity.MIME_TYPE, "text/html");
+          // templateParams.put(UIDocActivity.DOCPATH, messageFile.getPath());
+          // activity.setTemplateParams(templateParams);
+          // socialActivityManager.saveActivityNoReturn(activity);
+          // // TODO LinkProvider.getSingleActivityUrl(activityId)
+          // messageStore.saveMessage(activity.getId(), text);
+
+          final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
+          try {
+            org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
+            ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                    "SocialIntegration.messages.createdBy",
+                                                                                                                    true,
+                                                                                                                    false,
+                                                                                                                    "");
+            // TODO care about activity removal with the message file
+            activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+            return activity;
+          } finally {
+            org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
+          }
+        } else {
+          throw new OutlookException("Has no Personal Documents folder for user " + localUser);
+        }
+      } catch (Exception e) {
+        throw new OutlookException("Error posting activity for user " + localUser, e);
       }
     }
-
   }
 
   protected class OutlookSpaceImpl extends OutlookSpace {
@@ -305,12 +440,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
        * {@inheritDoc}
        */
       @Override
-      protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
-        Set<Folder> subfolders = super.readSubnodes();
-        for (Folder sf : subfolders) {
+      protected void readChildNodes() throws RepositoryException, OutlookException {
+        super.readChildNodes();
+        for (Folder sf : this.subfolders.get()) {
           initDocumentLink(OutlookSpaceImpl.this, sf);
         }
-        return subfolders;
+        for (File f : this.files.get()) {
+          initDocumentLink(OutlookSpaceImpl.this, f);
+        }
       }
     }
 
@@ -398,6 +535,45 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
+    public Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException {
+      Folder root = getRootFolder();
+      QueryManager qm = root.getNode().getSession().getWorkspace().getQueryManager();
+
+      Set<File> res = new LinkedHashSet<File>();
+
+      if (text == null || text.length() == 0) {
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
+            + "' AND jcr:path LIKE '" + root.getPath() + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        // fetch first three modified by this user only
+        fetchQuery(qOwn.execute(), 3, res);
+        // and add all others up to total 20 files
+        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
+            + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        fetchQuery(qOthers.execute(), 17, res);
+      } else {
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
+            + "' AND jcr:path LIKE '" + root.getPath() + "/%' AND exo:title LIKE '%" + text
+            + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        // fetch first three modified by this user only
+        fetchQuery(qOwn.execute(), 3, res);
+        // and add all others up to total 20 files
+        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
+            + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        fetchQuery(qOthers.execute(), 17, res);
+      }
+
+      // init links
+      for (File f : res) {
+        initDocumentLink(this, f);
+      }
+
+      return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
       // post activity to space status stream under current user
       // Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
@@ -458,6 +634,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected final ListenerService                             listenerService;
 
+  protected final TrashService                                trashService;
+
+  protected String                                            trashHomePath;
+
   /**
    * Authenticated users.
    */
@@ -491,6 +671,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             CookieTokenService tokenService,
                             ManageDriveService driveService,
                             ListenerService listenerService,
+                            TrashService trashService,
                             InitParams params) throws ConfigurationException, MailServerException {
     // this.messageStore = messageStore;
 
@@ -503,6 +684,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.tokenService = tokenService;
     this.driveService = driveService;
     this.listenerService = listenerService;
+    this.trashService = trashService;
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -513,6 +695,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
+  @Deprecated
   public Folder getFolder(String path) throws OutlookException, RepositoryException {
     Node node = node(path);
     Folder folder = new UserFolder(path, node);
@@ -524,6 +707,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
+  @Deprecated
   public Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException {
     Node node = node(path);
     return new UserFolder(parent, node);
@@ -797,6 +981,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   @Override
   public void start() {
+    try {
+      this.trashHomePath = trashService.getTrashHomeNode().getPath();
+    } catch (RepositoryException e) {
+      LOG.warn("Error getting Trash home node", e);
+      this.trashHomePath = "/Trash";
+    }
     LOG.info("Outlook service successfuly started");
   }
 
@@ -838,6 +1028,23 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return userSpaces(currentUserId());
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public UserDocuments getUserDocuments() throws RepositoryException, OutlookException {
+    // get Personal Documents folder
+    String userName = currentUserId();
+    try {
+      Node userDocsNode = userDocumentsNode(userName);
+      PersonalDocumentsFolder folder = new PersonalDocumentsFolder(userDocsNode);
+      initDocumentLink(folder, folder);
+      return folder;
+    } catch (Exception e) {
+      throw new OutlookException("Error reading user's Personal Documents node for " + userName, e);
+    }
+  }
+
   // *********************** testing level **********************
 
   void setAPI(MailAPI mockedAPI) {
@@ -877,7 +1084,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   protected String nodePath(String workspace, String path) {
-    return new StringBuilder().append(workspace).append(":").append(path).toString();
+    return new StringBuilder().append(workspace).append("/").append(path).toString();
   }
 
   protected org.exoplatform.services.organization.User getExoUser(String userName) throws OutlookException {
@@ -888,9 +1095,22 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
-  protected Node node(String path) throws BadParameterException, RepositoryException {
-    String ws = jcrService.getCurrentRepository().getConfiguration().getDefaultWorkspaceName();
-    return node(ws, path);
+  protected Node node(String nodePath) throws BadParameterException, RepositoryException {
+    String workspace, path;
+    if (nodePath.startsWith("/")) {
+      workspace = jcrService.getCurrentRepository().getConfiguration().getDefaultWorkspaceName();
+      path = nodePath;
+    } else {
+      // TODO it's not used experimental thing, see also ContentLink component
+      int i = nodePath.indexOf('/');
+      if (i > 0) {
+        workspace = nodePath.substring(0, i);
+        path = nodePath.substring(i);
+      } else {
+        throw new BadParameterException("Invalid path " + nodePath);
+      }
+    }
+    return node(workspace, path);
   }
 
   protected Node node(String workspace, String path) throws BadParameterException, RepositoryException {
@@ -1216,6 +1436,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   protected void initDocumentLink(OutlookSpace space, HierarchyNode node) throws OutlookException {
+    // WebDAV URL
+    try {
+      node.setWebdavUrl(org.exoplatform.wcm.webui.Utils.getWebdavURL(node.getNode(), false, true));
+    } catch (Exception e) {
+      throw new OutlookException("Error generating WebDav URL for node " + node.getPath(), e);
+    }
+
+    // Portal URL
     // Code adapted from ECMS's PermlinkActionComponent.getPermlink()
     // We need like the following:
     // https://peter.exoplatform.com.ua:8443/portal/g/:spaces:product_team/product_team/documents?path=.spaces.product_team/Groups/spaces/product_team/Documents/uploads/page_management_https_loading.png
@@ -1223,18 +1451,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     StringBuilder url = new StringBuilder();
 
     String groupDriveName = space.getGroupId().replace("/", ".");
-    String nodePath = node.getPath().replaceAll("/+", "/");
+    String npath = node.getPath().replaceAll("/+", "/");
 
-    String path = new StringBuilder().append(groupDriveName).append(nodePath).toString();
-    NodeURL nodeURL = Util.getPortalRequestContext().createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, // GROUP
-                                                         space.getGroupId(), // /spaces/product_team
-                                                         space.getShortName() + "/documents"); // product_team/documents
-    nodeURL.setResource(resource);
-    nodeURL.setQueryParameterValue("path", path);
-
+    String path = new StringBuilder().append(groupDriveName).append(npath).toString();
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     if (portalRequest != null) {
+      NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
+      NavigationResource resource = new NavigationResource(SiteType.GROUP, // GROUP
+                                                           space.getGroupId(), // /spaces/product_team
+                                                           space.getShortName() + "/documents"); // product_team/documents
+      nodeURL.setResource(resource);
+      nodeURL.setQueryParameterValue("path", path);
+
       HttpServletRequest request = portalRequest.getRequest();
       try {
         URI requestUri = new URI(request.getScheme(),
@@ -1246,15 +1474,64 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                  null);
         url.append(requestUri.toASCIIString());
         url.append(nodeURL.toString());
+
+        node.setUrl(url.toString());
       } catch (URISyntaxException e) {
         throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
       }
     } else {
-      LOG.warn("Portal request not found. Node URL will be relative to this server (w/o host name).");
-      url.append(nodeURL.toString());
+      LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
+      node.setUrl(node.getWebdavUrl());
+    }
+  }
+
+  protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode node) throws OutlookException {
+    // WebDAV URL
+    try {
+      node.setWebdavUrl(org.exoplatform.wcm.webui.Utils.getWebdavURL(node.getNode(), false, true));
+    } catch (Exception e) {
+      throw new OutlookException("Error generating WebDav URL for node " + node.getPath(), e);
     }
 
-    node.setUrl(url.toString());
+    // Portal URL
+    // Code adapted from ECMS's PermlinkActionComponent.getPermlink()
+    // We need like the following:
+    // https://peter.exoplatform.com.ua:8443/portal/intranet/documents?path=Personal%20Documents/Users/j___/jo___/joh___/john/Private/Documents
+
+    StringBuilder url = new StringBuilder();
+
+    String nodePath = node.getPath().replaceAll("/+", "/");
+
+    String path = new StringBuilder().append(personalDocuments.getDriveName()).append(nodePath).toString();
+    PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    if (portalRequest != null) {
+      NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
+      NavigationResource resource = new NavigationResource(SiteType.PORTAL, // PORTAL
+                                                           "intranet", // intranet
+                                                           "documents"); // documents
+      nodeURL.setResource(resource);
+      nodeURL.setQueryParameterValue("path", path);
+
+      HttpServletRequest request = portalRequest.getRequest();
+      try {
+        URI requestUri = new URI(request.getScheme(),
+                                 null,
+                                 request.getServerName(),
+                                 request.getServerPort(),
+                                 null,
+                                 null,
+                                 null);
+        url.append(requestUri.toASCIIString());
+        url.append(nodeURL.toString());
+
+        node.setUrl(url.toString());
+      } catch (URISyntaxException e) {
+        throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
+      }
+    } else {
+      LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
+      node.setUrl(node.getWebdavUrl());
+    }
   }
 
   /**
@@ -1277,7 +1554,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // if (homePath.length() > uhlen) {
         // it should be w/o leading slash, e.g. "Private"
         // String driveSubPath = driveRootPath.substring(uhlen + 1);
-        return node(driveRootPath).getParent().getNode("Public");
+        return node(driveRootPath);
         // }
       }
     }
@@ -1580,6 +1857,29 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       name = vName.getStringValue();
     }
     return getAddress(email, name);
+  }
+
+  protected void fetchQuery(QueryResult qr, int limit, Set<File> res) throws RepositoryException, OutlookException {
+    for (NodeIterator niter = qr.getNodes(); niter.getPosition() < limit && niter.hasNext();) {
+      Node file = niter.nextNode();
+      try {
+        String owner = ((ExtendedNode) file).getACL().getOwner();
+        if ("root".equals(owner)) {
+          limit++;
+          continue;
+        } 
+      } catch(RepositoryException e) {
+        // ignore it
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Error getting node ACL/owner", e);
+        }
+      }
+      if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(file)) {
+        limit++;
+      } else {
+        res.add(new UserFile(file.getParent().getPath(), file));
+      }
+    }
   }
 
   /**

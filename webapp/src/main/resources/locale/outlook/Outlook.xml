@@ -49,15 +49,22 @@
     <folderName>Folder name</folderName>
     <add>Add</add>
 
-    <selectDocumentSpace>Select space</selectDocumentSpace>
-    <selectedDocuments>Selected documents</selectedDocuments>
-    <selectDocument>Select document</selectDocument>
-    <pathInfoDescription>Target folder in space's Documentswhere your attachments will be saved.</pathInfoDescription>
+    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
+    <attachingDocuments>Selected documents</attachingDocuments>
+    <attachingDocumentsDescription>These documents will be attached to the message if checked</attachingDocumentsDescription>
+    <documentSource>Source</documentSource>
+    <documentSourceDescription>Search documents in specified source</documentSourceDescription>
+    <documentSearch>Search</documentSearch>
+    <documentExplorer>Explore</documentExplorer>
+    <searchName>Search by name</searchName>
+    <currentFolder>Current folder</currentFolder>
     <attach>Attach</attach>
-    <addAttachmentDescription>Attach selected documents to the message</addAttachmentDescription>
-    <cancelAddAttachmentDescription>Cancel adding attachments to the message</cancelAddAttachmentDescription>
+    <attachDescription>Attach selected documents</attachDescription>
+    <cancelAttachDescription></cancelAttachDescription>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
+    <personalDocuments>Personal Documents</personalDocuments>
+    <allSpaces>All Spaces</allSpaces>
 
     <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Chosing atarget space will generate the activity in the space's stream.</convertToStatusDescription>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
@@ -75,12 +82,9 @@
     <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME} space</convertedToSpaceActivity>
     <openActivity>Display the activity</openActivity>
     
-    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
-    
-    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
-    
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
+      <fileHasNoPath>Error selecting file - path not found.</fileHasNoPath>
       <spacePathNotFound>Space or path not found</spacePathNotFound>
       <nothingSavedTryAgain>Nothing was saved. Please submit the form again or contact your administrator.</nothingSavedTryAgain>
       <gettingTokenError>Error getting access token for mail server</gettingTokenError>
@@ -95,6 +99,8 @@
       <gettingSubjectError>Error getting message subject.</gettingSubjectError>
       <messageIdNotFound>Cannot find ID for current message</messageIdNotFound>
       <savingMessageError>Error saving message (as a draft).</savingMessageError>
+      <sourcePathNotFound>Source or path not found.</sourcePathNotFound>
+      <addingAttachmentError>Adding attachment error.</addingAttachmentError>
     </messages>
     
     <activity>

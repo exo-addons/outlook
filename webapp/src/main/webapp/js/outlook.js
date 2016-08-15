@@ -1,7 +1,7 @@
 /**
  * Outlook read pane app script.
  */
-require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/juzu-ajax" ], function($, fabric) {
+require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "SHARED/juzu-ajax"], function($, fabric) {
 
 	function pageBaseUrl() {
 		var theLocation = window.location;
@@ -27,70 +27,29 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 	function fixId(msId) {
 		return msId ? msId.replace(/\//g, "-") : msId;
 	}
-	
+
 	function formatISODate(date) {
 		if (date) {
 			// adapted script from
 			// http://stackoverflow.com/questions/17415579/how-to-iso-8601-format-a-date-with-timezone-offset-in-javascript
-	    var tzo = -date.getTimezoneOffset(),
-	        dif = tzo >= 0 ? '+' : '-',
-	        pad2 = function(num) {
-	            var norm = Math.abs(Math.floor(num));
-	            return (norm < 10 ? '0' : '') + norm;
-	        },
-	        pad3 = function(num) {
-	          var norm = Math.abs(Math.floor(num));
-	          return (norm < 10 ? '00' : (norm < 100 ? '0' : '')) + norm;
-	        };
-	    return date.getFullYear() 
-	        + '-' + pad2(date.getMonth()+1)
-	        + '-' + pad2(date.getDate())
-	        + 'T' + pad2(date.getHours())
-	        + ':' + pad2(date.getMinutes()) 
-	        + ':' + pad2(date.getSeconds()) 
-	        //+ '.' + pad3(date.getMilliseconds())
-	        + dif + pad2(tzo / 60) // + ':' 
-	        + pad2(tzo % 60);
+			var tzo = -date.getTimezoneOffset(), dif = tzo >= 0 ? '+' : '-', pad2 = function(num) {
+				var norm = Math.abs(Math.floor(num));
+				return (norm < 10 ? '0' : '') + norm;
+			}, pad3 = function(num) {
+				var norm = Math.abs(Math.floor(num));
+				return (norm < 10 ? '00' : (norm < 100 ? '0' : '')) + norm;
+			};
+			return date.getFullYear() //
+				+ '-' + pad2(date.getMonth() + 1) //
+				+ '-' + pad2(date.getDate()) //
+				+ 'T' + pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':' + pad2(date.getSeconds())
+				// +  '.' + pad3(date.getMilliseconds())
+				+ dif + pad2(tzo / 60)// +  ':'
+				+ pad2(tzo % 60);
 		} else {
 			return null;
 		}
 	}
-	
-	NON_LATIN_REGEXP = /[^\u0000-\u007F]+/g;
-	SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-  // Match everything outside of normal chars and " (quote character)
-  NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g;
-	
-	/**
-	 * Code inspired by https://github.com/angular/angular.js/blob/v1.3.14/src/ngSanitize/sanitize.js#L435
-	 */
-	function udecode(text) {
-		//decodeURIComponent(escape(text))
-		// var uchars = text.match(/[^\u0000-\u007F]+/gi);
-		// for (i=0; i<uchars.length; i++) {
-		// var uc = uchars[i];
-		// text = text.replace(uc, decodeURIComponent(escape(uc)));
-		// }
-		// return text;
-
-		return text.replace(SURROGATE_PAIR_REGEXP, function(value) {
-			var hi = value.charCodeAt(0);
-			var low = value.charCodeAt(1);
-			return '&#' + (((hi - 0xD800) * 0x400) + (low - 0xDC00) + 0x10000) + ';';
-		})
-		// .replace(NON_ALPHANUMERIC_REGEXP, function(value) {
-			// return '&#' + value.charCodeAt(0) + ';';
-		// })
-		.replace(NON_LATIN_REGEXP, function(value) {
-			return '&#' + value.charCodeAt(0) + ';';
-		});
-	}
-
-	function isWindows() {
-		// Outlook for Windows (10): 							Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
-		// Outlook for Web in IE11 (Windows 10): 	Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko
-	}
-
 
 	/**
 	 * Method adapted from org.exoplatform.services.cms.impl.Utils.fileSize().
@@ -124,7 +83,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 			var userEmail = Office.context.mailbox.userProfile.emailAddress;
 			var userName = Office.context.mailbox.userProfile.displayName;
 			console.log("> user: " + userName + "<" + userEmail + ">");
-			
+
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.size() > 0) {
@@ -140,7 +99,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 				var showError = function(source, cause) {
 					var message;
 					// check if source is i18n key or jqXHR (of jQuery ajax request)
-					if (typeof source === "string" && source.indexOf("Outlook.messages") === 0) {
+					if ( typeof source === "string" && source.indexOf("Outlook.messages") === 0) {
 						// interpret as i18n message
 						message = getMessage(source);
 					} else if (source && source.hasOwnProperty("responseText")) {
@@ -169,7 +128,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					$error.hide("blind");
 					$errorText.empty();
 				};
-				
+
 				var messageId;
 				var internetMessageId;
 				var readMessageId = function(force) {
@@ -198,7 +157,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 								console.log(">> internetMessageId: " + internetMessageId);
 								process.resolve(messageId);
 							} else {
-								console.log(">> Office.context.mailbox.item.saveAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								console.log(">> Office.context.mailbox.item.saveAsync() [" + asyncResult.status + "] error: " //
+									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.savingMessageError", asyncResult.error.message);
 								process.reject();
 							}
@@ -209,7 +169,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						process.reject();
 					}
 					return process.promise();
-				}; 
+				};
 				readMessageId(true);
 
 				var $menu = $pane.find("#outlook-menu");
@@ -228,17 +188,18 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 				function saveAttachmentInit() {
 					var $saveAttachment = $("#outlook-saveAttachment");
 					var $form = $saveAttachment.find("form");
-					var $attachments = $form.find("ul#attachments");
+					var $attachments = $form.find("ul.attachments");
 					var $comment = $form.find("textarea[name='comment']");
 
 					// init spaces dropdown
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
 					var $groupIdSelect = $groupIdDropdown.find("select[name='groupId']");
-					$groupIdSelect.val([]); // initially no spaces selected
+					$groupIdSelect.val([]);
+					// initially no spaces selected
 					var $groupPath = $form.find(".group-path");
-					var $folders = $groupPath.find("ul#folders");
+					var $folders = $groupPath.find("ul.folders");
 					var $path = $groupPath.find("input[name='path']");
-					var $pathInfo = $groupPath.find(".pathInfo");
+					var $pathInfo = $groupPath.find("input.pathInfo");
 					var $pathUp = $groupPath.find(".pathUp");
 					var $saveButton = $form.find("button.saveButton");
 					var $cancelButton = $form.find("button.cancelButton");
@@ -260,7 +221,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						$path.val(path);
 						$pathInfo.val(pathLabel);
 						var $litems = $folders.find("li.ms-ListItem");
-						$litems.ListItem(); // init FabricUI JS
+						$litems.ListItem();
+						// init FabricUI JS
 						$litems.click(function() {
 							var childPath = $(this).data("path");
 							if (childPath) {
@@ -273,13 +235,14 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 							}
 						});
 					}
+
 					function loadFolder() {
 						var process = $.Deferred();
 						if (groupId && path) {
 							console.log(">> loadFolder: " + groupId + " >> " + path);
 							$folders.jzLoad("Outlook.folders()", {
-							  groupId : groupId,
-							  path : path
+								groupId : groupId,
+								path : path
 							}, function(response, status, jqXHR) {
 								if (status == "error") {
 									process.reject(showError(jqXHR));
@@ -315,21 +278,23 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					var item = Office.context.mailbox.item;
 					if (item.attachments.length > 0) {
 						console.log("Attachments: ");
-						for (i = 0; i < item.attachments.length; i++) {
+						for ( i = 0; i < item.attachments.length; i++) {
 							var att = item.attachments[i];
-							var outputString = "";
-							outputString += i + ". Name: " + att.name + " ID: " + att.id;
-							outputString += " contentType: " + att.contentType;
-							outputString += " size: " + att.size;
-							outputString += " attachmentType: " + att.attachmentType;
-							outputString += " isInline: " + att.isInline;
-							console.log(outputString);
-							var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>" + att.name
-							    + "</span><span class='ms-ListItem-metaText attachmentSize'>" + sizeString(att.size) + "</span>"
-							    + "<div class='ms-ListItem-selectionTarget js-toggleSelection'></div><input name='attachmentIds' type='hidden'></li>");
-							$li.data("attachmentId", fixId(att.id));
+							// var outputString = "";
+							// outputString += i + ". Name: " + att.name + " ID: " + att.id;
+							// outputString += " contentType: " + att.contentType;
+							// outputString += " size: " + att.size;
+							// outputString += " attachmentType: " + att.attachmentType;
+							// outputString += " isInline: " + att.isInline;
+							// console.log(outputString);
+							var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>" 
+								+ att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" // 
+								+ sizeString(att.size) + "</span>" //
+								+ "<div class='ms-ListItem-selectionTarget js-toggleSelection'></div><input name='attachmentIds' type='hidden'></li>");
+							$li.data("attachmentId", Office.context.mailbox.convertToRestId(att.id, Office.MailboxEnums.RestVersion.v2_0));
 							$li.appendTo($attachments);
-							$li.ListItem(); // init FabricUI JS (for a case of some extra func)
+							$li.ListItem();
+							// init FabricUI JS (for a case of some extra func)
 							// then disable FabricUI's click for this case and add click for the whole list item
 							$li.off("click", ".js-toggleSelection");
 							$li.click(function() {
@@ -378,6 +343,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 											"direction" : "down"
 										});
 									}
+
 									Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
 										if (asyncResult.status === "succeeded") {
 											var attachmentToken = asyncResult.value;
@@ -399,15 +365,15 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 											console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
 											var $savedSpaceInfo = $savedAttachment.find(".savedSpaceInfo");
 											$savedSpaceInfo.jzLoad("Outlook.saveAttachment()", {
-											  groupId : groupId,
-											  path : path,
-											  comment : $comment.val(),
-											  ewsUrl : ewsUrl,
-											  userEmail : userEmail,
-											  userName : userName,
-											  messageId : messageId,
-											  attachmentToken : attachmentToken,
-											  attachmentIds : attachmentIds.join()
+												groupId : groupId,
+												path : path,
+												comment : $comment.val(),
+												ewsUrl : ewsUrl,
+												userEmail : userEmail,
+												userName : userName,
+												messageId : messageId,
+												attachmentToken : attachmentToken,
+												attachmentIds : attachmentIds.join()
 											}, function(response, status, jqXHR) {
 												if (status == "error") {
 													showError(jqXHR);
@@ -419,10 +385,11 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 														var $savedSpaceTitle = $savedAttachment.find(".savedSpaceTitle");
 														$savedSpaceTitle.text($savedSpaceTitle.text() + " " + groupTitle);
 														$litems.each(function() {
-															$(this).ListItem(); // init FabricUI JS
+															$(this).ListItem();
+															// init FabricUI JS
 															// $(this).click(function() {
-																// var fileUrl = $(this).data("portalurl");
-																// window.open(fileUrl, "_blank");
+															// var fileUrl = $(this).data("portalurl");
+															// window.open(fileUrl, "_blank");
 															// });
 														});
 														spinner.stop();
@@ -436,8 +403,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 												}
 											});
 										} else {
-											console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: "
-											    + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+											console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+												+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 											cancelSave();
 										}
@@ -451,8 +418,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 							}
 						});
 
-						// pathInfo controls
-						$groupPath.find("#path-info>li").ListItem();
+						// currentFolder controls
+						$groupPath.find("ul.currentFolder>li").ListItem();
 						$pathUp.click(function() {
 							if (!$pathUp.attr("disabled")) {
 								var lastElemIndex = path.lastIndexOf("/");
@@ -496,9 +463,9 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 											var newFolderName = $newFolderName.val();
 											if (newFolderName) {
 												$folders.jzLoad("Outlook.addFolder()", {
-												  groupId : groupId,
-												  path : path,
-												  name : newFolderName
+													groupId : groupId,
+													path : path,
+													name : newFolderName
 												}, function(response, status, jqXHR) {
 													if (status == "error") {
 														showError(jqXHR);
@@ -554,7 +521,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					});
 
 					// init spaces dropdown
-					$groupId.val([]); // initially no spaces selected
+					$groupId.val([]);
+					// initially no spaces selected
 					var groupId;
 					$groupId.change(function() {
 						var $space = $groupId.find("option:selected");
@@ -563,7 +531,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 						}
 					});
 					$groupIdDropdown.Dropdown();
-					
+
 					var subject = Office.context.mailbox.item.subject;
 					if (internetMessageId) {
 						$title.val(subject);
@@ -572,12 +540,13 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 							if (asyncResult.status === "succeeded") {
 								$title.val(asyncResult.value);
 							} else {
-								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
+									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
 							}
-						}); 
+						});
 					}
-					
+
 					// get a token to read message from server side
 					Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
 						if (asyncResult.status === "succeeded") {
@@ -587,7 +556,7 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 								console.log(">> getMessage(): " + mid + " token:" + messageToken);
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									console.log(">> ewsUrl: " + ewsUrl);								
+									console.log(">> ewsUrl: " + ewsUrl);
 									$text.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
@@ -648,147 +617,323 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 															$converting.hide("blind");
 															$converted.show("blind");
 														}
-													}); 
+													});
 												}
 											});
 										}
 									});
 								} else {
 									showError("Outlook.messages.messageIdNotFound", internetMessageId);
-								}		
+								}
 							});
 							midProcess.fail(function() {
 								console.log(">> getMessage() failed to read messageId ");
 							});
 						} else {
-							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 						}
 					});
 				}
-				
-				// TODO not used
-				function convertToStatusInit_Prev() {
-					var $convertToStatus = $("#outlook-convertToStatus");
-					var $title = $convertToStatus.find("input[name='activityTitle']");
-					var $text = $convertToStatus.find("div.activityText");
-					var $editor = $convertToStatus.find("div.activityEditor");
-					var $form = $convertToStatus.find("form");
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupId = $groupIdDropdown.find("select[name='groupId']");
-					// $groupId.combobox(); // jQueryUI combo w/ autocompletion
-					var $convertButton = $form.find("button.convertButton");
-					$convertButton.prop("disabled", true);
-					var $cancelButton = $form.find("button.cancelButton");
-					var $converting = $convertToStatus.find("#converting");
-					var $converted = $convertToStatus.find("#converted");
-					var $convertedInfo = $converted.find(".convertedInfo");
+
+				function addAttachmentInit() {
+					var $addAttachment = $("#outlook-addAttachment");
+					var $documentSelector = $addAttachment.find("#documentSelector");
+					var $sourceDropdown = $documentSelector.find(".sourceDropdown");
+					var $source = $sourceDropdown.find("select[name='source']");
+					// $source.combobox(); // jQueryUI combo w/ autocompletion
+					var $searchTab = $documentSelector.find("button.searchTab");
+					var $explorerTab = $documentSelector.find("button.explorerTab");
+					var $documentSearch = $documentSelector.find(".documentSearch");
+					var $documentSearchForm = $documentSearch.find("form");
+					var $documentSearchInput = $documentSearch.find("input");
+					var $documentSearchResults = $documentSearch.find("ul.documentSearchResults");
+					var $documentExplorer = $documentSelector.find(".documentExplorer");
+					var $currentFolder = $documentExplorer.find("ul.currentFolder");
+					var $folderFiles = $documentExplorer.find("ul.folderFiles");
+					var $pathInfo = $currentFolder.find(".pathInfo");
+					var $pathUp = $currentFolder.find(".pathControls .pathUp");
+					var $pathOpen = $currentFolder.find(".pathControls .pathOpen");
+					
+					var $attach = $addAttachment.find("#attach");
+					var $documents = $attach.find("ul.documents");
+					var $attachButton = $attach.find("button.attachButton");
+					$attachButton.prop("disabled", true);
+					var $cancelButton = $attach.find("button.cancelButton");
+					
+					var $attaching = $addAttachment.find("#attaching");
+					var $attached = $addAttachment.find("#attached");
+					
+					// initially no source selected
+					var sourceId, sourceTitle, sourceRootPath;
+					var path, pathLabel, portalUrl;
+					
+					var isSelected = function(fpath) {
+						return $documents.find("li.ms-ListItem").filter(function() {
+							return $(this).data("path") == fpath;
+						}).size() > 0;
+					};
+					
+					var initFiles = function($files, loadChildred) {
+						// FYI loadChildred is optional and required for explorer only
+						var $litems = $files.find("li.ms-ListItem");
+						$litems.ListItem();
+						$litems.each(function(i, li) {
+							var $li = $(li);
+							var fpath = $li.data("path");
+							if (fpath && isSelected(fpath)) {
+								$li.addClass("is-selected");
+							}
+							$li.find(".size").each(function(i, se) {
+								var size = parseInt($(se).text());
+								if (size) {
+									var sizeText = sizeString(size);
+									$(se).text(sizeText);
+								}
+							});
+						});
+
+						// init files
+						$litems.click(function() {
+							var $child = $(this);
+							var fpath = $child.data("path");
+							var isFolder = $child.data("isfolder");
+							if (isFolder === "true") {
+								// navigate into this folder
+								if (fpath) {
+									path = fpath;
+									pathLabel = $child.data("pathlabel");
+									portalUrl = $child.data("portalurl");
+									if (loadChildred) {
+										loadChildred();
+									} else {
+										showError("Navigation not possible for this item.");
+									}
+								} else {
+									showError("Outlook.messages.folderHasNoPath");
+								}
+							} else {
+								// add to selected documents
+								if (fpath) {
+									if (isSelected(fpath)) {
+										$child.removeClass("is-selected");
+										$documents.find("li.ms-ListItem").each(function(i, li) {
+											var $li = $(li);
+											if ($li.data("path") == fpath) {
+												$li.remove();
+											}
+										});
+									} else {
+										var $selected = $child.clone();
+										// clone w/o data/events
+										$selected.data("path", fpath);
+										$selected.ListItem();
+										$selected.click(function() {
+											$selected.toggleClass("is-selected");
+											// here also check/uncheck in $folderFiles
+											if ($selected.hasClass("is-selected")) {
+												$child.addClass("is-selected");
+											} else {
+												$child.removeClass("is-selected");
+											}
+										});
+										$selected.find(".pathControls").click(function(event) {
+											event.stopPropagation();
+										});
+										// add preselect it
+										$selected.click();
+										// add to selected documents
+										$selected.appendTo($documents);
+									}
+								} else {
+									showError("Outlook.messages.fileHasNoPath");
+								}
+								$attachButton.prop("disabled", $documents.find("li.ms-ListItem.is-selected").size() === 0);
+							}
+						});
+						$litems.find(".pathControls").click(function(event) {
+							event.stopPropagation();
+						});
+					};
+
+					var searchFiles = function(text) {
+						var process = $.Deferred();
+						$documentSearchResults.jzLoad("Outlook.searchFiles()", {
+							sourceId : sourceId,
+							text : text
+						}, function(response, status, jqXHR) {
+							if (status == "error") {
+								showError(jqXHR);
+							} else {
+								clearError();
+								// init results
+								initFiles($documentSearchResults);
+							}
+						}); 
+					};
+					
+					// init sources dropdown
+					//$source.val([]);
+					$source.change(function() {
+						var $s = $source.find("option:selected");
+						if ($s.size() > 0) {
+							clearError();
+							sourceId = $s.val();
+							path = sourceRootPath = $s.data("rootpath");
+							portalUrl = $s.data("portalurl");
+							// TODO pre-load source files:
+							// for All spaces try gather last used files ordered by access/modification date first
+							// for Personal Docs gather last used from user's documents
+							// for a space gather last used from that space
+							// Having last used files (up to 20 items), prefill the search pane results with it and show the pane
+							// for Personal Docs and space make Explorer tab visible, when user click it then load root folder files.
+							searchFiles("");
+							// TODO When user will click a file in search or explorer pane, check the file checkbox and add it to the selected
+						}
+						$explorerTab.prop("disabled", sourceId == "*");
+					});
+					$sourceDropdown.Dropdown();
+					
+					// init Search Tab
+					$searchTab.click(function() {
+						clearError();
+						$explorerTab.toggleClass("ms-Button--primary");
+						$searchTab.toggleClass("ms-Button--primary");
+						$documentExplorer.hide();
+						$documentSearch.show();
+					});
+					
+					// init search form
+					$documentSearchForm.find(".ms-SearchBox").SearchBox();
+					$documentSearchForm.submit(function(event) {
+						event.preventDefault();
+						clearError();
+						searchFiles($documentSearchInput.val());
+					});
+					
+					// init Explore Tab
+					$explorerTab.click(function() {
+						clearError();
+						$explorerTab.toggleClass("ms-Button--primary");
+						$searchTab.toggleClass("ms-Button--primary");
+						$documentSearch.hide();
+						$documentExplorer.show();
+						var loadChildred = function() {
+							if (sourceId && path) {
+								console.log(">> loadChildred: " + sourceId + " >> " + path);
+								$folderFiles.jzLoad("Outlook.exploreFiles()", {
+									sourceId : sourceId,
+									path : path
+								}, function(response, status, jqXHR) {
+									if (status == "error") {
+										showError(jqXHR);
+									} else {
+										clearError();
+										// show children
+										var $parentFolder = $folderFiles.find(".parentFolder");
+										path = $parentFolder.data("path");
+										pathLabel = $parentFolder.data("pathlabel");
+										portalUrl = $parentFolder.data("portalurl");
+										if (sourceRootPath == path) {
+											$pathUp.attr("disabled", "true");
+										} else {
+											$pathUp.removeAttr("disabled");
+										}
+										$pathInfo.val(pathLabel);
+										initFiles($folderFiles, loadChildred);
+									}
+								});
+							} else {
+								console.log(">> loadChildred: sourceId and/or path not found");
+								showError("Outlook.messages.sourcePathNotFound");
+							}
+						};
+						loadChildred(); 
+					});
+					
+					// init Cancel button
 					$cancelButton.click(function() {
 						$cancelButton.data("cancel", true);
 					});
-					$convertToStatus.find(".editActivityText>a").click(function(event) {
+					
+					// init Attach button (as form submit)
+					$attach.find("form").submit(function(event) {
 						event.preventDefault();
-						$(this).parent().hide();
-						// $text.attr("contenteditable", "true");
-						$editor.append($text.children());
-						$text.hide();
-						$editor.show();
-						$text = $editor;
-					});
-					$convertToStatus.append(" as " + document.characterSet);
-
-					var subject = Office.context.mailbox.item.subject;
-					$title.val(subject);
-
-					// init spaces dropdown
-					$groupId.val([]); // initially no spaces selected
-					var groupId;
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
-						if ($space.size() > 0) {
-							groupId = $space.val();
-						}
-					});
-					$groupIdDropdown.Dropdown();
-
-					// FYI getTypeAsync available in compose mode only
-					// Office.context.mailbox.item.body.getTypeAsync({}, function(asyncResult) {
-					// if (asyncResult.status === "succeeded") {
-					// var textType = asyncResult.value == "html" ? asyncResult.value : "text";
-					var textType = "html";
-					console.log(">> convertToStatus textType: " + textType);
-					Office.context.mailbox.item.body.getAsync(textType, {}, function(asyncResult) {
-						if (asyncResult.status === "succeeded") {
-							groupId = groupId ? groupId : "";
-							console.log(">> groupId: " + groupId);
-							console.log(">> title: " + $title.val());
-							// console.log(">> text: " + asyncResult.value);
-							$text.empty();
-							$text.html(udecode(asyncResult.value));
-							$form.submit(function(event) {
-								event.preventDefault();
-								clearError();
-								$form.hide("blind");
-								$converting.show("blind");
-								var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
-								spinner.start();
-								if ($cancelButton.data("cancel")) {
-									loadMenu("home");
-								} else {
-									var created = Office.context.mailbox.item.dateTimeCreated;
-									var modified = Office.context.mailbox.item.dateTimeModified;
-									// from and to (it's array) have following interesting fields: displayName,
-									// emailAddress
-									var from = Office.context.mailbox.item.from;
-									// var to = Office.context.mailbox.item.to;
-									$convertedInfo.jzAjax("Outlook.convertToStatus()", {
-										dataType : "html",
-										type : "POST",
-										data : {
-											groupId : groupId,
-											messageId : messageId,
-											subject : $title.val(),
-											body : $text.html(),
-											bodyOriginal : asyncResult.value,
-											created : formatISODate(created),
-											modified : formatISODate(modified),
-											userName : userName,
-											userEmail : userEmail,
-											fromName : from.displayName,
-											fromEmail : from.emailAddress
-										},
-										success : function(response, status, jqXHR) {
-											if (status == "error") {
-												showError(jqXHR);
-												spinner.stop();
-												$converting.hide("blind", {
-													"direction" : "down"
-												});
-												$form.show("blind", {
-													"direction" : "down"
-												});
-											} else {
-												clearError();
-												spinner.stop();
-												$converting.hide("blind");
-												$converted.show("blind");
-												// TODO var $activityLink = $convertedInfo.find("a.ms-Link");
-											}
-										}
-									}); 
-								}
-							});
-							$convertButton.prop("disabled", false);
+						clearError();
+						$documentSelector.hide();
+						$attach.hide("blind");
+						$attaching.show("blind");
+						var spinner = new fabric.Spinner($attaching.find(".ms-Spinner").get(0));
+						spinner.start();
+						if ($cancelButton.data("cancel")) {
+							loadMenu("home");
 						} else {
-							console.log(">> Office.context.mailbox.item.body.getAsync() [" + asyncResult.status + "] error: " + JSON.stringify(asyncResult.error)
-							    + " value: " + JSON.stringify(asyncResult.value));
-							showError("Outlook.messages.messageItemReadError", asyncResult.error.message);
+							var hasError = false;
+							var $attachedDocuments = $attached.find(".documents");
+							$documents.find("li.ms-ListItem.is-selected").each(function(i, li) {
+								var $selected = $(li);
+								var title = $selected.find(".ms-ListItem-primaryText").text();
+								// XXX we cannot use WebDAV link as it requires authentication in eXo
+								//var downloadUrl = $selected.data("downloadurl");
+								var fpath = $selected.data("path");
+								var $fileLink = $selected.jzAjax("Outlook.fileLink()", {
+									type : 'POST',
+									data : {
+										nodePath : fpath
+									}
+								});
+								
+								var $attachedDoc = $selected.clone();
+								$attachedDoc.find(".lastModified").remove();
+								$attachedDoc.find(".size").remove();
+								$attachedDoc.find(".pathControls").remove();
+								$attachedDoc.find(".ms-ListItem-selectionTarget").remove();
+								$attachedDoc.removeClass("is-selected");
+								$attachedDoc.removeClass("selectableItem");
+								
+								$fileLink.done(function(response, status, jqXHR) {
+									var link = response.link;
+									Office.context.mailbox.item.addFileAttachmentAsync(link, title, {}, function(asyncResult) {
+										if (asyncResult.status === "succeeded") {
+											$attachedDoc.find(".ms-ListItem-primaryText").before("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
+										} else {
+											hasError = true;
+											console.log(">> Office.context.mailbox.item.addFileAttachmentAsync() [" + asyncResult.status + "] error: "//
+											+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+											// TODO show error state in added pane within a document styled in red
+											$attachedDoc.addClass("ms-bgColor-error");
+											var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
+											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
+											$docName.after("<div class='ms-ListItem-tertiaryText addedError'>" + asyncResult.error.message + "</div>");
+										}
+									});
+								});
+								$fileLink.fail(function(jqXHR, textStatus, errorThrown) {
+									hasError = true;
+									console.log(">> Outlook.fileLink() [" + textStatus + "]: "//
+											+ errorThrown + " response: " + jqXHR.responseText);
+									$attachedDoc.addClass("ms-bgColor-error");
+									var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
+									$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
+									$docName.after("<div class='ms-ListItem-tertiaryText linkError'>" + jqXHR.responseText + "</div>");
+								});
+								
+								$attachedDoc.appendTo($attachedDocuments);
+							}); 
+
+							if (hasError) {
+								showError("Outlook.messages.addingAttachmentError");
+							}
+							
+							$attaching.hide("blind");
+							$attached.show("blind");
 						}
 					});
-					// } else {
-					// showError("Outlook.messages.messageItemReadError", asyncResult.error.message);
-					// }
-					// });
+					
+					// do initial search for better UX (first should be 'All Spaces')
+					$source.val($source.find("option:first").val());
+					$source.change();
 				}
 
 				function loadMenu(menuName) {
@@ -814,7 +959,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 									process.reject(response, status, jqXHR);
 								} else {
 									clearError();
-									$container.data("menu-name", menuName); // know last loaded
+									$container.data("menu-name", menuName);
+									// know last loaded
 									try {
 										var commandFunc = menuName + "Init";
 										if (eval("typeof " + commandFunc + " === 'function'")) {
@@ -848,8 +994,8 @@ require([ "SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "
 					// special logic for saveAttachment: remove it when no attachment found in the message
 					// or it's compose mode
 					var $saveAttachment = $menuItems.filter(".saveAttachment");
-					if ($saveAttachment.size() > 0
-					    && (!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
+					if ($saveAttachment.size() > 0 && 
+							(!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
 						$saveAttachment.parent().remove();
 					}
 					// special logic for item addAttachment - show it only in compose mode

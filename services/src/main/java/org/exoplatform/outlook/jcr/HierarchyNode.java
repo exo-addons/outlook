@@ -64,7 +64,7 @@ public abstract class HierarchyNode {
   }
 
   protected final String   parentPath;
-  
+
   protected final String   path;
 
   protected final String   name;
@@ -77,9 +77,14 @@ public abstract class HierarchyNode {
 
   protected final Calendar lastModified;
 
+  // TODO thread-local node and a way to read it by path/UUID from JCR
   protected final Node     node;
 
+  protected final int      hashCode;
+
   protected String         url;
+
+  protected String         webdavUrl;
 
   /**
    * @throws RepositoryException
@@ -99,6 +104,9 @@ public abstract class HierarchyNode {
       // parentPath = parent.getRootPath();
       // }
     }
+
+    int hc = 1;
+    hc = hc * 31 + this.path.hashCode();
 
     this.parentPath = parentPath;
     this.title = nodeTitle(node);
@@ -122,13 +130,45 @@ public abstract class HierarchyNode {
 
     if (node.hasProperty("exo:dateModified")) {
       this.lastModified = node.getProperty("exo:dateModified").getDate();
+      hc = hc * 31 + this.lastModified.hashCode();
     } else {
       this.lastModified = null;
     }
+
+    this.hashCode = hc;
   }
 
   protected HierarchyNode(Folder parent, Node node) throws RepositoryException, OutlookException {
     this(parent != null ? parent.getPath() : null, node);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return hashCode;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && getClass().isAssignableFrom(obj.getClass())) {
+      HierarchyNode other = getClass().cast(obj);
+      Node thisNode = getNode();
+      Node otherNode = other.getNode();
+      if (thisNode != null && otherNode != null) {
+        try {
+          return thisNode.isSame(otherNode);
+        } catch (RepositoryException e) {
+          // ignore here
+        }
+      }
+      return this.getPath().equals(other.getPath());
+    }
+    return super.equals(obj);
   }
 
   /**
@@ -143,6 +183,20 @@ public abstract class HierarchyNode {
    */
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  /**
+   * @return the webdavUrl
+   */
+  public String getWebdavUrl() {
+    return webdavUrl;
+  }
+
+  /**
+   * @param webdavUrl the webdavUrl to set
+   */
+  public void setWebdavUrl(String webdavUrl) {
+    this.webdavUrl = webdavUrl;
   }
 
   /**
@@ -238,6 +292,8 @@ public abstract class HierarchyNode {
     // StringBuilder(parent.getPathLabel()).append(PATH_SEPARATOR).append(this.title).toString();
     return pathLabel.toString();
   }
+
+  public abstract boolean isFolder();
 
   protected abstract Locale userLocale();
 

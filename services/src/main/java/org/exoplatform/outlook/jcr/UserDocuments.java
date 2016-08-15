@@ -21,55 +21,25 @@ package org.exoplatform.outlook.jcr;
 
 import org.exoplatform.outlook.OutlookException;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
+import java.util.Collection;
+
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
 
 /**
- * JCR file wrapper for UI.
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: Folder.java 00000 Jun 14, 2016 pnedonosko $
+ * @version $Id: UserDocuments.java 00000 Aug 12, 2016 pnedonosko $
  * 
  */
-public abstract class File extends HierarchyNode {
+public interface UserDocuments {
 
-  /**
-   * @throws RepositoryException
-   * 
-   */
-  public File(Folder parent, Node node) throws RepositoryException, OutlookException {
-    super(parent, node);
-    if (!isFile(node)) {
-      throw new OutlookException("Not a file node");
-    }
-  }
+  Folder getFolder(String path) throws OutlookException, RepositoryException;
 
-  public File(String parentPath, Node node) throws RepositoryException, OutlookException {
-    super(parentPath, node);
-    if (!isFile(node)) {
-      throw new OutlookException("Not a file node");
-    }
-  }
+  Folder getRootFolder() throws OutlookException, RepositoryException;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final boolean isFolder() {
-    return false;
-  }
+  Collection<File> findAllLastDocuments(String text) throws RepositoryException, OutlookException;
 
-  public long getSize() throws RepositoryException {
-    Node node = getNode();
-    if (node != null) {
-      return node.getNode("jcr:content").getProperty("jcr:data").getLength();
-    } else {
-      return 0l;
-    }
-  }
+  Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException;
 
 }

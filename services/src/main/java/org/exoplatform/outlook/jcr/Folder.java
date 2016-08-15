@@ -43,6 +43,8 @@ public abstract class Folder extends HierarchyNode {
 
   protected final ThreadLocal<Set<Folder>> subfolders = new ThreadLocal<Set<Folder>>();
 
+  protected final ThreadLocal<Set<File>>   files      = new ThreadLocal<Set<File>>();
+
   protected Folder                         defaultSubfolder;
 
   public Folder(Folder parent, Node node) throws RepositoryException, OutlookException {
@@ -86,25 +88,73 @@ public abstract class Folder extends HierarchyNode {
     return Collections.unmodifiableSet(subfolders);
   }
 
+  public boolean hasFiles() throws RepositoryException, OutlookException {
+    Set<File> files = this.files.get();
+    if (files == null) {
+      files = readFiles();
+    }
+    return files.size() > 0;
+  }
+
+  public Set<File> getFiles() throws RepositoryException, OutlookException {
+    Set<File> files = this.files.get();
+    if (files == null) {
+      files = readFiles();
+    }
+    return Collections.unmodifiableSet(files);
+  }
+
+  public Set<HierarchyNode> getChildren() throws RepositoryException, OutlookException {
+    Set<HierarchyNode> children = new LinkedHashSet<HierarchyNode>();
+    // folders first
+    children.addAll(getSubfolders());
+    // then files
+    children.addAll(getFiles());
+    return Collections.unmodifiableSet(children);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean isFolder() {
+    return true;
+  }
+
   protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
-    Set<Folder> subfolders = new LinkedHashSet<Folder>();
+    readChildNodes();
+    return this.subfolders.get();
+  }
+
+  protected Set<File> readFiles() throws RepositoryException, OutlookException {
+    readChildNodes();
+    return this.files.get();
+  }
+
+  protected void readChildNodes() throws RepositoryException, OutlookException {
+    Set<Folder> folders = new LinkedHashSet<Folder>();
+    Set<File> files = new LinkedHashSet<File>();
     if (node.hasNodes()) {
       NodeIterator niter = node.getNodes();
       while (niter.hasNext()) {
         Node f = niter.nextNode();
         if ((f.isNodeType("nt:folder") || f.isNodeType("nt:unstructured"))
             && !f.isNodeType(ThumbnailService.HIDDENABLE_NODETYPE)) {
-          subfolders.add(newFolder(this, f));
+          folders.add(newFolder(this, f));
+        } else if (f.isNodeType("nt:file")) {
+          files.add(newFile(this, f));
         }
       }
     }
-    this.subfolders.set(subfolders);
-    return subfolders;
+    this.subfolders.set(folders);
+    this.files.set(files);
   }
 
   protected abstract Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException;
 
   protected abstract Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException;
+
+  protected abstract File newFile(Folder parent, Node node) throws RepositoryException, OutlookException;
 
   public abstract Folder addSubfolder(String name) throws RepositoryException, OutlookException;
 }

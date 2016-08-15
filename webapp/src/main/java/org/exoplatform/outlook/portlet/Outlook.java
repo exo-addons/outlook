@@ -33,6 +33,7 @@ import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.OutlookSpace;
 import org.exoplatform.outlook.OutlookUser;
 import org.exoplatform.outlook.common.ResourceBundleSerializer;
+import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.security.OutlookTokenService;
@@ -47,6 +48,7 @@ import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -82,6 +84,11 @@ import javax.servlet.http.Cookie;
 @SessionScoped
 @PermitAll
 public class Outlook {
+
+  /** . */
+  public final static String  SOURCE_ID_ALL_SPACES      = "*";
+
+  public final static String  SOURCE_ID_PERSONAL        = "PERSONAL_DOCUMENTS";
 
   /** . */
   private final static String GMT_TIME_ZONE_ID          = "GMT";
@@ -138,6 +145,9 @@ public class Outlook {
   OutlookTokenService                                       outlookTokens;
 
   @Inject
+  ContentLink                                               contentLink;
+
+  @Inject
   @Path("index.gtmpl")
   org.exoplatform.outlook.portlet.templates.index           index;
 
@@ -152,6 +162,14 @@ public class Outlook {
   @Inject
   @Path("folders.gtmpl")
   org.exoplatform.outlook.portlet.templates.folders         folders;
+
+  @Inject
+  @Path("filesExplorer.gtmpl")
+  org.exoplatform.outlook.portlet.templates.filesExplorer   filesExplorer;
+
+  @Inject
+  @Path("filesSearch.gtmpl")
+  org.exoplatform.outlook.portlet.templates.filesSearch     filesSearch;
 
   @Inject
   @Path("addFolderDialog.gtmpl")
@@ -440,10 +458,113 @@ public class Outlook {
   @Resource
   public Response addAttachmentForm() {
     try {
-      return addAttachment.with().spaces(outlook.getUserSpaces()).ok();
+      // TODO sources
+      List<AttachmentSource> sources = new ArrayList<AttachmentSource>();
+      sources.add(new AttachmentSource(SOURCE_ID_ALL_SPACES, i18n.getString("Outlook.allSpaces")));
+      sources.add(new AttachmentSource(SOURCE_ID_PERSONAL, i18n.getString("Outlook.personalDocuments")));
+      for (OutlookSpace space : outlook.getUserSpaces()) {
+        sources.add(new AttachmentSource(space.getGroupId(), space.getTitle()));
+      }
+      return addAttachment.with().sources(sources).ok();
     } catch (Throwable e) {
       LOG.error("Error showing add attachments form", e);
       return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response exploreFiles(String sourceId, String path) {
+    try {
+      Folder folder;
+      if (SOURCE_ID_PERSONAL.equals(sourceId)) {
+        // TODO gather last used from user's documents
+        folder = outlook.getUserDocuments().getFolder(path);
+      } else if (SOURCE_ID_ALL_SPACES.equals(sourceId)) {
+        return errorMessage("Source not explorable", 400);
+      } else {
+        // Find space by groupId (we assume it is)
+        OutlookSpace space = outlook.getSpace(sourceId);
+        folder = space.getFolder(path);
+      }
+      return filesExplorer.with().folder(folder).ok();
+    } catch (BadParameterException e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Error reading filesExplorer " + path + ". " + e.getMessage());
+      }
+      return errorMessage(e.getMessage(), 400);
+    } catch (Throwable e) {
+      LOG.error("Error reading filesExplorer " + path, e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response searchFiles(String sourceId, String text) {
+    if (sourceId != null) {
+      try {
+        // OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
+        Collection<File> res;
+        if (SOURCE_ID_ALL_SPACES.equals(sourceId)) {
+          // TODO search in last used filesExplorer ordered by access/modification date first
+          res = outlook.getUserDocuments().findAllLastDocuments(text);
+        } else if (SOURCE_ID_PERSONAL.equals(sourceId)) {
+          // TODO search in last used from user's documents
+          res = outlook.getUserDocuments().findLastDocuments(text);
+        } else {
+          // Find space by groupId (we assume it is)
+          OutlookSpace space = outlook.getSpace(sourceId);
+          // search in space documents
+          res = space.findLastDocuments(text);
+        }
+        return filesSearch.with().files(res).ok();
+      } catch (Throwable e) {
+        LOG.error("Error searching filesExplorer in " + sourceId, e);
+        return errorMessage(e.getMessage(), 500);
+      }
+    } else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Null or zero-length source ID to searhc filesExplorer");
+      }
+      return errorMessage("Source ID required", 400);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response fileLink(String nodePath, RequestContext context) {
+    if (nodePath != null) {
+      try {
+        StringBuilder prefix = new StringBuilder();
+        String scheme = context.getHttpContext().getScheme();
+        if (scheme != null) {
+          prefix.append(scheme);
+        } else {
+          prefix.append("http");
+        }
+        prefix.append("://");
+        prefix.append(context.getHttpContext().getServerName());
+        int port = context.getHttpContext().getServerPort();
+        if (port > 0 && port != 80 && port != 443) {
+          prefix.append(':');
+          prefix.append(port);
+        }
+
+        String userId = context.getSecurityContext().getRemoteUser();
+        
+        String link = contentLink.createUrl(userId, nodePath, prefix.toString());
+
+        return Response.ok().content("{\"link\":\"" + link + "\"}").withMimeType("application/json");
+      } catch (Throwable e) {
+        LOG.error("Error creating link for node " + nodePath, e);
+        return errorMessage(e.getMessage(), 500);
+      }
+    } else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Null or zero-length nodePath");
+      }
+      return errorMessage("Node path required", 400);
     }
   }
 
@@ -757,5 +878,19 @@ public class Outlook {
     DateFormat fmt = new SimpleDateFormat(COOKIE_DATE_FORMAT_STRING, Locale.US);
     fmt.setTimeZone(tz);
     return fmt.format(date);
+  }
+
+  private AttachmentSource parseSource(String line) {
+    if (line.startsWith("/")) {
+      // it's user Personal Docs or any other path in the JCR
+      return new AttachmentSource(line, line);
+    } else if (line.equals("*")) {
+      return new AttachmentSource(line, null);
+    } else {
+      int i = line.indexOf("@");
+      String groupId = line.substring(0, i);
+      // TODO get space by groupId
+      throw new IllegalArgumentException("Line '" + line + "' cannot be a source");
+    }
   }
 }

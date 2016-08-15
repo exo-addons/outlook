@@ -18,6 +18,7 @@ package org.exoplatform.outlook;
 
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
+import org.exoplatform.outlook.jcr.UserDocuments;
 
 import java.util.Calendar;
 import java.util.List;
@@ -49,7 +50,7 @@ public interface OutlookService {
    * @throws RepositoryException
    */
   OutlookUser getUser(String email, String userName, String ewsUrl) throws OutlookException, RepositoryException;
-
+  
   /**
    * Build Outlook Email address object.
    * 
@@ -75,16 +76,17 @@ public interface OutlookService {
    * @throws OutlookException
    */
   OutlookMessage buildMessage(String messageId,
-                            OutlookUser user,
-                            OutlookEmail from,
-                            List<OutlookEmail> to,
-                            Calendar created,
-                            Calendar modified,
-                            String subject,
-                            String body) throws OutlookException;
+                              OutlookUser user,
+                              OutlookEmail from,
+                              List<OutlookEmail> to,
+                              Calendar created,
+                              Calendar modified,
+                              String subject,
+                              String body) throws OutlookException;
 
   /**
    * Read Outlook message from server.
+   * 
    * @param user
    * @param messageId
    * @param messageId
@@ -94,8 +96,8 @@ public interface OutlookService {
    * @throws OutlookException
    */
   OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException;
-  
-  //OutlookMessage getUserMessage(OutlookUser user, String messageId) throws OutlookException;
+
+  // OutlookMessage getUserMessage(OutlookUser user, String messageId) throws OutlookException;
 
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
@@ -127,5 +129,7 @@ public interface OutlookService {
   OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException;
 
   List<OutlookSpace> getUserSpaces() throws OutlookSpaceException, RepositoryException, OutlookException;
+
+  UserDocuments getUserDocuments() throws RepositoryException, OutlookException;
 
 }

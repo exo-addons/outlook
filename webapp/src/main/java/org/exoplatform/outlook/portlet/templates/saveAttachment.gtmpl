@@ -16,7 +16,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="attachments" class="ms-Label">&{Outlook.selectAttachment}</label>
-					<ul id="attachments" class="ms-List"></ul>
+					<ul class="ms-List attachments"></ul>
 					<span class="ms-TextField-description">&{Outlook.selectAttachmentDescription}</span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
@@ -67,7 +67,7 @@
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField group-path">
 					<label for="path" class="ms-Label">&{Outlook.selectFolder}</label>
 					<input name="path" type="hidden" value="">
-					<ul id="path-info" class="ms-List">
+					<ul class="ms-List currentFolder">
 						<li class="ms-ListItem">
 							<div class="ms-TextField ms-ListItem-primaryText">
 								<span class="ms-TextField-description">&{Outlook.pathInfoSaveDescription}</span>
@@ -86,7 +86,7 @@
 							</div>
 						</li>
 					</ul>
-					<ul id="folders" class="ms-List">
+					<ul class="ms-List folders">
 					</ul>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

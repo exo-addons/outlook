@@ -9,7 +9,7 @@
 		</div>
 	</div>
 </div>
-<ul class="ms-List">
+<ul class="ms-List attachments">
 <% for (f in files) { %>
 	<li class="ms-ListItem selectableItem" data-portalurl="${f.url}">
 		<span class="ms-ListItem-primaryText">

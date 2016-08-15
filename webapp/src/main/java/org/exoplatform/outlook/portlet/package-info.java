@@ -19,7 +19,7 @@
 @Application
 @Portlet(name = "OutlookPortlet")
 @Bindings({ @Binding(value = OutlookService.class), @Binding(value = OutlookTokenService.class),
-    @Binding(value = CookieTokenService.class) })
+    @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class) })
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.min.css", location = AssetLocation.SERVER),
@@ -51,5 +51,6 @@ import juzu.plugin.binding.Bindings;
 import juzu.plugin.portlet.Portlet;
 
 import org.exoplatform.outlook.OutlookService;
+import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.security.OutlookTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
