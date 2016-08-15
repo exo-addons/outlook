@@ -891,19 +891,19 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								$attachedDoc.find(".ms-ListItem-selectionTarget").remove();
 								$attachedDoc.removeClass("is-selected");
 								$attachedDoc.removeClass("selectableItem");
+								var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
 								
 								$fileLink.done(function(response, status, jqXHR) {
 									var link = response.link;
 									Office.context.mailbox.item.addFileAttachmentAsync(link, title, {}, function(asyncResult) {
 										if (asyncResult.status === "succeeded") {
-											$attachedDoc.find(".ms-ListItem-primaryText").before("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
+											$docName.prepend("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
 										} else {
 											hasError = true;
 											console.log(">> Office.context.mailbox.item.addFileAttachmentAsync() [" + asyncResult.status + "] error: "//
 											+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											// TODO show error state in added pane within a document styled in red
 											$attachedDoc.addClass("ms-bgColor-error");
-											var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
 											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
 											$docName.after("<div class='ms-ListItem-tertiaryText addedError'>" + asyncResult.error.message + "</div>");
 										}
@@ -914,7 +914,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									console.log(">> Outlook.fileLink() [" + textStatus + "]: "//
 											+ errorThrown + " response: " + jqXHR.responseText);
 									$attachedDoc.addClass("ms-bgColor-error");
-									var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
 									$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
 									$docName.after("<div class='ms-ListItem-tertiaryText linkError'>" + jqXHR.responseText + "</div>");
 								});
