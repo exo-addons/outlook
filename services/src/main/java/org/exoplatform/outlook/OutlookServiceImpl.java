@@ -60,6 +60,7 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
@@ -422,6 +423,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         throw new OutlookException("Error posting activity for user " + localUser, e);
       }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(String title, String body) throws Exception {
+      // post activity to user status stream
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             null,
+                                                             title,
+                                                             body);
+      socialActivityManager.saveActivityNoReturn(userIdentity, activity);
+      // return activity;
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
+    }
   }
 
   protected class OutlookSpaceImpl extends OutlookSpace {
@@ -620,6 +640,27 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       } finally {
         org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
       }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception {
+      // post activity to space status stream under current user
+      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
+                                                                         this.groupId,
+                                                                         true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             SpaceActivityPublisher.SPACE_APP_ID,
+                                                             title,
+                                                             body);
+      socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
     }
   }
 

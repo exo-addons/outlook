@@ -79,6 +79,8 @@
     <convertToStatusError>Error converting the message to an activity</convertToStatusError>
     <convertedToUserActivity>The activity was successfully posted in your personal activity stream</convertedToUserActivity>
     <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME} space</convertedToSpaceActivity>
+    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
+    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME} space</postedToSpaceActivity>
     <openActivity>Display the activity</openActivity>
     
     <messages>

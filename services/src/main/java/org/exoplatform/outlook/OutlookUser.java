@@ -64,4 +64,6 @@ public abstract class OutlookUser extends OutlookEmail {
   // ****** abstract *****
 
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws OutlookException;
+
+  public abstract ExoSocialActivity postActivity(String title, String body) throws Exception;
 }

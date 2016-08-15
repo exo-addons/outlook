@@ -125,8 +125,8 @@ public class Outlook {
       super(userTitle, spaceName, link);
     }
 
-    public String getConvertedToUserActivityMessage() {
-      String msg = i18n.getString("Outlook.convertedToUserActivity");
+    public String getConvertedToSpaceActivity() {
+      String msg = i18n.getString("Outlook.convertedToSpaceActivity");
       return msg.replace("{SPACE_NAME}", spaceName);
     }
 
@@ -182,6 +182,10 @@ public class Outlook {
   @Inject
   @Path("postStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postStatus      postStatus;
+  
+  @Inject
+  @Path("postedStatus.gtmpl")
+  org.exoplatform.outlook.portlet.templates.postedStatus postedStatus;
 
   @Inject
   @Path("startDiscussion.gtmpl")
@@ -587,7 +591,43 @@ public class Outlook {
       return errorMessage(e.getMessage(), 500);
     }
   }
+  
+  @Ajax
+  @Resource
+  public Response postStatus(String groupId,
+                                  String title,
+                                  String body,
+                                  String userName,
+                                  String userEmail,
+                                  RequestContext context) {
+    try {
 
+      OutlookUser user = outlook.getUser(userEmail, userName, null);
+
+      if (groupId != null && groupId.length() > 0) {// new String(body.getBytes(""), "utf-8")
+        // space activity requested
+        OutlookSpace space = outlook.getSpace(groupId);
+        if (space != null) {
+          ExoSocialActivity activity = space.postActivity(user, title, body);
+          return convertedStatus.with().status(new Status(null, space.getGroupId(), activity.getPermaLink())).ok();
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
+                + userEmail);
+          }
+          return errorMessage("Error converting message to activity status : space not found " + groupId, 404);
+        }
+      } else {
+        // user activity requested
+        ExoSocialActivity activity = user.postActivity(title, body);
+        return convertedStatus.with().status(new Status(user.getLocalUser(), null, activity.getPermaLink())).ok();
+      }
+    } catch (Throwable e) {
+      LOG.error("Error converting message to activity status for " + userEmail, e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+  
   // *************** Start Discussion command ***********
 
   @Ajax
@@ -675,7 +715,7 @@ public class Outlook {
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
           ExoSocialActivity activity = space.postActivity(message);
-          return convertedStatus.with().status(new Status(null, space.getGroupId(), activity.getPermaLink())).ok();
+          return convertedStatus.with().status(new Status(null, space.getTitle(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "

@@ -6,9 +6,9 @@
 		</div>
 		<div class="ms-MessageBar-text">
 			<% if (status.isSpace()) { %>
-			${status.convertedToSpaceActivity}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
+			${status.postedToSpaceActivity}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
 			<% } else { %>
-			&{Outlook.convertedToUserActivity}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
+			&{Outlook.postedUserActivity}<br><a href="${status.link}" class="ms-Link" target="_blank">&{Outlook.openActivity}</a>
 			<% } %>
 		</div>
 	</div>
