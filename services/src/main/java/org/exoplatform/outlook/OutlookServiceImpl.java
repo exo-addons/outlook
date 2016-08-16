@@ -56,6 +56,7 @@ import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.organization.UserProfileHandler;
+import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
@@ -72,6 +73,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
@@ -102,6 +104,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -109,6 +112,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -459,14 +463,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public Page addWikiPage(OutlookMessage message) throws Exception {
       String wikiType = PortalConfig.PORTAL_TYPE;
-      String parentTitle = OUTLOOK_MESSAGES_TITLE;
       String creator = message.getUser().getLocalUser();
-      String content = message.getBody();
       List<String> users = new ArrayList<String>();
       users.add(creator);
       // TODO add space group to users?
 
-      return createWikiPage(wikiType, "intranet", creator, parentTitle, content, users);
+      return createWikiPage(wikiType,
+                            "intranet",
+                            creator,
+                            message.getSubject(),
+                            messageSummary(message),
+                            message.getBody(),
+                            users);
     }
   }
 
@@ -698,7 +706,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       users.add(creator);
       // TODO add space group to users?
 
-      return createWikiPage(wikiType, getGroupId(), creator, message.getSubject(), message.getBody(), users);
+      return createWikiPage(wikiType,
+                            getGroupId(),
+                            creator,
+                            message.getSubject(),
+                            messageSummary(message),
+                            message.getBody(),
+                            users);
     }
 
   }
@@ -724,6 +738,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final WikiService                                 wikiService;
 
   protected final TrashService                                trashService;
+
+  protected final ResourceBundleService                       resourceBundleService;
 
   protected String                                            trashHomePath;
 
@@ -764,6 +780,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             ListenerService listenerService,
                             WikiService wikiService,
                             TrashService trashService,
+                            ResourceBundleService resourceBundleService,
                             InitParams params) throws ConfigurationException, MailServerException {
 
     this.jcrService = jcrService;
@@ -777,6 +794,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.listenerService = listenerService;
     this.wikiService = wikiService;
     this.trashService = trashService;
+    this.resourceBundleService = resourceBundleService;
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -1985,6 +2003,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                              String wikiOwner,
                              String creator,
                              String title,
+                             String summary,
                              String content,
                              List<String> users) throws Exception {
     String parentTitle = OUTLOOK_MESSAGES_TITLE;
@@ -2038,11 +2057,23 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Page page = new Page();
 
       if (isHTML(content)) {
-        //page.setSyntax(Syntax.XHTML_1_0.toIdString());
+        // FYI XHTML doesn't work as when editing in eXo it does as for xWiki syntax
+        // page.setSyntax(Syntax.XHTML_1_0.toIdString());
         page.setSyntax(Syntax.XWIKI_2_0.toIdString());
-        // wrap into HTML Macro, http://extensions.xwiki.org/xwiki/bin/view/Extension/HTML+Macro
+        // wrap message body as quoted into HTML Macro,
+        // http://extensions.xwiki.org/xwiki/bin/view/Extension/HTML+Macro
         StringBuilder wikiContent = new StringBuilder("{{html wiki=\"false\"}}");
+        if (summary != null) {
+          // HTML also contains message summary (US_003_07)
+          wikiContent.append("<div style='word-wrap: break-word; min-height: 30px;'>");
+          wikiContent.append(summary);
+          wikiContent.append("</div>");
+        }
+        wikiContent.append("<div style='overflow:auto;'><div style='position: relative; float: left;"
+            + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
+            + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
         wikiContent.append(content);
+        wikiContent.append("</div></div>");
         wikiContent.append("{{/html}}");
         page.setContent(wikiContent.toString());
       } else {
@@ -2097,6 +2128,47 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
+   * Generate message summary text.
+   * 
+   * @param message
+   * @return
+   */
+  protected String messageSummary(OutlookMessage message) {
+    String fromEmail = message.getFrom().getEmail();
+    String fromName = message.getFrom().getDisplayName();
+    Date time = message.getCreated().getTime();
+
+    Locale locale = Locale.ENGLISH;
+    ResourceBundle res = resourceBundleService.getResourceBundle("locale.outlook.Outlook", locale);
+
+    DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
+    DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
+
+    StringBuilder fromLine = new StringBuilder();
+    fromLine.append(fromName);
+    fromLine.append('<');
+    fromLine.append(fromEmail);
+    fromLine.append('>');
+
+    StringBuilder summary = new StringBuilder();
+    summary.append(res.getString("Outlook.activity.from"));
+    summary.append(": <a href='mailto:");
+    summary.append(fromEmail);
+    summary.append("' target='_top'>");
+    summary.append(ContentReader.simpleEscapeHtml(fromLine.toString()));
+    summary.append("</a> ");
+    summary.append(res.getString("Outlook.activity.on"));
+    summary.append(' ');
+    summary.append(dateFormat.format(time));
+    summary.append(' ');
+    summary.append(res.getString("Outlook.activity.at"));
+    summary.append(' ');
+    summary.append(timeFormat.format(time));
+
+    return summary.toString();
+  }
+
+  /**
    * Try detect is it a HTML content in the string.
    * 
    * @param content
@@ -2122,13 +2194,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     if (istart >= 0 && iend > 0 && istart < iend) {
       return true;
     }
-    
+
+    // FYI it's how looks message after MS Word pre-peocessor in Outlook for Windows: 
+    // everything in tables (no html, body or divs)
     istart = content.indexOf("<table");
     iend = content.indexOf("</table>");
     if (istart >= 0 && iend > 0 && istart < iend) {
       return true;
     }
-    
+
     istart = content.indexOf("<style");
     iend = content.indexOf("</style>");
     if (istart >= 0 && iend > 0 && istart < iend) {
