@@ -2062,7 +2062,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         page.setSyntax(Syntax.XWIKI_2_0.toIdString());
         // wrap message body as quoted into HTML Macro,
         // http://extensions.xwiki.org/xwiki/bin/view/Extension/HTML+Macro
-        StringBuilder wikiContent = new StringBuilder("{{html wiki=\"false\"}}");
+        StringBuilder wikiContent = new StringBuilder();
+        wikiContent.append("{{html wiki=\"false\"}}");
         if (summary != null) {
           // HTML also contains message summary (US_003_07)
           wikiContent.append("<div style='word-wrap: break-word; min-height: 30px;'>");
@@ -2195,7 +2196,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       return true;
     }
 
-    // FYI it's how looks message after MS Word pre-peocessor in Outlook for Windows: 
+    // FYI it's how looks message after MS Word pre-peocessor in Outlook for Windows:
     // everything in tables (no html, body or divs)
     istart = content.indexOf("<table");
     iend = content.indexOf("</table>");

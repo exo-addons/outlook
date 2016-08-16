@@ -166,7 +166,7 @@ div.form-buttons {
 	margin-bottom: 0px;
 }
 
-#documentSelector .pathControls, #attach .documents .pathControls, .groupPath .pathControls {
+#documentSelector .pathControls, #attach .documents .pathControls {
 	top: 5px !important;
 	right: 5px !important;
 }
