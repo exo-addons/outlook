@@ -235,11 +235,6 @@ div.form-buttons {
   font-size: 11px;
 }
 
-.currentFolder .pathControls {
-	top: 30px !important;
-	right: 5px !important;
-}
-
 .messageText {
 	height: 125px;
 	overflow: hidden;
