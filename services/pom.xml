@@ -94,6 +94,11 @@
       <artifactId>forum-forum-service</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
     
     <!-- for tests -->
     <dependency>

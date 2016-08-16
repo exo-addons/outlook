@@ -20,6 +20,7 @@
 package org.exoplatform.outlook;
 
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.wiki.mow.api.Page;
 
 import java.net.URI;
 
@@ -66,4 +67,6 @@ public abstract class OutlookUser extends OutlookEmail {
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws OutlookException;
 
   public abstract ExoSocialActivity postActivity(String title, String body) throws Exception;
+  
+  public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 }

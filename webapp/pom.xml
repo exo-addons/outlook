@@ -80,6 +80,13 @@
       <scope>provided</scope>
       <type>jar</type>
     </dependency>
+    
+    <!-- eXo Wiki -->
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-service</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- eXo Platform's Juzu -->
     <dependency>

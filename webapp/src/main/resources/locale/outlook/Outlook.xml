@@ -24,6 +24,8 @@
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
     <noActionsAvailable>No actions are available for this context.</noActionsAvailable>
+    
+    <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
 
     <saveAttachmentDescription>Here you can save attachments as documents in the intranet.</saveAttachmentDescription>
     <selectAttachment>Select attachments</selectAttachment>
@@ -38,9 +40,7 @@
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
     <pathAddDescription>Create a new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
-    <saveAttachmentDescription>Save the attachments of this message as documents in the selected space</saveAttachmentDescription>
     <cancel>Cancel</cancel>
-    <cancelSaveAttachmentDescription>Don't save attachments of this message</cancelSaveAttachmentDescription>
     <savingAttachment>Saving your files...</savingAttachment>
     <savedAttachment>Your files were successfully saved</savedAttachment>
     <savedClickToOpen>Click a file in the list below to open it in teh intranet</savedClickToOpen>
@@ -58,16 +58,13 @@
     <searchName>Search by name</searchName>
     <currentFolder>Current folder</currentFolder>
     <attach>Attach</attach>
-    <attachDescription>Attach selected documents</attachDescription>
-    <cancelAttachDescription></cancelAttachDescription>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
     <personalDocuments>Personal Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
 
-    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Chosing atarget space will generate the activity in the space's stream.</convertToStatusDescription>
-    <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
-    <targetSpaceDescription>If selected, your message will be saved in the space's activity stream.</targetSpaceDescription>
+    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
+    <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
     <activityTitle>Title</activityTitle>
     <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
     <editActivityText>Click to edit</editActivityText>
@@ -82,6 +79,18 @@
     <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
     <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME} space</postedToSpaceActivity>
     <openActivity>Display the activity</openActivity>
+    
+    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will generate a page in the space wiki.</convertToWikiDescription>
+    <wikiPageTitle>Title</wikiPageTitle>
+    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
+    <wikiPageText>Page text</wikiPageText>
+    <editWikiPageText>Click to edit</editWikiPageText>
+    <wikiPageTextDescription>This text will be a content of your wiki page</wikiPageTextDescription>
+    <wikiTargetSpaceDescription>If selected, your message will converted to a page in the space wiki.</wikiTargetSpaceDescription>
+    <convertingToWiki>Converting message to wiki...</convertingToWiki>
+    <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
+    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
+    <openWikiPage>Open wiki page</openWikiPage>
     
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>

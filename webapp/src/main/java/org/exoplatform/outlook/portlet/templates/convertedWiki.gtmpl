@@ -1,0 +1,15 @@
+#{param name=page/}
+<div class="ms-MessageBar ms-MessageBar--success">
+	<div class="ms-MessageBar-content">
+		<div class="ms-MessageBar-icon">
+			<i class="ms-Icon ms-Icon--checkboxCheck ms-Icon--circle"></i>
+		</div>
+		<div class="ms-MessageBar-text">
+			<% if (page.isInSpace()) { %>
+			${page.convertedToSpaceWiki}<br><a href="${page.link}" class="ms-Link" target="_blank">&{Outlook.openWikiPage}</a>
+			<% } else { %>
+			&{Outlook.convertedToUserWiki}<br><a href="${page.link}" class="ms-Link" target="_blank">&{Outlook.openWikiPage}</a>
+			<% } %>
+		</div>
+	</div>
+</div>

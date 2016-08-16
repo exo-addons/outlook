@@ -240,14 +240,14 @@ div.form-buttons {
 	right: 5px !important;
 }
 
-.activityText {
+.messageText {
 	height: 125px;
 	overflow: hidden;
 	padding: 0px;
 	position: relative;
 }
 
-.activityText:before {
+.messageText:before {
 	content: "";
 	width: 100%;
 	height: 100%;
@@ -257,7 +257,7 @@ div.form-buttons {
 	background: linear-gradient(transparent 25px, white);
 }
 
-.activityEditor {
+.messageEditor {
 	height: 200px;
 	max-height: 250px;
 	overflow: auto;

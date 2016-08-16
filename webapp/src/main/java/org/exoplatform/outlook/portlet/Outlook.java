@@ -43,12 +43,12 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.web.security.security.CookieTokenService;
+import org.exoplatform.wiki.mow.api.Page;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -119,15 +119,41 @@ public class Outlook {
 
   private static final Log    LOG                       = ExoLogger.getLogger(Outlook.class);
 
-  public class Status extends ActivityStatus {
+  public class UserStatus extends ActivityStatus {
 
-    protected Status(String userTitle, String spaceName, String link) {
+    protected UserStatus(String userTitle, String spaceName, String link) {
       super(userTitle, spaceName, link);
     }
 
     public String getConvertedToSpaceActivity() {
       String msg = i18n.getString("Outlook.convertedToSpaceActivity");
       return msg.replace("{SPACE_NAME}", spaceName);
+    }
+  }
+
+  public class UserWikiPage extends WikiPage {
+
+    final String spaceName;
+
+    protected UserWikiPage(String id, String title, String link, String spaceName) {
+      super(id, title, link);
+      this.spaceName = spaceName;
+    }
+
+    protected UserWikiPage(String id, String title, String link) {
+      this(id, title, link, null);
+    }
+
+    public String getConvertedToSpaceWiki() {
+      String msg = i18n.getString("Outlook.convertedToSpaceWiki");
+      return msg.replace("{SPACE_NAME}", spaceName);
+    }
+
+    /**
+     * @return the isSpace
+     */
+    public boolean isInSpace() {
+      return spaceName != null;
     }
 
   }
@@ -182,10 +208,10 @@ public class Outlook {
   @Inject
   @Path("postStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postStatus      postStatus;
-  
+
   @Inject
   @Path("postedStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.postedStatus postedStatus;
+  org.exoplatform.outlook.portlet.templates.postedStatus    postedStatus;
 
   @Inject
   @Path("startDiscussion.gtmpl")
@@ -210,6 +236,10 @@ public class Outlook {
   @Inject
   @Path("convertToWiki.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertToWiki   convertToWiki;
+
+  @Inject
+  @Path("convertedWiki.gtmpl")
+  org.exoplatform.outlook.portlet.templates.convertedWiki   convertedWiki;
 
   @Inject
   @Path("convertToForum.gtmpl")
@@ -579,7 +609,7 @@ public class Outlook {
     }
   }
 
-  // *************** Post Status command ***********
+  // *************** Post UserStatus command ***********
 
   @Ajax
   @Resource
@@ -591,15 +621,15 @@ public class Outlook {
       return errorMessage(e.getMessage(), 500);
     }
   }
-  
+
   @Ajax
   @Resource
   public Response postStatus(String groupId,
-                                  String title,
-                                  String body,
-                                  String userName,
-                                  String userEmail,
-                                  RequestContext context) {
+                             String title,
+                             String body,
+                             String userName,
+                             String userEmail,
+                             RequestContext context) {
     try {
 
       OutlookUser user = outlook.getUser(userEmail, userName, null);
@@ -609,7 +639,7 @@ public class Outlook {
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
           ExoSocialActivity activity = space.postActivity(user, title, body);
-          return convertedStatus.with().status(new Status(null, space.getGroupId(), activity.getPermaLink())).ok();
+          return convertedStatus.with().status(new UserStatus(null, space.getGroupId(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
@@ -620,14 +650,14 @@ public class Outlook {
       } else {
         // user activity requested
         ExoSocialActivity activity = user.postActivity(title, body);
-        return convertedStatus.with().status(new Status(user.getLocalUser(), null, activity.getPermaLink())).ok();
+        return convertedStatus.with().status(new UserStatus(user.getLocalUser(), null, activity.getPermaLink())).ok();
       }
     } catch (Throwable e) {
       LOG.error("Error converting message to activity status for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
-  
+
   // *************** Start Discussion command ***********
 
   @Ajax
@@ -667,7 +697,7 @@ public class Outlook {
     }
   }
 
-  // *************** Convert To Status command ***********
+  // *************** Convert To UserStatus command ***********
 
   @Ajax
   @Resource
@@ -715,7 +745,7 @@ public class Outlook {
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
           ExoSocialActivity activity = space.postActivity(message);
-          return convertedStatus.with().status(new Status(null, space.getTitle(), activity.getPermaLink())).ok();
+          return convertedStatus.with().status(new UserStatus(null, space.getTitle(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
@@ -726,7 +756,7 @@ public class Outlook {
       } else {
         // user activity requested
         ExoSocialActivity activity = user.postActivity(message);
-        return convertedStatus.with().status(new Status(user.getLocalUser(), null, activity.getPermaLink())).ok();
+        return convertedStatus.with().status(new UserStatus(user.getLocalUser(), null, activity.getPermaLink())).ok();
       }
     } catch (Throwable e) {
       LOG.error("Error converting message to activity status for " + userEmail, e);
@@ -768,9 +798,57 @@ public class Outlook {
   @Resource
   public Response convertToWikiForm() {
     try {
-      return convertToWiki.ok();
+      return convertToWiki.with().spaces(outlook.getUserSpaces()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing conversion to wiki form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response convertToWiki(String groupId,
+                                String messageId,
+                                String subject,
+                                String body,
+                                String created,
+                                String modified,
+                                String userName,
+                                String userEmail,
+                                String fromName,
+                                String fromEmail,
+                                RequestContext context) {
+    try {
+      OutlookUser user = outlook.getUser(userEmail, userName, null);
+      OutlookEmail from = outlook.getAddress(fromEmail, fromName);
+      Calendar createdDate = Calendar.getInstance();
+      createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
+      Calendar modifiedDate = Calendar.getInstance();
+      modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
+      OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+
+      if (groupId != null && groupId.length() > 0) {
+        // space wiki requested
+        OutlookSpace space = outlook.getSpace(groupId);
+        if (space != null) {
+          Page page = space.addWikiPage(message);
+          return convertedWiki.with()
+                              .page(new UserWikiPage(page.getId(), page.getTitle(), page.getUrl(), space.getTitle()))
+                              .ok();
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
+                + userEmail);
+          }
+          return errorMessage("Error converting message to activity status : space not found " + groupId, 404);
+        }
+      } else {
+        // user portal wiki requested
+        Page page = user.addWikiPage(message);
+        return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(), page.getUrl())).ok();
+      }
+    } catch (Throwable e) {
+      LOG.error("Error converting message to wiki for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }

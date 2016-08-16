@@ -25,11 +25,11 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="activityText" class="ms-Label">
-						&{Outlook.activityText}&nbsp;<span class="editActivityText">(<a class="ms-Link">&{Outlook.editActivityText}</a>)</span>
+						&{Outlook.activityText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.editActivityText}</a>)</span>
 					</label>
-					<div class="ms-TextField-field activityText">
+					<div class="ms-TextField-field messageText">
 					</div>
-					<div class="ms-TextField-field activityEditor" contenteditable="true" style="display: none;">
+					<div class="ms-TextField-field messageEditor" contenteditable="true" style="display: none;">
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>
 				</div>
@@ -49,7 +49,7 @@
 						</select>
 					</div>
 					<%	if (spaces.size() > 0) {%>
-					<span class="ms-TextField-description">&{Outlook.targetSpaceDescription}</span>
+					<span class="ms-TextField-description">&{Outlook.activityTargetSpaceDescription}</span>
 					<%	} else { %>
 					<div class="ms-MessageBar ms-MessageBar--severeWarning noSpacesMessage">
 						<div class="ms-MessageBar-content">
@@ -69,18 +69,10 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 centered">
 					<button class="ms-Button ms-Button--primary convertButton" disabled>
-						<span class="ms-Button-icon">
-							<i class="ms-Icon ms-Icon--plus"></i>
-						</span>
 						<span class="ms-Button-label">&{Outlook.convert}</span>
-						<span class="ms-Button-description">&{Outlook.saveAttachmentDescription}</span>
 					</button>
-					<button class="ms-Button cancelButton" data-dismiss="modal">
-						<span class="ms-Button-icon">
-							<i class="ms-Icon ms-Icon--plus"></i>
-						</span>
+					<button class="ms-Button cancelButton">
 						<span class="ms-Button-label">&{Outlook.cancel}</span>
-						<span class="ms-Button-description">&{Outlook.cancelSaveAttachmentDescription}</span>
 					</button>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

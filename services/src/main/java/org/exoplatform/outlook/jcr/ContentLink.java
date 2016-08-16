@@ -105,13 +105,18 @@ public class ContentLink {
     this.identityRegistry = identityRegistry;
 
     /////
+    if (params != null) {
+      PropertiesParam param = params.getPropertiesParam("link-configuration");
 
-    PropertiesParam param = params.getPropertiesParam("link-configuration");
-
-    if (param != null) {
-      config = Collections.unmodifiableMap(param.getProperties());
+      if (param != null) {
+        config = Collections.unmodifiableMap(param.getProperties());
+      } else {
+        LOG.warn("Property parameters link-configuration not found will use default settings.");
+        config = Collections.<String, String> emptyMap();
+      }
     } else {
-      throw new ConfigurationException("Property parameters link-configuration required.");
+      LOG.warn("Component configuration not found will use default settings.");
+      config = Collections.<String, String> emptyMap();
     }
 
     String schema = config.get(CONFIG_SCHEMA);
@@ -160,6 +165,14 @@ public class ContentLink {
     this.restUrl = restUrl.toString();
 
     // TODO organize active map cleanup in time: use eXo cache or thread worker running periodically
+  }
+
+  public ContentLink(RepositoryService jcrService,
+                     SessionProviderService sessionProviders,
+                     NodeFinder finder,
+                     OrganizationService organization,
+                     IdentityRegistry identityRegistry) throws ConfigurationException {
+    this(jcrService, sessionProviders, finder, organization, identityRegistry, null);
   }
 
   public String create(String userId, String nodePath) throws Exception {

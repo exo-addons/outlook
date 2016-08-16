@@ -92,18 +92,10 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 centered">
 					<button class="ms-Button ms-Button--primary attachButton" disabled>
-						<span class="ms-Button-icon">
-							<i class="ms-Icon ms-Icon--plus"></i>
-						</span>
 						<span class="ms-Button-label">&{Outlook.attach}</span>
-						<span class="ms-Button-description">&{Outlook.attachDescription}</span>
 					</button>
-					<button class="ms-Button cancelButton" data-dismiss="modal">
-						<span class="ms-Button-icon">
-							<i class="ms-Icon ms-Icon--plus"></i>
-						</span>
+					<button class="ms-Button cancelButton">
 						<span class="ms-Button-label">&{Outlook.cancel}</span>
-						<span class="ms-Button-description">&{Outlook.cancelAttachDescription}</span>
 					</button>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

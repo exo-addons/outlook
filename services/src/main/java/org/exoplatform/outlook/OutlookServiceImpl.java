@@ -36,6 +36,7 @@ import org.exoplatform.outlook.social.OutlookAttachmentActivity;
 import org.exoplatform.outlook.social.OutlookMessageActivity;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
@@ -75,8 +76,17 @@ import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
 import org.picocontainer.Startable;
+import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -91,6 +101,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -141,6 +152,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected static final String         OUTLOOK_MESSAGES_TITLE = "Outlook Messages";
 
   protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
+
+  protected static final String         WIKI_PERMISSION_ANY    = "any";
 
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
 
@@ -423,7 +436,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         throw new OutlookException("Error posting activity for user " + localUser, e);
       }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -433,14 +446,27 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
-                                                             null,
-                                                             title,
-                                                             body);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, title, body);
       socialActivityManager.saveActivityNoReturn(userIdentity, activity);
       // return activity;
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page addWikiPage(OutlookMessage message) throws Exception {
+      String wikiType = PortalConfig.PORTAL_TYPE;
+      String parentTitle = OUTLOOK_MESSAGES_TITLE;
+      String creator = message.getUser().getLocalUser();
+      String content = message.getBody();
+      List<String> users = new ArrayList<String>();
+      users.add(creator);
+      // TODO add space group to users?
+
+      return createWikiPage(wikiType, "intranet", creator, parentTitle, content, users);
     }
   }
 
@@ -648,9 +674,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception {
       // post activity to space status stream under current user
-      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME,
-                                                                         this.groupId,
-                                                                         true);
+      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.groupId, true);
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
@@ -662,6 +686,21 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page addWikiPage(OutlookMessage message) throws Exception {
+      String wikiType = PortalConfig.GROUP_TYPE;
+      String creator = message.getUser().getLocalUser();
+      List<String> users = new ArrayList<String>();
+      users.add(creator);
+      // TODO add space group to users?
+
+      return createWikiPage(wikiType, getGroupId(), creator, message.getSubject(), message.getBody(), users);
+    }
+
   }
 
   protected final RepositoryService                           jcrService;
@@ -681,6 +720,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final ManageDriveService                          driveService;
 
   protected final ListenerService                             listenerService;
+
+  protected final WikiService                                 wikiService;
 
   protected final TrashService                                trashService;
 
@@ -712,8 +753,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws ConfigurationException
    * @throws MailServerException
    */
-  public OutlookServiceImpl(// OutlookMessageStore messageStore,
-                            RepositoryService jcrService,
+  public OutlookServiceImpl(RepositoryService jcrService,
                             SessionProviderService sessionProviders,
                             IdentityRegistry identityRegistry,
                             NodeHierarchyCreator hierarchyCreator,
@@ -722,9 +762,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             CookieTokenService tokenService,
                             ManageDriveService driveService,
                             ListenerService listenerService,
+                            WikiService wikiService,
                             TrashService trashService,
                             InitParams params) throws ConfigurationException, MailServerException {
-    // this.messageStore = messageStore;
 
     this.jcrService = jcrService;
     this.sessionProviders = sessionProviders;
@@ -735,6 +775,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.tokenService = tokenService;
     this.driveService = driveService;
     this.listenerService = listenerService;
+    this.wikiService = wikiService;
     this.trashService = trashService;
 
     // API for user requests (uses credentials from eXo user profile)
@@ -1930,6 +1971,202 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       } else {
         res.add(new UserFile(file.getParent().getPath(), file));
       }
+    }
+  }
+
+  /**
+   * Method adapted from eXo Chat's WikiService.createOrEditPage().
+   * 
+   * @param message
+   * @return
+   * @throws Exception
+   */
+  public Page createWikiPage(String wikiType,
+                             String wikiOwner,
+                             String creator,
+                             String title,
+                             String content,
+                             List<String> users) throws Exception {
+    String parentTitle = OUTLOOK_MESSAGES_TITLE;
+    String parentId = TitleResolver.getId(parentTitle, false);
+
+    synchronized (wikiService) {
+
+      Page parentPage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, parentId);
+      if (parentPage == null) {
+        parentPage = new Page();
+        parentPage.setTitle(parentTitle);
+        parentPage.setContent("= " + parentTitle + " =\n");
+        parentPage.setSyntax(Syntax.XWIKI_2_0.toIdString());
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
+        if (wiki == null) {
+          wiki = wikiService.createWiki(wikiType, wikiOwner);
+        }
+        Page wikiHome = wiki.getWikiHome();
+        setPermissionForWikiPage(Collections.<String> emptyList(), parentPage, wikiHome);
+        List<PermissionEntry> permissions = parentPage.getPermissions();
+        permissions.add(new PermissionEntry(WIKI_PERMISSION_ANY,
+                                            "",
+                                            IDType.USER,
+                                            new Permission[] {
+                                                new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE,
+                                                               true) }));
+        parentPage.setPermissions(permissions);
+        Wiki pwiki = new Wiki();
+        pwiki.setOwner(wikiOwner);
+        pwiki.setType(wikiType);
+        parentPage = wikiService.createPage(pwiki, "WikiHome", parentPage);
+
+        // TODO do we need some kind of restrictions for message pages?
+        // remove permissions on the Meeting Notes parent page for current user (automatically added by
+        // the Wiki API)
+        // permissions = parentPage.getPermissions();
+        // for (int i = 0; i < permissions.size(); i++) {
+        // PermissionEntry permission = permissions.get(i);
+        // if (creator.equals(permission.getId())) {
+        // permissions.remove(i);
+        // }
+        // }
+        // parentPage.setPermissions(permissions);
+        // wikiService.updatePage(parentPage, null);
+      }
+
+      Wiki wiki = new Wiki();
+      wiki.setOwner(wikiOwner);
+      wiki.setType(wikiType);
+
+      Page page = new Page();
+
+      if (isHTML(content)) {
+        //page.setSyntax(Syntax.XHTML_1_0.toIdString());
+        page.setSyntax(Syntax.XWIKI_2_0.toIdString());
+        // wrap into HTML Macro, http://extensions.xwiki.org/xwiki/bin/view/Extension/HTML+Macro
+        StringBuilder wikiContent = new StringBuilder("{{html wiki=\"false\"}}");
+        wikiContent.append(content);
+        wikiContent.append("{{/html}}");
+        page.setContent(wikiContent.toString());
+      } else {
+        page.setSyntax(Syntax.XWIKI_2_0.toIdString());
+        page.setContent(content);
+      }
+
+      setPermissionForWikiPage(users, page, parentPage);
+      page.setOwner(creator);
+      page.setAuthor(creator);
+      page.setMinorEdit(false);
+
+      ///
+      String baseTitle = title;
+
+      int siblingNumber = 0;
+      do {
+        String pageId = TitleResolver.getId(title, false);
+        page.setTitle(title);
+        String path = "";
+        if (wikiType.equals(PortalConfig.GROUP_TYPE)) {
+          // http://demo.exoplatform.net/portal/intranet/wiki/group/spaces/bank_project/Meeting_06-11-2013
+          path = "/portal/intranet/wiki/" + wikiType + wikiOwner + "/" + pageId;
+        } else if (wikiType.equals(PortalConfig.PORTAL_TYPE)) {
+          // http://demo.exoplatform.net/portal/intranet/wiki/Sales_Meetings_Meeting_06-11-2013
+          path = "/portal/intranet/wiki/" + pageId;
+        }
+        page.setUrl(path);
+
+        if (!wikiService.isExisting(wikiType, wikiOwner, pageId)) {
+          try {
+            page = wikiService.createPage(wiki, parentId, page);
+            break;
+          } catch (WikiException e) {
+            LOG.warn("Error creating wiki page " + title + " (" + pageId + "). " + e.getMessage());
+            try {
+              wikiService.getPageById(pageId);
+            } catch (WikiException ge) {
+              // if we caught error here - we thrown a first one of the creation
+              throw e;
+            }
+          }
+        }
+
+        // such page already exists - find new name for it (by adding sibling index to the end)
+        siblingNumber++;
+        title = new StringBuilder(baseTitle).append(" (").append(siblingNumber).append(')').toString();
+      } while (true);
+
+      return page;
+    }
+  }
+
+  /**
+   * Try detect is it a HTML content in the string.
+   * 
+   * @param content
+   * @return
+   */
+  protected boolean isHTML(String content) {
+    // XXX well, it's not proper, but working in most of cases approach
+
+    int istart = content.indexOf("<html");
+    int iend = content.indexOf("</html>");
+    if (istart >= 0 && iend > 0 && istart < iend) {
+      return true;
+    }
+
+    istart = content.indexOf("<body");
+    iend = content.indexOf("</body>");
+    if (istart >= 0 && iend > 0 && istart < iend) {
+      return true;
+    }
+
+    istart = content.indexOf("<div");
+    iend = content.indexOf("</div>");
+    if (istart >= 0 && iend > 0 && istart < iend) {
+      return true;
+    }
+    
+    istart = content.indexOf("<table");
+    iend = content.indexOf("</table>");
+    if (istart >= 0 && iend > 0 && istart < iend) {
+      return true;
+    }
+    
+    istart = content.indexOf("<style");
+    iend = content.indexOf("</style>");
+    if (istart >= 0 && iend > 0 && istart < iend) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Method adapted from eXo Chat's WikiService.setPermissionForReportAsWiki().
+   * 
+   * @param users
+   * @param page
+   * @param parentPage
+   */
+  protected void setPermissionForWikiPage(List<String> users, Page page, Page parentPage) {
+    Permission[] allPermissions = new Permission[] {
+        new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true),
+        new Permission(org.exoplatform.wiki.mow.api.PermissionType.EDITPAGE, true), };
+    List<PermissionEntry> permissions = parentPage.getPermissions();
+    if (permissions != null) {
+      // remove any permission
+      int anyIndex = -1;
+      for (int i = 0; i < permissions.size(); i++) {
+        PermissionEntry any = permissions.get(i);
+        if (WIKI_PERMISSION_ANY.equals(any.getId()))
+          anyIndex = i;
+      }
+      if (anyIndex > -1) {
+        permissions.remove(anyIndex);
+      }
+      for (int i = 0; i < users.size(); i++) {
+        String strUser = users.get(i).toString();
+        PermissionEntry userPermission = new PermissionEntry(strUser, strUser, IDType.USER, allPermissions);
+        permissions.add(userPermission);
+      }
+      page.setPermissions(permissions);
     }
   }
 
