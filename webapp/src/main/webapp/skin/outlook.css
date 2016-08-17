@@ -172,7 +172,7 @@ div.form-buttons {
 }
 
 #documentSelector .ms-ListItem-primaryText, #attach .documents .ms-ListItem-primaryText, #attached .documents .ms-ListItem-primaryText {
-	padding-right: initial;
+	padding-right: 0px;
 }
 
 .groupPath .currentFolder li, .documentExplorer .currentFolder li {
