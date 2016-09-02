@@ -3,9 +3,33 @@ body {
 	padding: 0;
 }
 
+#outlook-pane {
+	min-height: 460px;
+}
+
 #outlook-pane input {
 	border-radius: 0px !important;
 	box-shadow: none !important;
+}
+
+#outlook-pane .ms-NavBar-items {
+	z-index: 10;
+}
+
+/* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
+@media (min-width: 280px) {
+  #outlook-pane .ms-Dropdown-items {
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    max-width: 100%;
+  }
+
+  #outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items,
+  #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
+    position: absolute;
+  }
 }
 
 /* Error banner (common) */

@@ -174,12 +174,22 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				var $menu = $pane.find("#outlook-menu");
 				var $container = $pane.find("#outlook-menu-container");
-				function initNoSpacesLink() {
+				
+				var initNoSpacesLink = function() {
 					var $noSpacesLink = $container.find(".noSpacesMessage .ms-MessageBar-text a");
 					// should replace /portal/intranet/outlook to /portal/intranet/all-spaces
 					var allSpacesPath = location.pathname.replace(/\/[^\/]*$/, "/all-spaces");
 					$noSpacesLink.attr("href", allSpacesPath);
-				}
+				};
+				
+				var setDropdownSize = function() {
+					// set dropdown items height exact to what it contains (not 100% for block element)
+					var $dropdownItems = $container.find(".ms-Dropdown .ms-Dropdown-items");
+					var $dropdownItemsList = $dropdownItems.find(".ms-Dropdown-item");
+					if ($dropdownItemsList.size() > 0) {
+						$dropdownItems.height(1 + $dropdownItemsList.first().height() * $dropdownItemsList.size());
+					}
+				};
 
 				function homeInit() {
 					// TODO something?
@@ -941,14 +951,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							sourceId = $s.val();
 							path = sourceRootPath = $s.data("rootpath");
 							portalUrl = $s.data("portalurl");
-							// TODO pre-load source files:
+							// pre-load source files:
 							// for All spaces try gather last used files ordered by access/modification date first
 							// for Personal Docs gather last used from user's documents
 							// for a space gather last used from that space
 							// Having last used files (up to 20 items), prefill the search pane results with it and show the pane
 							// for Personal Docs and space make Explorer tab visible, when user click it then load root folder files.
 							searchFiles("");
-							// TODO When user will click a file in search or explorer pane, check the file checkbox and add it to the selected
+							// when source changed - show its search tab
+							$searchTab.click();
 						}
 						$explorerTab.prop("disabled", sourceId == "*");
 					});
@@ -957,8 +968,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// init Search Tab
 					$searchTab.click(function() {
 						clearError();
-						$explorerTab.toggleClass("ms-Button--primary");
-						$searchTab.toggleClass("ms-Button--primary");
+						$explorerTab.removeClass("ms-Button--primary");
+						$searchTab.addClass("ms-Button--primary");
 						$documentExplorer.hide();
 						$documentSearch.show();
 					});
@@ -1009,8 +1020,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					$explorerTab.click(function() {
 						clearError();
-						$explorerTab.toggleClass("ms-Button--primary");
-						$searchTab.toggleClass("ms-Button--primary");
+						$explorerTab.addClass("ms-Button--primary");
+						$searchTab.removeClass("ms-Button--primary");
 						$documentSearch.hide();
 						$documentExplorer.show();
 						loadChildred(); 
@@ -1052,11 +1063,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						if ($cancelButton.data("cancel")) {
 							loadMenu("home");
 						} else {
-							var hasError = false;
+							var files = [];
 							var $attachedDocuments = $attached.find(".documents");
 							$documents.find("li.ms-ListItem.is-selected").each(function(i, li) {
 								var $selected = $(li);
-								var title = $selected.find(".ms-ListItem-primaryText").text();
+								//var title = $selected.find(".ms-ListItem-primaryText").text();
 								// XXX we cannot use WebDAV link as it requires authentication in eXo
 								//var downloadUrl = $selected.data("downloadurl");
 								var fpath = $selected.data("path");
@@ -1076,16 +1087,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								$attachedDoc.removeClass("selectableItem");
 								var $docName = $attachedDoc.find(".ms-ListItem-primaryText");
 								
+								var $fileProcess = $.Deferred();
+								files.push($fileProcess);
+								
 								$fileLink.done(function(response, status, jqXHR) {
 									var link = response.link;
+									var title =  response.name;
 									Office.context.mailbox.item.addFileAttachmentAsync(link, title, {}, function(asyncResult) {
 										if (asyncResult.status === "succeeded") {
 											$docName.prepend("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
+											$fileProcess.resolve();
 										} else {
-											hasError = true;
 											console.log(">> Office.context.mailbox.item.addFileAttachmentAsync() [" + asyncResult.status + "] error: "//
 											+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-											// TODO show error state in added pane within a document styled in red
+											$fileProcess.reject();
 											$attachedDoc.addClass("ms-bgColor-error");
 											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
 											$docName.after("<div class='ms-ListItem-tertiaryText addedError'>" + asyncResult.error.message + "</div>");
@@ -1093,20 +1108,25 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									});
 								});
 								$fileLink.fail(function(jqXHR, textStatus, errorThrown) {
-									hasError = true;
 									console.log(">> Outlook.fileLink() [" + textStatus + "]: "//
 											+ errorThrown + " response: " + jqXHR.responseText);
+									$fileProcess.reject();
 									$attachedDoc.addClass("ms-bgColor-error");
 									$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
 									$docName.after("<div class='ms-ListItem-tertiaryText linkError'>" + jqXHR.responseText + "</div>");
 								});
 								
 								$attachedDoc.appendTo($attachedDocuments);
-							}); 
-
-							if (hasError) {
+							});
+							
+							$.when.apply($, files).then(function() {
+								// all successful - do nothing
+							}, function() {
+								// some failed
+								$attached.find(".attachedAllMessage").hide();
+								$attached.find(".attachedSomeMessage").show();
 								showError("Outlook.messages.addingAttachmentError");
-							}
+							});
 							
 							$attaching.hide("blind");
 							$attached.show("blind");
@@ -1150,6 +1170,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											eval(commandFunc + "()");
 										}
 										initNoSpacesLink();
+										setDropdownSize();
 										process.resolve(response, status, jqXHR);
 									} catch(e) {
 										console.log(e);
@@ -1212,7 +1233,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				$menu.NavBar();
-
+				// set menu items height exact to what it contains (not 100% for block element)
+				var $menuItems = $menu.find(".ms-NavBar-items");
+				var $menuItemsList = $menuItems.find(".ms-NavBar-item");
+				if ($menuItemsList.size() > 0 && $menuItems.height() > 0) {
+					$menuItems.height(10 + $menuItemsList.first().height() * $menuItemsList.size());
+				}
+				
 				// load first menu inside container (it is set as data attr of the container)
 				loadMenu();
 			} // end of pane init

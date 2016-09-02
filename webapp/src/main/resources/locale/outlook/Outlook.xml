@@ -60,6 +60,7 @@
     <attach>Attach</attach>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
+    <addedPartiallyAttachment>Some document(s) are not attached to the message, see details below the file</addedPartiallyAttachment>
     <personalDocuments>Personal Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
 

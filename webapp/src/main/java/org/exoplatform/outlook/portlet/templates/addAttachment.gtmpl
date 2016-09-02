@@ -115,7 +115,8 @@
 		<div class="ms-Grid-row">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
-				<p class="ms-Dialog-subText">&{Outlook.addedAttachment}</p>
+				<p class="ms-Dialog-subText attachedAllMessage">&{Outlook.addedAttachment}</p>
+				<p class="ms-Dialog-subText attachedSomeMessage" style="display: none;">&{Outlook.addedPartiallyAttachment}</p>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		</div>

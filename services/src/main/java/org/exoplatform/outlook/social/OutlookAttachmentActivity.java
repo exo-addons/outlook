@@ -59,6 +59,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
+import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.LoginException;
@@ -441,7 +442,11 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
      * @throws RepositoryException
      */
     public boolean isExists() throws RepositoryException {
-      return node() != null;
+      try {
+        return node() != null;
+      } catch (AccessDeniedException e) {
+        return false;
+      }
     }
 
     /**
@@ -479,7 +484,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
         try {
           // check node/session is valid
           node.getIndex();
-        } catch(InvalidItemStateException e) {
+        } catch (InvalidItemStateException e) {
           node = null;
         }
       }

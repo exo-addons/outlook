@@ -36,6 +36,7 @@ import org.exoplatform.outlook.common.ResourceBundleSerializer;
 import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
+import org.exoplatform.outlook.jcr.LinkResource;
 import org.exoplatform.outlook.security.OutlookTokenService;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
@@ -594,9 +595,11 @@ public class Outlook {
 
         String userId = context.getSecurityContext().getRemoteUser();
 
-        String link = contentLink.createUrl(userId, nodePath, prefix.toString());
+        LinkResource res = contentLink.createUrl(userId, nodePath, prefix.toString());
 
-        return Response.ok().content("{\"link\":\"" + link + "\"}").withMimeType("application/json");
+        return Response.ok()
+                       .content("{\"link\":\"" + res.getLink() + "\", \"name\":\"" + res.getName() + "\"}")
+                       .withMimeType("application/json");
       } catch (Throwable e) {
         LOG.error("Error creating link for node " + nodePath, e);
         return errorMessage(e.getMessage(), 500);

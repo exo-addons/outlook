@@ -44,6 +44,7 @@ import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.cms.drives.ManageDriveService;
 import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.core.ExtendedNode;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
@@ -105,6 +106,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -160,6 +162,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected static final String         WIKI_PERMISSION_ANY    = "any";
 
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
+
+  protected static final String         SPACES_HOME            = "/Groups/spaces";
+
+  protected static final String         PERSONAL_DOCUMENTS     = "Personal Documents";
 
   protected static final String[]       READER_PERMISSION      = new String[] { PermissionType.READ };
 
@@ -298,12 +304,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         fetchQuery(qOthers.execute(), 17, res);
       }
-
-      // init links
-      for (File f : res) {
-        initDocumentLink(this, f);
-      }
-
       return res;
     }
 
@@ -325,18 +325,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             + "%'", Query.SQL);
       }
       fetchQuery(q.execute(), 20, res);
-
-      // init links
-      for (File f : res) {
-        initDocumentLink(this, f);
-      }
-
       return res;
     }
 
     protected String getDriveName() {
       // XXX we use what pointed in XML config
-      return "Personal Documents";
+      return PERSONAL_DOCUMENTS;
     }
   }
 
@@ -622,12 +616,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         fetchQuery(qOthers.execute(), 17, res);
       }
-
-      // init links
-      for (File f : res) {
-        initDocumentLink(this, f);
-      }
-
       return res;
     }
 
@@ -1545,31 +1533,33 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return groupsPath + groupId;
   }
 
-  protected void initDocumentLink(OutlookSpace space, HierarchyNode node) throws OutlookException {
+  protected void initWebDAVLink(HierarchyNode node) throws OutlookException {
     // WebDAV URL
     try {
       node.setWebdavUrl(org.exoplatform.wcm.webui.Utils.getWebdavURL(node.getNode(), false, true));
     } catch (Exception e) {
       throw new OutlookException("Error generating WebDav URL for node " + node.getPath(), e);
     }
+  }
+
+  protected void initDocumentLink(SiteType siteType,
+                                  String driveName,
+                                  String portalName,
+                                  String nodeURI,
+                                  HierarchyNode node) throws OutlookException {
+    // WebDAV URL
+    initWebDAVLink(node);
 
     // Portal URL
     // Code adapted from ECMS's PermlinkActionComponent.getPermlink()
-    // We need like the following:
-    // https://peter.exoplatform.com.ua:8443/portal/g/:spaces:product_team/product_team/documents?path=.spaces.product_team/Groups/spaces/product_team/Documents/uploads/page_management_https_loading.png
 
-    StringBuilder url = new StringBuilder();
-
-    String groupDriveName = space.getGroupId().replace("/", ".");
     String npath = node.getPath().replaceAll("/+", "/");
 
-    String path = new StringBuilder().append(groupDriveName).append(npath).toString();
+    String path = new StringBuilder().append(driveName).append(npath).toString();
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     if (portalRequest != null) {
       NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
-      NavigationResource resource = new NavigationResource(SiteType.GROUP, // GROUP
-                                                           space.getGroupId(), // /spaces/product_team
-                                                           space.getShortName() + "/documents"); // product_team/documents
+      NavigationResource resource = new NavigationResource(siteType, portalName, nodeURI);
       nodeURL.setResource(resource);
       nodeURL.setQueryParameterValue("path", path);
 
@@ -1582,9 +1572,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                  null,
                                  null,
                                  null);
+
+        StringBuilder url = new StringBuilder();
         url.append(requestUri.toASCIIString());
         url.append(nodeURL.toString());
-
         node.setUrl(url.toString());
       } catch (URISyntaxException e) {
         throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
@@ -1595,53 +1586,105 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
-  protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode node) throws OutlookException {
+  protected void initDocumentLink(OutlookSpace space, HierarchyNode file) throws OutlookException {
     // WebDAV URL
-    try {
-      node.setWebdavUrl(org.exoplatform.wcm.webui.Utils.getWebdavURL(node.getNode(), false, true));
-    } catch (Exception e) {
-      throw new OutlookException("Error generating WebDav URL for node " + node.getPath(), e);
-    }
+    initWebDAVLink(file);
 
     // Portal URL
-    // Code adapted from ECMS's PermlinkActionComponent.getPermlink()
+    // We need like the following:
+    // https://peter.exoplatform.com.ua:8443/portal/g/:spaces:product_team/product_team/documents?path=.spaces.product_team/Groups/spaces/product_team/Documents/uploads/page_management_https_loading.png
+    initDocumentLink(SiteType.GROUP, // GROUP
+                     space.getGroupId().replace("/", "."),
+                     space.getGroupId(), // /spaces/product_team
+                     space.getShortName() + "/documents", // product_team/documents
+                     file);
+
+    // TODO cleanup
+    // StringBuilder url = new StringBuilder();
+    //
+    // String groupDriveName = space.getGroupId().replace("/", ".");
+    // String npath = node.getPath().replaceAll("/+", "/");
+    //
+    // String path = new StringBuilder().append(groupDriveName).append(npath).toString();
+    // PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    // if (portalRequest != null) {
+    // NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
+    // NavigationResource resource = new NavigationResource(SiteType.GROUP, // GROUP
+    // space.getGroupId(), // /spaces/product_team
+    // space.getShortName() + "/documents"); // product_team/documents
+    // nodeURL.setResource(resource);
+    // nodeURL.setQueryParameterValue("path", path);
+    //
+    // HttpServletRequest request = portalRequest.getRequest();
+    // try {
+    // URI requestUri = new URI(request.getScheme(),
+    // null,
+    // request.getServerName(),
+    // request.getServerPort(),
+    // null,
+    // null,
+    // null);
+    // url.append(requestUri.toASCIIString());
+    // url.append(nodeURL.toString());
+    //
+    // node.setUrl(url.toString());
+    // } catch (URISyntaxException e) {
+    // throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
+    // }
+    // } else {
+    // LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
+    // node.setUrl(node.getWebdavUrl());
+    // }
+  }
+
+  protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode file) throws OutlookException {
+    // WebDAV URL
+    initWebDAVLink(file);
+
+    // Portal URL
     // We need like the following:
     // https://peter.exoplatform.com.ua:8443/portal/intranet/documents?path=Personal%20Documents/Users/j___/jo___/joh___/john/Private/Documents
+    initDocumentLink(SiteType.PORTAL, // PORTAL
+                     personalDocuments.getDriveName(),
+                     "intranet", // intranet
+                     "documents", // documents
+                     file);
 
-    StringBuilder url = new StringBuilder();
-
-    String nodePath = node.getPath().replaceAll("/+", "/");
-
-    String path = new StringBuilder().append(personalDocuments.getDriveName()).append(nodePath).toString();
-    PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    if (portalRequest != null) {
-      NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
-      NavigationResource resource = new NavigationResource(SiteType.PORTAL, // PORTAL
-                                                           "intranet", // intranet
-                                                           "documents"); // documents
-      nodeURL.setResource(resource);
-      nodeURL.setQueryParameterValue("path", path);
-
-      HttpServletRequest request = portalRequest.getRequest();
-      try {
-        URI requestUri = new URI(request.getScheme(),
-                                 null,
-                                 request.getServerName(),
-                                 request.getServerPort(),
-                                 null,
-                                 null,
-                                 null);
-        url.append(requestUri.toASCIIString());
-        url.append(nodeURL.toString());
-
-        node.setUrl(url.toString());
-      } catch (URISyntaxException e) {
-        throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
-      }
-    } else {
-      LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
-      node.setUrl(node.getWebdavUrl());
-    }
+    // TODO cleanup
+    // StringBuilder url = new StringBuilder();
+    //
+    // String nodePath = node.getPath().replaceAll("/+", "/");
+    //
+    // String path = new StringBuilder().append(personalDocuments.getDriveName()).append(nodePath).toString();
+    // PortalRequestContext portalRequest = Util.getPortalRequestContext();
+    // if (portalRequest != null) {
+    // NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
+    // NavigationResource resource = new NavigationResource(SiteType.PORTAL, // PORTAL
+    // "intranet", // intranet
+    // "documents"); // documents
+    // nodeURL.setResource(resource);
+    // nodeURL.setQueryParameterValue("path", path);
+    //
+    // HttpServletRequest request = portalRequest.getRequest();
+    // try {
+    // URI requestUri = new URI(request.getScheme(),
+    // null,
+    // request.getServerName(),
+    // request.getServerPort(),
+    // null,
+    // null,
+    // null);
+    // url.append(requestUri.toASCIIString());
+    // url.append(nodeURL.toString());
+    //
+    // node.setUrl(url.toString());
+    // } catch (URISyntaxException e) {
+    // throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
+    // }
+    // } else {
+    // LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
+    // node.setUrl(node.getWebdavUrl());
+    // }
   }
 
   /**
@@ -1970,24 +2013,74 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res) throws RepositoryException, OutlookException {
+    SpaceService spaceService = spaceService();
     for (NodeIterator niter = qr.getNodes(); niter.getPosition() < limit && niter.hasNext();) {
-      Node file = niter.nextNode();
-      try {
-        String owner = ((ExtendedNode) file).getACL().getOwner();
-        if ("root".equals(owner)) {
+      Node node = niter.nextNode();
+      String path = node.getPath();
+      if (path.indexOf("/ApplicationData") < 0 && path.indexOf("exo:applications") < 0) {
+        try {
+          AccessControlList acl = ((ExtendedNode) node).getACL();
+          String owner = acl.getOwner();
+          if ("root".equals(owner)) {
+            limit++;
+            continue;
+          }
+        } catch (RepositoryException e) {
+          // ignore it
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error getting node ACL/owner", e);
+          }
+        }
+        if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
           limit++;
-          continue;
+        } else {
+          // detect is it space and then check if space member
+          Space space;
+          if (path.startsWith(SPACES_HOME)) {
+            try {
+              String groupId = path.substring(7, path.indexOf("/", SPACES_HOME.length() + 1));
+              space = spaceService.getSpaceByGroupId(groupId);
+              if (space != null) {
+                Set<String> allMemembers = new HashSet<String>();
+                for (String s : space.getManagers()) {
+                  allMemembers.add(s);
+                }
+                for (String s : space.getMembers()) {
+                  allMemembers.add(s);
+                }
+                if (!allMemembers.contains(currentUserId())) {
+                  // when not a space member - skip this file (but user still may be an owner of it!)
+                  limit++;
+                  continue;
+                }
+              }
+            } catch (IndexOutOfBoundsException e) {
+              // XXX something not clear with space path, will use portal page path as for Personal Documents
+              // (it works well in PLF 4.3)
+              space = null;
+            }
+          } else {
+            space = null;
+          }
+
+          UserFile file = new UserFile(node.getParent().getPath(), node);
+          if (space != null) {
+            initDocumentLink(SiteType.GROUP, // GROUP
+                             space.getGroupId().replace("/", "."),
+                             space.getGroupId(), // /spaces/product_team
+                             space.getShortName() + "/documents", // product_team/documents
+                             file);
+          } else {
+            initDocumentLink(SiteType.PORTAL, // PORTAL
+                             PERSONAL_DOCUMENTS,
+                             "intranet", // intranet
+                             "documents", // documents
+                             file);
+          }
+          res.add(file);
         }
-      } catch (RepositoryException e) {
-        // ignore it
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Error getting node ACL/owner", e);
-        }
-      }
-      if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(file)) {
-        limit++;
       } else {
-        res.add(new UserFile(file.getParent().getPath(), file));
+        limit++;
       }
     }
   }

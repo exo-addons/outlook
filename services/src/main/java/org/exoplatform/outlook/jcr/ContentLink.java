@@ -8,6 +8,7 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookException;
+import org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
@@ -193,12 +194,12 @@ public class ContentLink {
     return key;
   }
 
-  public String createUrl(String userId, String nodePath, String serverLink) throws Exception {
+  public LinkResource createUrl(String userId, String nodePath, String serverLink) throws Exception {
     Node node = getNode(userId, nodePath);
     return createUrl(userId, node, serverLink);
   }
 
-  public String createUrl(String userId, Node node, String serverLink) throws RepositoryException {
+  public LinkResource createUrl(String userId, Node node, String serverLink) throws RepositoryException {
     String key = create(userId, node);
     StringBuilder link = new StringBuilder();
     if (serverLink != null) {
@@ -212,7 +213,32 @@ public class ContentLink {
     }
     link.append("/outlook/content");
 
-    return link.append('/').append(userId).append('/').append(key).toString();
+    String name;
+    if (node.hasProperty("exo:title")) {
+      name = node.getProperty("exo:title").getString();
+    } else {
+      name = node.getName();
+    }
+
+    if (name.indexOf('.') < 0) {
+      try {
+        String mimetype;
+        if (node.isNodeType("nt:file")) {
+          mimetype = node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+        } else {
+          mimetype = DMSMimeTypeResolver.getInstance().getMimeType(name);
+        }
+        String ext = DMSMimeTypeResolver.getInstance().getExtension(mimetype);
+        StringBuilder nameExt = new StringBuilder(name);
+        nameExt.append('.');
+        nameExt.append(ext);
+        name = nameExt.toString();
+      } catch (Exception e) {
+        LOG.warn("Error getting file extension by mimetype for " + node, e);
+      }
+    }
+
+    return new LinkResource(name, link.append('/').append(userId).append('/').append(key).toString());
   }
 
   /**
