@@ -316,6 +316,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       Set<File> res = new LinkedHashSet<File>();
 
+      // TODO this search will not include files from user's Public folder
       Query q;
       if (text == null || text.length() == 0) {
         q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()

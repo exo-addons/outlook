@@ -16,10 +16,16 @@
       <convertToForum>Convertir en discussion</convertToForum>
     </command>
 
+    <!-- Common -->
     <homeOpenPortal>Ouvrir l'intranet dans une nouvelle fenêtre</homeOpenPortal>
 
-    <noActionsAvailable>Aucune action disponible dans ce contexte.</noActionsAvailable>
-
+    <homeNoActionsAvailable>Aucune action disponible dans ce contexte.</homeNoActionsAvailable>
+    
+    <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
+    <personalDocuments>Personal Documents</personalDocuments>
+    <allSpaces>All Spaces</allSpaces>
+  
+    <!-- Save Attachment -->
     <saveAttachmentDescription>Ici vous pouvez enregistrer les pièces jointes comme documents dans votre intranet.</saveAttachmentDescription>
     <selectAttachment>Selectionner les pièces jointes</selectAttachment>
     <selectAttachmentDescription>Les pièces jointes sélectionnées seront enregistrées dans l'espace cible.</selectAttachmentDescription>
@@ -33,7 +39,6 @@
     <pathUpDescription>Naviguer au dossier parent</pathUpDescription>
     <pathAddDescription>Créer un nouveau dossier</pathAddDescription>
     <pathOpenDescription>Ouvrir dans une nouvelle fenêtre</pathOpenDescription>
-    <saveAttachmentDescription>Enregistrer les pièces jointes de ce message dans l'espace cible</saveAttachmentDescription>
     <cancel>Annuler</cancel>
     <cancelSaveAttachmentDescription>Ne pas enregister les pièces jointes de ce message.</cancelSaveAttachmentDescription>
     <savingAttachment>Enregistrement de vos documents...</savingAttachment>
@@ -43,20 +48,24 @@
     <enterFolderNameAndCreate>Donnez un nom à ce dossier puis cliquez sur le bouton Ajouter.</enterFolderNameAndCreate>
     <folderName>Nom du dossier</folderName>
     <add>Ajouter</add>
-
-    <selectDocumentSpace>Sélectionnez un espace</selectDocumentSpace>
-    <selectedDocuments>Selectionnez des documents</selectedDocuments>
-    <selectDocument>Selectionnez un document</selectDocument>
-    <pathInfoDescription>Dossier dans l'espace documentaire cible où vos pièces jointers seront enregistrées.</pathInfoDescription>
-    <attach>Joindre</attach>
+    
+    <!-- Add Attachment -->
     <addAttachmentDescription>Attacher les documents sélectionnés en pièce jointe</addAttachmentDescription>
-    <cancelAddAttachmentDescription>Annuler l'attachement des pièces jointes</cancelAddAttachmentDescription>
+    <attachingDocuments>Selectionnez des documents</attachingDocuments>
+    <attachingDocumentsDescription>These documents will be attached to the message if checked</attachingDocumentsDescription>
+    <documentSource>Source</documentSource>
+    <documentSearch>Search</documentSearch>
+    <documentExplorer>Explore</documentExplorer>
+    <searchName>Search by name</searchName>
+    <currentFolder>Current folder</currentFolder>
+    <attach>Joindre</attach>
     <addingAttachment>Attachement en cours...</addingAttachment>
     <addedAttachment>Les documents ont été attachés en pièce jointe</addedAttachment>
+    <addedPartiallyAttachment>Some document(s) are not attached to the message, see details below the file</addedPartiallyAttachment>
 
+    <!-- Convert To Status -->
     <convertToStatusDescription>Ce message sera convertit en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activvité utilisateur. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
-    <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
-    <targetSpaceDescription>Si un espace est sélectionné, ce message sera ublié dans son flux d'activité.</targetSpaceDescription>
+    <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
     <activityTitle>Titre</activityTitle>
     <activityTitleDescription>Ce sera le titre de votre activité dans le flux</activityTitleDescription>
     <editActivityText>Cliquez pour modifier</editActivityText>
@@ -69,6 +78,19 @@
     <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux </convertedToUserActivity>
     <convertedToSpaceActivity>L'activité a été publiée avec succès dans le flux de l'espace {SPACE_NAME}</convertedToSpaceActivity>
     <openActivity>Afficher l'activity</openActivity>
+    
+    <!-- Convert To Wiki -->
+    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will generate a page in the space wiki.</convertToWikiDescription>
+    <wikiPageTitle>Title</wikiPageTitle>
+    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
+    <wikiPageText>Page text</wikiPageText>
+    <editWikiPageText>Click to edit</editWikiPageText>
+    <wikiPageTextDescription>This text will be a content of your wiki page</wikiPageTextDescription>
+    <wikiTargetSpaceDescription>If selected, your message will converted to a page in the space wiki.</wikiTargetSpaceDescription>
+    <convertingToWiki>Converting message to wiki...</convertingToWiki>
+    <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
+    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
+    <openWikiPage>Open wiki page</openWikiPage>
     
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
@@ -83,6 +105,12 @@
       <atThisPage>sur cette page</atThisPage>
       <messageItemReadError>Erreur à la lecture du message.</messageItemReadError>
       <convertToStatusError>Erreur à la conversion du message en activité.</convertToStatusError>
+
+      <gettingSubjectError>Error getting message subject.</gettingSubjectError>
+      <messageIdNotFound>Cannot find ID for current message</messageIdNotFound>
+      <savingMessageError>Error saving message (as a draft).</savingMessageError>
+      <sourcePathNotFound>Source or path not found.</sourcePathNotFound>
+      <addingAttachmentError>Adding attachment error.</addingAttachmentError>
     </messages>
     
     <activity>

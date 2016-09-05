@@ -32,7 +32,7 @@
 	<br>
 	<div id="outlook-menu-container" data-menu-name="${menu[0].name}"></div>
 	<% 	} else { %>
-	<div id="outlook-no-menu">&{Outlook.noActionsAvailable}</div>
+	<div id="outlook-no-menu">&{Outlook.homeNoActionsAvailable}</div>
 	<%	} %>
 	<div id="outlook-popup" style="display: none;"></div>
 </div>

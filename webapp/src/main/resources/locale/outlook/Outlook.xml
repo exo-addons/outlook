@@ -21,12 +21,16 @@
       <convertToForum>Convert to Forum</convertToForum>
     </command>
 
+    <!-- Common -->
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
-    <noActionsAvailable>No actions are available for this context.</noActionsAvailable>
+    <homeNoActionsAvailable>No actions are available for this context.</homeNoActionsAvailable>
     
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
+    <personalDocuments>Personal Documents</personalDocuments>
+    <allSpaces>All Spaces</allSpaces>
 
+    <!-- Save Attachment -->
     <saveAttachmentDescription>Here you can save attachments as documents in the intranet.</saveAttachmentDescription>
     <selectAttachment>Select attachments</selectAttachment>
     <selectAttachmentDescription>Selected attachments will be saved in the target space.</selectAttachmentDescription>
@@ -49,6 +53,7 @@
     <folderName>Folder name</folderName>
     <add>Add</add>
 
+    <!-- Add Attachment -->
     <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
     <attachingDocuments>Selected documents</attachingDocuments>
     <attachingDocumentsDescription>These documents will be attached to the message if checked</attachingDocumentsDescription>
@@ -61,9 +66,8 @@
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
     <addedPartiallyAttachment>Some document(s) are not attached to the message, see details below the file</addedPartiallyAttachment>
-    <personalDocuments>Personal Documents</personalDocuments>
-    <allSpaces>All Spaces</allSpaces>
 
+    <!-- Convert To Status -->
     <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
     <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
     <activityTitle>Title</activityTitle>
@@ -77,10 +81,9 @@
     <convertToStatusError>Error converting the message to an activity</convertToStatusError>
     <convertedToUserActivity>The activity was successfully posted in your personal activity stream</convertedToUserActivity>
     <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME} space</convertedToSpaceActivity>
-    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
-    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME} space</postedToSpaceActivity>
     <openActivity>Display the activity</openActivity>
     
+    <!-- Convert To Wiki -->
     <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will generate a page in the space wiki.</convertToWikiDescription>
     <wikiPageTitle>Title</wikiPageTitle>
     <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
@@ -92,6 +95,10 @@
     <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
     <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
     <openWikiPage>Open wiki page</openWikiPage>
+    
+    <!-- Post A Status -->
+    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
+    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME} space</postedToSpaceActivity>
     
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
