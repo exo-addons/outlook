@@ -22,8 +22,8 @@
     <homeNoActionsAvailable>Aucune action disponible dans ce contexte.</homeNoActionsAvailable>
     
     <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
-    <personalDocuments>Personal Documents</personalDocuments>
-    <allSpaces>All Spaces</allSpaces>
+    <personalDocuments>Documents Personels</personalDocuments>
+    <allSpaces>Tous les espaces</allSpaces>
   
     <!-- Save Attachment -->
     <saveAttachmentDescription>Ici vous pouvez enregistrer les pièces jointes comme documents dans votre intranet.</saveAttachmentDescription>
@@ -52,20 +52,20 @@
     <!-- Add Attachment -->
     <addAttachmentDescription>Attacher les documents sélectionnés en pièce jointe</addAttachmentDescription>
     <attachingDocuments>Selectionnez des documents</attachingDocuments>
-    <attachingDocumentsDescription>These documents will be attached to the message if checked</attachingDocumentsDescription>
+    <attachingDocumentsDescription>Ces documents seront attachés au message si vous les cochez</attachingDocumentsDescription>
     <documentSource>Source</documentSource>
-    <documentSearch>Search</documentSearch>
-    <documentExplorer>Explore</documentExplorer>
-    <searchName>Search by name</searchName>
-    <currentFolder>Current folder</currentFolder>
+    <documentSearch>Rechercher</documentSearch>
+    <documentExplorer>Parcourir</documentExplorer>
+    <searchName>Rechercher par nom</searchName>
+    <currentFolder>Dossier courant</currentFolder>
     <attach>Joindre</attach>
     <addingAttachment>Attachement en cours...</addingAttachment>
     <addedAttachment>Les documents ont été attachés en pièce jointe</addedAttachment>
-    <addedPartiallyAttachment>Some document(s) are not attached to the message, see details below the file</addedPartiallyAttachment>
+    <addedPartiallyAttachment>Certains documents n'ont pas été attachés au messages, voir les détails sous le fichier</addedPartiallyAttachment>
 
     <!-- Convert To Status -->
     <convertToStatusDescription>Ce message sera convertit en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activvité utilisateur. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
-    <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
+    <activityTargetSpaceDescription>Sélectionnez un espace pour envoyer votre message dans son flux d'activité</activityTargetSpaceDescription>
     <activityTitle>Titre</activityTitle>
     <activityTitleDescription>Ce sera le titre de votre activité dans le flux</activityTitleDescription>
     <editActivityText>Cliquez pour modifier</editActivityText>
@@ -80,17 +80,17 @@
     <openActivity>Afficher l'activity</openActivity>
     
     <!-- Convert To Wiki -->
-    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will generate a page in the space wiki.</convertToWikiDescription>
-    <wikiPageTitle>Title</wikiPageTitle>
-    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
-    <wikiPageText>Page text</wikiPageText>
-    <editWikiPageText>Click to edit</editWikiPageText>
-    <wikiPageTextDescription>This text will be a content of your wiki page</wikiPageTextDescription>
-    <wikiTargetSpaceDescription>If selected, your message will converted to a page in the space wiki.</wikiTargetSpaceDescription>
-    <convertingToWiki>Converting message to wiki...</convertingToWiki>
-    <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
-    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
-    <openWikiPage>Open wiki page</openWikiPage>
+    <convertToWikiDescription>Ce message peut être converti en page wiki. Par défaut, ce sera une page dans le wiki intranet. Choisissez un espace pour y générer la page wiki.</convertToWikiDescription>
+    <wikiPageTitle>Titre</wikiPageTitle>
+    <wikiPageTitleDescription>Ceci sera le titre de votre page wiki</wikiPageTitleDescription>
+    <wikiPageText>Contenu de la page</wikiPageText>
+    <editWikiPageText>Cliquez pour modifier</editWikiPageText>
+    <wikiPageTextDescription>Ce texte sera le contenu de votre page wiki.</wikiPageTextDescription>
+    <wikiTargetSpaceDescription>Sélectionnez un espace pour convertir ce message en une page de son wiki.</wikiTargetSpaceDescription>
+    <convertingToWiki>Conversion du message en wiki...</convertingToWiki>
+    <convertedToUserWiki>La page a été créée dans le wiki intranet</convertedToUserWiki>
+    <convertedToSpaceWiki>La page a été créée dans le wiki de l'espace {SPACE_NAME} </convertedToSpaceWiki>
+    <openWikiPage>Ouvrir la page wiki</openWikiPage>  
     
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
@@ -105,12 +105,11 @@
       <atThisPage>sur cette page</atThisPage>
       <messageItemReadError>Erreur à la lecture du message.</messageItemReadError>
       <convertToStatusError>Erreur à la conversion du message en activité.</convertToStatusError>
-
-      <gettingSubjectError>Error getting message subject.</gettingSubjectError>
-      <messageIdNotFound>Cannot find ID for current message</messageIdNotFound>
-      <savingMessageError>Error saving message (as a draft).</savingMessageError>
-      <sourcePathNotFound>Source or path not found.</sourcePathNotFound>
-      <addingAttachmentError>Adding attachment error.</addingAttachmentError>
+      <gettingSubjectError>Erreur à la récupération de l'objet du message.</gettingSubjectError>
+      <messageIdNotFound>Impossible de trouver l'UD du message courant</messageIdNotFound>
+      <savingMessageError>Erreur à l'enregistrement du message (en brouillon).</savingMessageError>
+      <sourcePathNotFound>Source ou chemin introuvable.</sourcePathNotFound>
+      <addingAttachmentError>Erreur à l'ajout de la pièce jointe.</addingAttachmentError>
     </messages>
     
     <activity>
