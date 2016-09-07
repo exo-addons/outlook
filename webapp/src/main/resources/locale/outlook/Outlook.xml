@@ -22,10 +22,15 @@
     </command>
 
     <!-- Common -->
+    <logout>Logout</logout>
+    <logoutTitle>Logout eXo Platform</logoutTitle>
+    <logoutQuestion>Do you want logout eXo Platform portal?</logoutQuestion>
+    
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
     <homeNoActionsAvailable>No actions are available for this context.</homeNoActionsAvailable>
     
+    <cancel>Cancel</cancel>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
     <personalDocuments>Personal Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
@@ -44,7 +49,6 @@
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
     <pathAddDescription>Create a new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
-    <cancel>Cancel</cancel>
     <savingAttachment>Saving your files...</savingAttachment>
     <savedAttachment>Your files were successfully saved</savedAttachment>
     <savedClickToOpen>Click a file in the list below to open it in teh intranet</savedClickToOpen>

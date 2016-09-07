@@ -94,7 +94,7 @@
 						$signInButton.prop("disabled", true);
 					}
 				});
-				$signInDialog.submit(function(event) {
+				$signInDialog.find("form").submit(function(event) {
 					event.preventDefault();
 					$signInDialog.hide();
 					if ($signInDialog.data("cancel")) {

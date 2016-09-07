@@ -17,10 +17,15 @@
     </command>
 
     <!-- Common -->
+    <logout>Déconnexion</logout>
+    <logoutTitle>Déconnexion eXo Platform</logoutTitle>
+    <logoutQuestion>Voulez-vous déconnecter portail eXo Platform?</logoutQuestion>
+    
     <homeOpenPortal>Ouvrir l'intranet dans une nouvelle fenêtre</homeOpenPortal>
 
     <homeNoActionsAvailable>Aucune action disponible dans ce contexte.</homeNoActionsAvailable>
     
+    <cancel>Annuler</cancel>
     <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
     <personalDocuments>Documents Personels</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
@@ -39,7 +44,6 @@
     <pathUpDescription>Naviguer au dossier parent</pathUpDescription>
     <pathAddDescription>Créer un nouveau dossier</pathAddDescription>
     <pathOpenDescription>Ouvrir dans une nouvelle fenêtre</pathOpenDescription>
-    <cancel>Annuler</cancel>
     <cancelSaveAttachmentDescription>Ne pas enregister les pièces jointes de ce message.</cancelSaveAttachmentDescription>
     <savingAttachment>Enregistrement de vos documents...</savingAttachment>
     <savedAttachment>Vos documents ont été enregistrés avec succès</savedAttachment>

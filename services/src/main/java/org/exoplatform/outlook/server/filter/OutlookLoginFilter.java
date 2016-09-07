@@ -47,8 +47,6 @@ public class OutlookLoginFilter implements Filter {
 
   public static final String    OUTLOOK_LOGIN       = "/outlook/login";
 
-  //public static final String    PORTAL_LOGIN        = "/portal/login";
-  
   public static final String    OUTLOOK_INITIAL_URI = "initialURI=%2Fportal%2Fintranet%2Foutlook";
 
   /**
@@ -59,7 +57,6 @@ public class OutlookLoginFilter implements Filter {
                                                                                             ServletException {
     HttpServletRequest httpReq = (HttpServletRequest) request;
     HttpServletResponse httpRes = (HttpServletResponse) response;
-    // TODO cleanup: String uri = httpReq.getRequestURI();
     String query = httpReq.getQueryString();
 
     if (query != null && query.startsWith(OUTLOOK_INITIAL_URI)) {

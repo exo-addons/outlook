@@ -19,9 +19,10 @@
  */
 package org.exoplatform.outlook.server.filter;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.outlook.security.OutlookTokenService;
+import org.exoplatform.outlook.web.RequestUtils;
 import org.exoplatform.web.filter.Filter;
+import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
@@ -89,13 +90,13 @@ public class OutlookRememberMeFilter implements Filter {
 
     String uri = httpReq.getRequestURI();
 
-    String rememberMeOutlook = getCookie(httpReq, OutlookTokenService.COOKIE_NAME);
+    String rememberMeOutlook = RequestUtils.getCookie(httpReq, OutlookTokenService.COOKIE_NAME);
     if (httpReq.getRemoteUser() == null) {
       // Check if we have initialized 'remembermeoutlook' cookie and if have, try restore user credentials
       // from token store
       if (rememberMeOutlook != null) {
         if (!INITIAL_COOKIE_VALUE.equals(rememberMeOutlook)) {
-          OutlookTokenService outlookTokens = getComponent(OutlookTokenService.class);
+          OutlookTokenService outlookTokens = AbstractTokenService.getInstance(OutlookTokenService.class);
           Credentials credentials = outlookTokens.validateToken(rememberMeOutlook, false);
           if (credentials != null) {
             try {
@@ -105,13 +106,13 @@ public class OutlookRememberMeFilter implements Filter {
                 LOG.debug("Cookie " + OutlookTokenService.COOKIE_NAME + " restored user (" + credentials.getUsername()
                     + ") credentials for " + uri);
               }
+              LOG.info("Restored user (" + credentials.getUsername() + ") credentials for " + uri);
               // redirect to this resource again to let portal filters do the work properly (e.g. set
               // conversation state and session provider)
               httpRes.sendRedirect(new StringBuilder(uri).append('?').append(httpReq.getQueryString()).toString());
               return;
             } catch (Exception e) {
               // Could not authenticate
-              // TODO do we need warn log here?
               LOG.warn("Cannot restore user credentials from " + OutlookTokenService.COOKIE_NAME + " cookie value '"
                   + rememberMeOutlook + "' for " + uri + ". " + e.getMessage());
             }
@@ -125,11 +126,11 @@ public class OutlookRememberMeFilter implements Filter {
       // Check if we have 'remembermeoutlook' cookie with init request - if yes, and if have 'rememberme'
       // cookie, then save credentials in token store
       if (rememberMeOutlook != null && INITIAL_COOKIE_VALUE.equals(rememberMeOutlook)) {
-        String rememberMe = getCookie(httpReq, "rememberme");
-        CookieTokenService rememberMeTokens = getComponent(CookieTokenService.class);
+        String rememberMe = RequestUtils.getCookie(httpReq, "rememberme");
+        CookieTokenService rememberMeTokens = AbstractTokenService.getInstance(CookieTokenService.class);
         Credentials credentials = rememberMeTokens.validateToken(rememberMe, false);
         if (credentials != null) {
-          OutlookTokenService outlookTokens = getComponent(OutlookTokenService.class);
+          OutlookTokenService outlookTokens = AbstractTokenService.getInstance(OutlookTokenService.class);
           rememberMeOutlook = outlookTokens.createToken(credentials);
 
           // Set initialized token cookie if we authenticated successfully
@@ -159,12 +160,8 @@ public class OutlookRememberMeFilter implements Filter {
 
       String query = httpReq.getQueryString();
 
-      // TODO String uri = httpReq.getRequestURI();
-      // TODO uri.startsWith(OUTLOOK_SITE) &&
       if (query != null) {
         if (query.indexOf("_host_Info") > 0) {
-          // httpRes.sendRedirect(new StringBuilder(uri).append('?').append(URLEncoder.encode(query,
-          // "ISO-8859-1")).toString());
           StringBuilder fixedQuery = new StringBuilder();
           for (String qp : query.split("&")) {
             if (fixedQuery.length() > 0) {
@@ -188,28 +185,6 @@ public class OutlookRememberMeFilter implements Filter {
     }
 
     chain.doFilter(httpReq, httpRes);
-  }
-
-  /**
-   * Read cookie value from the request or returns null.
-   *
-   * @param req the incoming request
-   * @return the token
-   */
-  protected static String getCookie(HttpServletRequest req, String name) {
-    Cookie[] cookies = req.getCookies();
-    if (cookies != null) {
-      for (Cookie cookie : cookies) {
-        if (name.equals(cookie.getName())) {
-          return cookie.getValue();
-        }
-      }
-    }
-    return null;
-  }
-
-  protected static <C> C getComponent(Class<C> key) {
-    return key.cast(PortalContainer.getInstance().getComponentInstance(key));
   }
 
 }

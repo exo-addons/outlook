@@ -38,12 +38,20 @@ import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.LinkResource;
 import org.exoplatform.outlook.security.OutlookTokenService;
+import org.exoplatform.outlook.web.RequestUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.web.login.LoginServlet;
+import org.exoplatform.web.login.LogoutControl;
+import org.exoplatform.web.security.GateInToken;
+import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.wiki.mow.api.Page;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
@@ -72,6 +80,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.portlet.PortletPreferences;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Juzu controller for Outlook read pane app.<br>
@@ -347,6 +357,23 @@ public class Outlook {
   @View
   public Response error(String message) {
     return error.with().message(message).ok();
+  }
+
+  // ********** Logout *************
+
+  @Ajax
+  @Resource
+  public Response logout() {
+    try {
+      // remove add-in and portal cookies and session state
+      fullLogout();
+      return Response.ok()
+                     .content("{\"logout\":\"success\", \"loginLink\":\"/outlook/login\"}")
+                     .withMimeType("application/json");
+    } catch (Throwable e) {
+      LOG.error("Error doing logout", e);
+      return errorMessage(e.getMessage(), 500);
+    }
   }
 
   // ********** Home page **********
@@ -953,6 +980,55 @@ public class Outlook {
       }
     }
     return userItem;
+  }
+
+  void fullLogout() {
+    // XXX repeating logic of UIPortal.LogoutActionListener
+
+    PortalRequestContext prContext = Util.getPortalRequestContext();
+    HttpServletRequest req = prContext.getRequest();
+    HttpServletResponse res = prContext.getResponse();
+
+    // Delete the token from JCR
+    String token = RequestUtils.getCookie(req, LoginServlet.COOKIE_NAME); // getTokenCookie(req)
+    if (token != null) {
+      AbstractTokenService<GateInToken, String> tokenService = AbstractTokenService.getInstance(CookieTokenService.class);
+      tokenService.deleteToken(token);
+    }
+    token = LoginServlet.getOauthRememberMeTokenCookie(req);
+    if (token != null) {
+      AbstractTokenService<GateInToken, String> tokenService = AbstractTokenService.getInstance(CookieTokenService.class);
+      tokenService.deleteToken(token);
+    }
+
+    LogoutControl.wantLogout();
+    Cookie cookie = new Cookie(LoginServlet.COOKIE_NAME, "");
+    cookie.setPath(req.getContextPath());
+    cookie.setMaxAge(0);
+    res.addCookie(cookie);
+
+    Cookie oauthCookie = new Cookie(LoginServlet.OAUTH_COOKIE_NAME, "");
+    oauthCookie.setPath(req.getContextPath());
+    oauthCookie.setMaxAge(0);
+    res.addCookie(oauthCookie);
+
+    // **********
+    // Outlook add-in logout (cookies)
+    String rememberMeOutlook = RequestUtils.getCookie(req, OutlookTokenService.COOKIE_NAME);
+    if (rememberMeOutlook != null) {
+      OutlookTokenService outlookTokens = AbstractTokenService.getInstance(OutlookTokenService.class);
+      outlookTokens.deleteToken(rememberMeOutlook);
+    }
+    Cookie rememberMeOutlookCookie = new Cookie(OutlookTokenService.COOKIE_NAME, "");
+    rememberMeOutlookCookie.setPath(req.getRequestURI());
+    rememberMeOutlookCookie.setMaxAge(0);
+    res.addCookie(rememberMeOutlookCookie);
+
+    // TODO seems this path not used by callers
+    //String portalName = prContext.getPortalOwner();
+    //NodeURL createURL = prContext.createURL(NodeURL.TYPE);
+    //createURL.setResource(new NavigationResource(SiteType.PORTAL, portalName, null));
+    //return createURL.toString();
   }
 
   private String requestCommand() {

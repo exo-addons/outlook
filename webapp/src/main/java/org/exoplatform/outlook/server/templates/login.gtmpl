@@ -23,6 +23,7 @@
 		<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
+				<img src="images/exo-icon-64.png" class="welcomeIcon">
 				<div class="ms-Dialog-header welcomeHeader">
 					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcome.title}</p>
 				</div>
@@ -158,6 +159,7 @@
 		<div class="text-centered signingIn">
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered">
+					<img src="images/exo-icon-64.png" class="welcomeIcon">
 					<div class="ms-Dialog-header">
 						<p class="ms-Dialog-title ms-font-xxl ms-fontColor-yellow">eXo Platform</p>
 					</div>
