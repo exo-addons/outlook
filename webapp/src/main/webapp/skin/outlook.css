@@ -3,8 +3,21 @@ body {
 	padding: 0;
 }
 
+.logoIcon* {
+	display: inline-block;
+}
+
+.logoIcon80 {
+	background-image: url("../images/exo-icon-80.png");
+}
+
+.logoIcon32 {
+	background-image: url("../images/exo-icon-32.png");
+}
+
 #outlook-pane {
 	min-height: 460px;
+	position: relative;
 }
 
 #outlook-pane input {
@@ -14,6 +27,12 @@ body {
 
 #outlook-pane .ms-NavBar-items {
 	z-index: 10;
+}
+
+#outlook-brand-bar {
+	position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
 
 /* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
@@ -54,6 +73,34 @@ body {
 .welcomeHeader {
 	padding-left: 2px;
 	padding-right: 2px;
+	padding-top: 0px;
+}
+
+.welcomeIcon {
+	margin-top: 15px;
+}
+
+.brandBar {
+	margin: 6px 15px;
+	padding: 0px;
+	list-style: none;
+}
+
+.brand, .showLogout {
+	display: inline-block;
+}
+
+.brandTitle {
+	vertical-align: middle;
+}
+
+.showLogoutLink i:hover:before, .showLogoutLink:visited i:before, .brandLink:visited {
+	color: #ffb900;
+}
+
+.showLogout {
+	float: right;	
+	margin-top: 2px;
 }
 
 .firstFeatureRow {
@@ -69,7 +116,7 @@ body {
 	width: 100%;
 	position: relative;
 	margin: auto;
-	top: 35%;
+	top: 25%;
 }
 
 .progressSpinner {
@@ -82,7 +129,7 @@ body {
 
 /* Portlet */
 #outlook-menu-container {
-	margin-bottom: 10px;
+	padding-bottom: 50px;
 }
 
 span[disabled] {

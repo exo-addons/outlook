@@ -1242,6 +1242,33 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				
 				// load first menu inside container (it is set as data attr of the container)
 				loadMenu();
+				
+				// init brand bar (logout)
+				var $brandBar = $("#outlook-brand-bar");
+				var $logoutDialog = $brandBar.find(".logoutDialog");
+				$logoutDialog.Dialog();
+				$logoutDialog.find("form").submit(function(event) {
+					event.preventDefault();
+					$logoutDialog.hide();
+					if (!$logoutDialog.data("cancel")) {
+						$popup.jzLoad("Outlook.logout()", {}, function(response, status, jqXHR) {
+							if (status == "error") {
+								showError(jqXHR);
+							} else {
+								// refresh the page
+								window.location.reload();
+							}
+						});
+					}
+				});
+				$logoutDialog.find("button.cancel").click(function() {
+					$logoutDialog.data("cancel", true);
+				});
+				$brandBar.find("a.showLogoutLink").click(function() {
+					clearError();
+					$logoutDialog.removeData("cancel");
+					$logoutDialog.show();
+				});
 			} // end of pane init
 		});
 	};

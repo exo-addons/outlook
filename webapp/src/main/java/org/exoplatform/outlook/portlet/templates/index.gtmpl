@@ -34,5 +34,45 @@
 	<% 	} else { %>
 	<div id="outlook-no-menu">&{Outlook.homeNoActionsAvailable}</div>
 	<%	} %>
+	<div id="outlook-brand-bar" class="ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+		<ul class="brandBar ms-font-m">
+			<li class="brand">
+				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover brandLink" href="/portal" target="_blank">
+					<img src="/outlook/images/exo-icon-24.png" class="brandIcon"><span class="brandTitle">eXo Platform</span>
+				</a>
+			</li>
+			<li class="showLogout">
+				<a class="ms-Link showLogoutLink" href="javascript:void(0);" target="_self">
+					<i title="&{Outlook.logout}" class="uiIconPLFLogout ms-fontColor-yellow ms-fontColor-yellow--hover"></i>
+				</a>
+			</li>
+		</ul>
+		<div class="ms-Dialog logoutDialog" style="display: none;">
+			<div class="ms-Overlay ms-Overlay--dark js-DialogAction--close"></div>
+			<div class="ms-Dialog-main">
+				<button class="ms-Dialog-button ms-Dialog-button--close js-DialogAction--close">
+					<i class="ms-Icon ms-Icon--x"></i>
+				</button>
+				<div class="ms-Dialog-header">
+					<p class="ms-Dialog-title text-centered">&{Outlook.logoutTitle}</p>
+				</div>
+				<div class="ms-Dialog-inner">
+					<form role="form">
+						<div class="ms-Dialog-content">
+							<p class="ms-Dialog-subText">&{Outlook.logoutQuestion}</p>
+						</div>
+						<div class="ms-Dialog-actions text-centered">
+							<button class="ms-Dialog-action ms-Button ms-Button--primary logout">
+								<span class="ms-Button-label" title="&{Outlook.logoutDescription}">&{Outlook.logout}</span>
+							</button>
+							<button class="ms-Dialog-action ms-Button cancel">
+								<span class="ms-Button-label" title="&{Outlook.cancelLogoutDescription}">&{Outlook.cancel}</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div id="outlook-popup" style="display: none;"></div>
 </div>
