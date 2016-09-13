@@ -2485,6 +2485,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // TODO do we need this when using safe HTML?
       message = message.replaceAll("<script", "&lt;script").replaceAll("<link", "&lt;link").replaceAll("</script>",
                                                                                                        "&lt;/script>");
+      // remove any meta tags explicitly existing in the content
+      message = message.replaceAll("<meta.*?>", "");
+      // remove all embedded global styles 
+      message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
       boolean hasForumMod = false;
