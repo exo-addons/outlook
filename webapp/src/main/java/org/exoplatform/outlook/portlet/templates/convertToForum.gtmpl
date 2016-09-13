@@ -1,14 +1,98 @@
-<div class="container-fluid">
-	<div id="outlook-convertToForum" class="row-fluid">
-		<div class="span8 offset2">
-			<div>
-				<br>
+#{param name=spaces/}
+<div id="outlook-convertToForum" class="ms-Grid">
+	<div class="ms-Grid-row text-centered">
+		<h4>&{Outlook.command.convertToForum}</h4>
+	</div>
+	<form role="form">
+		<div class="ms-Grid-row">
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+				<p class="ms-Dialog-subText">&{Outlook.convertToForumDescription}</p>
 			</div>
-			<div class="text-centered">
-				<h4>&{Outlook.command.convertToForum}</h4>
-			</div>
-			TODO
+			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		</div>
+		<fieldset>
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
+					<label for="topicName" class="ms-Label">&{Outlook.forumTopicName}</label>
+					<input name="topicName" class="ms-TextField-field" type="text">
+					<span class="ms-TextField-description">&{Outlook.forumTopicNameDescription}</span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			</div>
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
+					<label for="messageText" class="ms-Label">
+						&{Outlook.forumTopicText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.clickToEdit}</a>)</span>
+					</label>
+					<div class="ms-TextField-field messageText">
+					</div>
+					<div class="ms-TextField-field messageEditor" contenteditable="true" style="display: none;">
+					</div>
+					<span class="ms-TextField-description">&{Outlook.forumTopicTextDescription}</span>
+				</div>
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			</div>
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
+					<label for="groupId" class="ms-Label">&{Outlook.targetSpaceMandatory}</label>
+					<div class="ms-Dropdown" tabindex="0">
+						<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
+						<select name="groupId" class="ms-Dropdown-select">
+							<%	for(s in spaces) { %>
+							<option value="${s.groupId}">${s.title ? s.title : s.groupId}</option>
+							<%	} %>
+						</select>
+					</div>
+					<%	if (spaces.size() > 0) {%>
+					<span class="ms-TextField-description">&{Outlook.forumTargetSpaceDescription}</span>
+					<%	} else { %>
+					<div class="ms-MessageBar ms-MessageBar--severeWarning noSpacesMessage">
+						<div class="ms-MessageBar-content">
+							<div class="ms-MessageBar-icon">
+								<i class="ms-Icon ms-Icon--alert"></i>
+							</div>
+							<div class="ms-MessageBar-text">
+								&{Outlook.messages.youDontHaveSpaces}&nbsp;&{Outlook.messages.joinSpaces}&nbsp;<a href="#" target="_blank" class="ms-Link">&{Outlook.messages.atThisPage}</a>
+							</div>
+						</div>
+					</div>
+					<% 	}%>
+				</div>
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			</div>
+			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 centered">
+					<button class="ms-Button ms-Button--primary convertButton" disabled>
+						<span class="ms-Button-label">&{Outlook.convert}</span>
+					</button>
+					<button class="ms-Button cancelButton">
+						<span class="ms-Button-label">&{Outlook.cancel}</span>
+					</button>
+				</div>
+				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+			</div>
+		</fieldset>
+	</form>
+
+	<div id="converting" class="ms-Grid-row centered" style="display: none;">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+		<div class="ms-Grid-col ms-u-sm8 text-centered">
+			<div>&{Outlook.convertingToForum}</div>
+			<div class="ms-Spinner" style="display: inline-block;"></div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+	</div>
+	<div id="converted" class="ms-Grid-row" style="display: none;">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+		<div class="ms-Grid-col ms-u-sm8">
+			<div class="convertedInfo"></div>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 	</div>
 </div>
 

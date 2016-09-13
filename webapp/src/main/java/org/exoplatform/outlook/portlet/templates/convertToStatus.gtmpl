@@ -25,7 +25,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="activityText" class="ms-Label">
-						&{Outlook.activityText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.editActivityText}</a>)</span>
+						&{Outlook.activityText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.clickToEdit}</a>)</span>
 					</label>
 					<div class="ms-TextField-field messageText">
 					</div>

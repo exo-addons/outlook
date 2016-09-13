@@ -648,7 +648,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				function convertToWikiInit() {
-					// TODO this method adapted from convertToStatusInit(), consider for code reuse
+					// FYI this method adapted from convertToStatusInit(), consider for code reuse
 					var $convertToWiki = $("#outlook-convertToWiki");
 					var $title = $convertToWiki.find("input[name='wikiTitle']");
 					var $text = $convertToWiki.find("div.messageText");
@@ -759,6 +759,159 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 														groupId : groupId,
 														messageId : mid,
 														subject : $title.val(),
+														body : $text.html(),
+														created : formatISODate(created),
+														modified : formatISODate(modified),
+														userName : userName,
+														userEmail : userEmail,
+														fromName : from.displayName,
+														fromEmail : from.emailAddress
+													}, function(response, status, jqXHR) {
+														if (status == "error") {
+															showError(jqXHR);
+															spinner.stop();
+															$converting.hide("blind", {
+																"direction" : "down"
+															});
+															$form.show("blind", {
+																"direction" : "down"
+															});
+														} else {
+															clearError();
+															spinner.stop();
+															$converting.hide("blind");
+															$converted.show("blind");
+														}
+													});
+												}
+											});
+										}
+									});
+								} else {
+									showError("Outlook.messages.messageIdNotFound", internetMessageId);
+								}
+							});
+							midProcess.fail(function() {
+								console.log(">> getMessage() failed to read messageId ");
+							});
+						} else {
+							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
+						}
+					});
+				}
+				
+				function convertToForumInit() {
+					// TODO this method adapted from convertToWikiInit(), consider for code reuse
+					var $convertToForum = $("#outlook-convertToForum");
+					var $topicName = $convertToForum.find("input[name='topicName']");
+					var $text = $convertToForum.find("div.messageText");
+					var $editor = $convertToForum.find("div.messageEditor");
+					var $form = $convertToForum.find("form");
+					var $groupIdDropdown = $form.find(".ms-Dropdown");
+					var $groupId = $groupIdDropdown.find("select[name='groupId']");
+					var $convertButton = $form.find("button.convertButton");
+					$convertButton.prop("disabled", true);
+					var $cancelButton = $form.find("button.cancelButton");
+					var $converting = $convertToForum.find("#converting");
+					var $converted = $convertToForum.find("#converted");
+					var $convertedInfo = $converted.find(".convertedInfo");
+					$cancelButton.click(function() {
+						$cancelButton.data("cancel", true);
+					});
+					$convertToForum.find(".editMessageText>a").click(function(event) {
+						event.preventDefault();
+						$(this).parent().hide();
+						$editor.append($text.children());
+						$text.hide();
+						$editor.show();
+						$text = $editor;
+					});
+					
+					var groupId = null;
+					var textReady = false;
+					var checkCanConvert = function() {
+						if (textReady && groupId) {
+							$convertButton.prop("disabled", false);
+						}
+					};
+
+					// init spaces dropdown
+					$groupId.val([]);
+					// initially no spaces selected
+					$groupId.change(function() {
+						var $space = $groupId.find("option:selected");
+						if ($space.size() > 0) {
+							groupId = $space.val();
+							checkCanConvert();
+						}
+					});
+					$groupIdDropdown.Dropdown();
+
+					var subject = Office.context.mailbox.item.subject;
+					if (internetMessageId) {
+						$topicName.val(subject);
+					} else {
+						Office.context.mailbox.item.subject.getAsync(function(asyncResult) {
+							if (asyncResult.status === "succeeded") {
+								$topicName.val(asyncResult.value);
+							} else {
+								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
+									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+							}
+						});
+					}
+
+					// get a token to read message from server side
+					Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
+						if (asyncResult.status === "succeeded") {
+							var messageToken = asyncResult.value;
+							var midProcess = readMessageId();
+							midProcess.done(function(mid) {
+								console.log(">> getMessage(): " + mid + " token:" + messageToken);
+								if (mid) {
+									var ewsUrl = Office.context.mailbox.ewsUrl;
+									console.log(">> ewsUrl: " + ewsUrl);
+									$text.jzLoad("Outlook.getMessage()", {
+										ewsUrl : ewsUrl,
+										userEmail : userEmail,
+										userName : userName,
+										messageId : mid,
+										messageToken : messageToken
+									}, function(response, status, jqXHR) {
+										if (status == "error") {
+											showError(jqXHR);
+										} else {
+											clearError();
+											groupId = groupId ? groupId : "";
+											console.log(">> groupId: " + groupId);
+											console.log(">> topicName: " + $topicName.val());
+											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
+											textType = textType ? textType : "html";
+											console.log(">> convertToForum textType: " + textType);
+											textReady = true;
+											checkCanConvert();
+											$form.submit(function(event) {
+												event.preventDefault();
+												clearError();
+												$form.hide("blind");
+												$converting.show("blind");
+												var spinner = new fabric.Spinner($converting.find(".ms-Spinner").get(0));
+												spinner.start();
+												if ($cancelButton.data("cancel")) {
+													loadMenu("home");
+												} else {
+													var created = Office.context.mailbox.item.dateTimeCreated;
+													var modified = Office.context.mailbox.item.dateTimeModified;
+													// from and to (it's array) have following interesting fields: displayName,
+													// emailAddress
+													var from = Office.context.mailbox.item.from;
+													$convertedInfo.jzLoad("Outlook.convertToForum()", {
+														groupId : groupId,
+														messageId : mid,
+														subject : $topicName.val(),
 														body : $text.html(),
 														created : formatISODate(created),
 														modified : formatISODate(modified),
@@ -1218,18 +1371,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$m.click(function() {
 							var name = $m.data("name");
 							if (name) {
-								var $mi = loadMenu(name);
-								$mi.done(function() {
-									// TODO what could be here in extra to *Init function called by loadMenu()?
-								});
-								$mi.fail(function() {
-									// TODO something additional here?
-								});
+								loadMenu(name);
 							} else {
 								console.log("WARN: Skipped menu item without command name: " + $m.html());
 							}
 						});
 					});
+				} else {
+					// otherwise we hide "Cancel" button to do not confuse by showing Home page
+					$pane.find("form button.cancelButton").hide();
 				}
 
 				$menu.NavBar();

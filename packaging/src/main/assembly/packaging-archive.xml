@@ -21,6 +21,7 @@
        <useTransitiveDependencies>true</useTransitiveDependencies>
        <includes>
          <include>org.exoplatform.addons:exo-outlook-*:jar</include>
+	 <include>org.jsoup:jsoup*:jar</include>
        </includes>
        <scope>provided</scope>
        <fileMode>0644</fileMode>

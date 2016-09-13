@@ -32,6 +32,8 @@
     
     <cancel>Cancel</cancel>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
+    <targetSpaceMandatory>Target space</targetSpaceMandatory>
+    <clickToEdit>Click to edit</clickToEdit>
     <personalDocuments>Personal Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
 
@@ -75,8 +77,7 @@
     <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
     <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
     <activityTitle>Title</activityTitle>
-    <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
-    <editActivityText>Click to edit</editActivityText>
+    <activityTitleDescription>This will be a title of your activity in the stream</activityTitleDescription>
     <activityText>Activity body</activityText>
     <activityTextDescription>This will be displayed in the activity's body on the stream</activityTextDescription>
     <convert>Convert</convert>
@@ -88,17 +89,28 @@
     <openActivity>Display the activity</openActivity>
     
     <!-- Convert To Wiki -->
-    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will generate a page in the space wiki.</convertToWikiDescription>
+    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will create a page in the space wiki.</convertToWikiDescription>
     <wikiPageTitle>Title</wikiPageTitle>
-    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
+    <wikiPageTitleDescription>This will be a title of your wiki page</wikiPageTitleDescription>
     <wikiPageText>Page text</wikiPageText>
-    <editWikiPageText>Click to edit</editWikiPageText>
     <wikiPageTextDescription>This text will be a content of your wiki page</wikiPageTextDescription>
-    <wikiTargetSpaceDescription>If selected, your message will converted to a page in the space wiki.</wikiTargetSpaceDescription>
+    <wikiTargetSpaceDescription>If selected, your message will be converted to a page in the space wiki.</wikiTargetSpaceDescription>
     <convertingToWiki>Converting message to wiki...</convertingToWiki>
     <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
     <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
     <openWikiPage>Open wiki page</openWikiPage>
+    
+    <!-- Convert To Forum -->
+    <convertToForumDescription>This message can be converted to a forum topic. You need choose a target space, where it will be created in the space forum.</convertToForumDescription>
+    <forumTopicName>Topic name</forumTopicName>
+    <forumTopicNameDescription>This will be a name of your forum topic</forumTopicNameDescription>
+    <forumTopicText>Topic content</forumTopicText>
+    <forumTopicTextDescription>This will be a content of your forum topic</forumTopicTextDescription>
+    <forumTargetSpaceDescription>Your message will be converted to a topic in the space forum.</forumTargetSpaceDescription>
+    <convertingToForum>Converting message to forum topic...</convertingToForum>
+    <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
+    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME} space forum</convertedToSpaceForum>
+    <openForumPost>Open forum topic</openForumPost>
     
     <!-- Post A Status -->
     <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>

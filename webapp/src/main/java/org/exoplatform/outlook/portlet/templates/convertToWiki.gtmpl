@@ -25,7 +25,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="wikiText" class="ms-Label">
-						&{Outlook.wikiPageText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.editWikiPageText}</a>)</span>
+						&{Outlook.wikiPageText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.clickToEdit}</a>)</span>
 					</label>
 					<div class="ms-TextField-field messageText">
 					</div>

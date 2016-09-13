@@ -22,9 +22,24 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.entity.ContentType;
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationException;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.forum.bbcode.core.ExtendedBBCodeProvider;
+import org.exoplatform.forum.common.CommonUtils;
+import org.exoplatform.forum.common.TransformHTML;
+import org.exoplatform.forum.common.webui.WebUIUtils;
+import org.exoplatform.forum.ext.activity.BuildLinkUtils;
+import org.exoplatform.forum.ext.activity.BuildLinkUtils.PORTLET_INFO;
+import org.exoplatform.forum.service.Category;
+import org.exoplatform.forum.service.Forum;
+import org.exoplatform.forum.service.ForumAdministration;
+import org.exoplatform.forum.service.ForumService;
+import org.exoplatform.forum.service.ForumServiceUtils;
+import org.exoplatform.forum.service.MessageBuilder;
+import org.exoplatform.forum.service.Topic;
+import org.exoplatform.outlook.forum.ForumUtils;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.HierarchyNode;
@@ -53,6 +68,7 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
@@ -88,6 +104,8 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.picocontainer.Startable;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -445,9 +463,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, title, body);
+      String safeTitle = safeText(title);
+      String safeBody = safeHtml(body);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, safeTitle, safeBody);
       socialActivityManager.saveActivityNoReturn(userIdentity, activity);
-      // return activity;
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
     }
@@ -470,6 +489,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             messageSummary(message),
                             message.getBody(),
                             users);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception {
+      return createForumTopic(categoryId,
+                              forumId,
+                              message.getUser().getLocalUser(),
+                              message.getSubject(),
+                              messageSummary(message),
+                              message.getBody());
     }
   }
 
@@ -675,10 +707,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
+      String safeTitle = safeText(title);
+      String safeBody = safeHtml(body);
       ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                                              SpaceActivityPublisher.SPACE_APP_ID,
-                                                             title,
-                                                             body);
+                                                             safeTitle,
+                                                             safeBody);
       socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
@@ -704,6 +738,32 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             users);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Topic addForumTopic(OutlookMessage message) throws Exception {
+      String creator = message.getUser().getLocalUser();
+
+      //
+      Group group = organization.getGroupHandler().findGroupById(getGroupId());
+      String parentGrId = group.getParentId();
+
+      // Category must exists as we are running against existing space
+      String categoryId = org.exoplatform.forum.service.Utils.CATEGORY
+          + parentGrId.replaceAll(CommonUtils.SLASH, CommonUtils.EMPTY_STR);
+
+      // Forum must exists as we are running against existing space
+      String forumId = org.exoplatform.forum.service.Utils.FORUM_SPACE_ID_PREFIX + group.getGroupName();
+
+      //
+      return createForumTopic(categoryId,
+                              forumId,
+                              creator,
+                              message.getSubject(),
+                              messageSummary(message),
+                              message.getBody());
+    }
   }
 
   protected final RepositoryService                           jcrService;
@@ -725,6 +785,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final ListenerService                             listenerService;
 
   protected final WikiService                                 wikiService;
+
+  protected final ForumService                                forumService;
 
   protected final TrashService                                trashService;
 
@@ -768,6 +830,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             ManageDriveService driveService,
                             ListenerService listenerService,
                             WikiService wikiService,
+                            ForumService forumService,
                             TrashService trashService,
                             ResourceBundleService resourceBundleService,
                             InitParams params) throws ConfigurationException, MailServerException {
@@ -782,6 +845,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.driveService = driveService;
     this.listenerService = listenerService;
     this.wikiService = wikiService;
+    this.forumService = forumService;
     this.trashService = trashService;
     this.resourceBundleService = resourceBundleService;
 
@@ -849,10 +913,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
       // FYI attachment content in BASE64 (may be twice!)
       String contentBytes = vContentBytes.getStringValue();
+      byte[] decoded = Base64.decodeBase64(contentBytes);
+      String content;
+      try {
+        content = new String(decoded, "UTF-8");
+      } catch (UnsupportedEncodingException e1) {
+        throw new OutlookException("Error reading message content in UTF-8 encoding: " + name, e1);
+      }
+      String safeContent = safeHtml(content);
 
       // Save in JCR
-      try (InputStream content = decode(contentBytes)) {
-        Node attachmentNode = addFile(parent, name, contentType, content);
+      try (InputStream contentStream = new ByteArrayInputStream(safeContent.getBytes())) {
+        Node attachmentNode = addFile(parent, name, contentType, contentStream);
         if (space != null) {
           setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
         } else {
@@ -891,7 +963,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
     // }
 
-    postAttachmentActivity(destFolder, files, user, comment);
+    postAttachmentActivity(destFolder, files, user, safeText(comment));
 
     if (space != null) {
       for (File f : files) {
@@ -1283,10 +1355,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected Locale currentUserLocale() {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     return context != null ? context.getLocale() : null;
-  }
-
-  protected InputStream decode(String contentBytes) {
-    return new ByteArrayInputStream(Base64.decodeBase64(contentBytes));
   }
 
   /**
@@ -1842,9 +1910,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected Node addMessageFile(Node parent, OutlookMessage message) throws RepositoryException,
                                                                      UnsupportedEncodingException,
                                                                      IOException {
-    try (InputStream content = new ByteArrayInputStream(message.getBody().getBytes("UTF-8"))) {
+    String safeTitle = safeText(message.getSubject());
+    String safeContent = safeHtml(message.getBody());
+    try (InputStream content = new ByteArrayInputStream(safeContent.getBytes("UTF-8"))) {
       // message file goes w/o summary, it will be generated in UI (OutlookMessageActivity)
-      Node messageFile = addFile(parent, message.getSubject(), "text/html", content);
+      Node messageFile = addFile(parent, safeTitle, "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
       messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
       messageFile.setProperty("mso:userName", message.getUser().getDisplayName());
@@ -1942,6 +2012,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return activity;
   }
 
+  @Deprecated // TODO not used
   protected ExoSocialActivity postMessageActivity(OutlookMessage message) throws RepositoryException {
     Node node = message.getFileNode();
     if (node == null) {
@@ -1970,7 +2041,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     //
     ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
                                                            OutlookMessageActivity.ACTIVITY_TYPE,
-                                                           message.getSubject(),
+                                                           safeText(message.getSubject()),
                                                            null);
     activity.setTemplateParams(activityParams);
 
@@ -2093,13 +2164,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return
    * @throws Exception
    */
-  public Page createWikiPage(String wikiType,
-                             String wikiOwner,
-                             String creator,
-                             String title,
-                             String summary,
-                             String content,
-                             List<String> users) throws Exception {
+  protected Page createWikiPage(String wikiType,
+                                String wikiOwner,
+                                String creator,
+                                String title,
+                                String summary,
+                                String content,
+                                List<String> users) throws Exception {
     String parentTitle = OUTLOOK_MESSAGES_TITLE;
     String parentId = TitleResolver.getId(parentTitle, false);
 
@@ -2167,7 +2238,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         wikiContent.append("<div style='overflow:auto;'><div style='position: relative; float: left;"
             + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
             + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
-        wikiContent.append(content);
+        wikiContent.append(safeHtml(content));
         wikiContent.append("</div></div>");
         wikiContent.append("{{/html}}");
         page.setContent(wikiContent.toString());
@@ -2182,6 +2253,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       page.setMinorEdit(false);
 
       ///
+      title = safeText(title);
       String baseTitle = title;
 
       int siblingNumber = 0;
@@ -2308,6 +2380,30 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
+   * Allow full rage of HTML text and structures.
+   * 
+   * @param content
+   * @return sanitized content
+   */
+  protected String safeHtml(String content) {
+    // TODO
+    // String safe = Jsoup.clean(content, Whitelist.relaxed());
+    // return safe;
+    return content;
+  }
+
+  /**
+   * Allow only plain text.
+   * 
+   * @param content
+   * @return sanitized content (as plain text)
+   */
+  protected String safeText(String content) {
+    String safe = Jsoup.clean(content, Whitelist.none());
+    return safe;
+  }
+
+  /**
    * Method adapted from eXo Chat's WikiService.setPermissionForReportAsWiki().
    * 
    * @param users
@@ -2337,6 +2433,270 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
       page.setPermissions(permissions);
     }
+  }
+
+  /**
+   * Method inspired by code of UIPostForm.
+   * 
+   * @param message
+   * @return
+   * @throws Exception
+   */
+  protected Topic createForumTopic(String categoryId,
+                                   String forumId,
+                                   String creator,
+                                   String title,
+                                   String summary,
+                                   String content) throws Exception {
+
+    String safeTitle = safeText(title);
+    if (safeTitle.length() > ForumUtils.MAXTITLE) {
+      // TODO throw an exception to user to ask for shorten title
+      safeTitle = new StringBuilder(safeTitle.substring(0, ForumUtils.MAXTITLE - 3)).append("...").toString();
+    }
+
+    Topic topic = new Topic();
+    String message;
+    if (isHTML(content)) {
+      message = safeHtml(content);
+    } else {
+      message = content;
+    }
+
+    // save topic in ForumService
+    org.exoplatform.forum.service.UserProfile userProfile = forumService.getUserSettingProfile(creator);
+
+    if (checkForumHasAddTopic(userProfile, categoryId, forumId)) {
+
+      if (safeTitle.length() <= 0 || safeTitle.equals("null")) {
+        safeTitle = safeText(summary);
+      }
+
+      String checksms = TransformHTML.cleanHtmlCode(message,
+                                                    new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
+      checksms = checksms.replaceAll("&nbsp;", " ");
+      int t = checksms.trim().length();
+      if (t > 0 && !checksms.equals("null")) {
+        // TODO
+      }
+      Date currentDate = CommonUtils.getGreenwichMeanTime().getTime();
+      message = CommonUtils.encodeSpecialCharInSearchTerm(message);
+      message = TransformHTML.fixAddBBcodeAction(message);
+      // TODO do we need this when using safe HTML?
+      message = message.replaceAll("<script", "&lt;script").replaceAll("<link", "&lt;link").replaceAll("</script>",
+                                                                                                       "&lt;/script>");
+
+      boolean isOffend = false;
+      boolean hasForumMod = false;
+      if (true) { // !uiForm.isMod() // if not moderator
+        ForumAdministration forumAdministration = forumService.getForumAdministration();
+        String[] censoredKeyword = ForumUtils.getCensoredKeyword(forumAdministration.getCensoredKeyword());
+        checksms = checksms.toLowerCase();
+        for (String string : censoredKeyword) {
+          if (checksms.indexOf(string.trim()) >= 0) {
+            isOffend = true;
+            break;
+          }
+          if (safeTitle.toLowerCase().indexOf(string.trim()) >= 0) {
+            isOffend = true;
+            break;
+          }
+        }
+        // TODO if (uiForm.forum != null)
+        // hasForumMod = uiForm.forum.getIsModerateTopic();
+      }
+      safeTitle = CommonUtils.encodeSpecialCharInTitle(safeTitle);
+
+      boolean topicClosed = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATE_SELECTBOX).isChecked();
+      boolean topicLocked = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATUS_SELECTBOX).isChecked();
+      boolean sticky = false; // uiForm.getUIForumCheckBoxInput(FIELD_STICKY_CHECKBOX).isChecked();
+      boolean moderatePost = true; // uiForm.getUIForumCheckBoxInput(FIELD_MODERATEPOST_CHECKBOX).isChecked();
+      boolean whenNewPost = true; // uiForm.getUIForumCheckBoxInput(FIELD_NOTIFYWHENADDPOST_CHECKBOX).isChecked();
+
+      // TODO permissions?
+      // UIPermissionPanel permissionTab = uiForm.getChildById(PERMISSION_TAB);
+      String canPost = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANPOST);
+      String canView = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANVIEW);
+
+      // set link
+      // FYI this origjnal Forum code will use current "outlook" portlet path to build the link
+      //ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
+      String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
+      //
+      safeTitle = StringCommonUtils.encodeScriptMarkup(safeTitle);
+      topic.setTopicName(safeTitle);
+      topic.setModifiedBy(creator);
+      topic.setModifiedDate(currentDate);
+      // TODO do we need this? encode XSS script
+      message = StringCommonUtils.encodeScriptMarkup(message);
+      
+      // add message quote:
+      StringBuilder topicContent = new StringBuilder();
+      if (summary != null) {
+        // HTML also contains message summary
+        topicContent.append("<div class='messageSummary' style='word-wrap: break-word; min-height: 30px;'>");
+        topicContent.append(summary);
+        topicContent.append("</div>");
+      }
+      topicContent.append("<div class='messageQuote' style='overflow:auto;'><div class='messageContent' style='position: relative; float: left;"
+          + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
+          + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
+      topicContent.append(message);
+      topicContent.append("</div></div>");
+      message = topicContent.toString();
+      ////
+      
+      topic.setDescription(message);
+      topic.setLink(link);
+      if (whenNewPost) {
+        String email = userProfile.getEmail();
+        if (email == null || email.length() <= 0) {
+          try {
+            email = organization.getUserHandler().findUserByName(creator).getEmail();
+          } catch (Exception e) {
+            email = "true";
+          }
+        }
+        topic.setIsNotifyWhenAddPost(email);
+      } else {
+        topic.setIsNotifyWhenAddPost(ForumUtils.EMPTY_STR);
+      }
+      // topicNew.setAttachments(uiForm.attachments_);
+      topic.setIsWaiting(isOffend);
+      topic.setIsClosed(topicClosed);
+      topic.setIsLock(topicLocked);
+      topic.setIsModeratePost(moderatePost);
+      topic.setIsSticky(sticky);
+
+      topic.setIcon("uiIconForumTopic uiIconForumLightGray");
+      String[] canPosts = ForumUtils.splitForForum(canPost);
+      String[] canViews = ForumUtils.splitForForum(canView);
+
+      topic.setCanView(canViews);
+      topic.setCanPost(canPosts);
+      topic.setIsApproved(!hasForumMod);
+      // XXX we cannot rely on ForumUtils.getDefaultMail() because it requires resources from Forum WAR
+      // MessageBuilder messageBuilder = ForumUtils.getDefaultMail();
+      MessageBuilder messageBuilder = new MessageBuilder();
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      ResourceBundle res = resourceBundleService.getResourceBundle("locale.portlet.forum.ForumPortlet", context.getLocale());
+      if (res != null) {
+        // TODO this will not work as resources aren't reachable here - it's DEAD CODE in fact
+        try {
+          messageBuilder.setContent(res.getString("UINotificationForm.label.notifyEmailContentDefault"));
+          String header = res.getString("UINotificationForm.label.notifyEmailHeaderSubjectDefault");
+          messageBuilder.setHeaderSubject(header == null || header.trim().length() == 0 ? ForumUtils.EMPTY_STR : header);
+          messageBuilder.setTypes(res.getString("UIForumPortlet.label.category"),
+                                  res.getString("UIForumPortlet.label.forum"),
+                                  res.getString("UIForumPortlet.label.topic"),
+                                  res.getString("UIForumPortlet.label.post"));
+        } catch (Exception e) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Failed to get resource bundle for Forum default content email notification", e);
+          }
+        }
+      } else {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Locale resource bundle cannot be found for Forum default content email notification");
+        }
+      }
+
+      messageBuilder.setLink(link);
+
+      topic.setOwner(creator);
+      topic.setCreatedDate(currentDate);
+      topic.setLastPostBy(creator);
+      topic.setLastPostDate(currentDate);
+      topic.setVoteRating(0.0);
+      topic.setUserVoteRating(new String[] {});
+      try {
+        String remoteAddr = ForumUtils.EMPTY_STR;
+        // TODO if (forumPortlet.isEnableIPLogging()) {
+        remoteAddr = WebUIUtils.getRemoteIP();
+        // }
+        topic.setRemoteAddr(remoteAddr);
+        forumService.saveTopic(categoryId, forumId, topic, true, false, messageBuilder);
+        if (userProfile.getIsAutoWatchMyTopics()) {
+          List<String> values = new ArrayList<String>();
+          values.add(userProfile.getEmail());
+          String path = new StringBuilder(categoryId).append(ForumUtils.SLASH)
+                                                     .append(forumId)
+                                                     .append(ForumUtils.SLASH)
+                                                     .append(topic.getId())
+                                                     .toString();
+          forumService.addWatch(1, path, values, creator);
+        }
+      } catch (PathNotFoundException e) {
+        throw new OutlookException("Error saving forum topic '" + title + "'", e);
+      }
+    } else {
+      throw new BadParameterException("Cannot add forum topic. Check user permissions or forum settings.");
+    }
+
+    return topic;
+  }
+
+  /**
+   * Adapted code from UIForumPortlet.
+   * 
+   * @param userProfile
+   * @param categoryId
+   * @param forumId
+   * @return
+   * @throws Exception
+   */
+  protected boolean checkForumHasAddTopic(org.exoplatform.forum.service.UserProfile userProfile,
+                                          String categoryId,
+                                          String forumId) throws Exception {
+    // is guest or banned
+    if (userProfile.getUserRole() == org.exoplatform.forum.service.UserProfile.GUEST || userProfile.getIsBanned()
+        || userProfile.isDisabled()) {
+      return false;
+    }
+    try {
+      Category cate = forumService.getCategory(categoryId);
+      Forum forum = forumService.getForum(categoryId, forumId);
+      if (forum == null) {
+        return false;
+      }
+      // forum close or lock
+      if (forum.getIsClosed() || forum.getIsLock()) {
+        return false;
+      }
+      // isAdmin
+      if (userProfile.getUserRole() == 0) {
+        return true;
+      }
+      // is moderator
+      if (userProfile.getUserRole() == 1) {
+        String[] morderators = ForumUtils.arraysMerge(cate.getModerators(), forum.getModerators());
+        //
+        if (ForumServiceUtils.isModerator(morderators, userProfile.getUserId())) {
+          return true;
+        }
+      }
+      // TODO ban IP of forum.
+      // if (isEnableIPLogging() && forum.getBanIP() != null &&
+      // forum.getBanIP().contains(WebUIUtils.getRemoteIP())) {
+      // return false;
+      // }
+      // check access category
+      if (!ForumServiceUtils.hasPermission(cate.getUserPrivate(), userProfile.getUserId())) {
+        return false;
+      }
+      // can add topic on category/forum
+      String[] canCreadTopic = ForumUtils.arraysMerge(forum.getCreateTopicRole(), cate.getCreateTopicRole());
+      if (!ForumServiceUtils.hasPermission(canCreadTopic, userProfile.getUserId())) {
+        return false;
+      }
+    } catch (Exception e) {
+      LOG.warn(String.format("Check permission to add topic of category %s, forum %s unsuccessfully.", categoryId, forumId));
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(e);
+      }
+      return false;
+    }
+    return true;
   }
 
   /**

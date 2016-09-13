@@ -17,44 +17,48 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.outlook;
+package org.exoplatform.outlook.portlet;
 
 /**
- * Error in Anaplan response format.<br> 
- * 
  * Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OutlookFormatException.java 00000 May 16, 2016 pnedonosko $
+ * @version $Id: ForumTopic.java 00000 Sep 8, 2016 pnedonosko $
  * 
  */
-public class OutlookFormatException extends OutlookException {
+public class ForumTopic {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = -7588755544731933601L;
+  protected final String id;
 
-  /**
-   * @param message
-   */
-  public OutlookFormatException(String message) {
-    super(message);
+  protected final String title;
+  
+  protected final String link;
+
+  public ForumTopic(String id, String title, String link) {
+    super();
+    this.id = id;
+    this.title = title;
+    this.link = link;
   }
 
   /**
-   * @param cause
+   * @return the id
    */
-  public OutlookFormatException(Throwable cause) {
-    super(cause);
+  public String getId() {
+    return id;
   }
 
   /**
-   * @param message
-   * @param cause
+   * @return the title
    */
-  public OutlookFormatException(String message, Throwable cause) {
-    super(message, cause);
+  public String getTitle() {
+    return title;
   }
 
+  /**
+   * @return the link
+   */
+  public String getLink() {
+    return link;
+  }
 }

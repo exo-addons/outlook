@@ -19,6 +19,7 @@
  */
 package org.exoplatform.outlook;
 
+import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -77,8 +78,10 @@ public abstract class OutlookSpace {
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
 
   public abstract ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception;
-  
+
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;
+
+  public abstract Topic addForumTopic(OutlookMessage message) throws Exception;
 
   public abstract Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException;
 

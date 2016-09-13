@@ -27,6 +27,7 @@
     
     <cancel>Annuler</cancel>
     <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
+    <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Documents Personels</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
   
@@ -72,7 +73,6 @@
     <activityTargetSpaceDescription>Sélectionnez un espace pour envoyer votre message dans son flux d'activité</activityTargetSpaceDescription>
     <activityTitle>Titre</activityTitle>
     <activityTitleDescription>Ce sera le titre de votre activité dans le flux</activityTitleDescription>
-    <editActivityText>Cliquez pour modifier</editActivityText>
     <activityText>Corps du message</activityText>
     <activityTextDescription>Ceci s'affichera dans le corps de l'activité au sein du flux</activityTextDescription>
     <convert>Convertir</convert>
@@ -88,7 +88,6 @@
     <wikiPageTitle>Titre</wikiPageTitle>
     <wikiPageTitleDescription>Ceci sera le titre de votre page wiki</wikiPageTitleDescription>
     <wikiPageText>Contenu de la page</wikiPageText>
-    <editWikiPageText>Cliquez pour modifier</editWikiPageText>
     <wikiPageTextDescription>Ce texte sera le contenu de votre page wiki.</wikiPageTextDescription>
     <wikiTargetSpaceDescription>Sélectionnez un espace pour convertir ce message en une page de son wiki.</wikiTargetSpaceDescription>
     <convertingToWiki>Conversion du message en wiki...</convertingToWiki>

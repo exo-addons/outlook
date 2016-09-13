@@ -19,6 +19,7 @@
  */
 package org.exoplatform.outlook;
 
+import org.exoplatform.forum.service.Topic;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.wiki.mow.api.Page;
 
@@ -67,6 +68,8 @@ public abstract class OutlookUser extends OutlookEmail {
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws OutlookException;
 
   public abstract ExoSocialActivity postActivity(String title, String body) throws Exception;
-  
+
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;
+
+  public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
 }

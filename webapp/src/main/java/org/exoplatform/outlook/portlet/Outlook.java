@@ -26,8 +26,10 @@ import juzu.View;
 import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
+import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookEmail;
+import org.exoplatform.outlook.OutlookException;
 import org.exoplatform.outlook.OutlookMessage;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.OutlookSpace;
@@ -40,7 +42,6 @@ import org.exoplatform.outlook.jcr.LinkResource;
 import org.exoplatform.outlook.security.OutlookTokenService;
 import org.exoplatform.outlook.web.RequestUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -50,8 +51,6 @@ import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
-import org.exoplatform.web.url.navigation.NavigationResource;
-import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.wiki.mow.api.Page;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
@@ -60,6 +59,7 @@ import org.gatein.wci.security.Credentials;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -166,7 +166,32 @@ public class Outlook {
     public boolean isInSpace() {
       return spaceName != null;
     }
+  }
 
+  public class UserForumTopic extends ForumTopic {
+
+    final String spaceName;
+
+    protected UserForumTopic(String id, String title, String link, String spaceName) {
+      super(id, title, link);
+      this.spaceName = spaceName;
+    }
+
+    protected UserForumTopic(String id, String title, String link) {
+      this(id, title, link, null);
+    }
+
+    public String getConvertedToSpaceForum() {
+      String msg = i18n.getString("Outlook.convertedToSpaceForum");
+      return msg.replace("{SPACE_NAME}", spaceName);
+    }
+
+    /**
+     * @return the isSpace
+     */
+    public boolean isInSpace() {
+      return spaceName != null;
+    }
   }
 
   @Inject
@@ -257,6 +282,10 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.convertToForum  convertToForum;
 
   @Inject
+  @Path("convertedForum.gtmpl")
+  org.exoplatform.outlook.portlet.templates.convertedForum  convertedForum;
+
+  @Inject
   @Path("home.gtmpl")
   org.exoplatform.outlook.portlet.templates.home            home;
 
@@ -267,10 +296,6 @@ public class Outlook {
   @Inject
   @Path("errorMessage.gtmpl")
   org.exoplatform.outlook.portlet.templates.errorMessage    errorMessage;
-
-  @Inject
-  @Path("convertForm.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertForm     convertForm;
 
   @Inject
   ResourceBundle                                            i18n;
@@ -763,12 +788,7 @@ public class Outlook {
       // ********
 
       OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookEmail from = outlook.getAddress(fromEmail, fromName);
-      Calendar createdDate = Calendar.getInstance();
-      createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
-      Calendar modifiedDate = Calendar.getInstance();
-      modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
-      OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
 
       if (groupId != null && groupId.length() > 0) {// new String(body.getBytes(""), "utf-8")
         // space activity requested
@@ -850,12 +870,7 @@ public class Outlook {
                                 RequestContext context) {
     try {
       OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookEmail from = outlook.getAddress(fromEmail, fromName);
-      Calendar createdDate = Calendar.getInstance();
-      createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
-      Calendar modifiedDate = Calendar.getInstance();
-      modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
-      OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
 
       if (groupId != null && groupId.length() > 0) {
         // space wiki requested
@@ -867,10 +882,9 @@ public class Outlook {
                               .ok();
         } else {
           if (LOG.isDebugEnabled()) {
-            LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "
-                + userEmail);
+            LOG.debug("Error converting message to wiki page: space not found " + groupId + ". OutlookUser " + userEmail);
           }
-          return errorMessage("Error converting message to activity status : space not found " + groupId, 404);
+          return errorMessage("Error converting message to wiki page: space not found " + groupId, 404);
         }
       } else {
         // user portal wiki requested
@@ -878,7 +892,7 @@ public class Outlook {
         return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(), page.getUrl())).ok();
       }
     } catch (Throwable e) {
-      LOG.error("Error converting message to wiki for " + userEmail, e);
+      LOG.error("Error converting message to wiki page for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -889,9 +903,56 @@ public class Outlook {
   @Resource
   public Response convertToForumForm() {
     try {
-      return convertToForum.ok();
+      return convertToForum.with().spaces(outlook.getUserSpaces()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing conversion to forum form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response convertToForum(String groupId,
+                                 String messageId,
+                                 String subject,
+                                 String body,
+                                 String created,
+                                 String modified,
+                                 String userName,
+                                 String userEmail,
+                                 String fromName,
+                                 String fromEmail,
+                                 RequestContext context) {
+    try {
+      OutlookUser user = outlook.getUser(userEmail, userName, null);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
+
+      if (groupId != null && groupId.length() > 0) {
+        // space forum requested
+        OutlookSpace space = outlook.getSpace(groupId);
+        if (space != null) {
+          Topic topic = space.addForumTopic(message);
+          return convertedForum.with()
+                               .post(new UserForumTopic(topic.getId(),
+                                                        topic.getTopicName(),
+                                                        topic.getLink(),
+                                                        space.getTitle()))
+                               .ok();
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error converting message to forum post: space not found " + groupId + ". OutlookUser " + userEmail);
+          }
+          return errorMessage("Error converting message to forum post: space not found " + groupId, 404);
+        }
+      } else {
+        // TODO user portal wiki requested
+        // Page page = user.addForumTopic(message);
+        // return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(),
+        // page.getUrl())).ok();
+        return errorMessage("Error creating forum topic: space not selected", 400);
+      }
+    } catch (Throwable e) {
+      LOG.error("Error converting message to forum post for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -1025,10 +1086,27 @@ public class Outlook {
     res.addCookie(rememberMeOutlookCookie);
 
     // TODO seems this path not used by callers
-    //String portalName = prContext.getPortalOwner();
-    //NodeURL createURL = prContext.createURL(NodeURL.TYPE);
-    //createURL.setResource(new NavigationResource(SiteType.PORTAL, portalName, null));
-    //return createURL.toString();
+    // String portalName = prContext.getPortalOwner();
+    // NodeURL createURL = prContext.createURL(NodeURL.TYPE);
+    // createURL.setResource(new NavigationResource(SiteType.PORTAL, portalName, null));
+    // return createURL.toString();
+  }
+
+  private OutlookMessage message(OutlookUser user,
+                                 String messageId,
+                                 String fromEmail,
+                                 String fromName,
+                                 String created,
+                                 String modified,
+                                 String subject,
+                                 String body) throws OutlookException, ParseException {
+    OutlookEmail from = outlook.getAddress(fromEmail, fromName);
+    Calendar createdDate = Calendar.getInstance();
+    createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
+    Calendar modifiedDate = Calendar.getInstance();
+    modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
+    OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+    return message;
   }
 
   private String requestCommand() {

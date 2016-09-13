@@ -429,6 +429,8 @@
             properties</description>
           <value>locale.outlook.Outlook</value>
           <value>locale.outlook.Login</value>
+          <!-- we need Forum's i18n for message conversion to Forum -->
+          <!-- value>locale.portlet.forum.ForumPortlet</value -->
         </values-param>
       </init-params>
     </component-plugin>

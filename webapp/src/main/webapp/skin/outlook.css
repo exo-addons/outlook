@@ -157,6 +157,10 @@ span[disabled] {
 	top: auto !important;
 }
 
+.ms-Grid-row .ms-TextField-field, .ms-Grid-row .ms-Dropdown {
+	margin-bottom: 0px;
+}
+
 .uiIconError {
 	background: url("/eXoResources/skin/images/Icons/uiIconColor.png") no-repeat scroll left top transparent;
 	margin-left: 20px;

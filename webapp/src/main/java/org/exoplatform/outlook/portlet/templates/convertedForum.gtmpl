@@ -1,0 +1,15 @@
+#{param name=post/}
+<div class="ms-MessageBar ms-MessageBar--success">
+	<div class="ms-MessageBar-content">
+		<div class="ms-MessageBar-icon">
+			<i class="ms-Icon ms-Icon--checkboxCheck ms-Icon--circle"></i>
+		</div>
+		<div class="ms-MessageBar-text">
+			<% if (post.isInSpace()) { %>
+			${post.convertedToSpaceForum}<br><a href="${post.link}" class="ms-Link" target="_blank">&{Outlook.openForumPost}</a>
+			<% } else { %>
+			&{Outlook.convertedToUserForum}<br><a href="${post.link}" class="ms-Link" target="_blank">&{Outlook.openForumPost}</a>
+			<% } %>
+		</div>
+	</div>
+</div>
