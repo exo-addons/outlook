@@ -95,6 +95,18 @@
     <convertedToSpaceWiki>La page a été créée dans le wiki de l'espace {SPACE_NAME} </convertedToSpaceWiki>
     <openWikiPage>Ouvrir la page wiki</openWikiPage>  
     
+    <!-- Convert To Forum (TODO translate it) -->
+    <convertToForumDescription>This message can be converted to a forum topic. You need choose a target space, where it will be created in the space forum.</convertToForumDescription>
+    <forumTopicName>Topic name</forumTopicName>
+    <forumTopicNameDescription>This will be a name of your forum topic</forumTopicNameDescription>
+    <forumTopicText>Topic content</forumTopicText>
+    <forumTopicTextDescription>This will be a content of your forum topic</forumTopicTextDescription>
+    <forumTargetSpaceDescription>Your message will be converted to a topic in the space forum.</forumTargetSpaceDescription>
+    <convertingToForum>Converting message to forum topic...</convertingToForum>
+    <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
+    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME} space forum</convertedToSpaceForum>
+    <openForumPost>Open forum topic</openForumPost>
+    
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
       <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
