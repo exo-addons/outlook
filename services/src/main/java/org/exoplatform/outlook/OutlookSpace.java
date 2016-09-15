@@ -78,6 +78,8 @@ public abstract class OutlookSpace {
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
 
   public abstract ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception;
+  
+  public abstract ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception;
 
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 

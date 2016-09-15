@@ -475,6 +475,22 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
+    public ExoSocialActivity postActivity(String text) throws Exception {
+      // post activity to user status stream
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      String safeText = safeHtml(text);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, safeText);
+      socialActivityManager.saveActivityNoReturn(userIdentity, activity);
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page addWikiPage(OutlookMessage message) throws Exception {
       String wikiType = PortalConfig.PORTAL_TYPE;
       String creator = message.getUser().getLocalUser();
@@ -713,6 +729,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                              SpaceActivityPublisher.SPACE_APP_ID,
                                                              safeTitle,
                                                              safeBody);
+      socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception {
+      // post activity to space status stream under current user
+      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.groupId, true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      String safeText = safeHtml(text);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             SpaceActivityPublisher.SPACE_APP_ID,
+                                                             safeText);
       socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
@@ -2487,7 +2522,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                        "&lt;/script>");
       // remove any meta tags explicitly existing in the content
       message = message.replaceAll("<meta.*?>", "");
-      // remove all embedded global styles 
+      // remove all embedded global styles
       message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
@@ -2524,7 +2559,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       // set link
       // FYI this origjnal Forum code will use current "outlook" portlet path to build the link
-      //ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
+      // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
       //
       safeTitle = StringCommonUtils.encodeScriptMarkup(safeTitle);
@@ -2533,7 +2568,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topic.setModifiedDate(currentDate);
       // TODO do we need this? encode XSS script
       message = StringCommonUtils.encodeScriptMarkup(message);
-      
+
       // add message quote:
       StringBuilder topicContent = new StringBuilder();
       if (summary != null) {
@@ -2549,7 +2584,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topicContent.append("</div></div>");
       message = topicContent.toString();
       ////
-      
+
       topic.setDescription(message);
       topic.setLink(link);
       if (whenNewPost) {

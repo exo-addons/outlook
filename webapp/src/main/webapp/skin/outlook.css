@@ -327,11 +327,24 @@ div.form-buttons {
 	background: linear-gradient(transparent 25px, white);
 }
 
-.messageEditor {
+.messageEditor, .statusText {
 	height: 200px;
-	max-height: 250px;
 	overflow: auto;
 	padding: 0px;
+}
+
+.messageEditor {
+	max-height: 250px;
+}
+
+.statusText {
+	max-height: 75px;
+	padding: 5px;
+	line-height: 14px;
+}
+
+.statusField {
+	margin-bottom: 0px;
 }
 
 #outlook-pane .ms-MessageBar {

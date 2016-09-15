@@ -523,7 +523,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$convertToStatus.find(".editMessageText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						// $text.attr("contenteditable", "true");
 						$editor.append($text.children());
 						$text.hide();
 						$editor.show();
@@ -647,6 +646,102 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					});
 				}
 
+				function postStatusInit() {
+					var $postStatus = $("#outlook-postStatus");
+					var $statusField = $postStatus.find("div.statusField");
+					$statusField.TextField();
+					var $statusPlaceholder = $statusField.find(".ms-Label");
+					var $text = $statusField.find("div.statusText");
+					var $form = $postStatus.find("form");
+					var $groupIdDropdown = $form.find(".ms-Dropdown");
+					var $groupId = $groupIdDropdown.find("select[name='groupId']");
+					var $postButton = $form.find("button.postButton");
+					$postButton.prop("disabled", true);
+					var $cancelButton = $form.find("button.cancelButton");
+					var $posting = $postStatus.find("#posting");
+					var $posted = $postStatus.find("#posted");
+					var $postedInfo = $posted.find(".postedInfo");
+					$cancelButton.click(function() {
+						$cancelButton.data("cancel", true);
+					});
+
+					// init spaces dropdown
+					$groupId.val([]);
+					// initially no spaces selected
+					var groupId;
+					$groupId.change(function() {
+						var $space = $groupId.find("option:selected");
+						if ($space.size() > 0) {
+							groupId = $space.val();
+						}
+					});
+					$groupIdDropdown.Dropdown();
+					
+					// $text.on("focus", null, function() {
+						// var $this = $(this);
+						// $this.data("before", $this.html());
+						// return $this;
+					// });
+					$text.on("blur paste input", null, function() {
+						// if "blur" doesn't work well, also add on ""
+						var content =$text.text().trim();
+						// if ($this.data("before") !== content) {
+							// $this.data("before", content);
+							// //$this.trigger("change");
+							// $postButton.prop("disabled", false);
+						// } else if (content.length <= 0) {
+							// $postButton.prop("disabled", true);
+						// }
+						if (content.length > 0) {
+							$postButton.prop("disabled", false);
+							if ($statusPlaceholder.is(":visible")) {
+								$statusPlaceholder.hide();
+							}
+						} else {
+							$postButton.prop("disabled", true);
+							if (!$statusPlaceholder.is(":visible")) {
+								$statusPlaceholder.show();
+							}
+						}
+					}); 
+
+					$form.submit(function(event) {
+						event.preventDefault();
+						clearError();
+						console.log(">> postStatus groupId: " + groupId + " message: " + $text.html());
+						$form.hide("blind");
+						$posting.show("blind");
+						var spinner = new fabric.Spinner($posting.find(".ms-Spinner").get(0));
+						spinner.start();
+						if ($cancelButton.data("cancel")) {
+							loadMenu("home");
+						} else {
+							$postedInfo.jzLoad("Outlook.postStatus()", {
+								groupId : groupId ? groupId : "",
+								message : $text.html(),
+								userName : userName,
+								userEmail : userEmail
+							}, function(response, status, jqXHR) {
+								if (status == "error") {
+									showError(jqXHR);
+									spinner.stop();
+									$posting.hide("blind", {
+										"direction" : "down"
+									});
+									$form.show("blind", {
+										"direction" : "down"
+									});
+								} else {
+									clearError();
+									spinner.stop();
+									$posting.hide("blind");
+									$posted.show("blind");
+								}
+							});
+						}
+					});
+				}
+
 				function convertToWikiInit() {
 					// FYI this method adapted from convertToStatusInit(), consider for code reuse
 					var $convertToWiki = $("#outlook-convertToWiki");
@@ -668,7 +763,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$convertToWiki.find(".editMessageText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						// $text.attr("contenteditable", "true");
 						$editor.append($text.children());
 						$text.hide();
 						$editor.show();

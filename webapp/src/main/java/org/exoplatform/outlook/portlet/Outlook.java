@@ -670,7 +670,7 @@ public class Outlook {
   @Resource
   public Response postStatusForm() {
     try {
-      return postStatus.ok();
+      return postStatus.with().spaces(outlook.getUserSpaces()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing status post form", e);
       return errorMessage(e.getMessage(), 500);
@@ -680,8 +680,7 @@ public class Outlook {
   @Ajax
   @Resource
   public Response postStatus(String groupId,
-                             String title,
-                             String body,
+                             String message,
                              String userName,
                              String userEmail,
                              RequestContext context) {
@@ -693,7 +692,7 @@ public class Outlook {
         // space activity requested
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
-          ExoSocialActivity activity = space.postActivity(user, title, body);
+          ExoSocialActivity activity = space.postActivity(user, message);
           return convertedStatus.with().status(new UserStatus(null, space.getGroupId(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
@@ -704,7 +703,7 @@ public class Outlook {
         }
       } else {
         // user activity requested
-        ExoSocialActivity activity = user.postActivity(title, body);
+        ExoSocialActivity activity = user.postActivity(message);
         return convertedStatus.with().status(new UserStatus(user.getLocalUser(), null, activity.getPermaLink())).ok();
       }
     } catch (Throwable e) {
