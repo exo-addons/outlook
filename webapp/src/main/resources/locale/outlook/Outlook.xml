@@ -23,8 +23,8 @@
 
     <!-- Common -->
     <logout>Logout</logout>
-    <logoutTitle>Logout eXo Platform</logoutTitle>
-    <logoutQuestion>Do you want logout eXo Platform portal?</logoutQuestion>
+    <logoutTitle>Log out of the eXo intranet</logoutTitle>
+    <logoutQuestion>Do you want log out of your eXo intranet?</logoutQuestion>
     
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
@@ -60,9 +60,9 @@
     <add>Add</add>
 
     <!-- Add Attachment -->
-    <addAttachmentDescription>Attach documents from eXo portal to this message. </addAttachmentDescription>
+    <addAttachmentDescription>Attach documents from eXo to this message.</addAttachmentDescription>
     <attachingDocuments>Selected documents</attachingDocuments>
-    <attachingDocumentsDescription>These documents will be attached to the message if checked</attachingDocumentsDescription>
+    <attachingDocumentsDescription>Checked documents will be attached to the message</attachingDocumentsDescription>
     <documentSource>Source</documentSource>
     <documentSearch>Search</documentSearch>
     <documentExplorer>Explore</documentExplorer>
@@ -71,50 +71,50 @@
     <attach>Attach</attach>
     <addingAttachment>Attaching documents...</addingAttachment>
     <addedAttachment>Documents successfully attached to your message</addedAttachment>
-    <addedPartiallyAttachment>Some document(s) are not attached to the message, see details below the file</addedPartiallyAttachment>
+    <addedPartiallyAttachment>Some documents were not attached to the message, see details below each file</addedPartiallyAttachment>
 
     <!-- Convert To Status -->
-    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your user stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
+    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your personal stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
     <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
     <activityTitle>Title</activityTitle>
-    <activityTitleDescription>This will be a title of your activity in the stream</activityTitleDescription>
+    <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
     <activityText>Activity body</activityText>
     <activityTextDescription>This will be displayed in the activity's body on the stream</activityTextDescription>
     <convert>Convert</convert>
-    <convertingToStatus>Converting message to activity...</convertingToStatus>
+    <convertingToStatus>Converting the message to an activity...</convertingToStatus>
     <convertedToStatus>The activity was successfully posted</convertedToStatus>
     <convertToStatusError>Error converting the message to an activity</convertToStatusError>
     <convertedToUserActivity>The activity was successfully posted in your personal activity stream</convertedToUserActivity>
-    <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME} space</convertedToSpaceActivity>
+    <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME}</convertedToSpaceActivity>
     <openActivity>Display the activity</openActivity>
     
     <!-- Convert To Wiki -->
     <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will create a page in the space wiki.</convertToWikiDescription>
     <wikiPageTitle>Title</wikiPageTitle>
-    <wikiPageTitleDescription>This will be a title of your wiki page</wikiPageTitleDescription>
-    <wikiPageText>Page text</wikiPageText>
-    <wikiPageTextDescription>This text will be a content of your wiki page</wikiPageTextDescription>
+    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
+    <wikiPageText>Page content</wikiPageText>
+    <wikiPageTextDescription>This text will be body content of your wiki page</wikiPageTextDescription>
     <wikiTargetSpaceDescription>If selected, your message will be converted to a page in the space wiki.</wikiTargetSpaceDescription>
-    <convertingToWiki>Converting message to wiki...</convertingToWiki>
+    <convertingToWiki>Converting the message to a wiki page...</convertingToWiki>
     <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
-    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME} space wiki</convertedToSpaceWiki>
+    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME}</convertedToSpaceWiki>
     <openWikiPage>Open wiki page</openWikiPage>
     
     <!-- Convert To Forum -->
     <convertToForumDescription>This message can be converted to a forum topic. You need choose a target space, where it will be created in the space forum.</convertToForumDescription>
     <forumTopicName>Topic name</forumTopicName>
-    <forumTopicNameDescription>This will be a name of your forum topic</forumTopicNameDescription>
+    <forumTopicNameDescription>This will be the name of your forum topic</forumTopicNameDescription>
     <forumTopicText>Topic content</forumTopicText>
     <forumTopicTextDescription>This will be a content of your forum topic</forumTopicTextDescription>
     <forumTargetSpaceDescription>Your message will be converted to a topic in the space forum.</forumTargetSpaceDescription>
-    <convertingToForum>Converting message to forum topic...</convertingToForum>
+    <convertingToForum>Converting the message to a forum topic...</convertingToForum>
     <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
-    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME} space forum</convertedToSpaceForum>
+    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME}</convertedToSpaceForum>
     <openForumPost>Open forum topic</openForumPost>
     
     <!-- Post A Status -->
     <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
-    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME} space</postedToSpaceActivity>
+    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
     
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
@@ -122,10 +122,10 @@
       <spacePathNotFound>Space or path not found</spacePathNotFound>
       <nothingSavedTryAgain>Nothing was saved. Please submit the form again or contact your administrator.</nothingSavedTryAgain>
       <gettingTokenError>Error getting access token for mail server</gettingTokenError>
-      <attachmentNotSelected>No attachment selected. Check at least one and then submit the form again.</attachmentNotSelected>
+      <attachmentNotSelected>No attachment selected. Select at least one and then submit the form again.</attachmentNotSelected>
       <folderNameRequired>Folder name required</folderNameRequired>
       <menuNameUndefined>Menu name undefined. Please contact your administrator.</menuNameUndefined>
-      <youDontHaveSpaces>You are not a member of any space.</youDontHaveSpaces>
+      <youDontHaveSpaces>You are not member of any space.</youDontHaveSpaces>
       <joinSpaces>You can join spaces</joinSpaces>
       <atThisPage>on this page</atThisPage>
       <messageItemReadError>Error reading message item.</messageItemReadError>
