@@ -18,8 +18,8 @@
 
     <!-- Common -->
     <logout>Déconnexion</logout>
-    <logoutTitle>Déconnexion eXo Platform</logoutTitle>
-    <logoutQuestion>Voulez-vous déconnecter portail eXo Platform?</logoutQuestion>
+    <logoutTitle>Déconnexion de l'intranet eXo</logoutTitle>
+    <logoutQuestion>Voulez-vous vous déconnecter de l'intranet eXo?</logoutQuestion>
     
     <homeOpenPortal>Ouvrir l'intranet dans une nouvelle fenêtre</homeOpenPortal>
 
@@ -48,7 +48,7 @@
     <cancelSaveAttachmentDescription>Ne pas enregister les pièces jointes de ce message.</cancelSaveAttachmentDescription>
     <savingAttachment>Enregistrement de vos documents...</savingAttachment>
     <savedAttachment>Vos documents ont été enregistrés avec succès</savedAttachment>
-    <savedClickToOpen>Clickez un nim de fichier dans la liste pour l'ouvrir dans l'intranet</savedClickToOpen>
+    <savedClickToOpen>Clickez un nom de fichier dans la liste pour l'ouvrir dans l'intranet</savedClickToOpen>
     <addingNewFolder>Création du nouveau dossier</addingNewFolder>
     <enterFolderNameAndCreate>Donnez un nom à ce dossier puis cliquez sur le bouton Ajouter.</enterFolderNameAndCreate>
     <folderName>Nom du dossier</folderName>
@@ -57,7 +57,7 @@
     <!-- Add Attachment -->
     <addAttachmentDescription>Attacher les documents sélectionnés en pièce jointe</addAttachmentDescription>
     <attachingDocuments>Selectionnez des documents</attachingDocuments>
-    <attachingDocumentsDescription>Ces documents seront attachés au message si vous les cochez</attachingDocumentsDescription>
+    <attachingDocumentsDescription>Les documents que vous cochez seront attachés au message</attachingDocumentsDescription>
     <documentSource>Source</documentSource>
     <documentSearch>Rechercher</documentSearch>
     <documentExplorer>Parcourir</documentExplorer>
@@ -66,21 +66,21 @@
     <attach>Joindre</attach>
     <addingAttachment>Attachement en cours...</addingAttachment>
     <addedAttachment>Les documents ont été attachés en pièce jointe</addedAttachment>
-    <addedPartiallyAttachment>Certains documents n'ont pas été attachés au messages, voir les détails sous le fichier</addedPartiallyAttachment>
+    <addedPartiallyAttachment>Certains documents n'ont pas pu être attachés au message. Voir les détails sous chaque fichier</addedPartiallyAttachment>
 
     <!-- Convert To Status -->
-    <convertToStatusDescription>Ce message sera convertit en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activvité utilisateur. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
-    <activityTargetSpaceDescription>Sélectionnez un espace pour envoyer votre message dans son flux d'activité</activityTargetSpaceDescription>
+    <convertToStatusDescription>Ce message sera converti en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activité personnel. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
+    <activityTargetSpaceDescription>Sélectionnez un espace pour y poster votre message</activityTargetSpaceDescription>
     <activityTitle>Titre</activityTitle>
-    <activityTitleDescription>Ce sera le titre de votre activité dans le flux</activityTitleDescription>
+    <activityTitleDescription>Ce sera le titre de votre activité</activityTitleDescription>
     <activityText>Corps du message</activityText>
-    <activityTextDescription>Ceci s'affichera dans le corps de l'activité au sein du flux</activityTextDescription>
+    <activityTextDescription>Ceci s'affichera dans le corps de l'activité</activityTextDescription>
     <convert>Convertir</convert>
     <convertingToStatus>Conversion du message en cours..</convertingToStatus>
     <convertedToStatus>L'activité a été publiée avec succès</convertedToStatus>
     <convertToStatusError>Erreur à la conversion du message en activité</convertToStatusError>
     <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux </convertedToUserActivity>
-    <convertedToSpaceActivity>L'activité a été publiée avec succès dans le flux de l'espace {SPACE_NAME}</convertedToSpaceActivity>
+    <convertedToSpaceActivity>L'activité a été publiée avec succès dans {SPACE_NAME}</convertedToSpaceActivity>
     <openActivity>Afficher l'activity</openActivity>
     
     <!-- Convert To Wiki -->
@@ -92,20 +92,20 @@
     <wikiTargetSpaceDescription>Sélectionnez un espace pour convertir ce message en une page de son wiki.</wikiTargetSpaceDescription>
     <convertingToWiki>Conversion du message en wiki...</convertingToWiki>
     <convertedToUserWiki>La page a été créée dans le wiki intranet</convertedToUserWiki>
-    <convertedToSpaceWiki>La page a été créée dans le wiki de l'espace {SPACE_NAME} </convertedToSpaceWiki>
+    <convertedToSpaceWiki>La page a été créée dans le wiki {SPACE_NAME}</convertedToSpaceWiki>
     <openWikiPage>Ouvrir la page wiki</openWikiPage>  
     
     <!-- Convert To Forum (TODO translate it) -->
-    <convertToForumDescription>This message can be converted to a forum topic. You need choose a target space, where it will be created in the space forum.</convertToForumDescription>
-    <forumTopicName>Topic name</forumTopicName>
-    <forumTopicNameDescription>This will be a name of your forum topic</forumTopicNameDescription>
-    <forumTopicText>Topic content</forumTopicText>
-    <forumTopicTextDescription>This will be a content of your forum topic</forumTopicTextDescription>
-    <forumTargetSpaceDescription>Your message will be converted to a topic in the space forum.</forumTargetSpaceDescription>
-    <convertingToForum>Converting message to forum topic...</convertingToForum>
-    <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
-    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME} space forum</convertedToSpaceForum>
-    <openForumPost>Open forum topic</openForumPost>
+    <convertToForumDescription>Ce message peut être converti en discussion de forum. Vous devez choisir un espace cible</convertToForumDescription>
+    <forumTopicName>Titre de la discussion</forumTopicName>
+    <forumTopicNameDescription>Ceci sera le titre de votre discussion de forum</forumTopicNameDescription>
+    <forumTopicText>Message</forumTopicText>
+    <forumTopicTextDescription>Ceci sera le contenu du premier message de la discussion</forumTopicTextDescription>
+    <forumTargetSpaceDescription>Votre message sera converti en discussion dans le forum de cet espace.</forumTargetSpaceDescription>
+    <convertingToForum>Conversion du message en discussion...</convertingToForum>
+    <convertedToUserForum>La discussion a été démarrée avec succès dans le forum de l'intranet</convertedToUserForum>
+    <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}</convertedToSpaceForum>
+    <openForumPost>Ouvrir la discussion</openForumPost>
     
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
