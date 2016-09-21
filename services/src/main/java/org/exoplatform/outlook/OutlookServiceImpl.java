@@ -79,6 +79,7 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -90,6 +91,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.url.navigation.NavigationResource;
@@ -480,8 +482,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
-      String safeText = safeHtml(text);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, safeText);
+      String safeText = safeActivityMessage(text);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             PeopleService.PEOPLE_APP_ID,
+                                                             safeText,
+                                                             null);
+      // XXX we do like done UIDefaultActivityComposer
+      activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+
       socialActivityManager.saveActivityNoReturn(userIdentity, activity);
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
@@ -744,10 +752,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
-      String safeText = safeHtml(text);
+      String safeText = safeActivityMessage(text);
       ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                                              SpaceActivityPublisher.SPACE_APP_ID,
-                                                             safeText);
+                                                             safeText,
+                                                             null);
+      // XXX we do like done UIDefaultActivityComposer
+      activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+
       socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
@@ -2421,10 +2433,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return sanitized content
    */
   protected String safeHtml(String content) {
-    // TODO
-    // String safe = Jsoup.clean(content, Whitelist.relaxed());
-    // return safe;
-    return content;
+    String safe = Jsoup.clean(content,
+                              Whitelist.relaxed()
+                                       .addAttributes("td", "align", "bgcolor", "valign", "width", "style", "colspan", "rowspan", "height")
+                                       .addAttributes("table", "align", "border", "cellpadding", "cellspacing", "width", "style"));
+    return safe;
   }
 
   /**
@@ -2435,6 +2448,33 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected String safeText(String content) {
     String safe = Jsoup.clean(content, Whitelist.none());
+    return safe;
+  }
+
+  /**
+   * Allow only activity tags as described in
+   * https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.
+   * html.
+   * 
+   * @param content
+   * @return allowed content
+   */
+  protected String safeActivityMessage(String text) {
+    String safe = Jsoup.clean(text,
+                              Whitelist.none().addTags("b",
+                                                       "i",
+                                                       "a",
+                                                       "span",
+                                                       "em",
+                                                       "strong",
+                                                       "p",
+                                                       "ol",
+                                                       "ul",
+                                                       "li",
+                                                       "br",
+                                                       "img",
+                                                       "blockquote",
+                                                       "q"));
     return safe;
   }
 
@@ -2583,7 +2623,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topicContent.append(message);
       topicContent.append("</div></div>");
       message = topicContent.toString();
-      ////
+      //
 
       topic.setDescription(message);
       topic.setLink(link);

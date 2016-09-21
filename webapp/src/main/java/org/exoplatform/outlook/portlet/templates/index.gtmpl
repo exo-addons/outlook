@@ -38,12 +38,13 @@
 		<ul class="brandBar ms-font-m">
 			<li class="brand">
 				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover brandLink" href="/portal" target="_blank">
-					<img src="/outlook/images/exo-icon-24.png" class="brandIcon"><span class="brandTitle">eXo Platform</span>
+					<img src="/outlook/images/exo-icon-24.png"><span class="brandTitle">eXo Platform</span>
 				</a>
 			</li>
 			<li class="showLogout">
-				<a class="ms-Link showLogoutLink" href="javascript:void(0);" target="_self">
-					<i title="&{Outlook.logout}" class="uiIconPLFLogout ms-fontColor-yellow ms-fontColor-yellow--hover"></i>
+				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover showLogoutLink" href="javascript:void(0);" target="_self">
+					<img src="/outlook/images/16x16/logout-gray-yellow.png" class="showLogoutIcon"><span class="showLogoutTitle">&{Outlook.disconnect}</span>
+					<!-- i title="&{Outlook.logout}" class="uiIconPLFLogout ms-fontColor-yellow ms-fontColor-yellow--hover"></i><span>&{Outlook.disconnect}</span -->
 				</a>
 			</li>
 		</ul>

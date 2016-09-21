@@ -98,9 +98,24 @@ body {
 	color: #ffb900;
 }
 
+/*.showLogoutLink i {
+	margin-right: 3px;
+	margin-top: 3px;
+}*/
+
 .showLogout {
 	float: right;	
 	margin-top: 2px;
+}
+
+.showLogoutTitle {
+	vertical-align: text-bottom;
+}
+
+.showLogoutIcon {
+	float: right;
+	margin-left: 3px;
+	margin-top: 3px;
 }
 
 .firstFeatureRow {
@@ -345,6 +360,10 @@ div.form-buttons {
 
 .statusField {
 	margin-bottom: 0px;
+}
+
+.statusField label.ms-Label {
+	pointer-events: none;
 }
 
 #outlook-pane .ms-MessageBar {

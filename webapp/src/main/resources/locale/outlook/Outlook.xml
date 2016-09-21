@@ -25,6 +25,7 @@
     <logout>Logout</logout>
     <logoutTitle>Logout eXo Platform</logoutTitle>
     <logoutQuestion>Do you want logout eXo Platform portal?</logoutQuestion>
+    <disconnect>Disconnect</disconnect>
     
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
