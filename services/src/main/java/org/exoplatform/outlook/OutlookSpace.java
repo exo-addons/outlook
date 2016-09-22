@@ -44,10 +44,13 @@ public abstract class OutlookSpace {
 
   protected final String shortName;
 
-  public OutlookSpace(String groupId, String title, String shortName) {
+  protected final String prettyName;
+
+  public OutlookSpace(String groupId, String title, String shortName, String prettyName) {
     this.groupId = groupId;
     this.title = title;
     this.shortName = shortName;
+    this.prettyName = prettyName;
   }
 
   /**
@@ -71,6 +74,13 @@ public abstract class OutlookSpace {
     return shortName;
   }
 
+  /**
+   * @return the prettyName
+   */
+  public String getPrettyName() {
+    return prettyName;
+  }
+
   public abstract Folder getFolder(String path) throws OutlookException, RepositoryException;
 
   public abstract Folder getRootFolder() throws OutlookException, RepositoryException;
@@ -78,7 +88,7 @@ public abstract class OutlookSpace {
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws Exception;
 
   public abstract ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception;
-  
+
   public abstract ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception;
 
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;

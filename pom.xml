@@ -51,6 +51,8 @@
     
     <!-- Third-parties -->
     <org.jsoup.version>1.9.2</org.jsoup.version>
+    <!-- 20160827.1 latest version of sanitizer as on Sep 21 2016, but PLF 4.4 deps mngt uses the below version in 12-M07 -->
+    <com.googlecode.owasp-java-html-sanitizer.version>20160413.1</com.googlecode.owasp-java-html-sanitizer.version>
       
     <!-- for tests -->
     <junit.version>4.12</junit.version>
@@ -104,6 +106,12 @@
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
         <version>${org.jsoup.version}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+        <artifactId>owasp-java-html-sanitizer</artifactId>
+        <version>${com.googlecode.owasp-java-html-sanitizer.version}</version>
         <type>jar</type>
       </dependency>
       
