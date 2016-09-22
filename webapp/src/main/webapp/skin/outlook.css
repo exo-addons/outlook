@@ -369,3 +369,11 @@ div.form-buttons {
 #outlook-pane .ms-MessageBar {
 	width: 100%;
 }
+
+.outlookMenu {
+	padding-right: 5px;
+}
+
+.outlookGroupMenu .ms-ContextualMenu {
+	min-width: 220px;
+}
