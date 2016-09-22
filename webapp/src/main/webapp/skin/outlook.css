@@ -98,9 +98,24 @@ body {
 	color: #ffb900;
 }
 
+/*.showLogoutLink i {
+	margin-right: 3px;
+	margin-top: 3px;
+}*/
+
 .showLogout {
 	float: right;	
 	margin-top: 2px;
+}
+
+.showLogoutTitle {
+	vertical-align: text-bottom;
+}
+
+.showLogoutIcon {
+	float: right;
+	margin-left: 3px;
+	margin-top: 3px;
 }
 
 .firstFeatureRow {
@@ -327,11 +342,28 @@ div.form-buttons {
 	background: linear-gradient(transparent 25px, white);
 }
 
-.messageEditor {
+.messageEditor, .statusText {
 	height: 200px;
-	max-height: 250px;
 	overflow: auto;
 	padding: 0px;
+}
+
+.messageEditor {
+	max-height: 250px;
+}
+
+.statusText {
+	max-height: 75px;
+	padding: 5px;
+	line-height: 14px;
+}
+
+.statusField {
+	margin-bottom: 0px;
+}
+
+.statusField label.ms-Label {
+	pointer-events: none;
 }
 
 #outlook-pane .ms-MessageBar {

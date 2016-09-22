@@ -86,9 +86,11 @@
                     <Description resid="addAttachmentTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="attachment-16" />
+                    <bt:Image size="24" resid="attachment-24" />
+                    <bt:Image size="32" resid="attachment-32" />
+                    <bt:Image size="64" resid="attachment-64" />
+                    <bt:Image size="80" resid="attachment-80" />
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="addAttachmentUrl" />
@@ -102,9 +104,11 @@
                     <Description resid="searchTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="search-16" />
+                    <bt:Image size="24" resid="search-24" />
+                    <bt:Image size="32" resid="search-32" />
+                    <bt:Image size="64" resid="search-64" />
+                    <bt:Image size="80" resid="search-80" />
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="searchUrl" />
@@ -118,9 +122,11 @@
                     <Description resid="createMenuTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="create-16" />
+                    <bt:Image size="24" resid="create-24" />
+                    <bt:Image size="32" resid="create-32" />
+                    <bt:Image size="64" resid="create-64" />
+                    <bt:Image size="80" resid="create-80" />
                   </Icon>
                   <Items>
                     <Item id="composePostStatus">
@@ -130,9 +136,11 @@
                         <Description resid="postStatusTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="create-activity-16" />
+                        <bt:Image size="24" resid="create-activity-24" />
+                        <bt:Image size="32" resid="create-activity-32" />
+                        <bt:Image size="64" resid="create-activity-64" />
+                        <bt:Image size="80" resid="create-activity-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="postStatusUrl" />
@@ -145,9 +153,11 @@
                         <Description resid="startDiscussionTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="create-discussion-16" />
+                        <bt:Image size="24" resid="create-discussion-24" />
+                        <bt:Image size="32" resid="create-discussion-32" />
+                        <bt:Image size="64" resid="create-discussion-64" />
+                        <bt:Image size="80" resid="create-discussion-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="startDiscussionUrl" />
@@ -163,9 +173,11 @@
                     <Description resid="userInfoTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="users-16" />
+                    <bt:Image size="24" resid="users-24" />
+                    <bt:Image size="32" resid="users-32" />
+                    <bt:Image size="64" resid="users-64" />
+                    <bt:Image size="80" resid="users-80" />
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
@@ -180,22 +192,6 @@
             <OfficeTab id="TabDefault">
               <Group id="readGroup">
                 <Label resid="groupLabel" />
-                <!-- Save Attachments: task pane button -->
-                <!-- Control xsi:type="Button" id="readSaveAttachmentButton">
-                  <Label resid="saveAttachmentLabel" />
-                  <Supertip>
-                    <Title resid="saveAttachmentTipTitle" />
-                    <Description resid="saveAttachmentTipDescription" />
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
-                  </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="saveAttachmentUrl" />
-                  </Action>
-                </Control -->
                 <!-- Convert to: Menu (dropdown) button -->
                 <Control xsi:type="Menu" id="readConvertMenuButton">
                   <Label resid="convertMenuLabel" />
@@ -204,9 +200,11 @@
                     <Description resid="convertMenuTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="convert-16" />
+                    <bt:Image size="24" resid="convert-24" />
+                    <bt:Image size="32" resid="convert-32" />
+                    <bt:Image size="64" resid="convert-64" />
+                    <bt:Image size="80" resid="convert-80" />
                   </Icon>
                   <Items>
                     <Item id="readConvertToStatus">
@@ -216,9 +214,11 @@
                         <Description resid="convertToStatusTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="convert-activity-16" />
+                        <bt:Image size="24" resid="convert-activity-24" />
+                        <bt:Image size="32" resid="convert-activity-32" />
+                        <bt:Image size="64" resid="convert-activity-64" />
+                        <bt:Image size="80" resid="convert-activity-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="convertToStatusUrl" />
@@ -231,9 +231,11 @@
                         <Description resid="convertToWikiTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="convert-wiki-16" />
+                        <bt:Image size="24" resid="convert-wiki-24" />
+                        <bt:Image size="32" resid="convert-wiki-32" />
+                        <bt:Image size="64" resid="convert-wiki-64" />
+                        <bt:Image size="80" resid="convert-wiki-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="convertToWikiUrl" />
@@ -246,9 +248,11 @@
                         <Description resid="convertToForumTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="convert-forum-16" />
+                        <bt:Image size="24" resid="convert-forum-24" />
+                        <bt:Image size="32" resid="convert-forum-32" />
+                        <bt:Image size="64" resid="convert-forum-64" />
+                        <bt:Image size="80" resid="convert-forum-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="convertToForumUrl" />
@@ -264,9 +268,11 @@
                     <Description resid="searchTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="search-16" />
+                    <bt:Image size="24" resid="search-24" />
+                    <bt:Image size="32" resid="search-32" />
+                    <bt:Image size="64" resid="search-64" />
+                    <bt:Image size="80" resid="search-80" />
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="searchUrl" />
@@ -280,9 +286,11 @@
                     <Description resid="createMenuTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="create-16" />
+                    <bt:Image size="24" resid="create-24" />
+                    <bt:Image size="32" resid="create-32" />
+                    <bt:Image size="64" resid="create-64" />
+                    <bt:Image size="80" resid="create-80" />
                   </Icon>
                   <Items>
                     <Item id="readPostStatus">
@@ -292,9 +300,11 @@
                         <Description resid="postStatusTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="create-activity-16" />
+                        <bt:Image size="24" resid="create-activity-24" />
+                        <bt:Image size="32" resid="create-activity-32" />
+                        <bt:Image size="64" resid="create-activity-64" />
+                        <bt:Image size="80" resid="create-activity-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="postStatusUrl" />
@@ -307,9 +317,11 @@
                         <Description resid="startDiscussionTipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="exo-icon-16" />
-                        <bt:Image size="32" resid="exo-icon-32" />
-                        <bt:Image size="80" resid="exo-icon-80" />
+                        <bt:Image size="16" resid="create-discussion-16" />
+                        <bt:Image size="24" resid="create-discussion-24" />
+                        <bt:Image size="32" resid="create-discussion-32" />
+                        <bt:Image size="64" resid="create-discussion-64" />
+                        <bt:Image size="80" resid="create-discussion-80" />
                       </Icon>
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="startDiscussionUrl" />
@@ -325,9 +337,11 @@
                     <Description resid="userInfoTipDescription" />
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="exo-icon-16" />
-                    <bt:Image size="32" resid="exo-icon-32" />
-                    <bt:Image size="80" resid="exo-icon-80" />
+                    <bt:Image size="16" resid="users-16" />
+                    <bt:Image size="24" resid="users-24" />
+                    <bt:Image size="32" resid="users-32" />
+                    <bt:Image size="64" resid="users-64" />
+                    <bt:Image size="80" resid="users-80" />
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
@@ -346,6 +360,66 @@
         <bt:Image id="exo-icon-16" DefaultValue="https://your-portal.com/outlook/images/exo-icon-16.png"/>
         <bt:Image id="exo-icon-32" DefaultValue="https://your-portal.com/outlook/images/exo-icon-32.png"/>
         <bt:Image id="exo-icon-80" DefaultValue="https://your-portal.com/outlook/images/exo-icon-80.png"/>
+        
+        <bt:Image id="attachment-16" DefaultValue="https://your-portal.com/outlook/images/16x16/attachment.png"/>
+        <bt:Image id="attachment-24" DefaultValue="https://your-portal.com/outlook/images/24x24/attachment.png"/>
+        <bt:Image id="attachment-32" DefaultValue="https://your-portal.com/outlook/images/32x32/attachment.png"/>
+        <bt:Image id="attachment-64" DefaultValue="https://your-portal.com/outlook/images/64x64/attachment.png"/>
+        <bt:Image id="attachment-80" DefaultValue="https://your-portal.com/outlook/images/80x80/attachment.png"/>
+        
+        <bt:Image id="search-16" DefaultValue="https://your-portal.com/outlook/images/16x16/search.png"/>
+        <bt:Image id="search-24" DefaultValue="https://your-portal.com/outlook/images/24x24/search.png"/>
+        <bt:Image id="search-32" DefaultValue="https://your-portal.com/outlook/images/32x32/search.png"/>
+        <bt:Image id="search-64" DefaultValue="https://your-portal.com/outlook/images/64x64/search.png"/>
+        <bt:Image id="search-80" DefaultValue="https://your-portal.com/outlook/images/80x80/search.png"/>
+
+        <bt:Image id="create-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create.png"/>
+        <bt:Image id="create-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create.png"/>
+        <bt:Image id="create-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create.png"/>
+        <bt:Image id="create-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create.png"/>
+        <bt:Image id="create-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create.png"/>
+
+        <bt:Image id="create-activity-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create-activity.png"/>
+        <bt:Image id="create-activity-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create-activity.png"/>
+        <bt:Image id="create-activity-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create-activity.png"/>
+        <bt:Image id="create-activity-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create-activity.png"/>
+        <bt:Image id="create-activity-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create-activity.png"/>
+
+        <bt:Image id="create-discussion-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create-discussion.png"/>
+        <bt:Image id="create-discussion-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create-discussion.png"/>
+        <bt:Image id="create-discussion-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create-discussion.png"/>
+        <bt:Image id="create-discussion-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create-discussion.png"/>
+        <bt:Image id="create-discussion-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create-discussion.png"/>
+        
+        <bt:Image id="users-16" DefaultValue="https://your-portal.com/outlook/images/16x16/users.png"/>
+        <bt:Image id="users-24" DefaultValue="https://your-portal.com/outlook/images/24x24/users.png"/>
+        <bt:Image id="users-32" DefaultValue="https://your-portal.com/outlook/images/32x32/users.png"/>
+        <bt:Image id="users-64" DefaultValue="https://your-portal.com/outlook/images/64x64/users.png"/>
+        <bt:Image id="users-80" DefaultValue="https://your-portal.com/outlook/images/80x80/users.png"/>
+        
+        <bt:Image id="convert-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert.png"/>
+        <bt:Image id="convert-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert.png"/>
+        <bt:Image id="convert-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert.png"/>
+        <bt:Image id="convert-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert.png"/>
+        <bt:Image id="convert-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert.png"/>
+        
+        <bt:Image id="convert-activity-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-activity.png"/>
+        <bt:Image id="convert-activity-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-activity.png"/>
+        <bt:Image id="convert-activity-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-activity.png"/>
+        <bt:Image id="convert-activity-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-activity.png"/>
+        <bt:Image id="convert-activity-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-activity.png"/>
+        
+        <bt:Image id="convert-wiki-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-wiki.png"/>
+        
+        <bt:Image id="convert-forum-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-forum.png"/>
+        <bt:Image id="convert-forum-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-forum.png"/>
+        <bt:Image id="convert-forum-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-forum.png"/>
+        <bt:Image id="convert-forum-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-forum.png"/>
+        <bt:Image id="convert-forum-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-forum.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="functionFile" DefaultValue="https://your-portal.com/outlook/login/menu"/>

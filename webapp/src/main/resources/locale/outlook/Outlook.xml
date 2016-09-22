@@ -22,7 +22,7 @@
     </command>
 
     <!-- Common -->
-    <logout>Logout</logout>
+    <logout>Log out</logout>
     <logoutTitle>Log out of the eXo intranet</logoutTitle>
     <logoutQuestion>Do you want log out of your eXo intranet?</logoutQuestion>
     
@@ -113,8 +113,14 @@
     <openForumPost>Open forum topic</openForumPost>
     
     <!-- Post A Status -->
+    <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
+    <activityMessage>Status update</activityMessage>
+    <activityMessagePlaceholder>Type your message here</activityMessagePlaceholder>
+    <activityMessageDescription>This will be displayed as your status in the activity stream</activityMessageDescription>
     <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
     <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
+    <post>Share</post>
+    <postingStatus>Posting your status update...</postingStatus>
     
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>

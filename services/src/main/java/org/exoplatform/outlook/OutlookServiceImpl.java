@@ -19,6 +19,7 @@ package org.exoplatform.outlook;
 import com.ibm.icu.text.Transliterator;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.entity.ContentType;
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
@@ -79,6 +80,7 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
+import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
@@ -90,6 +92,7 @@ import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.Utils;
+import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.url.navigation.NavigationResource;
@@ -104,8 +107,9 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.picocontainer.Startable;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -136,6 +140,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
@@ -475,6 +481,28 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
+    public ExoSocialActivity postActivity(String text) throws Exception {
+      // post activity to user status stream
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      String safeText = safeActivityMessage(text);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             PeopleService.PEOPLE_APP_ID,
+                                                             safeText,
+                                                             null);
+      // XXX we do like done UIDefaultActivityComposer
+      activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+
+      socialActivityManager.saveActivityNoReturn(userIdentity, activity);
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page addWikiPage(OutlookMessage message) throws Exception {
       String wikiType = PortalConfig.PORTAL_TYPE;
       String creator = message.getUser().getLocalUser();
@@ -575,7 +603,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     protected final ActivityManager         socialActivityManager;
 
     protected OutlookSpaceImpl(Space socialSpace) throws RepositoryException, OutlookException {
-      super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName());
+      super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName(), socialSpace.getPrettyName());
       this.rootPath = groupDocsPath(groupId);
       this.socialIdentityManager = socialIdentityManager();
       this.socialActivityManager = socialActivityManager();
@@ -658,6 +686,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
       // post activity to space status stream under current user
+      // TODO cleanup or use instead of file activity
       // Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
       // this.groupId,
       // true);
@@ -703,7 +732,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception {
       // post activity to space status stream under current user
-      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.groupId, true);
+      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.prettyName, true);
       Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                         currentUserId(),
                                                                         true);
@@ -713,6 +742,29 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                              SpaceActivityPublisher.SPACE_APP_ID,
                                                              safeTitle,
                                                              safeBody);
+      socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
+      activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
+      return activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception {
+      // post activity to space status stream under current user
+      Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.prettyName, true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                        currentUserId(),
+                                                                        true);
+      String safeText = safeActivityMessage(text);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
+                                                             SpaceActivityPublisher.SPACE_APP_ID,
+                                                             safeText,
+                                                             null);
+      // XXX we do like done UIDefaultActivityComposer
+      activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
+
       socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
       activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
       return activity;
@@ -792,21 +844,89 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected final ResourceBundleService                       resourceBundleService;
 
-  protected String                                            trashHomePath;
+  protected final PolicyFactory                               htmlPolicy     = Sanitizers.BLOCKS.and(Sanitizers.FORMATTING)
+                                                                                                .and(Sanitizers.IMAGES)
+                                                                                                .and(Sanitizers.LINKS)
+                                                                                                .and(Sanitizers.TABLES)
+                                                                                                // with extra
+                                                                                                // attributes
+                                                                                                // for tables
+                                                                                                // (MS loves
+                                                                                                // to use them
+                                                                                                // for HTML
+                                                                                                // re-formating)
+                                                                                                .and(new HtmlPolicyBuilder().allowStandardUrlProtocols()
+                                                                                                                            .allowElements("table",
+                                                                                                                                           "th",
+                                                                                                                                           "tr",
+                                                                                                                                           "td")
+                                                                                                                            .allowAttributes("border",
+                                                                                                                                             "cellpadding",
+                                                                                                                                             "cellspacing",
+                                                                                                                                             "width",
+                                                                                                                                             "height")
+                                                                                                                            .onElements("table")
+                                                                                                                            .allowAttributes("bgcolor",
+                                                                                                                                             "width",
+                                                                                                                                             "height",
+                                                                                                                                             "colspan",
+                                                                                                                                             "rowspan")
+                                                                                                                            .onElements("td",
+                                                                                                                                        "tr",
+                                                                                                                                        "th")
+                                                                                                                            .toFactory())
+                                                                                                .and(Sanitizers.STYLES);
+
+  protected final PolicyFactory                               textPolicy     = new HtmlPolicyBuilder().toFactory();
+
+  /**
+   * Custom policy to allow supported elements in activity text as described in
+   * <a href=
+   * "https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.html">
+   * Platform User Guide</a>
+   */
+  protected final PolicyFactory                               activityPolicy = new HtmlPolicyBuilder().allowUrlProtocols("http",
+                                                                                                                         "https")
+                                                                                                      .allowElements("b",
+                                                                                                                     "i",
+                                                                                                                     "a",
+                                                                                                                     "span",
+                                                                                                                     "em",
+                                                                                                                     "strong",
+                                                                                                                     "p",
+                                                                                                                     "ol",
+                                                                                                                     "ul",
+                                                                                                                     "li",
+                                                                                                                     "br",
+                                                                                                                     "img",
+                                                                                                                     "blockquote",
+                                                                                                                     "q")
+                                                                                                      .allowAttributes("href")
+                                                                                                      .onElements("a")
+                                                                                                      .allowAttributes("target")
+                                                                                                      .matching(true,
+                                                                                                                "_blank")
+                                                                                                      .onElements("a")
+                                                                                                      .allowAttributes("alt",
+                                                                                                                       "src")
+                                                                                                      .onElements("img")
+                                                                                                      .toFactory();
 
   /**
    * Authenticated users.
    */
-  protected final ConcurrentHashMap<String, OutlookUser>      authenticated = new ConcurrentHashMap<String, OutlookUser>();
+  protected final ConcurrentHashMap<String, OutlookUser>      authenticated  = new ConcurrentHashMap<String, OutlookUser>();
 
   /**
    * Spaces cache.
    * TODO There is an issue with threads when different requests reuse them. Space's root node may be already
    * invalid. See also in getRootFolder().
    */
-  protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces        = new ConcurrentHashMap<String, OutlookSpaceImpl>();
+  protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces         = new ConcurrentHashMap<String, OutlookSpaceImpl>();
 
   protected MailAPI                                           mailserverApi;
+
+  protected String                                            trashHomePath;
 
   /**
    * Outlook service with storage in JCR and with managed features.
@@ -2387,9 +2507,76 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected String safeHtml(String content) {
     // TODO
-    // String safe = Jsoup.clean(content, Whitelist.relaxed());
-    // return safe;
-    return content;
+    // String safe = Jsoup.clean(content,
+    // Whitelist.relaxed()
+    // .addAttributes("td",
+    // "align",
+    // "bgcolor",
+    // "valign",
+    // "width",
+    // "style",
+    // "colspan",
+    // "rowspan",
+    // "height")
+    // .addAttributes("table",
+    // "align",
+    // "border",
+    // "cellpadding",
+    // "cellspacing",
+    // "width",
+    // "style"));
+
+    String safe = htmlPolicy.sanitize(content);
+
+    // Make all links target a new window
+    // Replace in all links with target attribute to its _blank value
+    Pattern linkWithTarget = Pattern.compile("<a(?=\\s|>).*?(target=['\"].*?['\"])[^>]*>.*?<\\/a>",
+                                             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+    Matcher m = linkWithTarget.matcher(safe);
+    StringBuilder sb = new StringBuilder();
+    int pos = 0;
+    while (m.find()) {
+      int start = m.start(1);
+      int end = m.end(1);
+      if (start >= 0 && end >= 0) {
+        // sb.replace(m.start(1), m.end(1), "target=\"_blank\"");
+        sb.append(safe.substring(pos, start));
+        sb.append("target=\"_blank\"");
+        pos = end;
+      } else {
+        LOG.warn("Cannot find link target group in " + m.group(1));
+      }
+    }
+    if (pos < safe.length()) {
+      sb.append(safe.substring(pos));
+    }
+    safe = sb.toString();
+
+    // Add in all links without target attribute add it with _blank value
+    Pattern linkWithoutTarget = Pattern.compile("<a(?=\\s)(?:(?!target=).)*?([.\\W\\w\\S\\s[^>]])*?(>)",
+                                                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+    m = linkWithoutTarget.matcher(safe);
+    sb = new StringBuilder();
+    pos = 0;
+    while (m.find()) {
+      int start = m.start(2);
+      int end = m.end(2);
+      if (start >= 0 && end >= 0) {// sb.toString().substring(start - 5, start + 100);
+        // sb.insert(start, " target=\"_blank\"");
+        sb.append(safe.substring(pos, start));
+        sb.append(" target=\"_blank\"");
+        sb.append(safe.substring(start, end));
+        pos = end;
+      } else {
+        LOG.warn("Cannot find link end group in " + m.group(2));
+      }
+    }
+    if (pos < safe.length()) {
+      sb.append(safe.substring(pos));
+    }
+    safe = sb.toString();
+
+    return safe;
   }
 
   /**
@@ -2399,7 +2586,42 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return sanitized content (as plain text)
    */
   protected String safeText(String content) {
-    String safe = Jsoup.clean(content, Whitelist.none());
+    // TODO
+    // String safe = Jsoup.clean(content, Whitelist.none());
+
+    String safe = textPolicy.sanitize(content);
+    safe = StringEscapeUtils.unescapeHtml(safe);
+    return safe;
+  }
+
+  /**
+   * Allow only activity tags as described in
+   * https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.
+   * html.
+   * 
+   * @param content
+   * @return allowed content
+   */
+  protected String safeActivityMessage(String text) {
+    // TODO
+    // String safe = Jsoup.clean(text,
+    // Whitelist.none().addTags("b",
+    // "i",
+    // "a",
+    // "span",
+    // "em",
+    // "strong",
+    // "p",
+    // "ol",
+    // "ul",
+    // "li",
+    // "br",
+    // "img",
+    // "blockquote",
+    // "q"));
+
+    String safe = activityPolicy.sanitize(text);
+    safe = StringEscapeUtils.unescapeHtml(safe);
     return safe;
   }
 
@@ -2487,7 +2709,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                        "&lt;/script>");
       // remove any meta tags explicitly existing in the content
       message = message.replaceAll("<meta.*?>", "");
-      // remove all embedded global styles 
+      // remove all embedded global styles
       message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
@@ -2524,7 +2746,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       // set link
       // FYI this origjnal Forum code will use current "outlook" portlet path to build the link
-      //ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
+      // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
       //
       safeTitle = StringCommonUtils.encodeScriptMarkup(safeTitle);
@@ -2533,7 +2755,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topic.setModifiedDate(currentDate);
       // TODO do we need this? encode XSS script
       message = StringCommonUtils.encodeScriptMarkup(message);
-      
+
       // add message quote:
       StringBuilder topicContent = new StringBuilder();
       if (summary != null) {
@@ -2548,8 +2770,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topicContent.append(message);
       topicContent.append("</div></div>");
       message = topicContent.toString();
-      ////
-      
+      //
+
       topic.setDescription(message);
       topic.setLink(link);
       if (whenNewPost) {

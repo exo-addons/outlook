@@ -107,6 +107,16 @@
     <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}</convertedToSpaceForum>
     <openForumPost>Ouvrir la discussion</openForumPost>
     
+    <!-- Post A Status (TODO translate it) -->
+    <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
+    <activityMessage>Status update</activityMessage>
+    <activityMessagePlaceholder>Type your message here</activityMessagePlaceholder>
+    <activityMessageDescription>This will be displayed as your status in the activity stream</activityMessageDescription>
+    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
+    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
+    <post>Share</post>
+    <postingStatus>Posting your status update...</postingStatus>
+    
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
       <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
