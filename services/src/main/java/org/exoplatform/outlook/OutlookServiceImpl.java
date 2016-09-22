@@ -844,40 +844,44 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected final ResourceBundleService                       resourceBundleService;
 
-  protected final PolicyFactory                               htmlPolicy     = Sanitizers.BLOCKS.and(Sanitizers.FORMATTING)
-                                                                                                .and(Sanitizers.IMAGES)
-                                                                                                .and(Sanitizers.LINKS)
-                                                                                                .and(Sanitizers.TABLES)
-                                                                                                // with extra
-                                                                                                // attributes
-                                                                                                // for tables
-                                                                                                // (MS loves
-                                                                                                // to use them
-                                                                                                // for HTML
-                                                                                                // re-formating)
-                                                                                                .and(new HtmlPolicyBuilder().allowStandardUrlProtocols()
-                                                                                                                            .allowElements("table",
-                                                                                                                                           "th",
+  protected final PolicyFactory                               htmlPolicy        = Sanitizers.BLOCKS.and(Sanitizers.FORMATTING)
+                                                                                                   .and(Sanitizers.IMAGES)
+                                                                                                   .and(Sanitizers.LINKS)
+                                                                                                   .and(Sanitizers.TABLES)
+                                                                                                   // with
+                                                                                                   // extra
+                                                                                                   // attributes
+                                                                                                   // for
+                                                                                                   // tables
+                                                                                                   // (MS
+                                                                                                   // loves
+                                                                                                   // to use
+                                                                                                   // them
+                                                                                                   // for HTML
+                                                                                                   // re-formating)
+                                                                                                   .and(new HtmlPolicyBuilder().allowStandardUrlProtocols()
+                                                                                                                               .allowElements("table",
+                                                                                                                                              "th",
+                                                                                                                                              "tr",
+                                                                                                                                              "td")
+                                                                                                                               .allowAttributes("border",
+                                                                                                                                                "cellpadding",
+                                                                                                                                                "cellspacing",
+                                                                                                                                                "width",
+                                                                                                                                                "height")
+                                                                                                                               .onElements("table")
+                                                                                                                               .allowAttributes("bgcolor",
+                                                                                                                                                "width",
+                                                                                                                                                "height",
+                                                                                                                                                "colspan",
+                                                                                                                                                "rowspan")
+                                                                                                                               .onElements("td",
                                                                                                                                            "tr",
-                                                                                                                                           "td")
-                                                                                                                            .allowAttributes("border",
-                                                                                                                                             "cellpadding",
-                                                                                                                                             "cellspacing",
-                                                                                                                                             "width",
-                                                                                                                                             "height")
-                                                                                                                            .onElements("table")
-                                                                                                                            .allowAttributes("bgcolor",
-                                                                                                                                             "width",
-                                                                                                                                             "height",
-                                                                                                                                             "colspan",
-                                                                                                                                             "rowspan")
-                                                                                                                            .onElements("td",
-                                                                                                                                        "tr",
-                                                                                                                                        "th")
-                                                                                                                            .toFactory())
-                                                                                                .and(Sanitizers.STYLES);
+                                                                                                                                           "th")
+                                                                                                                               .toFactory())
+                                                                                                   .and(Sanitizers.STYLES);
 
-  protected final PolicyFactory                               textPolicy     = new HtmlPolicyBuilder().toFactory();
+  protected final PolicyFactory                               textPolicy        = new HtmlPolicyBuilder().toFactory();
 
   /**
    * Custom policy to allow supported elements in activity text as described in
@@ -885,44 +889,54 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * "https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.html">
    * Platform User Guide</a>
    */
-  protected final PolicyFactory                               activityPolicy = new HtmlPolicyBuilder().allowUrlProtocols("http",
-                                                                                                                         "https")
-                                                                                                      .allowElements("b",
-                                                                                                                     "i",
-                                                                                                                     "a",
-                                                                                                                     "span",
-                                                                                                                     "em",
-                                                                                                                     "strong",
-                                                                                                                     "p",
-                                                                                                                     "ol",
-                                                                                                                     "ul",
-                                                                                                                     "li",
-                                                                                                                     "br",
-                                                                                                                     "img",
-                                                                                                                     "blockquote",
-                                                                                                                     "q")
-                                                                                                      .allowAttributes("href")
-                                                                                                      .onElements("a")
-                                                                                                      .allowAttributes("target")
-                                                                                                      .matching(true,
-                                                                                                                "_blank")
-                                                                                                      .onElements("a")
-                                                                                                      .allowAttributes("alt",
-                                                                                                                       "src")
-                                                                                                      .onElements("img")
-                                                                                                      .toFactory();
+  protected final PolicyFactory                               activityPolicy    = new HtmlPolicyBuilder().allowUrlProtocols("http",
+                                                                                                                            "https")
+                                                                                                         .allowElements("b",
+                                                                                                                        "i",
+                                                                                                                        "a",
+                                                                                                                        "span",
+                                                                                                                        "em",
+                                                                                                                        "strong",
+                                                                                                                        "p",
+                                                                                                                        "ol",
+                                                                                                                        "ul",
+                                                                                                                        "li",
+                                                                                                                        "br",
+                                                                                                                        "img",
+                                                                                                                        "blockquote",
+                                                                                                                        "q")
+                                                                                                         .allowAttributes("href")
+                                                                                                         .onElements("a")
+                                                                                                         .allowAttributes("target")
+                                                                                                         .matching(true,
+                                                                                                                   "_blank")
+                                                                                                         .onElements("a")
+                                                                                                         .allowAttributes("alt",
+                                                                                                                          "src")
+                                                                                                         .onElements("img")
+                                                                                                         .toFactory();
+
+  protected final Pattern                                     linkWithTarget    = Pattern.compile("<a(?=\\s|>).*?(target=['\"].*?['\"])[^>]*>.*?<\\/a>",
+                                                                                                  Pattern.CASE_INSENSITIVE
+                                                                                                      | Pattern.MULTILINE
+                                                                                                      | Pattern.DOTALL);
+
+  protected final Pattern                                     linkWithoutTarget = Pattern.compile("<a(?=\\s)(?:(?!target=).)*?([.\\W\\w\\S\\s[^>]])*?(>)",
+                                                                                                  Pattern.CASE_INSENSITIVE
+                                                                                                      | Pattern.MULTILINE
+                                                                                                      | Pattern.DOTALL);
 
   /**
    * Authenticated users.
    */
-  protected final ConcurrentHashMap<String, OutlookUser>      authenticated  = new ConcurrentHashMap<String, OutlookUser>();
+  protected final ConcurrentHashMap<String, OutlookUser>      authenticated     = new ConcurrentHashMap<String, OutlookUser>();
 
   /**
    * Spaces cache.
    * TODO There is an issue with threads when different requests reuse them. Space's root node may be already
    * invalid. See also in getRootFolder().
    */
-  protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces         = new ConcurrentHashMap<String, OutlookSpaceImpl>();
+  protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces            = new ConcurrentHashMap<String, OutlookSpaceImpl>();
 
   protected MailAPI                                           mailserverApi;
 
@@ -2506,76 +2520,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return sanitized content
    */
   protected String safeHtml(String content) {
-    // TODO
-    // String safe = Jsoup.clean(content,
-    // Whitelist.relaxed()
-    // .addAttributes("td",
-    // "align",
-    // "bgcolor",
-    // "valign",
-    // "width",
-    // "style",
-    // "colspan",
-    // "rowspan",
-    // "height")
-    // .addAttributes("table",
-    // "align",
-    // "border",
-    // "cellpadding",
-    // "cellspacing",
-    // "width",
-    // "style"));
-
     String safe = htmlPolicy.sanitize(content);
-
-    // Make all links target a new window
-    // Replace in all links with target attribute to its _blank value
-    Pattern linkWithTarget = Pattern.compile("<a(?=\\s|>).*?(target=['\"].*?['\"])[^>]*>.*?<\\/a>",
-                                             Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-    Matcher m = linkWithTarget.matcher(safe);
-    StringBuilder sb = new StringBuilder();
-    int pos = 0;
-    while (m.find()) {
-      int start = m.start(1);
-      int end = m.end(1);
-      if (start >= 0 && end >= 0) {
-        // sb.replace(m.start(1), m.end(1), "target=\"_blank\"");
-        sb.append(safe.substring(pos, start));
-        sb.append("target=\"_blank\"");
-        pos = end;
-      } else {
-        LOG.warn("Cannot find link target group in " + m.group(1));
-      }
-    }
-    if (pos < safe.length()) {
-      sb.append(safe.substring(pos));
-    }
-    safe = sb.toString();
-
-    // Add in all links without target attribute add it with _blank value
-    Pattern linkWithoutTarget = Pattern.compile("<a(?=\\s)(?:(?!target=).)*?([.\\W\\w\\S\\s[^>]])*?(>)",
-                                                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-    m = linkWithoutTarget.matcher(safe);
-    sb = new StringBuilder();
-    pos = 0;
-    while (m.find()) {
-      int start = m.start(2);
-      int end = m.end(2);
-      if (start >= 0 && end >= 0) {// sb.toString().substring(start - 5, start + 100);
-        // sb.insert(start, " target=\"_blank\"");
-        sb.append(safe.substring(pos, start));
-        sb.append(" target=\"_blank\"");
-        sb.append(safe.substring(start, end));
-        pos = end;
-      } else {
-        LOG.warn("Cannot find link end group in " + m.group(2));
-      }
-    }
-    if (pos < safe.length()) {
-      sb.append(safe.substring(pos));
-    }
-    safe = sb.toString();
-
+    safe = makeLinksOpenNewWindow(safe);
     return safe;
   }
 
@@ -2586,10 +2532,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return sanitized content (as plain text)
    */
   protected String safeText(String content) {
-    // TODO
-    // String safe = Jsoup.clean(content, Whitelist.none());
-
     String safe = textPolicy.sanitize(content);
+    safe = makeLinksOpenNewWindow(safe);
     safe = StringEscapeUtils.unescapeHtml(safe);
     return safe;
   }
@@ -2603,26 +2547,60 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @return allowed content
    */
   protected String safeActivityMessage(String text) {
-    // TODO
-    // String safe = Jsoup.clean(text,
-    // Whitelist.none().addTags("b",
-    // "i",
-    // "a",
-    // "span",
-    // "em",
-    // "strong",
-    // "p",
-    // "ol",
-    // "ul",
-    // "li",
-    // "br",
-    // "img",
-    // "blockquote",
-    // "q"));
-
     String safe = activityPolicy.sanitize(text);
+    safe = makeLinksOpenNewWindow(safe);
     safe = StringEscapeUtils.unescapeHtml(safe);
     return safe;
+  }
+
+  protected String makeLinksOpenNewWindow(String text) {
+    // Make all links target a new window
+    // Replace in all links with target attribute to its _blank value
+    Matcher m = linkWithTarget.matcher(text);
+    StringBuilder sb = new StringBuilder();
+    int pos = 0;
+    while (m.find()) {
+      int start = m.start(1);
+      int end = m.end(1);
+      if (start >= 0 && end >= 0) {
+        // sb.replace(m.start(1), m.end(1), "target=\"_blank\"");
+        sb.append(text.substring(pos, start));
+        sb.append("target=\"_blank\"");
+        pos = end;
+      } else {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Cannot find link target group in " + m.group(1));
+        }
+      }
+    }
+    if (pos < text.length()) {
+      sb.append(text.substring(pos));
+    }
+    text = sb.toString();
+
+    // Add in all links without target attribute add it with _blank value
+    m = linkWithoutTarget.matcher(text);
+    sb = new StringBuilder();
+    pos = 0;
+    while (m.find()) {
+      int start = m.start(2);
+      int end = m.end(2);
+      if (start >= 0 && end >= 0) {// sb.toString().substring(start - 5, start + 100);
+        // sb.insert(start, " target=\"_blank\"");
+        sb.append(text.substring(pos, start));
+        sb.append(" target=\"_blank\"");
+        sb.append(text.substring(start, end));
+        pos = end;
+      } else {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Cannot find link end group in " + m.group(2));
+        }
+      }
+    }
+    if (pos < text.length()) {
+      sb.append(text.substring(pos));
+    }
+    return sb.toString();
   }
 
   /**
