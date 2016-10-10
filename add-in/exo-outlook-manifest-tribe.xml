@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--Created:cb85b80c-f585-40ff-8bfc-12ff4d0e34a9-->
+<OfficeApp
+    xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+    xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+    xsi:type="MailApp">
+    
+  <Id>7164e750-dc86-49c0-b548-1bac57abdc7f</Id>
+  <Version>1.0.0</Version>
+  <ProviderName>eXo Platform SAS</ProviderName>
+  <DefaultLocale>en-us</DefaultLocale>
+  <DisplayName DefaultValue="eXo Platform" />
+  <Description DefaultValue="Interact with eXo Tribe directly from Outlook">
+    <Override Locale="fr-fr" Value="Interagissez avec eXo Tribe directement depuis Outlook"/>
+  </Description>
+  <IconUrl DefaultValue="https://community.exoplatform.com/outlook/images/exo-icon-64.png" />
+  <HighResolutionIconUrl DefaultValue="https://community.exoplatform.com/outlook/images/exo-icon-80.png" />
+  <Hosts>
+    <Host Name="Mailbox" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="Mailbox" />
+    </Sets>
+  </Requirements>
+  <!-- These elements support older clients that don't support add-in commands -->
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://community.exoplatform.com/portal/intranet/outlook"/>
+        <RequestedHeight>450</RequestedHeight>
+      </DesktopSettings>
+      <TabletSettings>
+        <SourceLocation DefaultValue="https://community.exoplatform.com/portal/intranet/outlook"/>
+        <RequestedHeight>450</RequestedHeight>
+      </TabletSettings>
+    </Form>
+    <Form xsi:type="ItemEdit">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://community.exoplatform.com/portal/intranet/outlook"/>
+      </DesktopSettings>
+      <TabletSettings>
+        <SourceLocation DefaultValue="https://community.exoplatform.com/portal/intranet/outlook"/>
+      </TabletSettings>
+    </Form>
+  </FormSettings>
+  <Permissions>ReadWriteItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit" />
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read" />
+  </Rule>
+  <!-- DisableEntityHighlighting>false</DisableEntityHighlighting -->
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+		<Description resid="appDescription" />
+		<Requirements>
+			<bt:Sets DefaultMinVersion="1.3">
+				<bt:Set Name="Mailbox" />
+			</bt:Sets>
+		</Requirements>
+		<Hosts>
+			<Host xsi:type="MailHost">
+				<DesktopFormFactor>
+          <!-- Custom pane in add-ins bar, only applies to read form -->
+          <ExtensionPoint xsi:type="CustomPane">
+            <RequestedHeight>450</RequestedHeight> 
+            <SourceLocation resid="readUrl"/>
+            <Rule xsi:type="RuleCollection" Mode="Or">
+              <Rule xsi:type="ItemIs" ItemType="Message"/>
+              <Rule xsi:type="ItemIs" ItemType="AppointmentAttendee"/>
+            </Rule>
+          </ExtensionPoint>
+          
+          <!-- Message compose form -->
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="composeGroup">
+                <Label resid="groupLabel" />
+                <!-- Add Attachment: task pane button -->
+                <Control xsi:type="Button" id="composeAddAttachmentButton">
+                  <Label resid="addAttachmentLabel" />
+                  <Supertip>
+                    <Title resid="addAttachmentTipTitle" />
+                    <Description resid="addAttachmentTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="attachment-16" />
+                    <bt:Image size="24" resid="attachment-24" />
+                    <bt:Image size="32" resid="attachment-32" />
+                    <bt:Image size="64" resid="attachment-64" />
+                    <bt:Image size="80" resid="attachment-80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="addAttachmentUrl" />
+                  </Action>
+                </Control>
+                <!-- Search: task pane button -->
+                <Control xsi:type="Button" id="composeSearchButton">
+                  <Label resid="searchLabel" />
+                  <Supertip>
+                    <Title resid="searchTipTitle" />
+                    <Description resid="searchTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="search-16" />
+                    <bt:Image size="24" resid="search-24" />
+                    <bt:Image size="32" resid="search-32" />
+                    <bt:Image size="64" resid="search-64" />
+                    <bt:Image size="80" resid="search-80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="searchUrl" />
+                  </Action>
+                </Control>
+                <!-- Create status, discussion etc: Menu (dropdown) button -->
+                <Control xsi:type="Menu" id="composeCreateMenuButton">
+                  <Label resid="createMenuLabel" />
+                  <Supertip>
+                    <Title resid="createMenuTipTitle" />
+                    <Description resid="createMenuTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="create-16" />
+                    <bt:Image size="24" resid="create-24" />
+                    <bt:Image size="32" resid="create-32" />
+                    <bt:Image size="64" resid="create-64" />
+                    <bt:Image size="80" resid="create-80" />
+                  </Icon>
+                  <Items>
+                    <Item id="composePostStatus">
+                      <Label resid="postStatusLabel" />
+                      <Supertip>
+                        <Title resid="postStatusTipTitle" />
+                        <Description resid="postStatusTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="create-activity-16" />
+                        <bt:Image size="24" resid="create-activity-24" />
+                        <bt:Image size="32" resid="create-activity-32" />
+                        <bt:Image size="64" resid="create-activity-64" />
+                        <bt:Image size="80" resid="create-activity-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="postStatusUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="composeStartDiscussion">
+                      <Label resid="startDiscussionLabel" />
+                      <Supertip>
+                        <Title resid="startDiscussionTipTitle" />
+                        <Description resid="startDiscussionTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="create-discussion-16" />
+                        <bt:Image size="24" resid="create-discussion-24" />
+                        <bt:Image size="32" resid="create-discussion-32" />
+                        <bt:Image size="64" resid="create-discussion-64" />
+                        <bt:Image size="80" resid="create-discussion-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="startDiscussionUrl" />
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+                <!-- User Info: task pane button -->
+                <Control xsi:type="Button" id="composeUserInfoButton">
+                  <Label resid="userInfoLabel" />
+                  <Supertip>
+                    <Title resid="userInfoTipTitle" />
+                    <Description resid="userInfoTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="users-16" />
+                    <bt:Image size="24" resid="users-24" />
+                    <bt:Image size="32" resid="users-32" />
+                    <bt:Image size="64" resid="users-64" />
+                    <bt:Image size="80" resid="users-80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="userInfoUrl" />
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+          
+          <!-- Message read form -->
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="readGroup">
+                <Label resid="groupLabel" />
+                <!-- Convert to: Menu (dropdown) button -->
+                <Control xsi:type="Menu" id="readConvertMenuButton">
+                  <Label resid="convertMenuLabel" />
+                  <Supertip>
+                    <Title resid="convertMenuTipTitle" />
+                    <Description resid="convertMenuTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="convert-16" />
+                    <bt:Image size="24" resid="convert-24" />
+                    <bt:Image size="32" resid="convert-32" />
+                    <bt:Image size="64" resid="convert-64" />
+                    <bt:Image size="80" resid="convert-80" />
+                  </Icon>
+                  <Items>
+                    <Item id="readConvertToStatus">
+                      <Label resid="convertToStatusLabel" />
+                      <Supertip>
+                        <Title resid="convertToStatusTipTitle" />
+                        <Description resid="convertToStatusTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="convert-activity-16" />
+                        <bt:Image size="24" resid="convert-activity-24" />
+                        <bt:Image size="32" resid="convert-activity-32" />
+                        <bt:Image size="64" resid="convert-activity-64" />
+                        <bt:Image size="80" resid="convert-activity-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToStatusUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="readConvertToWiki">
+                      <Label resid="convertToWikiLabel" />
+                      <Supertip>
+                        <Title resid="convertToWikiTipTitle" />
+                        <Description resid="convertToWikiTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="convert-wiki-16" />
+                        <bt:Image size="24" resid="convert-wiki-24" />
+                        <bt:Image size="32" resid="convert-wiki-32" />
+                        <bt:Image size="64" resid="convert-wiki-64" />
+                        <bt:Image size="80" resid="convert-wiki-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToWikiUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="readConvertToForum">
+                      <Label resid="convertToForumLabel" />
+                      <Supertip>
+                        <Title resid="convertToForumTipTitle" />
+                        <Description resid="convertToForumTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="convert-forum-16" />
+                        <bt:Image size="24" resid="convert-forum-24" />
+                        <bt:Image size="32" resid="convert-forum-32" />
+                        <bt:Image size="64" resid="convert-forum-64" />
+                        <bt:Image size="80" resid="convert-forum-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="convertToForumUrl" />
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+                <!-- Search: task pane button -->
+                <Control xsi:type="Button" id="readSearchButton">
+                  <Label resid="searchLabel" />
+                  <Supertip>
+                    <Title resid="searchTipTitle" />
+                    <Description resid="searchTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="search-16" />
+                    <bt:Image size="24" resid="search-24" />
+                    <bt:Image size="32" resid="search-32" />
+                    <bt:Image size="64" resid="search-64" />
+                    <bt:Image size="80" resid="search-80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="searchUrl" />
+                  </Action>
+                </Control>
+                <!-- Create status, discussion etc: Menu (dropdown) button -->
+                <Control xsi:type="Menu" id="readCreateMenuButton">
+                  <Label resid="createMenuLabel" />
+                  <Supertip>
+                    <Title resid="createMenuTipTitle" />
+                    <Description resid="createMenuTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="create-16" />
+                    <bt:Image size="24" resid="create-24" />
+                    <bt:Image size="32" resid="create-32" />
+                    <bt:Image size="64" resid="create-64" />
+                    <bt:Image size="80" resid="create-80" />
+                  </Icon>
+                  <Items>
+                    <Item id="readPostStatus">
+                      <Label resid="postStatusLabel" />
+                      <Supertip>
+                        <Title resid="postStatusTipTitle" />
+                        <Description resid="postStatusTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="create-activity-16" />
+                        <bt:Image size="24" resid="create-activity-24" />
+                        <bt:Image size="32" resid="create-activity-32" />
+                        <bt:Image size="64" resid="create-activity-64" />
+                        <bt:Image size="80" resid="create-activity-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="postStatusUrl" />
+                      </Action>
+                    </Item>
+                    <Item id="readStartDiscussion">
+                      <Label resid="startDiscussionLabel" />
+                      <Supertip>
+                        <Title resid="startDiscussionTipTitle" />
+                        <Description resid="startDiscussionTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="create-discussion-16" />
+                        <bt:Image size="24" resid="create-discussion-24" />
+                        <bt:Image size="32" resid="create-discussion-32" />
+                        <bt:Image size="64" resid="create-discussion-64" />
+                        <bt:Image size="80" resid="create-discussion-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="startDiscussionUrl" />
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+                <!-- User Info: task pane button -->
+                <Control xsi:type="Button" id="readUserInfoButton">
+                  <Label resid="userInfoLabel" />
+                  <Supertip>
+                    <Title resid="userInfoTipTitle" />
+                    <Description resid="userInfoTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="users-16" />
+                    <bt:Image size="24" resid="users-24" />
+                    <bt:Image size="32" resid="users-32" />
+                    <bt:Image size="64" resid="users-64" />
+                    <bt:Image size="80" resid="users-80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="userInfoUrl" />
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <!-- Icons -->
+        <bt:Image id="exo-icon-16" DefaultValue="https://community.exoplatform.com/outlook/images/exo-icon-16.png"/>
+        <bt:Image id="exo-icon-32" DefaultValue="https://community.exoplatform.com/outlook/images/exo-icon-32.png"/>
+        <bt:Image id="exo-icon-80" DefaultValue="https://community.exoplatform.com/outlook/images/exo-icon-80.png"/>
+        
+        <bt:Image id="attachment-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/attachment.png"/>
+        <bt:Image id="attachment-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/attachment.png"/>
+        <bt:Image id="attachment-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/attachment.png"/>
+        <bt:Image id="attachment-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/attachment.png"/>
+        <bt:Image id="attachment-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/attachment.png"/>
+        
+        <bt:Image id="search-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/search.png"/>
+        <bt:Image id="search-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/search.png"/>
+        <bt:Image id="search-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/search.png"/>
+        <bt:Image id="search-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/search.png"/>
+        <bt:Image id="search-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/search.png"/>
+
+        <bt:Image id="create-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/create.png"/>
+        <bt:Image id="create-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/create.png"/>
+        <bt:Image id="create-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/create.png"/>
+        <bt:Image id="create-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/create.png"/>
+        <bt:Image id="create-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/create.png"/>
+
+        <bt:Image id="create-activity-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/create-activity.png"/>
+        <bt:Image id="create-activity-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/create-activity.png"/>
+        <bt:Image id="create-activity-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/create-activity.png"/>
+        <bt:Image id="create-activity-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/create-activity.png"/>
+        <bt:Image id="create-activity-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/create-activity.png"/>
+
+        <bt:Image id="create-discussion-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/create-discussion.png"/>
+        <bt:Image id="create-discussion-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/create-discussion.png"/>
+        <bt:Image id="create-discussion-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/create-discussion.png"/>
+        <bt:Image id="create-discussion-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/create-discussion.png"/>
+        <bt:Image id="create-discussion-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/create-discussion.png"/>
+        
+        <bt:Image id="users-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/users.png"/>
+        <bt:Image id="users-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/users.png"/>
+        <bt:Image id="users-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/users.png"/>
+        <bt:Image id="users-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/users.png"/>
+        <bt:Image id="users-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/users.png"/>
+        
+        <bt:Image id="convert-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/convert.png"/>
+        <bt:Image id="convert-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/convert.png"/>
+        <bt:Image id="convert-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/convert.png"/>
+        <bt:Image id="convert-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/convert.png"/>
+        <bt:Image id="convert-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/convert.png"/>
+        
+        <bt:Image id="convert-activity-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/convert-activity.png"/>
+        <bt:Image id="convert-activity-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/convert-activity.png"/>
+        <bt:Image id="convert-activity-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/convert-activity.png"/>
+        <bt:Image id="convert-activity-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/convert-activity.png"/>
+        <bt:Image id="convert-activity-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/convert-activity.png"/>
+        
+        <bt:Image id="convert-wiki-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/convert-wiki.png"/>
+        
+        <bt:Image id="convert-forum-16" DefaultValue="https://community.exoplatform.com/outlook/images/16x16/convert-forum.png"/>
+        <bt:Image id="convert-forum-24" DefaultValue="https://community.exoplatform.com/outlook/images/24x24/convert-forum.png"/>
+        <bt:Image id="convert-forum-32" DefaultValue="https://community.exoplatform.com/outlook/images/32x32/convert-forum.png"/>
+        <bt:Image id="convert-forum-64" DefaultValue="https://community.exoplatform.com/outlook/images/64x64/convert-forum.png"/>
+        <bt:Image id="convert-forum-80" DefaultValue="https://community.exoplatform.com/outlook/images/80x80/convert-forum.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="functionFile" DefaultValue="https://community.exoplatform.com/outlook/login/menu"/>
+        
+        <bt:Url id="readUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook"/>
+        <bt:Url id="searchUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=search"/>
+        <bt:Url id="userInfoUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=userInfo"/>
+
+        <bt:Url id="postStatusUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=postStatus"/>
+        <bt:Url id="startDiscussionUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=startDiscussion"/>
+
+        <bt:Url id="addAttachmentUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=addAttachment"/>
+        <bt:Url id="saveAttachmentUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=saveAttachment"/>
+        <bt:Url id="convertToStatusUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=convertToStatus"/>
+        <bt:Url id="convertToWikiUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=convertToWiki"/>
+        <bt:Url id="convertToForumUrl" DefaultValue="https://community.exoplatform.com/portal/intranet/outlook?command=convertToForum"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="appDescription" DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
+          <bt:Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook" /> 
+        </bt:String>
+        <bt:String id="groupLabel" DefaultValue="eXo Platform">
+          <bt:Override Locale="fr-fr" Value="eXo Platform" />
+        </bt:String>
+        
+        <!-- Common -->
+        <bt:String id="searchLabel" DefaultValue="Search">
+          <bt:Override Locale="fr-fr" Value="Rechercher" />
+        </bt:String>
+        <bt:String id="searchTipTitle" DefaultValue="Search in eXo content">
+          <bt:Override Locale="fr-fr" Value="Rechercher dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuLabel" DefaultValue="Create in eXo...">
+          <bt:Override Locale="fr-fr" Value="Créer dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuTipTitle" DefaultValue="Start a Conversation">
+          <bt:Override Locale="fr-fr" Value="Démarrer une discussion" />
+        </bt:String>
+        <bt:String id="postStatusLabel" DefaultValue="Post Activity">
+          <bt:Override Locale="fr-fr" Value="Publier une Activité" />
+        </bt:String>
+        <bt:String id="postStatusTipTitle" DefaultValue="Post a status update in the activity stream">
+          <bt:Override Locale="fr-fr" Value="Publier un message dans le flux d'activité" />
+        </bt:String>
+        <bt:String id="startDiscussionLabel" DefaultValue="Start Discussion">
+          <bt:Override Locale="fr-fr" Value="Démarrer une Conversation" />
+        </bt:String>
+        <bt:String id="startDiscussionTipTitle" DefaultValue="Start a discussion in the forums">
+          <bt:Override Locale="fr-fr" Value="Démarrer une discussion dans les forums" />	
+        </bt:String>
+        <bt:String id="userInfoLabel" DefaultValue="People">
+          <bt:Override Locale="fr-fr" Value="Personnes" />
+        </bt:String>
+        <bt:String id="userInfoTipTitle" DefaultValue="Find participants among Intranet members">
+          <bt:Override Locale="fr-fr" Value="Trouvez vos contacts parmis les membre de l'intranet" />
+        </bt:String>
+        
+        <!-- Compose mode -->
+        <bt:String id="addAttachmentLabel" DefaultValue="Attach a Document">
+          <bt:Override Locale="fr-fr" Value="Attacher un document" />
+        </bt:String>
+        <bt:String id="addAttachmentTipTitle" DefaultValue="Attach a document from eXo">
+          <bt:Override Locale="fr-fr" Value="Attachez un document depuis eXo" />
+        </bt:String>
+        
+        <!-- Read mode -->
+        <bt:String id="saveAttachmentLabel" DefaultValue="Save Attachments">
+          <bt:Override Locale="fr-fr" Value="Enregistrer pièces jointes" />
+        </bt:String>
+        <bt:String id="saveAttachmentTipTitle" DefaultValue="Save attachments in eXo">
+            <bt:Override Locale="fr-fr" Value="Enregistrer les pièces jointes dans eXo" />
+        </bt:String>
+        <bt:String id="convertMenuLabel" DefaultValue="Convert">
+          <bt:Override Locale="fr-fr" Value="Convertir" />
+        </bt:String>
+        <bt:String id="convertMenuTipTitle" DefaultValue="Convert a message">
+          <bt:Override Locale="fr-fr" Value="Convertir un message" />
+        </bt:String>
+        <bt:String id="convertToStatusLabel" DefaultValue="to Activity">
+          <bt:Override Locale="fr-fr" Value="en Activité" />
+        </bt:String>
+        <bt:String id="convertToStatusTipTitle" DefaultValue="convert a message to an activity">
+          <bt:Override Locale="fr-fr" Value="convertir un message en activité" />
+        </bt:String>
+        <bt:String id="convertToWikiLabel" DefaultValue="to Wiki">
+          <bt:Override Locale="fr-fr" Value="en Wiki" />
+        </bt:String>
+        <bt:String id="convertToWikiTipTitle" DefaultValue="convert a message to a wiki page">
+          <bt:Override Locale="fr-fr" Value="convertir un message en page wiki" />
+        </bt:String>
+        <bt:String id="convertToForumLabel" DefaultValue="to Discussion">
+          <bt:Override Locale="fr-fr" Value="en Discussion" />
+        </bt:String>
+        <bt:String id="convertToForumTipTitle" DefaultValue="convert a message to a forum discussion">
+          <bt:Override Locale="fr-fr" Value="convertir un message en discussion dans les forums" />
+        </bt:String>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <!-- Common -->
+        <bt:String id="searchTipDescription" DefaultValue="Open the pane to search for content in eXo">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau de recherhe de contenu dans eXo" />
+        </bt:String>
+        <bt:String id="createMenuTipDescription" DefaultValue="Open the pane to create a new discussion in eXo">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour démarrer une discussion dans eXo" />
+        </bt:String>
+        <bt:String id="postStatusTipDescription" DefaultValue="Open the pane to post an activity in the stream">
+            <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour publier une activité dans le flux" />
+        </bt:String>
+        <bt:String id="startDiscussionTipDescription" DefaultValue="Open the pane to start a discussion in the forums">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour démarrer une discussion dans les forums" />
+        </bt:String>
+        <bt:String id="userInfoTipDescription" DefaultValue="Open the pane to show intranet people">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour voir les personnes de l'intranet" />
+        </bt:String>
+        
+        <!-- Compose mode -->
+        <bt:String id="addAttachmentTipDescription" DefaultValue="Open the pane to attach eXo documents to the message">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour sélectionner les documents eXo à attacher en pièce jointe" />
+        </bt:String>
+        
+        <!-- Read mode -->
+        <bt:String id="saveAttachmentTipDescription" DefaultValue="Open the pane to save attachments in eXo documents.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour enregistrer les pièces jointes dans eXo" />
+        </bt:String>
+        <bt:String id="convertMenuTipDescription" DefaultValue="Open the pane to convert this message to a conversation in eXo.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en conversation dans eXo." />
+        </bt:String>
+        <bt:String id="convertToStatusTipDescription" DefaultValue="Open the pane to convert this message an activity in the stream.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en activité dans le flux." />
+        </bt:String>
+        <bt:String id="convertToWikiTipDescription" DefaultValue="Open the pane to convert this message to a wiki page.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en page wiki" />
+        </bt:String>
+        <bt:String id="convertToForumTipDescription" DefaultValue="Open the pane to convert this message to a discussion in the forums.">
+          <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour convertir ce message en discussion dans les forums." />
+        </bt:String>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>
