@@ -118,10 +118,25 @@
           </object>
         </object-param>
         <object-param>
-          <name>Outlook Sanitize Filter</name>
+          <name>Outlook Remember-Me Filter</name>
           <object type="org.exoplatform.web.filter.FilterDefinition">
             <field name="filter">
               <object type="org.exoplatform.outlook.server.filter.OutlookRememberMeFilter" />
+            </field>
+            <field name="patterns">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>/intranet/outlook</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Outlook Context Filter</name>
+          <object type="org.exoplatform.web.filter.FilterDefinition">
+            <field name="filter">
+              <object type="org.exoplatform.outlook.webui.OutlookContextFilter" />
             </field>
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">

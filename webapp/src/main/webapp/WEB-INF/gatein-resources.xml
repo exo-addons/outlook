@@ -59,20 +59,6 @@
       <module>jquery</module>
     </depends>
   </module>
-  <!-- module>
-    <name>outlookJqueryValidate</name>
-    <load-group>outlookGRP</load-group>
-    <script>
-      <adapter>
-        (function(jQuery) {
-        <include>/js/jquery.validate.min.js</include>
-        })($);
-      </adapter>
-    </script>
-    <depends>
-      <module>jquery</module>
-    </depends>
-  </module -->
   <module>
     <name>outlookFabricUI</name>
     <load-group>outlookGRP</load-group>

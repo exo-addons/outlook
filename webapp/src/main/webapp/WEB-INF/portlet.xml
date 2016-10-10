@@ -47,17 +47,5 @@ http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
       <short-title>eXo for Outlook</short-title>
       <keywords>outlook</keywords>
     </portlet-info>
-    <!-- portlet-preferences>
-      <preference>
-        <name>view</name>
-        <value>responsive</value>
-        <read-only>false</read-only>
-      </preference>
-      <preference>
-        <name>fullscreen</name>
-        <value>true</value>
-        <read-only>false</read-only>
-      </preference>
-    </portlet-preferences -->
   </portlet>
 </portlet-app>

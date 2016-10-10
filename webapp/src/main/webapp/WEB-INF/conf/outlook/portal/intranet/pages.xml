@@ -26,7 +26,6 @@
       <show-max-window>true</show-max-window>
       <container id="OfficeHome" template="system:/groovy/portal/webui/container/UIContainer.gtmpl"></container>
     </page -->
-
     <page>
       <name>outlook</name>
       <title>Outlook Add-in</title>
@@ -42,5 +41,4 @@
         <show-info-bar>false</show-info-bar>
       </portlet-application>
     </page>
-
 </page-set>
