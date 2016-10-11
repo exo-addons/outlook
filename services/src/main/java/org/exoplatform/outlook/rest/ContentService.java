@@ -27,11 +27,20 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Scanner;
+import java.util.UUID;
+
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -115,6 +124,67 @@ public class ContentService implements ResourceContainer {
     } else {
       LOG.warn("Attempt to download content by not allowed host: " + clientHost);
       resp = Response.status(Status.UNAUTHORIZED).entity("Not a document server.");
+    }
+    return resp.build();
+  }
+
+  /**
+   * Document content download link. <br>
+   * WARNING! It is publicly accessible service but access from the Documents Server host can be restricted
+   * (by default).
+   * 
+   * @param uriInfo - request info
+   * @param hostName String with a host name (and optionally port)
+   * @return {@link Response}
+   */
+  @GET
+  @Path("/manifest")
+  @Produces("text/xml")
+  public Response manifest(@Context UriInfo uriInfo,
+                           @Context HttpServletRequest request,
+                           @QueryParam("guid") String guid,
+                           @QueryParam("hostName") String hostName) {
+    String clientHost = getClientHost(request);
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("> Outlook manifest for " + clientHost + " as host:" + hostName + " with guid:" + guid);
+    }
+
+    URI requestURI = uriInfo.getRequestUri();
+    StringBuilder serverHostBuilder = new StringBuilder();
+    serverHostBuilder.append(requestURI.getScheme());
+    serverHostBuilder.append("://");
+    if (hostName != null && hostName.length() > 0) {
+      serverHostBuilder.append(hostName);
+    } else {
+      serverHostBuilder.append(requestURI.getHost());
+      int serverPort = requestURI.getPort();
+      if (serverPort != 80 || serverPort != 443) {
+        serverHostBuilder.append(':');
+        serverHostBuilder.append(serverPort);
+      }
+    }
+    String serverURL = serverHostBuilder.toString();
+
+    ResponseBuilder resp;
+    // try {
+    // use serverHost in template loaded from jar resource
+    // URL mURL = getClass().getClassLoader().getResource("manifest/exo-outlook-manifest.template.xml");
+    // String mTemplate = new String(Files.readAllBytes(Paths.get(mURL.toURI())), "UTF-8");
+
+    try (Scanner mScanner = new Scanner(getClass().getResourceAsStream("/manifest/exo-outlook-manifest.template.xml"),
+                                        "UTF-8").useDelimiter("\\A")) {
+      String mTemplate = mScanner.next();
+      String manifest = mTemplate.replaceAll("\\$BASE_URL", serverURL);
+      if (guid == null || (guid = guid.trim()).length() == 0) {
+        // Generate RFC4122 version 4 UUID (as observed in https://github.com/OfficeDev/generator-office)
+        guid = UUID.randomUUID().toString();
+      }
+      manifest = manifest.replaceAll("\\$GUID", guid);
+      resp = Response.ok().entity(manifest);
+    } catch (Throwable e) {
+      LOG.error("Error while generating manifest for " + clientHost, e);
+      resp = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Cannot generate manifest");
     }
     return resp.build();
   }

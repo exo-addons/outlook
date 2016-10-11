@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--Created:cb85b80c-f585-40ff-8bfc-12ff4d0e34a9-->
 <OfficeApp
     xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -7,7 +6,7 @@
     xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
     xsi:type="MailApp">
     
-  <Id>7164e750-dc86-49c0-b548-1bac57abdc7c</Id><!--82f6d7a3-1e0c-44bc-b61c-65240f97dbd9-->
+  <Id>$GUID</Id>
   <Version>1.0.0</Version>
   <ProviderName>eXo Platform SAS</ProviderName>
   <DefaultLocale>en-us</DefaultLocale>
@@ -15,8 +14,8 @@
   <Description DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
     <Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook"/>
   </Description>
-  <IconUrl DefaultValue="https://your-portal.com/outlook/images/exo-icon-64.png" />
-  <HighResolutionIconUrl DefaultValue="https://your-portal.com/outlook/images/exo-icon-80.png" />
+  <IconUrl DefaultValue="$BASE_URL/outlook/images/exo-icon-64.png" />
+  <HighResolutionIconUrl DefaultValue="$BASE_URL/outlook/images/exo-icon-80.png" />
   <Hosts>
     <Host Name="Mailbox" />
   </Hosts>
@@ -29,20 +28,20 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://your-portal.com/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
         <RequestedHeight>450</RequestedHeight>
       </DesktopSettings>
       <TabletSettings>
-        <SourceLocation DefaultValue="https://your-portal.com/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
         <RequestedHeight>450</RequestedHeight>
       </TabletSettings>
     </Form>
     <Form xsi:type="ItemEdit">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://your-portal.com/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
       </DesktopSettings>
       <TabletSettings>
-        <SourceLocation DefaultValue="https://your-portal.com/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
       </TabletSettings>
     </Form>
   </FormSettings>
@@ -357,85 +356,85 @@
     <Resources>
       <bt:Images>
         <!-- Icons -->
-        <bt:Image id="exo-icon-16" DefaultValue="https://your-portal.com/outlook/images/exo-icon-16.png"/>
-        <bt:Image id="exo-icon-32" DefaultValue="https://your-portal.com/outlook/images/exo-icon-32.png"/>
-        <bt:Image id="exo-icon-80" DefaultValue="https://your-portal.com/outlook/images/exo-icon-80.png"/>
+        <bt:Image id="exo-icon-16" DefaultValue="$BASE_URL/outlook/images/exo-icon-16.png"/>
+        <bt:Image id="exo-icon-32" DefaultValue="$BASE_URL/outlook/images/exo-icon-32.png"/>
+        <bt:Image id="exo-icon-80" DefaultValue="$BASE_URL/outlook/images/exo-icon-80.png"/>
         
-        <bt:Image id="attachment-16" DefaultValue="https://your-portal.com/outlook/images/16x16/attachment.png"/>
-        <bt:Image id="attachment-24" DefaultValue="https://your-portal.com/outlook/images/24x24/attachment.png"/>
-        <bt:Image id="attachment-32" DefaultValue="https://your-portal.com/outlook/images/32x32/attachment.png"/>
-        <bt:Image id="attachment-64" DefaultValue="https://your-portal.com/outlook/images/64x64/attachment.png"/>
-        <bt:Image id="attachment-80" DefaultValue="https://your-portal.com/outlook/images/80x80/attachment.png"/>
+        <bt:Image id="attachment-16" DefaultValue="$BASE_URL/outlook/images/16x16/attachment.png"/>
+        <bt:Image id="attachment-24" DefaultValue="$BASE_URL/outlook/images/24x24/attachment.png"/>
+        <bt:Image id="attachment-32" DefaultValue="$BASE_URL/outlook/images/32x32/attachment.png"/>
+        <bt:Image id="attachment-64" DefaultValue="$BASE_URL/outlook/images/64x64/attachment.png"/>
+        <bt:Image id="attachment-80" DefaultValue="$BASE_URL/outlook/images/80x80/attachment.png"/>
         
-        <bt:Image id="search-16" DefaultValue="https://your-portal.com/outlook/images/16x16/search.png"/>
-        <bt:Image id="search-24" DefaultValue="https://your-portal.com/outlook/images/24x24/search.png"/>
-        <bt:Image id="search-32" DefaultValue="https://your-portal.com/outlook/images/32x32/search.png"/>
-        <bt:Image id="search-64" DefaultValue="https://your-portal.com/outlook/images/64x64/search.png"/>
-        <bt:Image id="search-80" DefaultValue="https://your-portal.com/outlook/images/80x80/search.png"/>
+        <bt:Image id="search-16" DefaultValue="$BASE_URL/outlook/images/16x16/search.png"/>
+        <bt:Image id="search-24" DefaultValue="$BASE_URL/outlook/images/24x24/search.png"/>
+        <bt:Image id="search-32" DefaultValue="$BASE_URL/outlook/images/32x32/search.png"/>
+        <bt:Image id="search-64" DefaultValue="$BASE_URL/outlook/images/64x64/search.png"/>
+        <bt:Image id="search-80" DefaultValue="$BASE_URL/outlook/images/80x80/search.png"/>
 
-        <bt:Image id="create-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create.png"/>
-        <bt:Image id="create-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create.png"/>
-        <bt:Image id="create-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create.png"/>
-        <bt:Image id="create-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create.png"/>
-        <bt:Image id="create-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create.png"/>
+        <bt:Image id="create-16" DefaultValue="$BASE_URL/outlook/images/16x16/create.png"/>
+        <bt:Image id="create-24" DefaultValue="$BASE_URL/outlook/images/24x24/create.png"/>
+        <bt:Image id="create-32" DefaultValue="$BASE_URL/outlook/images/32x32/create.png"/>
+        <bt:Image id="create-64" DefaultValue="$BASE_URL/outlook/images/64x64/create.png"/>
+        <bt:Image id="create-80" DefaultValue="$BASE_URL/outlook/images/80x80/create.png"/>
 
-        <bt:Image id="create-activity-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create-activity.png"/>
-        <bt:Image id="create-activity-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create-activity.png"/>
-        <bt:Image id="create-activity-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create-activity.png"/>
-        <bt:Image id="create-activity-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create-activity.png"/>
-        <bt:Image id="create-activity-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create-activity.png"/>
+        <bt:Image id="create-activity-16" DefaultValue="$BASE_URL/outlook/images/16x16/create-activity.png"/>
+        <bt:Image id="create-activity-24" DefaultValue="$BASE_URL/outlook/images/24x24/create-activity.png"/>
+        <bt:Image id="create-activity-32" DefaultValue="$BASE_URL/outlook/images/32x32/create-activity.png"/>
+        <bt:Image id="create-activity-64" DefaultValue="$BASE_URL/outlook/images/64x64/create-activity.png"/>
+        <bt:Image id="create-activity-80" DefaultValue="$BASE_URL/outlook/images/80x80/create-activity.png"/>
 
-        <bt:Image id="create-discussion-16" DefaultValue="https://your-portal.com/outlook/images/16x16/create-discussion.png"/>
-        <bt:Image id="create-discussion-24" DefaultValue="https://your-portal.com/outlook/images/24x24/create-discussion.png"/>
-        <bt:Image id="create-discussion-32" DefaultValue="https://your-portal.com/outlook/images/32x32/create-discussion.png"/>
-        <bt:Image id="create-discussion-64" DefaultValue="https://your-portal.com/outlook/images/64x64/create-discussion.png"/>
-        <bt:Image id="create-discussion-80" DefaultValue="https://your-portal.com/outlook/images/80x80/create-discussion.png"/>
+        <bt:Image id="create-discussion-16" DefaultValue="$BASE_URL/outlook/images/16x16/create-discussion.png"/>
+        <bt:Image id="create-discussion-24" DefaultValue="$BASE_URL/outlook/images/24x24/create-discussion.png"/>
+        <bt:Image id="create-discussion-32" DefaultValue="$BASE_URL/outlook/images/32x32/create-discussion.png"/>
+        <bt:Image id="create-discussion-64" DefaultValue="$BASE_URL/outlook/images/64x64/create-discussion.png"/>
+        <bt:Image id="create-discussion-80" DefaultValue="$BASE_URL/outlook/images/80x80/create-discussion.png"/>
         
-        <bt:Image id="users-16" DefaultValue="https://your-portal.com/outlook/images/16x16/users.png"/>
-        <bt:Image id="users-24" DefaultValue="https://your-portal.com/outlook/images/24x24/users.png"/>
-        <bt:Image id="users-32" DefaultValue="https://your-portal.com/outlook/images/32x32/users.png"/>
-        <bt:Image id="users-64" DefaultValue="https://your-portal.com/outlook/images/64x64/users.png"/>
-        <bt:Image id="users-80" DefaultValue="https://your-portal.com/outlook/images/80x80/users.png"/>
+        <bt:Image id="users-16" DefaultValue="$BASE_URL/outlook/images/16x16/users.png"/>
+        <bt:Image id="users-24" DefaultValue="$BASE_URL/outlook/images/24x24/users.png"/>
+        <bt:Image id="users-32" DefaultValue="$BASE_URL/outlook/images/32x32/users.png"/>
+        <bt:Image id="users-64" DefaultValue="$BASE_URL/outlook/images/64x64/users.png"/>
+        <bt:Image id="users-80" DefaultValue="$BASE_URL/outlook/images/80x80/users.png"/>
         
-        <bt:Image id="convert-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert.png"/>
-        <bt:Image id="convert-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert.png"/>
-        <bt:Image id="convert-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert.png"/>
-        <bt:Image id="convert-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert.png"/>
-        <bt:Image id="convert-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert.png"/>
+        <bt:Image id="convert-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert.png"/>
+        <bt:Image id="convert-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert.png"/>
+        <bt:Image id="convert-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert.png"/>
+        <bt:Image id="convert-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert.png"/>
+        <bt:Image id="convert-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert.png"/>
         
-        <bt:Image id="convert-activity-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-activity.png"/>
-        <bt:Image id="convert-activity-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-activity.png"/>
-        <bt:Image id="convert-activity-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-activity.png"/>
-        <bt:Image id="convert-activity-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-activity.png"/>
-        <bt:Image id="convert-activity-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-activity.png"/>
+        <bt:Image id="convert-activity-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-activity.png"/>
+        <bt:Image id="convert-activity-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-activity.png"/>
+        <bt:Image id="convert-activity-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-activity.png"/>
+        <bt:Image id="convert-activity-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert-activity.png"/>
+        <bt:Image id="convert-activity-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-activity.png"/>
         
-        <bt:Image id="convert-wiki-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-wiki.png"/>
-        <bt:Image id="convert-wiki-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-wiki.png"/>
-        <bt:Image id="convert-wiki-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-wiki.png"/>
-        <bt:Image id="convert-wiki-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-wiki.png"/>
-        <bt:Image id="convert-wiki-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert-wiki.png"/>
+        <bt:Image id="convert-wiki-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-wiki.png"/>
         
-        <bt:Image id="convert-forum-16" DefaultValue="https://your-portal.com/outlook/images/16x16/convert-forum.png"/>
-        <bt:Image id="convert-forum-24" DefaultValue="https://your-portal.com/outlook/images/24x24/convert-forum.png"/>
-        <bt:Image id="convert-forum-32" DefaultValue="https://your-portal.com/outlook/images/32x32/convert-forum.png"/>
-        <bt:Image id="convert-forum-64" DefaultValue="https://your-portal.com/outlook/images/64x64/convert-forum.png"/>
-        <bt:Image id="convert-forum-80" DefaultValue="https://your-portal.com/outlook/images/80x80/convert-forum.png"/>
+        <bt:Image id="convert-forum-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-forum.png"/>
+        <bt:Image id="convert-forum-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-forum.png"/>
+        <bt:Image id="convert-forum-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-forum.png"/>
+        <bt:Image id="convert-forum-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert-forum.png"/>
+        <bt:Image id="convert-forum-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-forum.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="functionFile" DefaultValue="https://your-portal.com/outlook/login/menu"/>
+        <bt:Url id="functionFile" DefaultValue="$BASE_URL/outlook/login/menu"/>
         
-        <bt:Url id="readUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook"/>
-        <bt:Url id="searchUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=search"/>
-        <bt:Url id="userInfoUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=userInfo"/>
+        <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/intranet/outlook"/>
+        <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=search"/>
+        <bt:Url id="userInfoUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfo"/>
 
-        <bt:Url id="postStatusUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=postStatus"/>
-        <bt:Url id="startDiscussionUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=startDiscussion"/>
+        <bt:Url id="postStatusUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=postStatus"/>
+        <bt:Url id="startDiscussionUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=startDiscussion"/>
 
-        <bt:Url id="addAttachmentUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=addAttachment"/>
-        <bt:Url id="saveAttachmentUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=saveAttachment"/>
-        <bt:Url id="convertToStatusUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=convertToStatus"/>
-        <bt:Url id="convertToWikiUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=convertToWiki"/>
-        <bt:Url id="convertToForumUrl" DefaultValue="https://your-portal.com/portal/intranet/outlook?command=convertToForum"/>
+        <bt:Url id="addAttachmentUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=addAttachment"/>
+        <bt:Url id="saveAttachmentUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=saveAttachment"/>
+        <bt:Url id="convertToStatusUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToStatus"/>
+        <bt:Url id="convertToWikiUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToWiki"/>
+        <bt:Url id="convertToForumUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToForum"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="appDescription" DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
