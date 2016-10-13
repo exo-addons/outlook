@@ -16,7 +16,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label class="ms-Label">&{Outlook.activityMessage}</label>
-					<div class="ms-TextField ms-TextField--placeholder statusField">
+					<div class="ms-TextField ms-TextField--placeholder placeholderField statusField">
 						<label class="ms-Label">&{Outlook.activityMessagePlaceholder}</label>
 						<div class="ms-TextField-field statusText" contenteditable="true">
 						</div>

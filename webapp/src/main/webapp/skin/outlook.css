@@ -342,7 +342,7 @@ div.form-buttons {
 	background: linear-gradient(transparent 25px, white);
 }
 
-.messageEditor, .statusText {
+.messageEditor, .statusText, .topicText {
 	height: 200px;
 	overflow: auto;
 	padding: 0px;
@@ -352,18 +352,19 @@ div.form-buttons {
 	max-height: 250px;
 }
 
-.statusText {
+.statusText, .topicText {
 	max-height: 75px;
 	padding: 5px;
 	line-height: 14px;
 }
 
-.statusField {
+.placeholderField {
 	margin-bottom: 0px;
 }
 
-.statusField label.ms-Label {
+.placeholderField label.ms-Label {
 	pointer-events: none;
+	padding-top: 5px !important;
 }
 
 #outlook-pane .ms-MessageBar {

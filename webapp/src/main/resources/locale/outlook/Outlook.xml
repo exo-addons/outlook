@@ -31,6 +31,7 @@
     <homeNoActionsAvailable>No actions are available for this context.</homeNoActionsAvailable>
     
     <cancel>Cancel</cancel>
+    <convert>Convert</convert>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
     <targetSpaceMandatory>Target space</targetSpaceMandatory>
     <clickToEdit>Click to edit</clickToEdit>
@@ -80,7 +81,6 @@
     <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
     <activityText>Activity body</activityText>
     <activityTextDescription>This will be displayed in the activity's body on the stream</activityTextDescription>
-    <convert>Convert</convert>
     <convertingToStatus>Converting the message to an activity...</convertingToStatus>
     <convertedToStatus>The activity was successfully posted</convertedToStatus>
     <convertToStatusError>Error converting the message to an activity</convertToStatusError>
@@ -110,7 +110,7 @@
     <convertingToForum>Converting the message to a forum topic...</convertingToForum>
     <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
     <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME}</convertedToSpaceForum>
-    <openForumPost>Open forum topic</openForumPost>
+    <openForumTopic>Open forum topic</openForumTopic>
     
     <!-- Post A Status -->
     <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
@@ -121,6 +121,17 @@
     <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
     <post>Share</post>
     <postingStatus>Posting your status update...</postingStatus>
+    
+    <!-- Start Discussion (Forum topic) -->
+    <startDiscussionDescription>Start a new discussion in a forum of a collaborative space.</startDiscussionDescription>
+    <forumTopicNamePlaceholder>Your topic name</forumTopicNamePlaceholder>
+    <forumTopicTextPlaceholder>Type your topic message here</forumTopicTextPlaceholder>
+    <forumNewTopicTargetSpaceDescription>Your discussion will be started in the space forum.</forumNewTopicTargetSpaceDescription>
+    <start>Start</start>
+    <creatingTopic>Creating discussion...</creatingTopic>
+    <createdTopic>Discussion created</createdTopic>
+    <startedTopicInUserForum>The discussion was successfully created in intranet forum</startedTopicInUserForum>
+    <startedTopicInSpaceForum>The discussion was successfully created in {SPACE_NAME}</startedTopicInSpaceForum>
     
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>

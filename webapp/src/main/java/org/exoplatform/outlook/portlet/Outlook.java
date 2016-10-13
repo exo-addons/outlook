@@ -186,6 +186,11 @@ public class Outlook {
       return msg.replace("{SPACE_NAME}", spaceName);
     }
 
+    public String getStartedTopicInSpaceForum() {
+      String msg = i18n.getString("Outlook.startedTopicInSpaceForum");
+      return msg.replace("{SPACE_NAME}", spaceName);
+    }
+
     /**
      * @return the isSpace
      */
@@ -195,117 +200,121 @@ public class Outlook {
   }
 
   @Inject
-  Provider<PortletPreferences>                              preferences;
+  Provider<PortletPreferences>                                preferences;
 
   @Inject
-  OutlookService                                            outlook;
+  OutlookService                                              outlook;
 
   @Inject
-  CookieTokenService                                        rememberMeTokens;
+  CookieTokenService                                          rememberMeTokens;
 
   @Inject
-  OutlookTokenService                                       outlookTokens;
+  OutlookTokenService                                         outlookTokens;
 
   @Inject
-  ContentLink                                               contentLink;
+  ContentLink                                                 contentLink;
 
   @Inject
   @Path("index.gtmpl")
-  org.exoplatform.outlook.portlet.templates.index           index;
+  org.exoplatform.outlook.portlet.templates.index             index;
 
   @Inject
   @Path("saveAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.saveAttachment  saveAttachment;
+  org.exoplatform.outlook.portlet.templates.saveAttachment    saveAttachment;
 
   @Inject
   @Path("savedAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.savedAttachment savedAttachment;
+  org.exoplatform.outlook.portlet.templates.savedAttachment   savedAttachment;
 
   @Inject
   @Path("folders.gtmpl")
-  org.exoplatform.outlook.portlet.templates.folders         folders;
+  org.exoplatform.outlook.portlet.templates.folders           folders;
 
   @Inject
   @Path("filesExplorer.gtmpl")
-  org.exoplatform.outlook.portlet.templates.filesExplorer   filesExplorer;
+  org.exoplatform.outlook.portlet.templates.filesExplorer     filesExplorer;
 
   @Inject
   @Path("filesSearch.gtmpl")
-  org.exoplatform.outlook.portlet.templates.filesSearch     filesSearch;
+  org.exoplatform.outlook.portlet.templates.filesSearch       filesSearch;
 
   @Inject
   @Path("addFolderDialog.gtmpl")
-  org.exoplatform.outlook.portlet.templates.addFolderDialog addFolderDialog;
+  org.exoplatform.outlook.portlet.templates.addFolderDialog   addFolderDialog;
 
   @Inject
   @Path("addAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.addAttachment   addAttachment;
+  org.exoplatform.outlook.portlet.templates.addAttachment     addAttachment;
 
   @Inject
   @Path("postStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.postStatus      postStatus;
+  org.exoplatform.outlook.portlet.templates.postStatus        postStatus;
 
   @Inject
   @Path("postedStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.postedStatus    postedStatus;
+  org.exoplatform.outlook.portlet.templates.postedStatus      postedStatus;
 
   @Inject
   @Path("startDiscussion.gtmpl")
-  org.exoplatform.outlook.portlet.templates.startDiscussion startDiscussion;
+  org.exoplatform.outlook.portlet.templates.startDiscussion   startDiscussion;
+
+  @Inject
+  @Path("startedDiscussion.gtmpl")
+  org.exoplatform.outlook.portlet.templates.startedDiscussion startedDiscussion;
 
   @Inject
   @Path("search.gtmpl")
-  org.exoplatform.outlook.portlet.templates.search          search;
+  org.exoplatform.outlook.portlet.templates.search            search;
 
   @Inject
   @Path("userInfo.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfo        userInfo;
+  org.exoplatform.outlook.portlet.templates.userInfo          userInfo;
 
   @Inject
   @Path("convertToStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToStatus convertToStatus;
+  org.exoplatform.outlook.portlet.templates.convertToStatus   convertToStatus;
 
   @Inject
   @Path("convertedStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedStatus convertedStatus;
+  org.exoplatform.outlook.portlet.templates.convertedStatus   convertedStatus;
 
   @Inject
   @Path("convertToWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToWiki   convertToWiki;
+  org.exoplatform.outlook.portlet.templates.convertToWiki     convertToWiki;
 
   @Inject
   @Path("convertedWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedWiki   convertedWiki;
+  org.exoplatform.outlook.portlet.templates.convertedWiki     convertedWiki;
 
   @Inject
   @Path("convertToForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToForum  convertToForum;
+  org.exoplatform.outlook.portlet.templates.convertToForum    convertToForum;
 
   @Inject
   @Path("convertedForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedForum  convertedForum;
+  org.exoplatform.outlook.portlet.templates.convertedForum    convertedForum;
 
   @Inject
   @Path("home.gtmpl")
-  org.exoplatform.outlook.portlet.templates.home            home;
+  org.exoplatform.outlook.portlet.templates.home              home;
 
   @Inject
   @Path("error.gtmpl")
-  org.exoplatform.outlook.portlet.templates.error           error;
+  org.exoplatform.outlook.portlet.templates.error             error;
 
   @Inject
   @Path("errorMessage.gtmpl")
-  org.exoplatform.outlook.portlet.templates.errorMessage    errorMessage;
+  org.exoplatform.outlook.portlet.templates.errorMessage      errorMessage;
 
   @Inject
-  ResourceBundle                                            i18n;
+  ResourceBundle                                              i18n;
 
   @Inject
-  ResourceBundleSerializer                                  i18nJSON;
+  ResourceBundleSerializer                                    i18nJSON;
 
-  private final Map<String, MenuItem>                       allMenuItems  = new LinkedHashMap<String, MenuItem>();
+  private final Map<String, MenuItem>                         allMenuItems  = new LinkedHashMap<String, MenuItem>();
 
-  private final Set<MenuItem>                               rootMenuItems = new LinkedHashSet<MenuItem>();
+  private final Set<MenuItem>                                 rootMenuItems = new LinkedHashSet<MenuItem>();
 
   public Outlook() {
     addRootMenuItem(new MenuItem("home"));
@@ -679,11 +688,7 @@ public class Outlook {
 
   @Ajax
   @Resource
-  public Response postStatus(String groupId,
-                             String message,
-                             String userName,
-                             String userEmail,
-                             RequestContext context) {
+  public Response postStatus(String groupId, String message, String userName, String userEmail, RequestContext context) {
     try {
 
       OutlookUser user = outlook.getUser(userEmail, userName, null);
@@ -718,9 +723,48 @@ public class Outlook {
   @Resource
   public Response startDiscussionForm() {
     try {
-      return startDiscussion.ok();
+      return startDiscussion.with().spaces(outlook.getUserSpaces()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing discussion start form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  public Response startDiscussion(String groupId,
+                                  String name,
+                                  String text,
+                                  String userName,
+                                  String userEmail,
+                                  RequestContext context) {
+    try {
+      OutlookUser user = outlook.getUser(userEmail, userName, null);
+      if (groupId != null && groupId.length() > 0) {
+        // space forum requested
+        OutlookSpace space = outlook.getSpace(groupId);
+        if (space != null) {
+          Topic topic = space.addForumTopic(user, name, text);
+          return startedDiscussion.with()
+                                  .topic(new UserForumTopic(topic.getId(),
+                                                            topic.getTopicName(),
+                                                            topic.getLink(),
+                                                            space.getTitle()))
+                                  .ok();
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Error starting discussion: space not found " + groupId + ". OutlookUser " + userEmail);
+          }
+          return errorMessage("Error starting discussion: space not found " + groupId, 404);
+        }
+      } else {
+        // TODO user portal forum requested
+        // Page page = user.addForumTopic(message)
+        // ...
+        return errorMessage("Error starting discussion: space not selected", 400);
+      }
+    } catch (Throwable e) {
+      LOG.error("Error starting discussion for " + userEmail, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -932,10 +976,10 @@ public class Outlook {
         if (space != null) {
           Topic topic = space.addForumTopic(message);
           return convertedForum.with()
-                               .post(new UserForumTopic(topic.getId(),
-                                                        topic.getTopicName(),
-                                                        topic.getLink(),
-                                                        space.getTitle()))
+                               .topic(new UserForumTopic(topic.getId(),
+                                                         topic.getTopicName(),
+                                                         topic.getLink(),
+                                                         space.getTitle()))
                                .ok();
         } else {
           if (LOG.isDebugEnabled()) {

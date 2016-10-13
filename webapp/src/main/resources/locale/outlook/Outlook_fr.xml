@@ -26,6 +26,7 @@
     <homeNoActionsAvailable>Aucune action disponible dans ce contexte.</homeNoActionsAvailable>
     
     <cancel>Annuler</cancel>
+    <convert>Convertir</convert>
     <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Documents Personels</personalDocuments>
@@ -75,7 +76,6 @@
     <activityTitleDescription>Ce sera le titre de votre activité</activityTitleDescription>
     <activityText>Corps du message</activityText>
     <activityTextDescription>Ceci s'affichera dans le corps de l'activité</activityTextDescription>
-    <convert>Convertir</convert>
     <convertingToStatus>Conversion du message en cours..</convertingToStatus>
     <convertedToStatus>L'activité a été publiée avec succès</convertedToStatus>
     <convertToStatusError>Erreur à la conversion du message en activité</convertToStatusError>
@@ -105,7 +105,7 @@
     <convertingToForum>Conversion du message en discussion...</convertingToForum>
     <convertedToUserForum>La discussion a été démarrée avec succès dans le forum de l'intranet</convertedToUserForum>
     <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}</convertedToSpaceForum>
-    <openForumPost>Ouvrir la discussion</openForumPost>
+    <openForumTopic>Ouvrir la discussion</openForumTopic>
     
     <!-- Post A Status (TODO translate it) -->
     <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
@@ -116,6 +116,17 @@
     <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
     <post>Share</post>
     <postingStatus>Posting your status update...</postingStatus>
+    
+    <!-- Start Discussion (Forum topic) (TODO translate it) -->
+    <startDiscussionDescription>Start a new discussion in a forum of a collaborative space.</startDiscussionDescription>
+    <forumTopicNamePlaceholder>Your topic name</forumTopicNamePlaceholder>
+    <forumTopicTextPlaceholder>Type your topic message here</forumTopicTextPlaceholder>
+    <forumNewTopicTargetSpaceDescription>Your discussion will be started in the space forum.</forumNewTopicTargetSpaceDescription>
+    <start>Start</start>
+    <creatingTopic>Creating discussion...</creatingTopic>
+    <createdTopic>Discussion created</createdTopic>
+    <startedTopicInUserForum>The discussion was successfully created in intranet forum</startedTopicInUserForum>
+    <startedTopicInSpaceForum>The discussion was successfully created in {SPACE_NAME}</startedTopicInSpaceForum>
     
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>

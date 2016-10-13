@@ -94,6 +94,8 @@ public abstract class OutlookSpace {
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 
   public abstract Topic addForumTopic(OutlookMessage message) throws Exception;
+  
+  public abstract Topic addForumTopic(OutlookUser user, String name, String text) throws Exception;
 
   public abstract Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException;
 

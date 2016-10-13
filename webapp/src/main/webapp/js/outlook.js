@@ -677,21 +677,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					});
 					$groupIdDropdown.Dropdown();
 					
-					// $text.on("focus", null, function() {
-						// var $this = $(this);
-						// $this.data("before", $this.html());
-						// return $this;
-					// });
 					$text.on("blur paste input", null, function() {
 						// if "blur" doesn't work well, also add on ""
 						var content =$text.text().trim();
-						// if ($this.data("before") !== content) {
-							// $this.data("before", content);
-							// //$this.trigger("change");
-							// $postButton.prop("disabled", false);
-						// } else if (content.length <= 0) {
-							// $postButton.prop("disabled", true);
-						// }
 						if (content.length > 0) {
 							$postButton.prop("disabled", false);
 							if ($statusPlaceholder.is(":visible")) {
@@ -928,6 +916,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var checkCanConvert = function() {
 						if (textReady && groupId) {
 							$convertButton.prop("disabled", false);
+						} else {
+							$convertButton.prop("disabled", true);
 						}
 					};
 
@@ -1045,6 +1035,128 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
 								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
+						}
+					});
+				}
+				
+				function startDiscussionInit() {
+					// TODO this method adapted from convertToForumInit() and postStatusInit(), consider for code reuse
+					var $startDiscussion = $("#outlook-startDiscussion");
+					
+					var $topicNameField = $startDiscussion.find("div.topicNameField");
+					$topicNameField.TextField();
+					var $topicNamePlaceholder = $topicNameField.find(".ms-Label");
+					var $topicName = $topicNameField.find("input[name='topicName']");
+					
+					var $topicTextField = $startDiscussion.find("div.topicTextField");
+					$topicTextField.TextField();
+					var $topicTextPlaceholder = $topicTextField.find(".ms-Label");
+					var $topicText = $topicTextField.find("div.topicText");
+					
+					var $form = $startDiscussion.find("form");
+					var $groupIdDropdown = $form.find(".ms-Dropdown");
+					var $groupId = $groupIdDropdown.find("select[name='groupId']");
+					var $startButton = $form.find("button.startButton");
+					$startButton.prop("disabled", true);
+					var $cancelButton = $form.find("button.cancelButton");
+					var $starting = $startDiscussion.find("#starting");
+					var $started = $startDiscussion.find("#started");
+					var $startedInfo = $started.find(".startedInfo");
+					$cancelButton.click(function() {
+						$cancelButton.data("cancel", true);
+					});
+					
+					var groupId = null;
+					var hasName = false;
+					var hasText = false;
+					var checkCanStart = function() {
+						if (hasName && hasText && groupId) {
+							$startButton.prop("disabled", false);
+						} else {
+							$startButton.prop("disabled", true);
+						}
+					};
+
+					// init spaces dropdown
+					$groupId.val([]);
+					// initially no spaces selected
+					$groupId.change(function() {
+						var $space = $groupId.find("option:selected");
+						if ($space.size() > 0) {
+							groupId = $space.val();
+							checkCanStart();
+						}
+					});
+					$groupIdDropdown.Dropdown();
+					
+					// init text placeholders and start-button enabler
+					$topicName.on("blur paste input", null, function() {
+						var content =$topicName.val().trim();
+						if (content.length > 0) {
+							hasName = true;
+							checkCanStart();
+							if ($topicNamePlaceholder.is(":visible")) {
+								$topicNamePlaceholder.hide();
+							}
+						} else {
+							hasName = false;
+							checkCanStart();
+							if (!$topicNamePlaceholder.is(":visible")) {
+								$topicNamePlaceholder.show();
+							}
+						}
+					});
+					$topicText.on("blur paste input", null, function() {
+						var content =$topicText.text().trim();
+						if (content.length > 0) {
+							hasText = true;
+							checkCanStart();
+							if ($topicTextPlaceholder.is(":visible")) {
+								$topicTextPlaceholder.hide();
+							}
+						} else {
+							hasText = false;
+							checkCanStart();
+							if (!$topicTextPlaceholder.is(":visible")) {
+								$topicTextPlaceholder.show();
+							}
+						}
+					}); 
+					
+					$form.submit(function(event) {
+						event.preventDefault();
+						clearError();
+						console.log(">> startDiscussionInit groupId: " + groupId + " name: " + $topicName.val() + " text: " + $topicText.html());
+						$form.hide("blind");
+						$starting.show("blind");
+						var spinner = new fabric.Spinner($starting.find(".ms-Spinner").get(0));
+						spinner.start();
+						if ($cancelButton.data("cancel")) {
+							loadMenu("home");
+						} else {
+							$startedInfo.jzLoad("Outlook.startDiscussion()", {
+								groupId : groupId ? groupId : "",
+								name : $topicName.val(),
+								text : $topicText.html(),
+								userName : userName,
+								userEmail : userEmail
+							}, function(response, status, jqXHR) {
+								if (status == "error") {
+									showError(jqXHR);
+									spinner.stop();
+									$starting.hide("blind", {
+										"direction" : "down"
+									});
+									$form.show("blind", {
+										"direction" : "down"
+									});
+								} else {
+									clearError();
+									spinner.stop();
+									$starting.hide("blind");
+									$started.show("blind");
+								}
+							});
 						}
 					});
 				}

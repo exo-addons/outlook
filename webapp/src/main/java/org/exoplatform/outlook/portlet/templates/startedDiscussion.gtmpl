@@ -6,9 +6,9 @@
 		</div>
 		<div class="ms-MessageBar-text">
 			<% if (topic.isInSpace()) { %>
-			${topic.convertedToSpaceForum}<br><a href="${topic.link}" class="ms-Link" target="_blank">&{Outlook.openForumTopic}</a>
+			${topic.startedTopicInSpaceForum}<br><a href="${topic.link}" class="ms-Link" target="_blank">&{Outlook.openForumTopic}</a>
 			<% } else { %>
-			&{Outlook.convertedToUserForum}<br><a href="${topic.link}" class="ms-Link" target="_blank">&{Outlook.openForumTopic}</a>
+			&{Outlook.startedTopicInUserForum}<br><a href="${topic.link}" class="ms-Link" target="_blank">&{Outlook.openForumTopic}</a>
 			<% } %>
 		</div>
 	</div>

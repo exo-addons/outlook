@@ -816,6 +816,29 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                               messageSummary(message),
                               message.getBody());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Topic addForumTopic(OutlookUser user, String name, String text) throws Exception {
+      String creator = user.getLocalUser();
+
+      //
+      Group group = organization.getGroupHandler().findGroupById(getGroupId());
+      String parentGrId = group.getParentId();
+
+      // Category must exists as we are running against existing space
+      String categoryId = org.exoplatform.forum.service.Utils.CATEGORY
+          + parentGrId.replaceAll(CommonUtils.SLASH, CommonUtils.EMPTY_STR);
+
+      // Forum must exists as we are running against existing space
+      String forumId = org.exoplatform.forum.service.Utils.FORUM_SPACE_ID_PREFIX + group.getGroupName();
+
+      //
+      return createForumTopic(categoryId, forumId, creator, name, null, text);
+    }
+
   }
 
   protected final RepositoryService                           jcrService;
@@ -2356,6 +2379,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Page page = new Page();
 
       if (isHTML(content)) {
+        // TODO convert to xWiki format by RenderingService:
+        // see in https://github.com/exodev/wiki/pull/78/files#diff-7971c1ca97b8cbdc2624f4a0f4a794baR136
+        // markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
+
         // FYI XHTML doesn't work as when editing in eXo it does as for xWiki syntax
         // page.setSyntax(Syntax.XHTML_1_0.toIdString());
         page.setSyntax(Syntax.XWIKI_2_0.toIdString());
@@ -2648,28 +2675,30 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                    String title,
                                    String summary,
                                    String content) throws Exception {
-
-    String safeTitle = safeText(title);
-    if (safeTitle.length() > ForumUtils.MAXTITLE) {
-      // TODO throw an exception to user to ask for shorten title
-      safeTitle = new StringBuilder(safeTitle.substring(0, ForumUtils.MAXTITLE - 3)).append("...").toString();
-    }
-
-    Topic topic = new Topic();
-    String message;
-    if (isHTML(content)) {
-      message = safeHtml(content);
-    } else {
-      message = content;
-    }
-
     // save topic in ForumService
     org.exoplatform.forum.service.UserProfile userProfile = forumService.getUserSettingProfile(creator);
-
     if (checkForumHasAddTopic(userProfile, categoryId, forumId)) {
+      Topic topic = new Topic();
 
+      String message;
+      if (isHTML(content)) {
+        message = safeHtml(content);
+      } else {
+        message = content;
+      }
+
+      String safeTitle = safeText(title);
+      // check if title not empty
       if (safeTitle.length() <= 0 || safeTitle.equals("null")) {
-        safeTitle = safeText(summary);
+        if (summary != null) {
+          safeTitle = safeText(summary);
+        } else {
+          safeTitle = safeText(message.substring(0, ForumUtils.MAXTITLE - 5) + "...");
+        }
+      }
+      if (safeTitle.length() > ForumUtils.MAXTITLE) {
+        // TODO throw an exception to user to ask for shorten title
+        safeTitle = new StringBuilder(safeTitle.substring(0, ForumUtils.MAXTITLE - 3)).append("...").toString();
       }
 
       String checksms = TransformHTML.cleanHtmlCode(message,
@@ -2691,25 +2720,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
-      boolean hasForumMod = false;
-      if (true) { // !uiForm.isMod() // if not moderator
-        ForumAdministration forumAdministration = forumService.getForumAdministration();
-        String[] censoredKeyword = ForumUtils.getCensoredKeyword(forumAdministration.getCensoredKeyword());
-        checksms = checksms.toLowerCase();
-        for (String string : censoredKeyword) {
-          if (checksms.indexOf(string.trim()) >= 0) {
-            isOffend = true;
-            break;
-          }
-          if (safeTitle.toLowerCase().indexOf(string.trim()) >= 0) {
-            isOffend = true;
-            break;
-          }
+      ForumAdministration forumAdministration = forumService.getForumAdministration();
+      String[] censoredKeyword = ForumUtils.getCensoredKeyword(forumAdministration.getCensoredKeyword());
+      checksms = checksms.toLowerCase();
+      for (String string : censoredKeyword) {
+        if (checksms.indexOf(string.trim()) >= 0) {
+          isOffend = true;
+          break;
         }
-        // TODO if (uiForm.forum != null)
-        // hasForumMod = uiForm.forum.getIsModerateTopic();
+        if (safeTitle.toLowerCase().indexOf(string.trim()) >= 0) {
+          isOffend = true;
+          break;
+        }
       }
-      safeTitle = CommonUtils.encodeSpecialCharInTitle(safeTitle);
 
       boolean topicClosed = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATE_SELECTBOX).isChecked();
       boolean topicLocked = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATUS_SELECTBOX).isChecked();
@@ -2726,7 +2749,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // FYI this origjnal Forum code will use current "outlook" portlet path to build the link
       // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
-      //
+      // finally escape the title
+      safeTitle = CommonUtils.encodeSpecialCharInTitle(safeTitle);
+      // TODO is it still required as we've removed scripts and used HTML sanitizer already?
       safeTitle = StringCommonUtils.encodeScriptMarkup(safeTitle);
       topic.setTopicName(safeTitle);
       topic.setModifiedBy(creator);
@@ -2734,21 +2759,22 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // TODO do we need this? encode XSS script
       message = StringCommonUtils.encodeScriptMarkup(message);
 
-      // add message quote:
-      StringBuilder topicContent = new StringBuilder();
       if (summary != null) {
-        // HTML also contains message summary
-        topicContent.append("<div class='messageSummary' style='word-wrap: break-word; min-height: 30px;'>");
-        topicContent.append(summary);
-        topicContent.append("</div>");
-      }
-      topicContent.append("<div class='messageQuote' style='overflow:auto;'><div class='messageContent' style='position: relative; float: left;"
-          + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
-          + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
-      topicContent.append(message);
-      topicContent.append("</div></div>");
-      message = topicContent.toString();
-      //
+        // if summary given then we assume need quote the message content
+        StringBuilder topicContent = new StringBuilder();
+        if (summary != null) {
+          // HTML also contains message summary
+          topicContent.append("<div class='messageSummary' style='word-wrap: break-word; min-height: 30px;'>");
+          topicContent.append(summary);
+          topicContent.append("</div>");
+        }
+        topicContent.append("<div class='messageQuote' style='overflow:auto;'><div class='messageContent' style='position: relative; float: left;"
+            + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
+            + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
+        topicContent.append(message);
+        topicContent.append("</div></div>");
+        message = topicContent.toString();
+      } // otherwise message content will be a content of the topic post
 
       topic.setDescription(message);
       topic.setLink(link);
@@ -2778,7 +2804,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       topic.setCanView(canViews);
       topic.setCanPost(canPosts);
-      topic.setIsApproved(!hasForumMod);
+      topic.setIsApproved(true); // !hasForumMod
       // XXX we cannot rely on ForumUtils.getDefaultMail() because it requires resources from Forum WAR
       // MessageBuilder messageBuilder = ForumUtils.getDefaultMail();
       MessageBuilder messageBuilder = new MessageBuilder();
@@ -2833,11 +2859,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       } catch (PathNotFoundException e) {
         throw new OutlookException("Error saving forum topic '" + title + "'", e);
       }
+      return topic;
     } else {
       throw new BadParameterException("Cannot add forum topic. Check user permissions or forum settings.");
     }
-
-    return topic;
   }
 
   /**
