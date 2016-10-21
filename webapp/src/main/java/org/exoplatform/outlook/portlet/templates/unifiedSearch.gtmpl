@@ -1,0 +1,27 @@
+#{param name=searchLink/}
+<div id="outlook-search" class="ms-Grid">
+	<div class="ms-Grid-row text-centered">
+		<h4>&{Outlook.command.search}</h4>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+		<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+			<p class="ms-Dialog-subText">&{Outlook.searchDescription}</p>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+	</div>
+	<div class="ms-Grid-row">
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+		<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 searchContainer">
+			<iframe src="${searchLink}" frameborder="0" height="100%" width="100%"></iframe>
+		</div>
+		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+	</div>
+</div>
+
+
+
+
+
+
+

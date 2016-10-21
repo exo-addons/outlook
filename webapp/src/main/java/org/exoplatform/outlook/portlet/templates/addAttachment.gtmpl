@@ -3,7 +3,6 @@
 	<div class="ms-Grid-row text-centered">
 		<h4>&{Outlook.command.addAttachment}</h4>
 	</div>
-	
 	<div id="documentSelector">
 		<div class="ms-Grid-row">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

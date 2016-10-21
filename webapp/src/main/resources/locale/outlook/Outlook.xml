@@ -133,6 +133,16 @@
     <startedTopicInUserForum>The discussion was successfully created in intranet forum</startedTopicInUserForum>
     <startedTopicInSpaceForum>The discussion was successfully created in {SPACE_NAME}</startedTopicInSpaceForum>
     
+    <!-- Search -->
+    <searchDescription>Search in eXo intranet content (discussions, wiki, documents etc.)</searchDescription>
+    <searchQuery>Enter your search:</searchQuery>
+    <searchQueryPlaceholder>Type your search here</searchQueryPlaceholder>
+    <searchQueryDescription>You can use meaningful words or phrases from document names, meta-data or content text</searchQueryDescription>
+    <searchTargetSpaceDescription>If selected, search will be limited to the space's scope (documents, activities, wiki etc).</searchTargetSpaceDescription>
+    <search>Search</search>
+    <searching>Searching...</searching>
+    <searchResultFor>Search results for: </searchResultFor>
+    
     <messages>
       <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
       <fileHasNoPath>Error selecting file - path not found.</fileHasNoPath>

@@ -26,19 +26,62 @@
       <show-max-window>true</show-max-window>
       <container id="OfficeHome" template="system:/groovy/portal/webui/container/UIContainer.gtmpl"></container>
     </page -->
-    <page>
-      <name>outlook</name>
-      <title>Outlook Add-in</title>
-      <access-permissions>Everyone</access-permissions>
-      <edit-permission>*:/platform/administrators</edit-permission>
-      <show-max-window>true</show-max-window>
+  <page>
+    <name>outlook</name>
+    <title>Outlook Add-in</title>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <show-max-window>true</show-max-window>
+    <portlet-application>
+      <portlet>
+        <application-ref>outlook</application-ref>
+        <portlet-ref>OutlookPortlet</portlet-ref>
+      </portlet>
+      <access-permissions>*:/platform/users</access-permissions>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
+    </portlet-application>
+  </page>
+  <page>
+    <name>outlookQuickSearch</name>
+    <title>Quick Search</title>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <show-max-window>true</show-max-window>
+    <container id="OutlookQuickSearch" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
       <portlet-application>
         <portlet>
-          <application-ref>outlook</application-ref>
-          <portlet-ref>OutlookPortlet</portlet-ref>
+          <application-ref>unified-search</application-ref>
+          <portlet-ref>QuicksearchPortlet</portlet-ref>
         </portlet>
-        <access-permissions>Everyone</access-permissions>
+        <title>Search</title>
+        <access-permissions>*:/platform/users</access-permissions>
         <show-info-bar>false</show-info-bar>
+        <show-application-state>false</show-application-state>
+        <show-application-mode>false</show-application-mode>
       </portlet-application>
-    </page>
+    </container>
+  </page>
+  <page>
+    <name>outlookUnifiedSearch</name>
+    <title>Search</title>
+    <access-permissions>*:/platform/users</access-permissions>
+    <edit-permission>manager:/platform/administrators</edit-permission>
+    <show-max-window>true</show-max-window>
+    <container id="OutlookUnifiedSearch" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+      <access-permissions>*:/platform/users</access-permissions>
+      <portlet-application>
+        <portlet>
+          <application-ref>unified-search</application-ref>
+          <portlet-ref>UnifiedsearchPortlet</portlet-ref>
+        </portlet>
+        <title>Search</title>
+        <access-permissions>*:/platform/users</access-permissions>
+        <show-info-bar>false</show-info-bar>
+        <show-application-state>false</show-application-state>
+        <show-application-mode>false</show-application-mode>
+      </portlet-application>
+    </container>
+  </page>
 </page-set>

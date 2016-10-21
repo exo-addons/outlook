@@ -104,3 +104,26 @@
 .uiIconOutlookMail:before {
     content: "\e6b8";
 }
+
+#OutlookUnifiedSearch .resultLoading {
+	top: 40% !important;
+	left: 40% !important;
+}
+
+@media (max-width: 767px) {
+	#OutlookQuickSearch input[name='adminkeyword'], #OutlookUnifiedSearch input#txtQuery {
+		font-size: 14px !important;
+		box-sizing: border-box !important;
+		box-shadow: none !important;
+		border: 1px solid #71afe5 !important;
+    outline: 1px solid transparent !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+	}
+}
+
+@media (max-width: 1024px) and (min-width: 481px) {
+	#OutlookQuickSearch .btn, #OutlookUnifiedSearch .btn {
+		font-size: 14px !important;
+	}
+}

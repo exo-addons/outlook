@@ -378,3 +378,7 @@ div.form-buttons {
 .outlookGroupMenu .ms-ContextualMenu {
 	min-width: 220px;
 }
+
+.searchContainer {
+	min-height: 350px;
+}

@@ -5,7 +5,7 @@
 			<i class="ms-Icon ms-Icon--checkboxCheck ms-Icon--circle"></i>
 		</div>
 		<div class="ms-MessageBar-text">
-			<snap class="savedSpaceTitle">&{Outlook.savedAttachment}</snap><br>&{Outlook.savedClickToOpen}
+			<span class="savedSpaceTitle">&{Outlook.savedAttachment}</span><br>&{Outlook.savedClickToOpen}
 		</div>
 	</div>
 </div>

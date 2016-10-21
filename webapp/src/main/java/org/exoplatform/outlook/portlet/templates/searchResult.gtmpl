@@ -1,0 +1,13 @@
+#{param name=content/}
+<div class="ms-MessageBar-text">
+	<span>&{Outlook.searchResultFor}</span><span class="searchQuery"></span>
+</div>
+<ul class="ms-List searchResultList">
+	<% for (c in content) { %>
+	<li class="ms-ListItem">
+		<span class="ms-ListItem-primaryText">
+			<a href="${c.url}" target="_blank" class="ms-Link"><i class="ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green"></i>${c.name}</a>
+		</span>
+	</li>
+	<% } %>
+</ul>

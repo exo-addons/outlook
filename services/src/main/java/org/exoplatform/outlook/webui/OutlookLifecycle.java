@@ -31,6 +31,8 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIApplication;
 import org.exoplatform.webui.core.UIComponentDecorator;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Prepare Outlook site for showing without navigation bar from Platform's shared layout.<br>
  * 
@@ -73,6 +75,12 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
     if (navPortlet != null && navPortlet.isRendered()) {
       navRendered.set(true);
       navPortlet.setRendered(false);
+    }
+    // XXX add WCMUtils and Bootsrap-Dropdown Javascript which is required by UnifiedSearch portlet (it
+    // doesn't depend on WCMUtils as QuicksearchPortlet does)
+    if (context.<HttpServletRequest> getRequest().getRequestURI().indexOf("/outlook/search") > 0) {
+      context.getJavascriptManager().require("SHARED/bts_dropdown");
+      context.getJavascriptManager().require("SHARED/wcm-utils", "wcm_utils");
     }
   }
 

@@ -23,9 +23,12 @@ import juzu.Resource;
 import juzu.Response;
 import juzu.SessionScoped;
 import juzu.View;
+import juzu.bridge.portlet.JuzuPortlet;
+import juzu.request.HttpContext;
 import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookEmail;
@@ -51,6 +54,7 @@ import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.Page;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
@@ -263,8 +267,8 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.startedDiscussion startedDiscussion;
 
   @Inject
-  @Path("search.gtmpl")
-  org.exoplatform.outlook.portlet.templates.search            search;
+  @Path("unifiedSearch.gtmpl")
+  org.exoplatform.outlook.portlet.templates.unifiedSearch            unifiedSearch;
 
   @Inject
   @Path("userInfo.gtmpl")
@@ -773,12 +777,63 @@ public class Outlook {
 
   @Ajax
   @Resource
-  public Response searchForm() {
+  public Response searchForm(HttpContext httpContext) {
     try {
-      return search.ok();
+      StringBuilder link = new StringBuilder();
+//      String scheme = httpContext.getScheme();
+//      if (scheme != null) {
+//        link.append(scheme);
+//      } else {
+//        link.append("http");
+//      }
+//      link.append("://");
+//      link.append(httpContext.getServerName());
+//      int port = httpContext.getServerPort();
+//      if (port > 0 && port != 80 && port != 443) {
+//        link.append(':');
+//        link.append(port);
+//      }
+//      link.append('/');
+//      link.append(PortalContainer.getCurrentPortalContainerName());
+//      link.append(httpContext.getContextPath());
+      link.append("outlook/quicksearch");
+
+      return unifiedSearch.with().searchLink(link.toString()).ok();
     } catch (Throwable e) {
-      LOG.error("Error showing search form", e);
+      LOG.error("Error showing unified search form", e);
       return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  @Ajax
+  @Resource
+  @Deprecated
+  public Response search(String sourceId, String text) {
+    if (sourceId != null) {
+      try {
+        Collection<File> res;
+        if (SOURCE_ID_ALL_SPACES.equals(sourceId)) {
+          // TODO search in last used filesExplorer ordered by access/modification date first
+          res = outlook.getUserDocuments().findAllLastDocuments(text);
+        } else if (SOURCE_ID_PERSONAL.equals(sourceId)) {
+          // TODO search in last used from user's documents
+          res = outlook.getUserDocuments().findLastDocuments(text);
+        } else {
+          // Find space by groupId (we assume it is)
+          OutlookSpace space = outlook.getSpace(sourceId);
+          // search in space documents
+          res = space.findLastDocuments(text);
+        }
+        return filesSearch.with().files(res).ok();
+      } catch (Throwable e) {
+        LOG.error("Error searching filesExplorer in " + sourceId, e);
+        return errorMessage(e.getMessage(), 500);
+      }
+    } else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Null or zero-length source ID to searhc filesExplorer");
+      }
+      return errorMessage("Source ID required", 400);
     }
   }
 

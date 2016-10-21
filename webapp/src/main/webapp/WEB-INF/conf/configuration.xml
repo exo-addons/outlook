@@ -126,7 +126,7 @@
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
                 <value>
-                  <string>/intranet/outlook</string>
+                  <string>/intranet/outlook.*</string>
                 </value>
               </collection>
             </field>
@@ -141,7 +141,7 @@
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
                 <value>
-                  <string>/intranet/outlook</string>
+                  <string>/intranet/outlook.*</string>
                 </value>
               </collection>
             </field>

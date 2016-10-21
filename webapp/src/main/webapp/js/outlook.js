@@ -75,6 +75,40 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 		}
 	}
 
+	/** 
+	 * Returns the version of Windows Internet Explorer or a -1
+	 * (indicating the use of another browser).
+	 */
+	function getIEVersion() {
+		var rv = -1;
+		// Return value assumes failure.
+		if (navigator.appName == "Microsoft Internet Explorer") {
+			var ua = navigator.userAgent;
+			var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+			if (re.exec(ua) != null)
+				rv = parseFloat(RegExp.$1);
+		}
+		return rv;
+	}
+	
+	/**
+		 * Add style to the given document (to the end of head).
+		 */
+	function loadStyle(cssUrl, theDocument) {
+		if (theDocument.createStyleSheet) {
+			theDocument.createStyleSheet(cssUrl); // IE way
+		} else {
+			if ($("head", theDocument).find("link[href='"+cssUrl+"']").size() == 0) {
+				var headElems = theDocument.getElementsByTagName("head");
+				var style = theDocument.createElement("link");
+				style.type = "text/css";
+				style.rel = "stylesheet";
+				style.href = cssUrl;
+				headElems[headElems.length - 1].appendChild(style);
+			} // else, already added
+		}
+	}
+
 	Office.initialize = function(reason) {
 
 		$(function() {
@@ -1495,6 +1529,109 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// do initial search for better UX (first should be 'All Spaces')
 					$source.val($source.find("option:first").val());
 					$source.change();
+				}
+				
+				function searchInit() {
+					var $search = $("#outlook-search");
+					var $searchContainer = $search.find(".searchContainer");
+					var $searchFrame = $searchContainer.find("iframe");
+					$searchFrame.height($searchContainer.height());
+					var ieVersion = getIEVersion();
+					// DOMSubtreeModified
+					var domEvent = ieVersion > 0 && ieVersion < 9.0 ? "onpropertychange" : "DOMNodeInserted";
+					var searchWindow = $searchFrame.get(0).contentWindow;
+					// TODO cleanup
+					// function fixSearchingPos() {
+							// var $resultLoading = $(searchWindow.document).find("#resultLoading");
+							// if ($resultLoading.size() > 0 && $resultLoading.is(":visible")) {
+								// var w = $resultLoading.width();
+								// var h = $resultLoading.height();
+								// var $searchWindow = $(searchWindow);
+								// var left = ($searchWindow.width() / 2) - (w / 2);
+								// var top = ($searchWindow.height() / 2) - (h / 2);
+								// $resultLoading.offset({ top: top, left: left});
+							// }
+					// }
+					$searchFrame.load(function() {
+						// XXX it is a hack for quicksearch.js's generateAllResultsURL()
+						var outlookSiteName;
+						var portalName = searchWindow.eXo.env.portal.portalName;
+						if (portalName) {
+							outlookSiteName = portalName + "/outlook";
+							searchWindow.eXo.env.portal.portalName = outlookSiteName;
+						}
+						function fixPortalName(url) {
+							if (outlookSiteName) {
+								return url.replace(outlookSiteName, portalName);
+							} else {
+								return url;
+							}
+						}
+						// TODO not used
+						function outlookSiteUrl(url) {
+							if (outlookSiteName) {
+								var portalPath;
+								if (portalName.indexOf("/") != 0) {
+									portalPath = "/" + portalName;
+								} else {
+									portalPath = portalName;
+								}
+								var outlookPath = "/" + outlookSiteName;
+								return url.replace(portalPath, outlookPath);
+							} else {
+								return url;
+							}
+						}
+						// load CSS to align the search UI to Outlook add-in style
+						var searchDocument = searchWindow.document;
+						loadStyle("/outlook/skin/fabric.min.css", searchDocument);
+						loadStyle("/outlook/skin/fabric.components.min.css", searchDocument);
+						
+						// make search results open in new window
+						var $searchPortlet = $searchFrame.contents().find("#ToolBarSearch");
+						if ($searchPortlet.size() > 0) {
+							// it's Quick Search portlet
+							$searchPortlet.find("i.uiIconPLF24x24Search").parent().remove();
+							var $keyword = $searchPortlet.find("input[name='adminkeyword']");
+							$keyword.addClass("ms-SearchBox-field");
+							$keyword.show();
+							var $searchResult = $searchPortlet.find(".uiQuickSearchResult");
+							$searchResult.on(domEvent, "table", function(event) { // .quickSearchResult
+								var $table = $(event.target);
+								$table.addClass("ms-font-m");  
+								$table.find(".quickSearchResult>a").each(function() {
+									var $a = $(this);
+									$a.attr("target", "_blank");
+									$a.attr("href", fixPortalName($a.attr("href")));
+								});
+								// TODO do we want show unified (full) search in the add-in?
+								//$table.find("td.message>a").each(function() {
+								//	var $a = $(this);
+									// //$a.attr("href", outlookSiteUrl($a.attr("href")));
+									// $(searchWindow.document).on("click", $a.attr("id"), function() {
+							      // window.location.href = generateAllResultsURL(); //open the main search page
+							      // //$(quickSearchResult_id).hide();
+							    // });
+								//});
+								return true;
+							});
+						} else {
+							$searchPortlet = $searchFrame.contents().find("#searchPortlet");
+							if ($searchPortlet.size() > 0) {
+								// it's Unified Search portlet
+								$searchPortlet.addClass("ms-font-m");
+								var $resultPage = $searchPortlet.find("#resultPage");
+								$resultPage.on(domEvent, "div.resultBox", function(event) {
+									$(event.target).find("a").each(function() {
+										var $a = $(this);
+										$a.attr("target", "_blank");
+										$a.attr("href", fixPortalName($a.attr("href")));
+									});
+									return true;
+								});
+							}
+						}
+					}); 
 				}
 
 				function loadMenu(menuName) {
