@@ -28,7 +28,7 @@
   </parent>
   <artifactId>exo-outlook-packaging</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Outllok :: Extension Packaging</name>
+  <name>eXo Outlook :: Extension Packaging</name>
   <description>eXo Outlook packaging for installation</description>
 
   <dependencies>
