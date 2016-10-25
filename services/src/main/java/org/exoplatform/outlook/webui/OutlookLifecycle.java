@@ -68,9 +68,6 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("> onStartRequest: " + app + " " + context.getRequestContextPath() + " " + context.getSessionId());
-    }
     UIContainer navPortlet = findNavigationPortlet(app, context);
     if (navPortlet != null && navPortlet.isRendered()) {
       navRendered.set(true);

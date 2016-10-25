@@ -50,7 +50,6 @@ import org.exoplatform.outlook.mail.MailAPI;
 import org.exoplatform.outlook.mail.MailServerException;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity;
 import org.exoplatform.outlook.social.OutlookMessageActivity;
-import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
@@ -72,8 +71,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.UserProfile;
-import org.exoplatform.services.organization.UserProfileHandler;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -91,7 +88,6 @@ import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.social.webui.Utils;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.security.security.CookieTokenService;
@@ -406,7 +402,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           messagesFolder.save();
           message.setFileNode(messageFile);
 
-          // TODO
+          // TODO remove after upgrade to PLF 4.4
           // return postMessageActivity(message);
 
           // post activity to user status stream
@@ -509,7 +505,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       List<String> users = new ArrayList<String>();
       users.add(creator);
       // TODO add space group to users?
-
       return createWikiPage(wikiType,
                             "intranet",
                             creator,
@@ -687,6 +682,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     public ExoSocialActivity postActivity(OutlookMessage message) throws Exception {
       // post activity to space status stream under current user
       // TODO cleanup or use instead of file activity
+      // -- remove after upgrade to PLF 4.4
       // Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
       // this.groupId,
       // true);
@@ -707,7 +703,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       messagesFolder.save();
       message.setFileNode(messageFile);
 
-      // TODO
+      // TODO remove after upgrade to PLF 4.4
       // return postMessageActivity(message);
 
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
@@ -780,7 +776,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       List<String> users = new ArrayList<String>();
       users.add(creator);
       // TODO add space group to users?
-
       return createWikiPage(wikiType,
                             getGroupId(),
                             creator,
@@ -1019,7 +1014,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   public Folder getFolder(String path) throws OutlookException, RepositoryException {
     Node node = node(path);
     Folder folder = new UserFolder(path, node);
-    // TODO folder.init(path);
     return folder;
   }
 
@@ -1058,12 +1052,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         throw new OutlookFormatException("Attachment (" + name + ") doesn't contain ContentType");
       }
       String contentType = vContentType.getStringValue();
-      // TODO Do we need remote size?
-      // JsonValue vSize = vatt.getElement("Size");
-      // if (isNull(vSize)) {
-      // throw new OutlookFormatException("Attachment (" + name + ") doesn't contain Size");
-      // }
-      // long size = vSize.getLongValue();
       JsonValue vContentBytes = vatt.getElement("ContentBytes");
       if (isNull(vContentBytes)) {
         throw new OutlookFormatException("Attachment (" + name + ") doesn't contain ContentBytes");
@@ -1094,32 +1082,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
     parent.save(); // save everything at the end only
 
-    // TODO specified activity as in US_001_5
-
-    // fire listener service to generate social activities
-    // for (File f : files) {
-    // try {
-    // // This makes call:
-    // // Utils.postFileActivity(currentNode, RESOURCE_BUNDLE_KEY_CREATED_BY, true, false, "");
-    // listenerService.broadcast(ActivityCommonService.FILE_CREATED_ACTIVITY, null, f.getNode());
-    // } catch (Exception e) {
-    // LOG.warn("Error broadcasting the attachment file created activity for " + f.getPath(), e);
-    // }
-    // }
-
-    // final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
-    // try {
-    // org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookAttachmentActivity.ACTIVITY_TYPE);
-    // org.exoplatform.wcm.ext.component.activity.listener.Utils.postActivity(parent, comment, false, false,
-    // "");
-    // // TODO care about activity removal with the message file
-    // } catch (Exception e) {
-    // throw new OutlookException("Error posting activity for attachment files in " + destFolder.getName(),
-    // e);
-    // } finally {
-    // org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(origType);
-    // }
-
+    // TODO care about activity removal with the message file
     postAttachmentActivity(destFolder, files, user, safeText(comment));
 
     if (space != null) {
@@ -1248,9 +1211,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     OutlookEmail from;
     JsonValue vFrom = vatt.getElement("From");
     if (isNull(vFrom)) {
-      // TODO throw new OutlookFormatException("Message (" + messageId + " : " + subject + ") doesn't contain
-      // From");
-      // It's possible for saved draft messages
       from = null;
     } else {
       from = readEmail(vFrom);
@@ -1289,9 +1249,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       throw new OutlookFormatException("Message (" + messageId + " : " + subject + ")'s body doesn't contain Content");
     }
     String content = vContent.getStringValue();
-    // TODO if contentType is HTML do sanitize the HTML
-
-    //
     OutlookMessage message = new OutlookMessage(user);
     message.setId(messageId);
     message.setFrom(from);
@@ -1429,7 +1386,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       workspace = jcrService.getCurrentRepository().getConfiguration().getDefaultWorkspaceName();
       path = nodePath;
     } else {
-      // TODO it's not used experimental thing, see also ContentLink component
+      // TODO it's a not used experimental thing, see also ContentLink component
       int i = nodePath.indexOf('/');
       if (i > 0) {
         workspace = nodePath.substring(0, i);
@@ -1473,31 +1430,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       return true;
     } else {
       return false;
-    }
-  }
-
-  protected String getUserLang(String userId) throws OutlookException {
-    UserProfileHandler hanlder = organization.getUserProfileHandler();
-    try {
-      UserProfile userProfile = hanlder.findUserProfileByName(userId);
-      if (userProfile != null) {
-        String lang = userProfile.getAttribute(Constants.USER_LANGUAGE);
-        if (lang != null) {
-          // XXX Onlyoffice doesn't support country codes (as of Apr 6, 2016)
-          // All supported langauges here http://helpcenter.onlyoffice.com/tipstricks/available-languages.aspx
-          int cci = lang.indexOf("_");
-          if (cci > 0) {
-            lang = lang.substring(0, cci);
-          }
-        } else {
-          lang = Locale.ENGLISH.getLanguage();
-        }
-        return lang;
-      } else {
-        throw new BadParameterException("OutlookUser profile not found for " + userId);
-      }
-    } catch (Exception e) {
-      throw new OutlookException("Error searching user profile " + userId, e);
     }
   }
 
@@ -1675,26 +1607,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return IdentityConstants.ANONIM;
   }
 
-  /**
-   * Current space in the request (will work only for portal requests to space portlets).
-   * 
-   * @return
-   */
-  @Deprecated // TODO NOT used
-  protected Space contextSpace() {
-    try {
-      // TODO use thread-local to cache it a bit
-      return Utils.getSpaceByContext();
-    } catch (NullPointerException e) {
-      // XXX NPE has a place when running not in portal request, assume it as normal
-    } catch (Throwable e) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Error getting context space: " + e.getMessage(), e);
-      }
-    }
-    return null;
-  }
-
   protected SpaceService spaceService() {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
@@ -1824,43 +1736,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                      space.getGroupId(), // /spaces/product_team
                      space.getShortName() + "/documents", // product_team/documents
                      file);
-
-    // TODO cleanup
-    // StringBuilder url = new StringBuilder();
-    //
-    // String groupDriveName = space.getGroupId().replace("/", ".");
-    // String npath = node.getPath().replaceAll("/+", "/");
-    //
-    // String path = new StringBuilder().append(groupDriveName).append(npath).toString();
-    // PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    // if (portalRequest != null) {
-    // NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
-    // NavigationResource resource = new NavigationResource(SiteType.GROUP, // GROUP
-    // space.getGroupId(), // /spaces/product_team
-    // space.getShortName() + "/documents"); // product_team/documents
-    // nodeURL.setResource(resource);
-    // nodeURL.setQueryParameterValue("path", path);
-    //
-    // HttpServletRequest request = portalRequest.getRequest();
-    // try {
-    // URI requestUri = new URI(request.getScheme(),
-    // null,
-    // request.getServerName(),
-    // request.getServerPort(),
-    // null,
-    // null,
-    // null);
-    // url.append(requestUri.toASCIIString());
-    // url.append(nodeURL.toString());
-    //
-    // node.setUrl(url.toString());
-    // } catch (URISyntaxException e) {
-    // throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
-    // }
-    // } else {
-    // LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
-    // node.setUrl(node.getWebdavUrl());
-    // }
   }
 
   protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode file) throws OutlookException {
@@ -1875,42 +1750,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                      "intranet", // intranet
                      "documents", // documents
                      file);
-
-    // TODO cleanup
-    // StringBuilder url = new StringBuilder();
-    //
-    // String nodePath = node.getPath().replaceAll("/+", "/");
-    //
-    // String path = new StringBuilder().append(personalDocuments.getDriveName()).append(nodePath).toString();
-    // PortalRequestContext portalRequest = Util.getPortalRequestContext();
-    // if (portalRequest != null) {
-    // NodeURL nodeURL = portalRequest.createURL(NodeURL.TYPE);
-    // NavigationResource resource = new NavigationResource(SiteType.PORTAL, // PORTAL
-    // "intranet", // intranet
-    // "documents"); // documents
-    // nodeURL.setResource(resource);
-    // nodeURL.setQueryParameterValue("path", path);
-    //
-    // HttpServletRequest request = portalRequest.getRequest();
-    // try {
-    // URI requestUri = new URI(request.getScheme(),
-    // null,
-    // request.getServerName(),
-    // request.getServerPort(),
-    // null,
-    // null,
-    // null);
-    // url.append(requestUri.toASCIIString());
-    // url.append(nodeURL.toString());
-    //
-    // node.setUrl(url.toString());
-    // } catch (URISyntaxException e) {
-    // throw new OutlookException("Error creating server URL " + request.getRequestURI().toString(), e);
-    // }
-    // } else {
-    // LOG.warn("Portal request not found. Node URL will be its WebDAV link. Node: " + node.getPath());
-    // node.setUrl(node.getWebdavUrl());
-    // }
   }
 
   /**
@@ -1925,16 +1764,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     for (DriveData userDrive : driveService.getPersonalDrives(userName)) {
       String homePath = userDrive.getHomePath();
       if (homePath.endsWith("/Private")) {
-        // TODO
-        // SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
-        // Node userNode = hierarchyCreator.getUserNode(sessionProvider, displayName);
         String driveRootPath = org.exoplatform.services.cms.impl.Utils.getPersonalDrivePath(homePath, userName);
-        // int uhlen = userNode.getPath().length();
-        // if (homePath.length() > uhlen) {
-        // it should be w/o leading slash, e.g. "Private"
-        // String driveSubPath = driveRootPath.substring(uhlen + 1);
         return node(driveRootPath);
-        // }
       }
     }
     return null;
@@ -1948,18 +1779,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws Exception
    */
   protected Node spaceDocumentsNode(String groupId) throws Exception {
-    // String groupDriveName = groupId.replace("/", ".");
-    // DriveData groupDrive = driveService.getDriveByName(groupDriveName);
-    // if (groupDrive != null) {
-    // // TODO
-    // //SessionProvider sessionProvider = sessionProviders.getSessionProvider(null);
-    // // we actually don't need user home node, just a JCR session
-    // //Session session = hierarchyCreator.getUserNode(sessionProvider, displayName).getSession();
-    // //return (Node) session.getItem(groupDrive.getHomePath());
-    // return node(groupDrive.getHomePath());
-    // } else {
-    // return null;
-    // }
     return node(groupDocsPath(groupId));
   }
 
@@ -2008,11 +1827,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     } // else, already exo:privilegeable
     if (setPermissions) {
       for (String identity : identities) {
-        // It is for special debug cases
-        // if (LOG.isDebugEnabled()) {
-        // LOG.debug(">>> hasPermission " + identity + " identity: "
-        // + IdentityHelper.hasPermission(target.getACL(), identity, PermissionType.READ));
-        // }
         String[] ids = identity.split(":");
         if (ids.length == 2) {
           // it's group and we want allow given identity read only and additionally let managers remove the
@@ -2155,21 +1969,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     //
     activity = activityManager.getActivity(activity.getId());
-
-    // TODO we don't add activity info nodetype to do not remove the activity when attachment file(s) removed
-    // String activityId = activity.getId();
-    // if (!StringUtils.isEmpty(activityId)) {
-    // for (File f : files) {
-    // Node n = f.getNode();
-    // ActivityTypeUtils.attachActivityId(n, activityId);
-    // n.save();
-    // }
-    // }
-
     return activity;
   }
 
-  @Deprecated // TODO not used
+  @Deprecated // TODO not used, remove after upgrade to PLF 4.4
   protected ExoSocialActivity postMessageActivity(OutlookMessage message) throws RepositoryException {
     Node node = message.getFileNode();
     if (node == null) {
@@ -2207,15 +2010,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     activityManager.saveActivityNoReturn(authorIdentity, activity);
 
     activity = activityManager.getActivity(activity.getId());
-
-    // TODO we don't add activity info nodetype to do not remove the activity when message file removed
-    // String activityId = activity.getId();
-    // if (!StringUtils.isEmpty(activityId)) {
-    // ActivityTypeUtils.attachActivityId(node, activityId);
-    // node.save();
-    // }
-
-    //
     return activity;
   }
 
@@ -2413,7 +2207,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       page.setAuthor(creator);
       page.setMinorEdit(false);
 
-      ///
+      //
       title = safeText(title);
       String baseTitle = title;
 
@@ -2841,9 +2635,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topic.setUserVoteRating(new String[] {});
       try {
         String remoteAddr = ForumUtils.EMPTY_STR;
-        // TODO if (forumPortlet.isEnableIPLogging()) {
         remoteAddr = WebUIUtils.getRemoteIP();
-        // }
         topic.setRemoteAddr(remoteAddr);
         forumService.saveTopic(categoryId, forumId, topic, true, false, messageBuilder);
         if (userProfile.getIsAutoWatchMyTopics()) {
@@ -2904,11 +2696,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           return true;
         }
       }
-      // TODO ban IP of forum.
-      // if (isEnableIPLogging() && forum.getBanIP() != null &&
-      // forum.getBanIP().contains(WebUIUtils.getRemoteIP())) {
-      // return false;
-      // }
+      // FYI it's possible to ban IP of forum
       // check access category
       if (!ForumServiceUtils.hasPermission(cate.getUserPrivate(), userProfile.getUserId())) {
         return false;

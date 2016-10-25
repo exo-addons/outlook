@@ -96,7 +96,7 @@
                   </Action>
                 </Control>
                 <!-- Search: task pane button -->
-                <Control xsi:type="Button" id="composeSearchButton">
+                <!-- Control xsi:type="Button" id="composeSearchButton">
                   <Label resid="searchLabel" />
                   <Supertip>
                     <Title resid="searchTipTitle" />
@@ -112,7 +112,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="searchUrl" />
                   </Action>
-                </Control>
+                </Control -->
                 <!-- Create status, discussion etc: Menu (dropdown) button -->
                 <Control xsi:type="Menu" id="composeCreateMenuButton">
                   <Label resid="createMenuLabel" />
@@ -165,7 +165,7 @@
                   </Items>
                 </Control>
                 <!-- User Info: task pane button -->
-                <Control xsi:type="Button" id="composeUserInfoButton">
+                <!-- Control xsi:type="Button" id="composeUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -181,7 +181,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
                   </Action>
-                </Control>
+                </Control -->
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -260,7 +260,7 @@
                   </Items>
                 </Control>
                 <!-- Search: task pane button -->
-                <Control xsi:type="Button" id="readSearchButton">
+                <!-- Control xsi:type="Button" id="readSearchButton">
                   <Label resid="searchLabel" />
                   <Supertip>
                     <Title resid="searchTipTitle" />
@@ -276,7 +276,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="searchUrl" />
                   </Action>
-                </Control>
+                </Control -->
                 <!-- Create status, discussion etc: Menu (dropdown) button -->
                 <Control xsi:type="Menu" id="readCreateMenuButton">
                   <Label resid="createMenuLabel" />
@@ -329,7 +329,7 @@
                   </Items>
                 </Control>
                 <!-- User Info: task pane button -->
-                <Control xsi:type="Button" id="readUserInfoButton">
+                <!-- Control xsi:type="Button" id="readUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -345,7 +345,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
                   </Action>
-                </Control>
+                </Control -->
               </Group>
             </OfficeTab>
           </ExtensionPoint>

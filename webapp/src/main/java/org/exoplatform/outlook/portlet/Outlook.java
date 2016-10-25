@@ -23,12 +23,10 @@ import juzu.Resource;
 import juzu.Response;
 import juzu.SessionScoped;
 import juzu.View;
-import juzu.bridge.portlet.JuzuPortlet;
 import juzu.request.HttpContext;
 import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookEmail;
@@ -54,7 +52,6 @@ import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.Page;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
@@ -268,7 +265,7 @@ public class Outlook {
 
   @Inject
   @Path("unifiedSearch.gtmpl")
-  org.exoplatform.outlook.portlet.templates.unifiedSearch            unifiedSearch;
+  org.exoplatform.outlook.portlet.templates.unifiedSearch     unifiedSearch;
 
   @Inject
   @Path("userInfo.gtmpl")
@@ -336,8 +333,9 @@ public class Outlook {
     create.addSubmenu("startDiscussion");
     addRootMenuItem(create);
 
-    addRootMenuItem(new MenuItem("search"));
-    addRootMenuItem(new MenuItem("userInfo"));
+    // TODO features for 1.1+ version
+    // addRootMenuItem(new MenuItem("search"));
+    // addRootMenuItem(new MenuItem("userInfo"));
   }
 
   private void addRootMenuItem(MenuItem item) {
@@ -359,9 +357,6 @@ public class Outlook {
     Collection<MenuItem> menu = new ArrayList<MenuItem>();
     if (command == null) {
       // XXX we cannot access request parameters via Juzu's request when running in Portlet bridge
-      // Request request = Request.getCurrent();
-      // Map<String, RequestParameter> parameters = resourceContext.getParameters();
-      // RequestParameter cparam = parameters.get("command");
       // thus we rely on Portal request
       command = requestCommand();
     }
@@ -585,7 +580,7 @@ public class Outlook {
     try {
       Folder folder;
       if (SOURCE_ID_PERSONAL.equals(sourceId)) {
-        // TODO gather last used from user's documents
+        // gather last used from user's documents
         folder = outlook.getUserDocuments().getFolder(path);
       } else if (SOURCE_ID_ALL_SPACES.equals(sourceId)) {
         return errorMessage("Source not explorable", 400);
@@ -614,10 +609,10 @@ public class Outlook {
         // OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
         Collection<File> res;
         if (SOURCE_ID_ALL_SPACES.equals(sourceId)) {
-          // TODO search in last used filesExplorer ordered by access/modification date first
+          // search in last used filesExplorer ordered by access/modification date first
           res = outlook.getUserDocuments().findAllLastDocuments(text);
         } else if (SOURCE_ID_PERSONAL.equals(sourceId)) {
-          // TODO search in last used from user's documents
+          // search in last used from user's documents
           res = outlook.getUserDocuments().findLastDocuments(text);
         } else {
           // Find space by groupId (we assume it is)
@@ -762,9 +757,6 @@ public class Outlook {
           return errorMessage("Error starting discussion: space not found " + groupId, 404);
         }
       } else {
-        // TODO user portal forum requested
-        // Page page = user.addForumTopic(message)
-        // ...
         return errorMessage("Error starting discussion: space not selected", 400);
       }
     } catch (Throwable e) {
@@ -780,24 +772,7 @@ public class Outlook {
   public Response searchForm(HttpContext httpContext) {
     try {
       StringBuilder link = new StringBuilder();
-//      String scheme = httpContext.getScheme();
-//      if (scheme != null) {
-//        link.append(scheme);
-//      } else {
-//        link.append("http");
-//      }
-//      link.append("://");
-//      link.append(httpContext.getServerName());
-//      int port = httpContext.getServerPort();
-//      if (port > 0 && port != 80 && port != 443) {
-//        link.append(':');
-//        link.append(port);
-//      }
-//      link.append('/');
-//      link.append(PortalContainer.getCurrentPortalContainerName());
-//      link.append(httpContext.getContextPath());
       link.append("outlook/quicksearch");
-
       return unifiedSearch.with().searchLink(link.toString()).ok();
     } catch (Throwable e) {
       LOG.error("Error showing unified search form", e);
@@ -877,18 +852,10 @@ public class Outlook {
                                   String fromEmail,
                                   RequestContext context) {
     try {
-      // TODO for debug purpose only
-      // java.io.File temp = java.io.File.createTempFile("outlook_convertToStatus_body", ".html");
-      // try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream(temp))) {
-      // osw.write(body);
-      // temp.deleteOnExit();
-      // }
-      // ********
-
       OutlookUser user = outlook.getUser(userEmail, userName, null);
       OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
 
-      if (groupId != null && groupId.length() > 0) {// new String(body.getBytes(""), "utf-8")
+      if (groupId != null && groupId.length() > 0) {
         // space activity requested
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
@@ -1043,10 +1010,6 @@ public class Outlook {
           return errorMessage("Error converting message to forum post: space not found " + groupId, 404);
         }
       } else {
-        // TODO user portal wiki requested
-        // Page page = user.addForumTopic(message);
-        // return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(),
-        // page.getUrl())).ok();
         return errorMessage("Error creating forum topic: space not selected", 400);
       }
     } catch (Throwable e) {
@@ -1143,7 +1106,6 @@ public class Outlook {
 
   void fullLogout() {
     // XXX repeating logic of UIPortal.LogoutActionListener
-
     PortalRequestContext prContext = Util.getPortalRequestContext();
     HttpServletRequest req = prContext.getRequest();
     HttpServletResponse res = prContext.getResponse();
@@ -1182,12 +1144,6 @@ public class Outlook {
     rememberMeOutlookCookie.setPath(req.getRequestURI());
     rememberMeOutlookCookie.setMaxAge(0);
     res.addCookie(rememberMeOutlookCookie);
-
-    // TODO seems this path not used by callers
-    // String portalName = prContext.getPortalOwner();
-    // NodeURL createURL = prContext.createURL(NodeURL.TYPE);
-    // createURL.setResource(new NavigationResource(SiteType.PORTAL, portalName, null));
-    // return createURL.toString();
   }
 
   private OutlookMessage message(OutlookUser user,
