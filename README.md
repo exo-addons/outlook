@@ -1,11 +1,12 @@
 #Microsoft Outlook add-on
 
 This add-on allows use eXo Platform collaborative tools inside Microsoft Outlook. It embeds as an add-in into Outlook for Web, Mac and Windows and offer following features:
-* Save attachments from email message to a collaborative space inside portal
-* Attach documents from collaborative spaces to email message
-* Convert email message to activity status, wiki page or forum post (forum TODO) 
-* Post to activity streams, create forum posts (TODO) and wiki pages (TODO) from message window
+* Save attachments from email message to a collaborative space inside the eXo portal
+* Attach documents from collaborative spaces to an email message
+* Convert email message to activity status, wiki page or discussion (aka forum topics) 
+* Post to activity streams or create discussion from a message window
 * Search in collaborative spaces directly from message window (TODO)
+* Show message collaborators information and activities from the portal (TODO)
 
 ##Introduction
 
