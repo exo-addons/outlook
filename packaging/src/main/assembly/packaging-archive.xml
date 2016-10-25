@@ -9,7 +9,7 @@
      <dependencySet>
        <outputDirectory>webapps</outputDirectory>
        <includes>
-         <include>org.exoplatform.addons:exo-outlook-webapp:war</include>
+         <include>org.exoplatform.addons.outlook:exo-outlook-webapp:war</include>
        </includes>
        <outputFileNameMapping>outlook.war</outputFileNameMapping>
        <scope>provided</scope>

@@ -22,45 +22,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.addons</groupId>
     <artifactId>addons-parent-pom</artifactId>
+    <groupId>org.exoplatform.addons</groupId>
     <version>6</version>
   </parent>
-  
-  <artifactId>exo-outlook-parent</artifactId>
+  <groupId>org.exoplatform.addons.outlook</groupId>
+  <artifactId>exo-outlook</artifactId>
   <version>1.0.x-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>eXo Outlook :: Parent</name>
+  <name>eXo Outlook</name>
   <description>eXo Outlook extension</description>
-
+  <modules>
+    <module>services</module>
+    <module>webapp</module>
+    <module>packaging</module>
+  </modules>
   <scm>
     <connection>https://github.com/exo-addons/outlook/</connection>
     <developerConnection>https://github.com/exo-addons/outlook/</developerConnection>
     <url>https://github.com/exo-addons/outlook/</url>
   </scm>
-
   <properties>
     <!-- Defaut compiler settings -->
     <maven.compiler.optimize>true</maven.compiler.optimize>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
-
     <!-- eXo Modules -->
     <org.exoplatform.platform.version>4.3.1-RC01</org.exoplatform.platform.version>
     <org.juzu.version>1.1.0</org.juzu.version>
-    
     <!-- Third-parties -->
     <org.jsoup.version>1.9.2</org.jsoup.version>
     <!-- 20160827.1 latest version of sanitizer as on Sep 21 2016, but PLF 4.4 deps mngt uses the below version in 12-M07 -->
     <com.googlecode.owasp-java-html-sanitizer.version>20160413.1</com.googlecode.owasp-java-html-sanitizer.version>
-      
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <mockito.version>1.10.19</mockito.version>
     <org.exoplatform.jcr-services.version>1.16.7-M01</org.exoplatform.jcr-services.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <!-- Import versions from platform project FIRST!!! -->
@@ -71,7 +70,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
       <!-- Import versions from Juzu -->
       <dependency>
         <groupId>org.juzu</groupId>
@@ -86,7 +84,6 @@
         <version>${org.juzu.version}</version>
         <type>jar</type>
       </dependency>
-      
       <!-- Office extension -->
       <dependency>
         <groupId>org.exoplatform.addons</groupId>
@@ -100,7 +97,6 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      
       <!-- Third-parties -->
       <dependency>
         <groupId>org.jsoup</groupId>
@@ -114,7 +110,6 @@
         <version>${com.googlecode.owasp-java-html-sanitizer.version}</version>
         <type>jar</type>
       </dependency>
-      
       <!-- For tests -->
       <dependency>
         <groupId>junit</groupId>
@@ -133,7 +128,7 @@
         <artifactId>exo-jcr-services</artifactId>
         <version>${org.exoplatform.jcr-services.version}</version>
         <type>jar</type>
-      	<scope>test</scope>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -144,10 +139,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
-  <modules>
-    <module>services</module>
-    <module>webapp</module>
-    <module>packaging</module>
-  </modules>
 </project>
