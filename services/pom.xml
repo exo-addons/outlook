@@ -19,19 +19,17 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.addons.outlook</groupId>
     <artifactId>exo-outlook</artifactId>
+    <groupId>org.exoplatform.addons.outlook</groupId>
     <version>1.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>exo-outlook-services</artifactId>
   <packaging>jar</packaging>
   <name>eXo Outlook :: Extension Services</name>
   <description>eXo Outlook services of portal extension</description>
-
   <dependencies>
     <!-- Others third party -->
     <!-- dependency>
@@ -43,28 +41,27 @@
     <dependency>
       <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
       <artifactId>owasp-java-html-sanitizer</artifactId>
-      <scope>compile</scope>
       <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>jsr311-api</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
-    
     <!-- Portal & ECMS & Social & Forum -->
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
@@ -121,19 +118,18 @@
       <artifactId>wiki-service</artifactId>
       <scope>provided</scope>
     </dependency>
-    
     <!-- for tests -->
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <scope>test</scope>
       <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
       <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <!-- dependency>
       <groupId>org.exoplatform.platform</groupId>
@@ -144,20 +140,20 @@
     <dependency>
       <groupId>org.exoplatform</groupId>
       <artifactId>exo-jcr-services</artifactId>
-      <scope>test</scope>
       <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
       <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
       <type>jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -166,7 +162,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <resources>
       <resource>

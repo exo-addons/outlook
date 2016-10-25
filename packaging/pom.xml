@@ -22,32 +22,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.addons.outlook</groupId>
     <artifactId>exo-outlook</artifactId>
+    <groupId>org.exoplatform.addons.outlook</groupId>
     <version>1.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>exo-outlook-packaging</artifactId>
   <packaging>pom</packaging>
   <name>eXo Outlook :: Extension Packaging</name>
   <description>eXo Outlook packaging for installation</description>
-
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.addons</groupId>
       <artifactId>exo-outlook-services</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.addons</groupId>
       <artifactId>exo-outlook-webapp</artifactId>
-      <scope>provided</scope>
       <type>war</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
-
   <build>
-    <finalName>exo-outlook</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -59,24 +56,25 @@
         </includes>
       </resource>
     </resources>
+    <finalName>exo-outlook</finalName>
     <plugins>
       <plugin>
-         <artifactId>maven-assembly-plugin</artifactId>
-           <executions>
-              <execution>
-                <id>01-assembly</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>single</goal>
-                </goals>
-                <configuration>
-                  <descriptors>
-                    <descriptor>src/main/assembly/packaging-archive.xml</descriptor>
-                  </descriptors>
-                </configuration>
-              </execution>
-          </executions>
-       </plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>01-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/packaging-archive.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

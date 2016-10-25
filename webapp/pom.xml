@@ -19,27 +19,24 @@
     02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.addons.outlook</groupId>
     <artifactId>exo-outlook</artifactId>
+    <groupId>org.exoplatform.addons.outlook</groupId>
     <version>1.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>exo-outlook-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Outlook :: Extension Webapp</name>
   <description>eXo Outlook web application of portal extension</description>
-
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.addons</groupId>
       <artifactId>exo-outlook-services</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
-    
     <!-- eXo Portal -->
     <dependency>
       <groupId>org.gatein.portal</groupId>
@@ -66,35 +63,31 @@
       <artifactId>validation-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <!-- eXo Social -->
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-webui</artifactId>
-      <scope>provided</scope>
       <type>jar</type>
+      <scope>provided</scope>
     </dependency>
-    
     <!-- eXo Wiki -->
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
       <scope>provided</scope>
     </dependency>
-    
     <!-- eXo Forum  -->
     <dependency>
       <groupId>org.exoplatform.forum</groupId>
       <artifactId>forum-forum-service</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <!-- eXo Platform's Juzu -->
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
@@ -130,12 +123,11 @@
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-authz</artifactId>
-      <scope>provided</scope><!-- TODO it is not provided by PLF 4.3 -->
+      <!-- TODO it is not provided by PLF 4.3 -->
+      <scope>provided</scope>
     </dependency>
   </dependencies>
-
   <build>
-    <finalName>outlook</finalName>
     <resources>
       <resource>
         <directory>src/main/java</directory>
@@ -162,5 +154,6 @@
         </includes>
       </resource>
     </resources>
+    <finalName>outlook</finalName>
   </build>
 </project>
