@@ -45,19 +45,19 @@
   <properties>
     <!-- Defaut compiler settings -->
     <maven.compiler.optimize>true</maven.compiler.optimize>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
-    <org.exoplatform.platform.version>4.3.1-RC01</org.exoplatform.platform.version>
-    <org.juzu.version>1.1.0</org.juzu.version>
+    <org.exoplatform.platform.version>4.4.0-M20</org.exoplatform.platform.version>
+    <org.juzu.version>1.1.3</org.juzu.version>
     <!-- Third-parties -->
     <org.jsoup.version>1.9.2</org.jsoup.version>
     <!-- 20160827.1 latest version of sanitizer as on Sep 21 2016, but PLF 4.4 deps mngt uses the below version in 12-M07 -->
-    <com.googlecode.owasp-java-html-sanitizer.version>20160413.1</com.googlecode.owasp-java-html-sanitizer.version>
+    <!-- com.googlecode.owasp-java-html-sanitizer.version>20160413.1</com.googlecode.owasp-java-html-sanitizer.version -->
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <mockito.version>1.10.19</mockito.version>
-    <org.exoplatform.jcr-services.version>1.16.7-M01</org.exoplatform.jcr-services.version>
+    <org.exoplatform.jcr-services.version>1.17.0-M08</org.exoplatform.jcr-services.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
   <dependencyManagement>
@@ -86,13 +86,13 @@
       </dependency>
       <!-- Office extension -->
       <dependency>
-        <groupId>org.exoplatform.addons</groupId>
+        <groupId>org.exoplatform.addons.outlook</groupId>
         <artifactId>exo-outlook-services</artifactId>
         <version>${project.version}</version>
         <type>jar</type>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.addons</groupId>
+        <groupId>org.exoplatform.addons.outlook</groupId>
         <artifactId>exo-outlook-webapp</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -104,12 +104,12 @@
         <version>${org.jsoup.version}</version>
         <type>jar</type>
       </dependency>
-      <dependency>
+      <!-- dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
         <version>${com.googlecode.owasp-java-html-sanitizer.version}</version>
         <type>jar</type>
-      </dependency>
+      </dependency -->
       <!-- For tests -->
       <dependency>
         <groupId>junit</groupId>

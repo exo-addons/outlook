@@ -32,13 +32,13 @@
   <description>eXo Outlook packaging for installation</description>
   <dependencies>
     <dependency>
-      <groupId>org.exoplatform.addons</groupId>
+      <groupId>org.exoplatform.addons.outlook</groupId>
       <artifactId>exo-outlook-services</artifactId>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.addons</groupId>
+      <groupId>org.exoplatform.addons.outlook</groupId>
       <artifactId>exo-outlook-webapp</artifactId>
       <type>war</type>
       <scope>provided</scope>

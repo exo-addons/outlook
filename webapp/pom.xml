@@ -32,7 +32,7 @@
   <description>eXo Outlook web application of portal extension</description>
   <dependencies>
     <dependency>
-      <groupId>org.exoplatform.addons</groupId>
+      <groupId>org.exoplatform.addons.outlook</groupId>
       <artifactId>exo-outlook-services</artifactId>
       <type>jar</type>
       <scope>provided</scope>
