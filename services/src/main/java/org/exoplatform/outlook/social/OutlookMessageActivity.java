@@ -19,6 +19,7 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
@@ -267,13 +268,10 @@ public class OutlookMessageActivity extends FileUIActivity {
                    + "    $('.outlookMessageActivityContent').each(function(ai, activity) {\n" //
                    + "      var $activity = $(activity);\n" //
                    + "      $activity.find('.outlookMessageIframe').each(function(ii, iframe) {\n" //
-      // + " console.log('init iframe >> [' + i + '] ' + iframe.src);\n" //
                    + "        var $iframe = $(iframe);\n" //
                    + "        $iframe.ready(function() {\n" //
                    + "          var $body = $iframe.contents().find('body,div:first');\n" //
                    + "          $body.first().css('overflow', 'hidden');\n" //
-      // + " console.log('init iframe << [' + i + '] ' + $body.size() + ' ' + $body.first().size() + ' ' +
-      // iframe.src);\n" //
                    + "        });\n" //
                    + "        $iframe.parents('.messageBody').click(function(event) {\n" //
                    + "          event.stopPropagation();\n" //
@@ -285,6 +283,24 @@ public class OutlookMessageActivity extends FileUIActivity {
                    + "  }, 1500);\n" //
                    + "});\n" //
       );
+    }
+  }
+
+  /**
+   * Get a link to open the activity in new window.<br>
+   * Method existed in the parent class in PLF 4.3, but removed in 4.4, thus we keep it here.
+   */
+  public String getViewLink() {
+    try {
+      Node data = getContentNode();
+      if (isFileSupportPreview(data)) {
+        return this.event("ViewDocument", this.getId(), "");
+      } else {
+        return org.exoplatform.wcm.webui.Utils.getEditLink(data, false, false);
+      }
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return StringUtils.EMPTY;
     }
   }
 

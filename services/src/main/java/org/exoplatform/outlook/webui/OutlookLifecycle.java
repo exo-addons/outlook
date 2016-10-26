@@ -29,6 +29,7 @@ import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIApplication;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIComponentDecorator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,7 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
 
   protected static final Log           LOG         = ExoLogger.getLogger(OutlookLifecycle.class);
 
-  protected final ThreadLocal<Boolean> navRendered = new ThreadLocal<Boolean>();
+  protected final ThreadLocal<Boolean> toolbarRendered = new ThreadLocal<Boolean>();
 
   /**
    * 
@@ -68,10 +69,10 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIContainer navPortlet = findNavigationPortlet(app, context);
-    if (navPortlet != null && navPortlet.isRendered()) {
-      navRendered.set(true);
-      navPortlet.setRendered(false);
+    UIContainer toolbar = findToolbarContainer(app, context);
+    if (toolbar != null && toolbar.isRendered()) {
+      toolbarRendered.set(true);
+      toolbar.setRendered(false);
     }
     // XXX add WCMUtils and Bootsrap-Dropdown Javascript which is required by UnifiedSearch portlet (it
     // doesn't depend on WCMUtils as QuicksearchPortlet does)
@@ -86,12 +87,12 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIContainer navPortlet = findNavigationPortlet(app, context);
-    if (navPortlet != null) {
-      Boolean render = navRendered.get();
+    UIContainer toolbar = findToolbarContainer(app, context);
+    if (toolbar != null) {
+      Boolean render = toolbarRendered.get();
       if (render != null && render.booleanValue()) {
         // restore rendered if was rendered and set hidden explicitly
-        navPortlet.setRendered(true);
+        toolbar.setRendered(true);
       }
     }
   }
@@ -114,7 +115,7 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
 
   // ******* internals ******
 
-  protected UIContainer findNavigationPortlet(Application app, WebuiRequestContext context) throws Exception {
+  protected UIContainer findToolbarContainer(Application app, WebuiRequestContext context) throws Exception {
     ExoContainer container = app.getApplicationServiceContainer();
     if (container != null) {
       UIApplication uiApp = context.getUIApplication();
@@ -122,7 +123,15 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
       if (uiViewWS != null) {
         UIContainer uiContainer = (UIContainer) uiViewWS.getUIComponent();
         if (uiContainer != null) {
-          return uiContainer.getChildById("NavigationPortlet");
+          for (UIComponent child : uiContainer.getChildren()) {
+            if (UIContainer.class.isAssignableFrom(child.getClass())) {
+              UIContainer childContainer = UIContainer.class.cast(child);
+              UIContainer toolbar = childContainer.getChildById("UIToolbarContainer");
+              if (toolbar != null) {
+                return toolbar;
+              }
+            }
+          }
         }
       }
     }
