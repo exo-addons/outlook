@@ -98,6 +98,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
@@ -813,6 +814,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected final TrashService                                trashService;
 
+  protected final RenderingService                            wikiRenderingService;
+
   protected final ResourceBundleService                       resourceBundleService;
 
   protected final PolicyFactory                               htmlPolicy        =
@@ -943,6 +946,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             WikiService wikiService,
                             ForumService forumService,
                             TrashService trashService,
+                            RenderingService wikiRenderingService,
                             ResourceBundleService resourceBundleService,
                             InitParams params)
       throws ConfigurationException, MailServerException {
@@ -959,6 +963,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.wikiService = wikiService;
     this.forumService = forumService;
     this.trashService = trashService;
+    this.wikiRenderingService = wikiRenderingService;
     this.resourceBundleService = resourceBundleService;
 
     // API for user requests (uses credentials from eXo user profile)
@@ -1715,7 +1720,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /**
    * Find given user Personal Documents folder using user session.
    * 
-   * @param displayName {@link String}
+   * @param userName {@link String}
    * @return {@link Node} Personal Documents folder node or <code>null</code>
    * @throws Exception
    */
@@ -1734,7 +1739,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /**
    * Find given group Documents folder using current user session.
    *
-   * @param groupName {@link String}
+   * @param groupId {@link String}
    * @return {@link Node} space's Documents folder node or <code>null</code>
    * @throws Exception
    */
@@ -2041,17 +2046,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                 String summary,
                                 String content,
                                 List<String> users) throws Exception {
-    String parentTitle = OUTLOOK_MESSAGES_TITLE;
-    String parentId = TitleResolver.getId(parentTitle, false);
+    final String parentTitle = OUTLOOK_MESSAGES_TITLE;
+    final String parentId = TitleResolver.getId(parentTitle, false);
+
+    final String defaultSyntax = wikiService.getDefaultWikiSyntaxId(); // Syntax.XWIKI_2_0.toIdString()
+    final String xhtmlSyntax = Syntax.XHTML_1_0.toIdString();
 
     synchronized (wikiService) {
-
       Page parentPage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, parentId);
       if (parentPage == null) {
         parentPage = new Page();
         parentPage.setTitle(parentTitle);
         parentPage.setContent("= " + parentTitle + " =\n");
-        parentPage.setSyntax(Syntax.XWIKI_2_0.toIdString());
+        parentPage.setSyntax(defaultSyntax);
         Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
         if (wiki == null) {
           wiki = wikiService.createWiki(wikiType, wikiOwner);
@@ -2091,33 +2098,33 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       Page page = new Page();
 
-      if (isHTML(content)) {
-        // TODO convert to xWiki format by RenderingService:
-        // see in https://github.com/exodev/wiki/pull/78/files#diff-7971c1ca97b8cbdc2624f4a0f4a794baR136
-        // markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
-
-        // FYI XHTML doesn't work as when editing in eXo it does as for xWiki syntax
-        // page.setSyntax(Syntax.XHTML_1_0.toIdString());
-        page.setSyntax(Syntax.XWIKI_2_0.toIdString());
-        // wrap message body as quoted into HTML Macro,
-        // http://extensions.xwiki.org/xwiki/bin/view/Extension/HTML+Macro
-        StringBuilder wikiContent = new StringBuilder();
-        wikiContent.append("{{html wiki=\"false\"}}");
+      if (isHTML(content) && !defaultSyntax.equals(xhtmlSyntax)) {
+        // we use xWiki syntax for a page and convert incoming HTML to xWiki format
+        page.setSyntax(defaultSyntax);
+        StringBuilder quotedContent = new StringBuilder();
         if (summary != null) {
-          // HTML also contains message summary (US_003_07)
-          wikiContent.append("<div style='word-wrap: break-word; min-height: 30px;'>");
-          wikiContent.append(summary);
-          wikiContent.append("</div>");
+          // page also contains message summary (US_003_07)
+          quotedContent.append("(% style='word-wrap: break-word; min-height: 30px;' %)(((\r");
+          String xwikiMarkup = wikiRenderingService.render(summary, xhtmlSyntax, defaultSyntax, false);
+          quotedContent.append(xwikiMarkup);
+          quotedContent.append("\r)))\r");
         }
-        wikiContent.append("<div style='overflow:auto;'><div style='position: relative; float: left;"
-            + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
-            + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
-        wikiContent.append(safeHtml(content));
-        wikiContent.append("</div></div>");
-        wikiContent.append("{{/html}}");
-        page.setContent(wikiContent.toString());
+        // message content should look like a quoted in email client (vertical gray bar on the left)
+        // in xWiki syntax it's a table with customized style
+        // table header:
+        quotedContent.append("|=(% style='background-color: #999999; border-style: hidden;' %)");
+        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)");
+        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)\r");
+        // table row:
+        quotedContent.append("|(% style='background-color: #999999; border-style: hidden;' %) ");
+        quotedContent.append("|(% style='border-style: hidden;' %) ");
+        quotedContent.append("|(% style='border-style: hidden;' %) (((\r");
+        String xwikiMarkup = wikiRenderingService.render(safeHtml(content), xhtmlSyntax, defaultSyntax, false);
+        quotedContent.append(xwikiMarkup);
+        quotedContent.append("\r)))\r");
+        page.setContent(quotedContent.toString());
       } else {
-        page.setSyntax(Syntax.XWIKI_2_0.toIdString());
+        page.setSyntax(defaultSyntax);
         page.setContent(content);
       }
 
@@ -2283,7 +2290,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.
    * html.
    * 
-   * @param content
+   * @param text
    * @return allowed content
    */
   protected String safeActivityMessage(String text) {
