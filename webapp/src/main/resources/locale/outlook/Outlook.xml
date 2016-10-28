@@ -14,56 +14,56 @@
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
       <userInfo>Users</userInfo>
-      <postStatus>Post Activity</postStatus>
+      <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
-      <convertToStatus>Convert to Activity</convertToStatus>
-      <convertToWiki>Convert to Wiki</convertToWiki>
-      <convertToForum>Convert to Forum</convertToForum>
+      <convertToStatus>Convert to Status Update</convertToStatus>
+      <convertToWiki>Convert to Wiki Page</convertToWiki>
+      <convertToForum>Convert to Forum Topic</convertToForum>
     </command>
 
     <!-- Common -->
-    <logout>Log out</logout>
-    <logoutTitle>Log out of the eXo intranet</logoutTitle>
-    <logoutQuestion>Do you want log out of your eXo intranet?</logoutQuestion>
+    <logout>Sign out</logout>
+    <logoutTitle>Sign out of the intranet</logoutTitle>
+    <logoutQuestion>Would you like to sign out of your eXo Platform intranet?</logoutQuestion>
     
     <homeOpenPortal>Open the intranet page in a new window</homeOpenPortal>
 
-    <homeNoActionsAvailable>No actions are available for this context.</homeNoActionsAvailable>
+    <homeNoActionsAvailable>No actions are available in this context</homeNoActionsAvailable>
     
     <cancel>Cancel</cancel>
     <convert>Convert</convert>
     <targetSpaceOptional>Target space (optional)</targetSpaceOptional>
     <targetSpaceMandatory>Target space</targetSpaceMandatory>
     <clickToEdit>Click to edit</clickToEdit>
-    <personalDocuments>Personal Documents</personalDocuments>
+    <personalDocuments>My Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
 
     <!-- Save Attachment -->
-    <saveAttachmentDescription>Here you can save attachments as documents in the intranet.</saveAttachmentDescription>
+    <saveAttachmentDescription>Here you can save attachments as documents inside the intranet.</saveAttachmentDescription>
     <selectAttachment>Select attachments</selectAttachment>
-    <selectAttachmentDescription>Selected attachments will be saved in the target space.</selectAttachmentDescription>
-    <commentAttachment>Leave a message (optional)</commentAttachment>
-    <commentAttachmentDescription>This message will be posted in the activity generated for the saved attachment</commentAttachmentDescription>
+    <selectAttachmentDescription>Selected attachments will be saved inside the target space.</selectAttachmentDescription>
+    <commentAttachment>Include a message (optional)</commentAttachment>
+    <commentAttachmentDescription>This message will be included in the activity stream post about the saved attachment.</commentAttachmentDescription>
     <selectSaveSpace>Save to space</selectSaveSpace>
-    <selectSaveSpaceDescription>Select the space where attachments should be saved</selectSaveSpaceDescription>
+    <selectSaveSpaceDescription>Select the space where the attachments will Sbe saved</selectSaveSpaceDescription>
     <selectFolder>Destination folder</selectFolder>
     <save>Save</save>
-    <pathInfoSaveDescription>Target folder in space's Documents where your attachments will be saved.</pathInfoSaveDescription>
+    <pathInfoSaveDescription>The target folder within the space in which your attachments will be saved.</pathInfoSaveDescription>
     <pathUpDescription>Navigate to parent folder</pathUpDescription>
     <pathAddDescription>Create a new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
     <savingAttachment>Saving your files...</savingAttachment>
     <savedAttachment>Your files were successfully saved</savedAttachment>
-    <savedClickToOpen>Click a file in the list below to open it in teh intranet</savedClickToOpen>
+    <savedClickToOpen>Click a file in the list below to open it inside the intranet</savedClickToOpen>
     <addingNewFolder>Adding new folder</addingNewFolder>
-    <enterFolderNameAndCreate>Give a name to this new folder and click the Add button.</enterFolderNameAndCreate>
+    <enterFolderNameAndCreate>Provide a name for this new folder and then click "Add".</enterFolderNameAndCreate>
     <folderName>Folder name</folderName>
     <add>Add</add>
 
     <!-- Add Attachment -->
-    <addAttachmentDescription>Attach documents from eXo to this message.</addAttachmentDescription>
+    <addAttachmentDescription>Attach documents from the intranet to this message.</addAttachmentDescription>
     <attachingDocuments>Selected documents</attachingDocuments>
-    <attachingDocumentsDescription>Checked documents will be attached to the message</attachingDocumentsDescription>
+    <attachingDocumentsDescription>Selected documents will be attached to the message.</attachingDocumentsDescription>
     <documentSource>Source</documentSource>
     <documentSearch>Search</documentSearch>
     <documentExplorer>Explore</documentExplorer>
@@ -71,97 +71,97 @@
     <currentFolder>Current folder</currentFolder>
     <attach>Attach</attach>
     <addingAttachment>Attaching documents...</addingAttachment>
-    <addedAttachment>Documents successfully attached to your message</addedAttachment>
+    <addedAttachment>The documents were successfully attached to the message</addedAttachment>
     <addedPartiallyAttachment>Some documents were not attached to the message, see details below each file</addedPartiallyAttachment>
 
     <!-- Convert To Status -->
-    <convertToStatusDescription>This message can be converted to a post in the activity stream. By default, it will go as a status update in your personal stream. Choosing a target space will generate the activity in the space's stream.</convertToStatusDescription>
-    <activityTargetSpaceDescription>If selected, your message will be saved in the space's activity stream.</activityTargetSpaceDescription>
-    <activityTitle>Title</activityTitle>
-    <activityTitleDescription>This will be the title of your activity in the stream</activityTitleDescription>
-    <activityText>Activity body</activityText>
-    <activityTextDescription>This will be displayed in the activity's body on the stream</activityTextDescription>
-    <convertingToStatus>Converting the message to an activity...</convertingToStatus>
-    <convertedToStatus>The activity was successfully posted</convertedToStatus>
-    <convertToStatusError>Error converting the message to an activity</convertToStatusError>
-    <convertedToUserActivity>The activity was successfully posted in your personal activity stream</convertedToUserActivity>
-    <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME}</convertedToSpaceActivity>
-    <openActivity>Display the activity</openActivity>
+    <convertToStatusDescription>This message can be converted to a new post on the activity stream. By default, it will be shared as a new status update on your personal activity stream. Choosing a target space will post it on the space's activity stream instead.</convertToStatusDescription>
+    <activityTargetSpaceDescription>If selected, your message will be posted on the space's activity stream.</activityTargetSpaceDescription>
+    <activityTitle>Post title</activityTitle>
+    <activityTitleDescription>This will be the title of the activity stream post</activityTitleDescription>
+    <activityText>Post content</activityText>
+    <activityTextDescription>This will be the content of the activity stream post</activityTextDescription>
+    <convertingToStatus>Posting the message...</convertingToStatus>
+    <convertedToStatus>The message was successfully posted.</convertedToStatus>
+    <convertToStatusError>Error converting the message to an activity stream post</convertToStatusError>
+    <convertedToUserActivity>The message was successfully posted in your personal activity stream.</convertedToUserActivity>
+    <convertedToSpaceActivity>The message was successfully posted in the {SPACE_NAME} activity stream</convertedToSpaceActivity>
+    <openActivity>View the post</openActivity>
     
     <!-- Convert To Wiki -->
-    <convertToWikiDescription>This message can be converted to a wiki page. By default, it will be a page in intranet wiki. Choosing a target space will create a page in the space wiki.</convertToWikiDescription>
-    <wikiPageTitle>Title</wikiPageTitle>
-    <wikiPageTitleDescription>This will be the title of your wiki page</wikiPageTitleDescription>
+    <convertToWikiDescription>This message can be converted to a wiki page. By default, this will be a new page in the general intranet wiki. Choosing a target space will create the page in the space's wiki instead.</convertToWikiDescription>
+    <wikiPageTitle>Page title</wikiPageTitle>
+    <wikiPageTitleDescription>The title of the wiki page</wikiPageTitleDescription>
     <wikiPageText>Page content</wikiPageText>
-    <wikiPageTextDescription>This text will be body content of your wiki page</wikiPageTextDescription>
+    <wikiPageTextDescription>This will be the body of the wiki page</wikiPageTextDescription>
     <wikiTargetSpaceDescription>If selected, your message will be converted to a page in the space wiki.</wikiTargetSpaceDescription>
     <convertingToWiki>Converting the message to a wiki page...</convertingToWiki>
-    <convertedToUserWiki>The page was successfully created in intranet wiki</convertedToUserWiki>
-    <convertedToSpaceWiki>The page was successfully created in {SPACE_NAME}</convertedToSpaceWiki>
-    <openWikiPage>Open wiki page</openWikiPage>
+    <convertedToUserWiki>The page was successfully created in the general wiki of the intranet.</convertedToUserWiki>
+    <convertedToSpaceWiki>The page was successfully created in the {SPACE_NAME} wiki.</convertedToSpaceWiki>
+    <openWikiPage>Open the wiki page</openWikiPage>
     
     <!-- Convert To Forum -->
-    <convertToForumDescription>This message can be converted to a forum topic. You need choose a target space, where it will be created in the space forum.</convertToForumDescription>
+    <convertToForumDescription>This message can be converted to a new forum topic. You need to choose a target space where it will be created.</convertToForumDescription>
     <forumTopicName>Topic name</forumTopicName>
     <forumTopicNameDescription>This will be the name of your forum topic</forumTopicNameDescription>
-    <forumTopicText>Topic content</forumTopicText>
-    <forumTopicTextDescription>This will be a content of your forum topic</forumTopicTextDescription>
-    <forumTargetSpaceDescription>Your message will be converted to a topic in the space forum.</forumTargetSpaceDescription>
+    <forumTopicText>Message</forumTopicText>
+    <forumTopicTextDescription>This will be the body of the forum post</forumTopicTextDescription>
+    <forumTargetSpaceDescription>Your message will be converted to a forum topic in the space's forum.</forumTargetSpaceDescription>
     <convertingToForum>Converting the message to a forum topic...</convertingToForum>
-    <convertedToUserForum>The topic was successfully created in intranet forum</convertedToUserForum>
-    <convertedToSpaceForum>The topic was successfully created in {SPACE_NAME}</convertedToSpaceForum>
-    <openForumTopic>Open forum topic</openForumTopic>
+    <convertedToUserForum>The topic was successfully created in the general forums of the intranet.</convertedToUserForum>
+    <convertedToSpaceForum>The topic was successfully created in the {SPACE_NAME} forum.</convertedToSpaceForum>
+    <openForumTopic>View the forum topic</openForumTopic>
     
     <!-- Post A Status -->
-    <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
+    <postStatusDescription>Post a status update on the activity stream. By default, it will be posted on your personal stream. Choosing a target space will post it on the space's activity stream instead.</postStatusDescription>
     <activityMessage>Status update</activityMessage>
-    <activityMessagePlaceholder>Type your message here</activityMessagePlaceholder>
-    <activityMessageDescription>This will be displayed as your status in the activity stream</activityMessageDescription>
-    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
-    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
+    <activityMessagePlaceholder>Type in your message here</activityMessagePlaceholder>
+    <activityMessageDescription>This will be the new status update posted on the activity stream.</activityMessageDescription>
+    <postedToUserActivity>Your activity was successfully posted on your personal activity stream.</postedToUserActivity>
+    <postedToSpaceActivity>Your activity was successfully posted on the {SPACE_NAME} activity stream.</postedToSpaceActivity>
     <post>Share</post>
-    <postingStatus>Posting your status update...</postingStatus>
+    <postingStatus>Posting your message...</postingStatus>
     
     <!-- Start Discussion (Forum topic) -->
-    <startDiscussionDescription>Start a new discussion in a forum of a collaborative space.</startDiscussionDescription>
-    <forumTopicNamePlaceholder>Your topic name</forumTopicNamePlaceholder>
-    <forumTopicTextPlaceholder>Type your topic message here</forumTopicTextPlaceholder>
-    <forumNewTopicTargetSpaceDescription>Your discussion will be started in the space forum.</forumNewTopicTargetSpaceDescription>
-    <start>Start</start>
-    <creatingTopic>Creating discussion...</creatingTopic>
+    <startDiscussionDescription>Start a new discussion in the forum of a space.</startDiscussionDescription>
+    <forumTopicNamePlaceholder>Discussion name</forumTopicNamePlaceholder>
+    <forumTopicTextPlaceholder>Type in your new forum post here</forumTopicTextPlaceholder>
+    <forumNewTopicTargetSpaceDescription>Your new forum discussion will be posted in the space's forum.</forumNewTopicTargetSpaceDescription>
+    <start>Submit</start>
+    <creatingTopic>Submitting your post...</creatingTopic>
     <createdTopic>Discussion created</createdTopic>
-    <startedTopicInUserForum>The discussion was successfully created in intranet forum</startedTopicInUserForum>
-    <startedTopicInSpaceForum>The discussion was successfully created in {SPACE_NAME}</startedTopicInSpaceForum>
+    <startedTopicInUserForum>The new forum discussion was successfully created in the general forums of the intranet.</startedTopicInUserForum>
+    <startedTopicInSpaceForum>The discussion was successfully created in the {SPACE_NAME} forum<./startedTopicInSpaceForum>
     
     <!-- Search -->
-    <searchDescription>Search in eXo intranet content (discussions, wiki, documents etc.)</searchDescription>
-    <searchQuery>Enter your search:</searchQuery>
-    <searchQueryPlaceholder>Type your search here</searchQueryPlaceholder>
-    <searchQueryDescription>You can use meaningful words or phrases from document names, meta-data or content text</searchQueryDescription>
-    <searchTargetSpaceDescription>If selected, search will be limited to the space's scope (documents, activities, wiki etc).</searchTargetSpaceDescription>
+    <searchDescription>Search inside the intranet for content such as documents, wiki pages, discussions, etc.</searchDescription>
+    <searchQuery>Type in your query:</searchQuery>
+    <searchQueryPlaceholder>Type in your search query here</searchQueryPlaceholder>
+    <searchQueryDescription>You can use one or several keywords for document names and metadata, body text, etc.</searchQueryDescription>
+    <searchTargetSpaceDescription>If selected, the search will be limited to the content of a space (space documents, wiki pages, discussions, etc.).</searchTargetSpaceDescription>
     <search>Search</search>
     <searching>Searching...</searching>
     <searchResultFor>Search results for: </searchResultFor>
     
     <messages>
-      <folderHasNoPath>Error selecting folder - path not found. Try to reload the page.</folderHasNoPath>
-      <fileHasNoPath>Error selecting file - path not found.</fileHasNoPath>
+      <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>
+      <fileHasNoPath>Error selecting the file: path not found.</fileHasNoPath>
       <spacePathNotFound>Space or path not found</spacePathNotFound>
-      <nothingSavedTryAgain>Nothing was saved. Please submit the form again or contact your administrator.</nothingSavedTryAgain>
-      <gettingTokenError>Error getting access token for mail server</gettingTokenError>
-      <attachmentNotSelected>No attachment selected. Select at least one and then submit the form again.</attachmentNotSelected>
-      <folderNameRequired>Folder name required</folderNameRequired>
-      <menuNameUndefined>Menu name undefined. Please contact your administrator.</menuNameUndefined>
-      <youDontHaveSpaces>You are not member of any space.</youDontHaveSpaces>
-      <joinSpaces>You can join spaces</joinSpaces>
-      <atThisPage>on this page</atThisPage>
-      <messageItemReadError>Error reading message item.</messageItemReadError>
-      <convertToStatusError>Error converting message to activity.</convertToStatusError>
-      <gettingSubjectError>Error getting message subject.</gettingSubjectError>
-      <messageIdNotFound>Cannot find ID for current message</messageIdNotFound>
-      <savingMessageError>Error saving message (as a draft).</savingMessageError>
-      <sourcePathNotFound>Source or path not found.</sourcePathNotFound>
-      <addingAttachmentError>Adding attachment error.</addingAttachmentError>
+      <nothingSavedTryAgain>Sorry, nothing was saved. Please try submitting the form again or contact your administrator.</nothingSavedTryAgain>
+      <gettingTokenError>Error getting the access token for the email server</gettingTokenError>
+      <attachmentNotSelected>No attachment selected. Please select at least one attachment and then submit the form again.</attachmentNotSelected>
+      <folderNameRequired>A folder is name required</folderNameRequired>
+      <menuNameUndefined>Menu name is undefined. Please contact your administrator.</menuNameUndefined>
+      <youDontHaveSpaces>It looks like you are not a member of any space.</youDontHaveSpaces>
+      <joinSpaces>You can try joining spaces</joinSpaces>
+      <atThisPage>from this page</atThisPage>
+      <messageItemReadError>Error reading message item</messageItemReadError>
+      <convertToStatusError>Error converting message to an activity stream post</convertToStatusError>
+      <gettingSubjectError>Error getting message subject</gettingSubjectError>
+      <messageIdNotFound>Could not find the ID of the message</messageIdNotFound>
+      <savingMessageError>Error saving message (as a draft)</savingMessageError>
+      <sourcePathNotFound>Source or path not found</sourcePathNotFound>
+      <addingAttachmentError>Error adding attachment</addingAttachmentError>
     </messages>
     
     <activity>
