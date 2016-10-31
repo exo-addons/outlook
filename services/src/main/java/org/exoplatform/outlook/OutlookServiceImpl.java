@@ -1024,16 +1024,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // FYI attachment content in BASE64 (may be twice!)
       String contentBytes = vContentBytes.getStringValue();
       byte[] decoded = Base64.decodeBase64(contentBytes);
-      String content;
-      try {
-        content = new String(decoded, "UTF-8");
-      } catch (UnsupportedEncodingException e1) {
-        throw new OutlookException("Error reading message content in UTF-8 encoding: " + name, e1);
-      }
-      String safeContent = safeHtml(content);
-
-      // Save in JCR
-      try (InputStream contentStream = new ByteArrayInputStream(safeContent.getBytes())) {
+      
+      // Save in JCR: content goes as-is here
+      try (InputStream contentStream = new ByteArrayInputStream(decoded)) {
         Node attachmentNode = addFile(parent, name, contentType, contentStream);
         if (space != null) {
           setPermissions(attachmentNode, new StringBuilder("member:").append(space.getGroupId()).toString());
@@ -2413,18 +2406,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       checksms = checksms.replaceAll("&nbsp;", " ");
       int t = checksms.trim().length();
       if (t > 0 && !checksms.equals("null")) {
-        // TODO in else block handle too short or offending texts 
+        // TODO in else block handle too short or offending texts
       }
       Date currentDate = CommonUtils.getGreenwichMeanTime().getTime();
       message = CommonUtils.encodeSpecialCharInSearchTerm(message);
       message = TransformHTML.fixAddBBcodeAction(message);
       // TODO do we need this when using safe HTML?
-      //message = message.replaceAll("<script", "&lt;script").replaceAll("<link", "&lt;link").replaceAll("</script>",
-      //                                                                                                 "&lt;/script>");
+      // message = message.replaceAll("<script", "&lt;script").replaceAll("<link",
+      // "&lt;link").replaceAll("</script>",
+      // "&lt;/script>");
       // remove any meta tags explicitly existing in the content
-      //message = message.replaceAll("<meta.*?>", "");
+      // message = message.replaceAll("<meta.*?>", "");
       // remove all embedded global styles
-      //message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
+      // message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
       ForumAdministration forumAdministration = forumService.getForumAdministration();
