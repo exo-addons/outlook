@@ -131,7 +131,7 @@
     <creatingTopic>Submitting your post...</creatingTopic>
     <createdTopic>Discussion created</createdTopic>
     <startedTopicInUserForum>The new forum discussion was successfully created in the general forums of the intranet.</startedTopicInUserForum>
-    <startedTopicInSpaceForum>The discussion was successfully created in the {SPACE_NAME} forum<./startedTopicInSpaceForum>
+    <startedTopicInSpaceForum>The discussion was successfully created in the {SPACE_NAME} forum.</startedTopicInSpaceForum>
     
     <!-- Search -->
     <searchDescription>Search inside the intranet for content such as documents, wiki pages, discussions, etc.</searchDescription>
