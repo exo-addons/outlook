@@ -45,7 +45,7 @@
     <commentAttachment>Include a message (optional)</commentAttachment>
     <commentAttachmentDescription>This message will be included in the activity stream post about the saved attachment.</commentAttachmentDescription>
     <selectSaveSpace>Save to space</selectSaveSpace>
-    <selectSaveSpaceDescription>Select the space where the attachments will Sbe saved</selectSaveSpaceDescription>
+    <selectSaveSpaceDescription>Select the space where the attachments will be saved</selectSaveSpaceDescription>
     <selectFolder>Destination folder</selectFolder>
     <save>Save</save>
     <pathInfoSaveDescription>The target folder within the space in which your attachments will be saved.</pathInfoSaveDescription>
