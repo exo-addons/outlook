@@ -40,8 +40,12 @@ import javax.jcr.Node;
 public class OutlookMessage {
 
   public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
-  // TODO was used when message was read in JS
-  // public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+  /**
+   * Date format was used when message was read in JS client.
+   */
+  @Deprecated
+  public static final DateFormat DATE_FORMAT_CLIENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
   protected final OutlookUser    user;
 

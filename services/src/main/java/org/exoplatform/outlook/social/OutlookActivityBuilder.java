@@ -31,50 +31,7 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  * 
  */
 public class OutlookActivityBuilder extends BaseUIActivityBuilder {
-
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
-
-    // TODO why we need something here?
-    // OutlookAttachmentActivity attachmentActivity = (OutlookAttachmentActivity) uiActivity;
-    //
-    // // set data into the UI component of activity
-    // if (activity.getTemplateParams() != null) {
-    // attachmentActivity.setUIActivityData(activity.getTemplateParams());
-    // }
-
-    // get node data
-    // RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
-    // Node contentNode = null;
-    // try {
-    // ManageableRepository manageRepo = repositoryService.getCurrentRepository();
-    // SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
-    // for (String ws : manageRepo.getWorkspaceNames()) {
-    // try {
-    // if (StringUtils.isEmpty(attachmentActivity.getNodeUUID())) {
-    // String contentLink = attachmentActivity.getContentLink();
-    // String _ws = contentLink.split("/")[0];
-    // String _repo = contentLink.split("/")[1];
-    // String nodePath = contentLink.replace(_ws + "/" + _repo, "");
-    // contentNode = (Node) sessionProvider.getSession(ws, manageRepo).getItem(nodePath);
-    // attachmentActivity.setContentNode(contentNode);
-    // return;
-    // }
-    // contentNode = sessionProvider.getSession(ws,
-    // manageRepo).getNodeByUUID(attachmentActivity.getNodeUUID());
-    // attachmentActivity.docPath = contentNode.getPath();
-    // attachmentActivity.workspace = ws;
-    // attachmentActivity.repository = manageRepo.toString();
-    // break;
-    // } catch (RepositoryException e) {
-    // continue;
-    // }
-    // }
-    // } catch (RepositoryException re) {
-    // LOG.error("Can not get the repository. ", re);
-    // }
-    //
-    // attachmentActivity.setContentNode(contentNode);
   }
-
 }

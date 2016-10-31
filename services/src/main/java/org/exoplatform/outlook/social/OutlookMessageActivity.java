@@ -158,21 +158,6 @@ public class OutlookMessageActivity extends FileUIActivity {
   public String getSummary(Node node) {
     try {
       if (node.isNodeType(OutlookService.MESSAGE_NODETYPE)) {
-        // TODO use eXo's formats or Java's ones
-        // ForumService forumService = getApplicationComponent(ForumService.class);
-        // try {
-        // UserProfile forumProfile = forumService.getUserInfo(context.getRemoteUser());
-        // userDateFormat = forumProfile.getLongDateFormat();
-        // } catch (Exception e) {
-        // LOG.warn("Error getting current user forum profile", e);
-        // userDateFormat = userTimeFormat = null;
-        // }
-        //
-        // if (userDateFormat == null) {
-        // userDateFormat = DEFAULT_DATE_FORMAT;
-        // }
-        // DateFormat dateFormat = new SimpleDateFormat(userDateFormat, context.getLocale());
-
         String fromEmail = node.getProperty("mso:fromEmail").getString();
         String fromName = node.getProperty("mso:fromName").getString();
         Date time = node.getProperty("mso:created").getDate().getTime();
@@ -213,9 +198,7 @@ public class OutlookMessageActivity extends FileUIActivity {
         }
 
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, userLocale);
-        // TODO we could find and use user's timezone: dateFormat.setTimeZone(zone);
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, userLocale);
-        // TODO we could find and use user's timezone: timeFormat.setTimeZone(zone);
 
         ResourceBundle res = context.getApplicationResourceBundle();
 

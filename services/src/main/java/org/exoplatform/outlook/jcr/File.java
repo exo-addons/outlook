@@ -22,9 +22,7 @@ package org.exoplatform.outlook.jcr;
 import org.exoplatform.outlook.OutlookException;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
 
 /**
  * JCR file wrapper for UI.

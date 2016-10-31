@@ -27,10 +27,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -86,12 +83,13 @@ public class ContentService implements ResourceContainer {
                           @PathParam("key") String key) {
     String clientHost = getClientHost(request);
     String clientIp = getClientIpAddr(request);
-
     if (LOG.isDebugEnabled()) {
       LOG.debug("> Outlook document content: " + userId + "@" + key + " to " + clientHost + "(" + clientIp + ")");
     }
     ResponseBuilder resp;
-    if (true) { // TODO editors.canDownloadBy(clientHost) || editors.canDownloadBy(clientIp)
+    // TODO Consider for client host/IP restrictions for downloading the content
+    boolean canDownload = true;
+    if (canDownload) {
       if (key != null && key.length() > 0) {
         try {
           if (userId != null && userId.length() > 0) {

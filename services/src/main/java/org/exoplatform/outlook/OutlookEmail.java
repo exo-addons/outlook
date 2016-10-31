@@ -20,7 +20,7 @@
 package org.exoplatform.outlook;
 
 /**
- * Office user API.
+ * Outlook Email API.
  * 
  * Created by The eXo Platform SAS
  * 

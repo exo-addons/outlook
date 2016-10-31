@@ -98,7 +98,8 @@ public class ContentLink {
                      NodeFinder finder,
                      OrganizationService organization,
                      IdentityRegistry identityRegistry,
-                     InitParams params) throws ConfigurationException {
+                     InitParams params)
+      throws ConfigurationException {
     this.jcrService = jcrService;
     this.sessionProviders = sessionProviders;
     this.finder = finder;
@@ -172,7 +173,8 @@ public class ContentLink {
                      SessionProviderService sessionProviders,
                      NodeFinder finder,
                      OrganizationService organization,
-                     IdentityRegistry identityRegistry) throws ConfigurationException {
+                     IdentityRegistry identityRegistry)
+      throws ConfigurationException {
     this(jcrService, sessionProviders, finder, organization, identityRegistry, null);
   }
 
@@ -319,7 +321,7 @@ public class ContentLink {
     ConversationState contextState = ConversationState.getCurrent();
     SessionProvider contextProvider = sessionProviders.getSessionProvider(null);
     try {
-      // XXX we want do all the job under actual (requester) user here
+      // we want do all the job under actual (requester) user here
       Identity userIdentity = identityRegistry.getIdentity(userId);
       if (userIdentity != null) {
         ConversationState state = new ConversationState(userIdentity);

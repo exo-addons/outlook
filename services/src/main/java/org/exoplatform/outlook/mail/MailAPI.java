@@ -89,7 +89,7 @@ public class MailAPI {
   MailAPI(CloseableHttpClient httpClient) throws MailServerException {
 
     if (httpClient == null) {
-      // TODO it's possible make more advanced conn manager settings (host verification X509, conn config,
+      // FYI it's possible make more advanced conn manager settings (host verification X509, conn config,
       // message parser etc.)
       PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
       // 2 recommended by RFC 2616 sec 8.1.4, we make it bigger for quicker // upload
@@ -120,23 +120,11 @@ public class MailAPI {
     // Default header (Accept JSON), add to those requests where required
     this.acceptJsonHeader = new BasicHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
 
-    // Prepare context with auth cache for user requests
-    // HttpHost apiTarget = new HttpHost(ewsHost, ewsPort, ewsScheme);
-
-    // Create AuthCache instance
-    // AuthCache authCache = new BasicAuthCache();
-    // Generate BASIC scheme object and add it to the local auth cache
-    // BasicScheme basicAuth = new BasicScheme();
-    // authCache.put(apiTarget, basicAuth);
-
     // Add AuthCache to the execution context
     this.httpContext = HttpClientContext.create();
-    // this.httpContext.setCredentialsProvider(credsProvider);
-    // this.httpContext.setAuthCache(authCache);
   }
 
   public MailAPI() throws MailServerException {
-    // TODO
     this(null);
   }
 
@@ -266,7 +254,7 @@ public class MailAPI {
     if (status >= HttpStatus.SC_BAD_REQUEST) {
       // TODO 4xx vs 5xx?
       String errorText = readText(response.getEntity());
-      String userInfo = ""; // TODO for debug only
+      String userInfo = ""; // FYI it's for debug only
       if (status == HttpStatus.SC_UNAUTHORIZED) {
         reset();
         if (LOG.isDebugEnabled()) {

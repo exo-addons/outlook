@@ -24,10 +24,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 		}
 	}
 
-	function fixId(msId) {
-		return msId ? msId.replace(/\//g, "-") : msId;
-	}
-
 	function formatISODate(date) {
 		if (date) {
 			// adapted script from
@@ -173,10 +169,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						if (ewsId) {
 							// Convert to a REST ID for the v2.0 version of the Outlook Mail API
 							messageId = Office.context.mailbox.convertToRestId(ewsId, Office.MailboxEnums.RestVersion.v2_0);
-							//messageId = fixId(Office.context.mailbox.item.itemId);
-							console.log("> messageId: " + messageId);
+							console.log("messageId: " + messageId);
 							internetMessageId = Office.context.mailbox.item.internetMessageId;
-							console.log("> internetMessageId: " + internetMessageId);
+							console.log("internetMessageId: " + internetMessageId);
 						}
 					}
 					if (messageId) {
@@ -186,19 +181,17 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						Office.context.mailbox.item.saveAsync(function(asyncResult) {
 							if (asyncResult.status === "succeeded") {
 								messageId = Office.context.mailbox.convertToRestId(asyncResult.value, Office.MailboxEnums.RestVersion.v2_0);
-								console.log(">> messageId: " + messageId);
 								internetMessageId = Office.context.mailbox.item.internetMessageId;
-								console.log(">> internetMessageId: " + internetMessageId);
 								process.resolve(messageId);
 							} else {
-								console.log(">> Office.context.mailbox.item.saveAsync() [" + asyncResult.status + "] error: " //
+								console.log("Office.context.mailbox.item.saveAsync() [" + asyncResult.status + "] error: " //
 									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.savingMessageError", asyncResult.error.message);
 								process.reject();
 							}
 						});
 					} else {
-						console.log("> itemId not found for " + internetMessageId);
+						console.log("itemId not found for " + internetMessageId);
 						showError("Outlook.messages.messageIdNotFound", internetMessageId);
 						process.reject();
 					}
@@ -283,7 +276,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					function loadFolder() {
 						var process = $.Deferred();
 						if (groupId && path) {
-							console.log(">> loadFolder: " + groupId + " >> " + path);
+							//console.log(">> loadFolder: " + groupId + " >> " + path);
 							$folders.jzLoad("Outlook.folders()", {
 								groupId : groupId,
 								path : path
@@ -298,7 +291,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								}
 							});
 						} else {
-							console.log(">> loadFolder: groupId and/or path not found");
+							console.log("loadFolder: groupId and/or path not found");
 							process.reject(showError("Outlook.messages.spacePathNotFound"));
 						}
 						return process.promise();
@@ -321,7 +314,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 					var item = Office.context.mailbox.item;
 					if (item.attachments.length > 0) {
-						console.log("Attachments: ");
 						for ( i = 0; i < item.attachments.length; i++) {
 							var att = item.attachments[i];
 							// var outputString = "";
@@ -344,7 +336,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							$li.click(function() {
 								$(this).toggleClass("is-selected");
 								if ($(this).hasClass("is-selected")) {
-									// $(this).find(".js-toggleSelection").click();
 									var attachmentId = $(this).data("attachmentId");
 									$(this).find("input[name='attachmentIds']").val(attachmentId);
 								} else {
@@ -391,22 +382,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									Office.context.mailbox.getCallbackTokenAsync(function(asyncResult) {
 										if (asyncResult.status === "succeeded") {
 											var attachmentToken = asyncResult.value;
-											console.log(">> attachmentToken: " + attachmentToken);
 											var ewsUrl = Office.context.mailbox.ewsUrl;
-											console.log(">> ewsUrl: " + ewsUrl);
-											// TODO do we need identity token? Is it OAuth2 bearer token?
-											// Office.context.mailbox.getUserIdentityTokenAsync(function(asyncResult)
-											// {
-											// if (asyncResult.status === "succeeded") {
-											// var identityToken = asyncResult.value;
-											// console.log(">> identityToken: " + identityToken);
-											// } else {
-											// showError("Could not get identity token: " +
-											// asyncResult.error.message);
-											// }
-											// });
-
-											console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
+											//console.log(">> attachmentToken: " + attachmentToken + ", ewsUrl: " + ewsUrl);
+											//console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
 											var $savedSpaceInfo = $savedAttachment.find(".savedSpaceInfo");
 											$savedSpaceInfo.jzLoad("Outlook.saveAttachment()", {
 												groupId : groupId,
@@ -430,11 +408,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 														$savedSpaceTitle.text($savedSpaceTitle.text() + " " + groupTitle);
 														$litems.each(function() {
 															$(this).ListItem();
-															// init FabricUI JS
-															// $(this).click(function() {
-															// var fileUrl = $(this).data("portalurl");
-															// window.open(fileUrl, "_blank");
-															// });
 														});
 														spinner.stop();
 														$savingAttachment.hide("blind");
@@ -447,7 +420,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 												}
 											});
 										} else {
-											console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+											console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
 												+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 											cancelSave();
@@ -544,7 +517,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $form = $convertToStatus.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
 					var $groupId = $groupIdDropdown.find("select[name='groupId']");
-					// $groupId.combobox(); // jQueryUI combo w/ autocompletion
+					// $groupId.combobox(); // TODO jQueryUI combo w/ autocompletion
 					var $convertButton = $form.find("button.convertButton");
 					$convertButton.prop("disabled", true);
 					var $cancelButton = $form.find("button.cancelButton");
@@ -583,7 +556,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							if (asyncResult.status === "succeeded") {
 								$title.val(asyncResult.value);
 							} else {
-								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
+								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
 									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
 							}
@@ -596,10 +569,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var messageToken = asyncResult.value;
 							var midProcess = readMessageId();
 							midProcess.done(function(mid) {
-								console.log(">> getMessage(): " + mid + " token:" + messageToken);
+								//console.log("getMessage(): " + mid + " token:" + messageToken);
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									console.log(">> ewsUrl: " + ewsUrl);
+									//console.log(">> ewsUrl: " + ewsUrl);
 									$text.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
@@ -612,11 +585,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										} else {
 											clearError();
 											groupId = groupId ? groupId : "";
-											console.log(">> groupId: " + groupId);
-											console.log(">> title: " + $title.val());
+											//console.log(">> groupId: " + groupId);
+											//console.log(">> title: " + $title.val());
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
-											console.log(">> convertToStatus textType: " + textType);
+											//console.log(">> convertToStatus textType: " + textType);
 											$convertButton.prop("disabled", false);
 											$form.submit(function(event) {
 												event.preventDefault();
@@ -670,10 +643,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								}
 							});
 							midProcess.fail(function() {
-								console.log(">> getMessage() failed to read messageId ");
+								console.log("getMessage() failed to read messageId ");
 							});
 						} else {
-							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+							console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
 								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 						}
@@ -730,7 +703,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$form.submit(function(event) {
 						event.preventDefault();
 						clearError();
-						console.log(">> postStatus groupId: " + groupId + " message: " + $text.html());
+						//console.log(">> postStatus groupId: " + groupId + " message: " + $text.html());
 						$form.hide("blind");
 						$posting.show("blind");
 						var spinner = new fabric.Spinner($posting.find(".ms-Spinner").get(0));
@@ -821,7 +794,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							if (asyncResult.status === "succeeded") {
 								$title.val(cleanWikiTitle(asyncResult.value));
 							} else {
-								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
+								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
 									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
 							}
@@ -834,10 +807,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var messageToken = asyncResult.value;
 							var midProcess = readMessageId();
 							midProcess.done(function(mid) {
-								console.log(">> getMessage(): " + mid + " token:" + messageToken);
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									console.log(">> ewsUrl: " + ewsUrl);
 									$text.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
@@ -850,11 +821,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										} else {
 											clearError();
 											groupId = groupId ? groupId : "";
-											console.log(">> groupId: " + groupId);
-											console.log(">> title: " + $title.val());
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
-											console.log(">> convertToWiki textType: " + textType);
 											$convertButton.prop("disabled", false);
 											$form.submit(function(event) {
 												event.preventDefault();
@@ -908,10 +876,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								}
 							});
 							midProcess.fail(function() {
-								console.log(">> getMessage() failed to read messageId ");
+								console.log("getMessage() failed to read messageId ");
 							});
 						} else {
-							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+							console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
 								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 						}
@@ -919,7 +887,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 				
 				function convertToForumInit() {
-					// TODO this method adapted from convertToWikiInit(), consider for code reuse
+					// FYI this method adapted from convertToWikiInit(), consider for code reuse
 					var $convertToForum = $("#outlook-convertToForum");
 					var $topicName = $convertToForum.find("input[name='topicName']");
 					var $text = $convertToForum.find("div.messageText");
@@ -975,7 +943,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							if (asyncResult.status === "succeeded") {
 								$topicName.val(asyncResult.value);
 							} else {
-								console.log(">> Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
+								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
 									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
 							}
@@ -988,10 +956,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var messageToken = asyncResult.value;
 							var midProcess = readMessageId();
 							midProcess.done(function(mid) {
-								console.log(">> getMessage(): " + mid + " token:" + messageToken);
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									console.log(">> ewsUrl: " + ewsUrl);
 									$text.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
@@ -1004,11 +970,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										} else {
 											clearError();
 											groupId = groupId ? groupId : "";
-											console.log(">> groupId: " + groupId);
-											console.log(">> topicName: " + $topicName.val());
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
-											console.log(">> convertToForum textType: " + textType);
 											textReady = true;
 											checkCanConvert();
 											$form.submit(function(event) {
@@ -1063,10 +1026,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								}
 							});
 							midProcess.fail(function() {
-								console.log(">> getMessage() failed to read messageId ");
+								console.log("getMessage() failed to read messageId ");
 							});
 						} else {
-							console.log(">> Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+							console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
 								+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 							showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 						}
@@ -1074,7 +1037,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 				
 				function startDiscussionInit() {
-					// TODO this method adapted from convertToForumInit() and postStatusInit(), consider for code reuse
+					// FYI this method adapted from convertToForumInit() and postStatusInit(), consider for code reuse
 					var $startDiscussion = $("#outlook-startDiscussion");
 					
 					var $topicNameField = $startDiscussion.find("div.topicNameField");
@@ -1160,7 +1123,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$form.submit(function(event) {
 						event.preventDefault();
 						clearError();
-						console.log(">> startDiscussionInit groupId: " + groupId + " name: " + $topicName.val() + " text: " + $topicText.html());
+						//console.log(">> startDiscussionInit groupId: " + groupId + " name: " + $topicName.val() + " text: " + $topicText.html());
 						$form.hide("blind");
 						$starting.show("blind");
 						var spinner = new fabric.Spinner($starting.find(".ms-Spinner").get(0));
@@ -1295,10 +1258,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											$selected.toggleClass("is-selected");
 											// here also check/uncheck in $folderFiles
 											if ($selected.hasClass("is-selected")) {
-												//$child.addClass("is-selected");
 												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).addClass("is-selected");
 											} else {
-												//$child.removeClass("is-selected");
 												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).removeClass("is-selected");
 											}
 										});
@@ -1379,7 +1340,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var loadChildred = function() {
 						var process = $.Deferred();
 						if (sourceId && path) {
-							console.log(">> loadChildred: " + sourceId + " >> " + path);
+							//console.log(">> loadChildred: " + sourceId + " >> " + path);
 							$folderFiles.jzLoad("Outlook.exploreFiles()", {
 								sourceId : sourceId,
 								path : path
@@ -1406,7 +1367,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							});
 						} else {
 							process.reject();
-							console.log(">> loadChildred: sourceId and/or path not found");
+							console.log("loadChildred: sourceId and/or path not found");
 							showError("Outlook.messages.sourcePathNotFound");
 						}
 						return process.promise();
@@ -1491,8 +1452,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											$docName.prepend("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
 											$fileProcess.resolve();
 										} else {
-											console.log(">> Office.context.mailbox.item.addFileAttachmentAsync() [" + asyncResult.status + "] error: "//
-											+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+											console.log("Office.context.mailbox.item.addFileAttachmentAsync() [" + asyncResult.status + "] error: "//
+													+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											$fileProcess.reject();
 											$attachedDoc.addClass("ms-bgColor-error");
 											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
@@ -1501,7 +1462,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									});
 								});
 								$fileLink.fail(function(jqXHR, textStatus, errorThrown) {
-									console.log(">> Outlook.fileLink() [" + textStatus + "]: "//
+									console.log("Outlook.fileLink() [" + textStatus + "]: "//
 											+ errorThrown + " response: " + jqXHR.responseText);
 									$fileProcess.reject();
 									$attachedDoc.addClass("ms-bgColor-error");
@@ -1537,21 +1498,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $searchFrame = $searchContainer.find("iframe");
 					$searchFrame.height($searchContainer.height());
 					var ieVersion = getIEVersion();
-					// DOMSubtreeModified
+					// TODO do we need DOMSubtreeModified also?
 					var domEvent = ieVersion > 0 && ieVersion < 9.0 ? "onpropertychange" : "DOMNodeInserted";
 					var searchWindow = $searchFrame.get(0).contentWindow;
-					// TODO cleanup
-					// function fixSearchingPos() {
-							// var $resultLoading = $(searchWindow.document).find("#resultLoading");
-							// if ($resultLoading.size() > 0 && $resultLoading.is(":visible")) {
-								// var w = $resultLoading.width();
-								// var h = $resultLoading.height();
-								// var $searchWindow = $(searchWindow);
-								// var left = ($searchWindow.width() / 2) - (w / 2);
-								// var top = ($searchWindow.height() / 2) - (h / 2);
-								// $resultLoading.offset({ top: top, left: left});
-							// }
-					// }
+					
 					$searchFrame.load(function() {
 						// XXX it is a hack for quicksearch.js's generateAllResultsURL()
 						var outlookSiteName;
@@ -1567,7 +1517,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								return url;
 							}
 						}
-						// TODO not used
+						// TODO not used, see commented code below
 						function outlookSiteUrl(url) {
 							if (outlookSiteName) {
 								var portalPath;
@@ -1638,11 +1588,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var process = $.Deferred();
 					var newMenu;
 					if (menuName) {
-						console.log(">> loadMenu: " + menuName);
+						console.log("loadMenu: " + menuName);
 						newMenu = menuName != $container.data("menu-name");
 					} else {
 						menuName = $container.data("menu-name");
-						console.log(">> loadMenu: " + menuName + " (new from container)");
+						console.log("loadMenu: " + menuName + " (new from container)");
 						newMenu = true;
 					}
 					// load only if not already loaded

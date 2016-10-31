@@ -32,20 +32,8 @@
   </portal-skin>
 
   <!-- Javascript for Outlook portlet -->
-  <!-- module>
-    <name>outlookJquery</name>
-    <as>$</as>
-    <load-group>outlookGRP</load-group>
-    <script>
-      <adapter>
-        (function() {
-        <include>/js/jquery.min.js</include>
-        return jQuery.noConflict(true);
-        })();
-      </adapter>
-    </script>
-  </module -->
   <module>
+    <!-- JQueryUI used for show/hide decoration -->
     <name>outlookJqueryUI</name>
     <load-group>outlookGRP</load-group>
     <script>

@@ -458,7 +458,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                              PeopleService.PEOPLE_APP_ID,
                                                              safeText,
                                                              null);
-      // XXX we do like done UIDefaultActivityComposer
+      // we do like done UIDefaultActivityComposer
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
 
       socialActivityManager.saveActivityNoReturn(userIdentity, activity);
@@ -712,7 +712,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                              SpaceActivityPublisher.SPACE_APP_ID,
                                                              safeText,
                                                              null);
-      // XXX we do like done UIDefaultActivityComposer
+      // we do like done UIDefaultActivityComposer
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
 
       socialActivityManager.saveActivityNoReturn(spaceIdentity, activity);
@@ -2077,19 +2077,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         pwiki.setOwner(wikiOwner);
         pwiki.setType(wikiType);
         parentPage = wikiService.createPage(pwiki, "WikiHome", parentPage);
-
-        // TODO do we need some kind of restrictions for message pages?
-        // remove permissions on the Meeting Notes parent page for current user (automatically added by
-        // the Wiki API)
-        // permissions = parentPage.getPermissions();
-        // for (int i = 0; i < permissions.size(); i++) {
-        // PermissionEntry permission = permissions.get(i);
-        // if (creator.equals(permission.getId())) {
-        // permissions.remove(i);
-        // }
-        // }
-        // parentPage.setPermissions(permissions);
-        // wikiService.updatePage(parentPage, null);
       }
 
       Wiki wiki = new Wiki();
@@ -2224,7 +2211,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected boolean isHTML(String content) {
     // XXX well, it's not proper, but working in most of cases approach
-
     int istart = content.indexOf("<html");
     int iend = content.indexOf("</html>");
     if (istart >= 0 && iend > 0 && istart < iend) {
@@ -2427,18 +2413,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       checksms = checksms.replaceAll("&nbsp;", " ");
       int t = checksms.trim().length();
       if (t > 0 && !checksms.equals("null")) {
-        // TODO
+        // TODO in else block handle too short or offending texts 
       }
       Date currentDate = CommonUtils.getGreenwichMeanTime().getTime();
       message = CommonUtils.encodeSpecialCharInSearchTerm(message);
       message = TransformHTML.fixAddBBcodeAction(message);
       // TODO do we need this when using safe HTML?
-      message = message.replaceAll("<script", "&lt;script").replaceAll("<link", "&lt;link").replaceAll("</script>",
-                                                                                                       "&lt;/script>");
+      //message = message.replaceAll("<script", "&lt;script").replaceAll("<link", "&lt;link").replaceAll("</script>",
+      //                                                                                                 "&lt;/script>");
       // remove any meta tags explicitly existing in the content
-      message = message.replaceAll("<meta.*?>", "");
+      //message = message.replaceAll("<meta.*?>", "");
       // remove all embedded global styles
-      message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
+      //message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
 
       boolean isOffend = false;
       ForumAdministration forumAdministration = forumService.getForumAdministration();
@@ -2467,18 +2453,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       String canView = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANVIEW);
 
       // set link
-      // FYI this origjnal Forum code will use current "outlook" portlet path to build the link
+      // FYI this original Forum code will use current "outlook" portlet path to build the link
       // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
       // finally escape the title
       safeTitle = CommonUtils.encodeSpecialCharInTitle(safeTitle);
-      // TODO is it still required as we've removed scripts and used HTML sanitizer already?
-      // safeTitle = StringCommonUtils.encodeScriptMarkup(safeTitle);
       topic.setTopicName(safeTitle);
       topic.setModifiedBy(creator);
       topic.setModifiedDate(currentDate);
-      // TODO do we need this? encode XSS script
-      // message = StringCommonUtils.encodeScriptMarkup(message);
 
       if (summary != null) {
         // if summary given then we assume need quote the message content
@@ -2512,7 +2494,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       } else {
         topic.setIsNotifyWhenAddPost(ForumUtils.EMPTY_STR);
       }
-      // topicNew.setAttachments(uiForm.attachments_);
       topic.setIsWaiting(isOffend);
       topic.setIsClosed(topicClosed);
       topic.setIsLock(topicLocked);
@@ -2526,8 +2507,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       topic.setCanView(canViews);
       topic.setCanPost(canPosts);
       topic.setIsApproved(true); // !hasForumMod
-      // XXX we cannot rely on ForumUtils.getDefaultMail() because it requires resources from Forum WAR
-      // MessageBuilder messageBuilder = ForumUtils.getDefaultMail();
+
       MessageBuilder messageBuilder = new MessageBuilder();
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = resourceBundleService.getResourceBundle("locale.portlet.forum.ForumPortlet", context.getLocale());

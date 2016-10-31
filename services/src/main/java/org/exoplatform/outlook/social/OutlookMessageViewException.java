@@ -37,7 +37,6 @@ public class OutlookMessageViewException extends Exception {
    * 
    */
   public OutlookMessageViewException() {
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -45,7 +44,6 @@ public class OutlookMessageViewException extends Exception {
    */
   public OutlookMessageViewException(String message) {
     super(message);
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -53,7 +51,6 @@ public class OutlookMessageViewException extends Exception {
    */
   public OutlookMessageViewException(Throwable cause) {
     super(cause);
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -62,7 +59,6 @@ public class OutlookMessageViewException extends Exception {
    */
   public OutlookMessageViewException(String message, Throwable cause) {
     super(message, cause);
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -76,7 +72,6 @@ public class OutlookMessageViewException extends Exception {
                                      boolean enableSuppression,
                                      boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
-    // TODO Auto-generated constructor stub
   }
 
 }

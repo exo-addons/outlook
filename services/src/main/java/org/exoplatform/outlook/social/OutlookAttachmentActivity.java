@@ -311,14 +311,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
           StringBuilder link = new StringBuilder();
           // we use relative URL
-          // PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
-          // PortletRequest portletRequest = portletRequestContext.getRequest();
-          // link.append(portletRequest.getScheme());
-          // link.append("://");
-          // link.append(portletRequest.getServerName());
-          // link.append(':');
-          // link.append(portletRequest.getServerPort());
-
           link.append('/');
           link.append(portalName);
           link.append('/');
@@ -406,7 +398,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
           if (isSupportPreview()) {
             return event("ViewDocument", getId(), node.getUUID());
           } else {
-            // TODO do we want "edit" functionality here? what can be else?
+            // TODO do we want "edit" functionality here? what could be else?
             return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
           }
         }
@@ -550,15 +542,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
     UIComponent fileComponent = uicontentpresentation.getUIComponent(mimeType);
     uicontentpresentation.renderUIComponent(fileComponent);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void setActivity(ExoSocialActivity activity) {
-    super.setActivity(activity);
-    // TODO post init?
   }
 
   public String[] getSystemCommentBundle(Map<String, String> activityParams) {

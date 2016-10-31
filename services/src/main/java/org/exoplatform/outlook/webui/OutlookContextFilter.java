@@ -59,8 +59,6 @@ public class OutlookContextFilter implements Filter {
     WebAppController controller = (WebAppController) container.getComponentInstanceOfType(WebAppController.class);
     PortalApplication app = controller.getApplication(PortalApplication.PORTAL_APPLICATION_ID);
 
-    // TODO use session attribute to check does a lifecycle already added to the app, but then rethink
-    // its on-Start/End request logic.
     final OutlookLifecycle lifecycle = new OutlookLifecycle();
     try {
       app.getApplicationLifecycle().add(lifecycle);

@@ -29,6 +29,11 @@ package org.exoplatform.outlook;
 public class OutlookException extends Exception {
 
   /**
+   * 
+   */
+  private static final long serialVersionUID = 6566123091112224590L;
+
+  /**
    * @param message
    */
   public OutlookException(String message) {

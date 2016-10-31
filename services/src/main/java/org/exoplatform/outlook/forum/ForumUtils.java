@@ -24,7 +24,6 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.forum.service.MessageBuilder;
 import org.exoplatform.forum.service.Utils;
-import org.exoplatform.outlook.OutlookServiceImpl;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
