@@ -8,6 +8,8 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookException;
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
@@ -19,6 +21,8 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
+import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -51,6 +55,8 @@ public class ContentLink {
 
   public static final String    CONFIG_SCHEMA      = "server-schema";
 
+  public static final String    LINK_CACHE_NAME    = "OutlookContentLinkCache";
+
   public static final int       KEY_EXPIRE_SECONDS = 60;
 
   protected static final Log    LOG                = ExoLogger.getLogger(ContentLink.class);
@@ -58,46 +64,50 @@ public class ContentLink {
   protected static final Random RANDOM             = new Random();
 
   class KeyPath {
-    final String   workspace;
+    final String workspace;
 
-    final String   path;
+    final String path;
 
-    final String   userId;
+    final String userId;
 
-    final Calendar expired;
+    // final Calendar expired;
 
     protected KeyPath(String userId, String workspace, String path) {
       super();
       this.workspace = workspace;
       this.path = path;
       this.userId = userId;
-      this.expired = Calendar.getInstance();
-      this.expired.add(Calendar.SECOND, KEY_EXPIRE_SECONDS);
+      // this.expired = Calendar.getInstance();
+      // this.expired.add(Calendar.SECOND, KEY_EXPIRE_SECONDS);
     }
 
   }
 
-  protected final ConcurrentHashMap<String, KeyPath> active = new ConcurrentHashMap<String, KeyPath>();
+  // @Deprecated
+  // protected final ConcurrentHashMap<String, KeyPath> active = new ConcurrentHashMap<String, KeyPath>();
 
-  protected final RepositoryService                  jcrService;
+  private final ExoCache<String, KeyPath> activeLinks;
 
-  protected final SessionProviderService             sessionProviders;
+  protected final RepositoryService       jcrService;
 
-  protected final NodeFinder                         finder;
+  protected final SessionProviderService  sessionProviders;
 
-  protected final OrganizationService                organization;
+  protected final NodeFinder              finder;
 
-  protected final IdentityRegistry                   identityRegistry;
+  protected final OrganizationService     organization;
 
-  protected final Map<String, String>                config;
+  protected final IdentityRegistry        identityRegistry;
 
-  protected final String                             restUrl;
+  protected final Map<String, String>     config;
+
+  protected final String                  restUrl;
 
   public ContentLink(RepositoryService jcrService,
                      SessionProviderService sessionProviders,
                      NodeFinder finder,
                      OrganizationService organization,
                      IdentityRegistry identityRegistry,
+                     CacheService cacheService,
                      InitParams params)
       throws ConfigurationException {
     this.jcrService = jcrService;
@@ -105,6 +115,8 @@ public class ContentLink {
     this.finder = finder;
     this.organization = organization;
     this.identityRegistry = identityRegistry;
+
+    this.activeLinks = cacheService.getCacheInstance(LINK_CACHE_NAME);
 
     /////
     if (params != null) {
@@ -165,17 +177,16 @@ public class ContentLink {
     restUrl.append('/');
     restUrl.append(PortalContainer.getCurrentRestContextName());
     this.restUrl = restUrl.toString();
-
-    // TODO organize active map cleanup in time: use eXo cache or thread worker running periodically
   }
 
   public ContentLink(RepositoryService jcrService,
                      SessionProviderService sessionProviders,
                      NodeFinder finder,
                      OrganizationService organization,
-                     IdentityRegistry identityRegistry)
+                     IdentityRegistry identityRegistry,
+                     CacheService cacheService)
       throws ConfigurationException {
-    this(jcrService, sessionProviders, finder, organization, identityRegistry, null);
+    this(jcrService, sessionProviders, finder, organization, identityRegistry, cacheService, null);
   }
 
   public String create(String userId, String nodePath) throws Exception {
@@ -191,7 +202,8 @@ public class ContentLink {
     UUID uuid = generateId(workspace, path);
     String key = uuid.toString();
 
-    active.put(key, keyPath);
+    // active.put(key, keyPath);
+    activeLinks.put(key, keyPath);
 
     return key;
   }
@@ -250,12 +262,12 @@ public class ContentLink {
    * @throws Exception
    */
   public NodeContent consume(String userId, String key) throws Exception {
-    KeyPath keyPath = active.remove(key);
+    // KeyPath keyPath = active.remove(key);
+    KeyPath keyPath = activeLinks.remove(key);
     if (keyPath != null) {
       if (keyPath.userId.equals(userId)) {
-        if (Calendar.getInstance().before(keyPath.expired)) {
-          return content(keyPath.userId, keyPath.workspace, keyPath.path);
-        }
+        // if (Calendar.getInstance().before(keyPath.expired))
+        return content(keyPath.userId, keyPath.workspace, keyPath.path);
       } else {
         throw new BadParameterException("User does not mach " + userId);
       }
