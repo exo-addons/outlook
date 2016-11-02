@@ -40,14 +40,14 @@ public class OutlookMessageViewException extends Exception {
   }
 
   /**
-   * @param message
+   * @param message {@link String}
    */
   public OutlookMessageViewException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * @param cause {@link Throwable}
    */
   public OutlookMessageViewException(Throwable cause) {
     super(cause);

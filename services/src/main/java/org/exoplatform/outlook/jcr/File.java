@@ -36,8 +36,12 @@ import javax.jcr.RepositoryException;
 public abstract class File extends HierarchyNode {
 
   /**
-   * @throws RepositoryException
+   * File instance constructor.
    * 
+   * @param parent {@link Folder}
+   * @param node {@link Node}
+   * @throws RepositoryException storage error
+   * @throws OutlookException if not a file node
    */
   public File(Folder parent, Node node) throws RepositoryException, OutlookException {
     super(parent, node);

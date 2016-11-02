@@ -58,7 +58,7 @@ public class JCRNodeFinder implements NodeFinder {
   }
 
   /**
-   * @inherritDoc
+   * {@inheritDoc}
    */
   @Override
   public Item getItem(Session userSession, String path, boolean symlinkTarget) throws PathNotFoundException,
@@ -67,7 +67,7 @@ public class JCRNodeFinder implements NodeFinder {
   }
 
   /**
-   * @inherritDoc
+   * {@inheritDoc}
    */
   @Override
   public Item findItem(Session userSession, String path) throws PathNotFoundException, RepositoryException {

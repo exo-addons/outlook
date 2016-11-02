@@ -272,6 +272,8 @@ public class OutlookMessageActivity extends FileUIActivity {
   /**
    * Get a link to open the activity in new window.<br>
    * Method existed in the parent class in PLF 4.3, but removed in 4.4, thus we keep it here.
+   * 
+   * @return {@link String}
    */
   public String getViewLink() {
     try {

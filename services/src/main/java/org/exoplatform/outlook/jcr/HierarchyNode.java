@@ -77,7 +77,6 @@ public abstract class HierarchyNode {
 
   protected final Calendar lastModified;
 
-  // TODO thread-local node and a way to read it by path/UUID from JCR
   protected final Node     node;
 
   protected final int      hashCode;
@@ -87,22 +86,20 @@ public abstract class HierarchyNode {
   protected String         webdavUrl;
 
   /**
-   * @throws RepositoryException
+   * New hierarchy node instance.
    * 
+   * @param parentPath {@link String}
+   * @param node {@link Node}
+   * @throws RepositoryException storage error
+   * @throws BadParameterException  when parent path is {@code null}
    */
-  protected HierarchyNode(String parentPath, Node node) throws RepositoryException, OutlookException {
+  protected HierarchyNode(String parentPath, Node node) throws RepositoryException, BadParameterException {
     this.path = node.getPath();
     this.node = node;
     this.name = node.getName();
 
     if (parentPath == null) {
       throw new BadParameterException("Node  '" + name + "' should have root path or parent folder");
-      // TODO
-      // if (parent == null) {
-      // } else {
-      // // grab root path from given parent
-      // parentPath = parent.getRootPath();
-      // }
     }
 
     int hc = 1;
@@ -114,8 +111,6 @@ public abstract class HierarchyNode {
       this.pathLabel = ROOT_PATH_LABEL;
     } else {
       this.pathLabel = pathLabel(parentPath, node);
-      // this.pathLabel = new
-      // StringBuilder(parent.getPathLabel()).append(PATH_SEPARATOR).append(this.title).toString();
     }
 
     if (node.hasProperty("exo:lastModifier")) {
@@ -288,8 +283,6 @@ public abstract class HierarchyNode {
     } else {
       reversedSubpath.add(PATH_SEPARATOR);
     }
-    // String pathLabel = new
-    // StringBuilder(parent.getPathLabel()).append(PATH_SEPARATOR).append(this.title).toString();
     return pathLabel.toString();
   }
 

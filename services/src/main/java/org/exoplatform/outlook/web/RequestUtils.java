@@ -41,6 +41,7 @@ public class RequestUtils {
    * Read cookie value from the request or returns null.
    *
    * @param req the incoming request
+   * @param name {@link String}
    * @return the token
    */
   public static String getCookie(HttpServletRequest req, String name) {

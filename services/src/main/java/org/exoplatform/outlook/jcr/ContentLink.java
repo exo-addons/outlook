@@ -255,12 +255,6 @@ public class ContentLink {
     return new LinkResource(name, link.append('/').append(userId).append('/').append(key).toString());
   }
 
-  /**
-   * @param userId
-   * @param key
-   * @return
-   * @throws Exception
-   */
   public NodeContent consume(String userId, String key) throws Exception {
     // KeyPath keyPath = active.remove(key);
     KeyPath keyPath = activeLinks.remove(key);

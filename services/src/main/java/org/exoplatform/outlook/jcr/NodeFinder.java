@@ -66,8 +66,8 @@ public interface NodeFinder {
    * @param session {@link Session}
    * @param uuid {@link String}
    * @return {@link Collection} of nodes
-   * @throws PathNotFoundException
-   * @throws RepositoryException
+   * @throws RepositoryException if repository error eccurs
+   * @throws PathNotFoundException if item not found by given path
    */
   Collection<Node> findLinked(Session session, String uuid) throws PathNotFoundException, RepositoryException;
 
@@ -84,7 +84,7 @@ public interface NodeFinder {
    * 
    * @param userName {@link String} with user name in organization
    * @return {@link Node} user home node
-   * @throws Exception
+   * @throws Exception when error
    */
   Node getUserNode(String userName) throws Exception;
 
