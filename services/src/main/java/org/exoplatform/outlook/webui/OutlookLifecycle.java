@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
 
-  protected static final Log           LOG         = ExoLogger.getLogger(OutlookLifecycle.class);
+  protected static final Log           LOG             = ExoLogger.getLogger(OutlookLifecycle.class);
 
   protected final ThreadLocal<Boolean> toolbarRendered = new ThreadLocal<Boolean>();
 
@@ -69,7 +69,7 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIContainer toolbar = findToolbarContainer(app, context);
+    UIComponent toolbar = findToolbarComponent(app, context);
     if (toolbar != null && toolbar.isRendered()) {
       toolbarRendered.set(true);
       toolbar.setRendered(false);
@@ -87,7 +87,7 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIContainer toolbar = findToolbarContainer(app, context);
+    UIComponent toolbar = findToolbarComponent(app, context);
     if (toolbar != null) {
       Boolean render = toolbarRendered.get();
       if (render != null && render.booleanValue()) {
@@ -115,23 +115,30 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
 
   // ******* internals ******
 
-  protected UIContainer findToolbarContainer(Application app, WebuiRequestContext context) throws Exception {
+  protected UIComponent findToolbarComponent(Application app, WebuiRequestContext context) throws Exception {
     ExoContainer container = app.getApplicationServiceContainer();
     if (container != null) {
       UIApplication uiApp = context.getUIApplication();
       UIComponentDecorator uiViewWS = uiApp.findComponentById(UIPortalApplication.UI_VIEWING_WS_ID);
       if (uiViewWS != null) {
-        UIContainer uiContainer = (UIContainer) uiViewWS.getUIComponent();
-        if (uiContainer != null) {
-          for (UIComponent child : uiContainer.getChildren()) {
+        UIContainer viewContainer = (UIContainer) uiViewWS.getUIComponent();
+        if (viewContainer != null) {
+          UIContainer navContainer = viewContainer.getChildById("NavigationPortlet");
+          if (navContainer == null) {
+            navContainer = viewContainer;
+          }
+          for (UIComponent child : navContainer.getChildren()) {
             if (UIContainer.class.isAssignableFrom(child.getClass())) {
               UIContainer childContainer = UIContainer.class.cast(child);
-              UIContainer toolbar = childContainer.getChildById("UIToolbarContainer");
+              UIComponent toolbar = childContainer.getChildById("UIToolbarContainer");
               if (toolbar != null) {
+                // attempt #1
                 return toolbar;
               }
             }
           }
+          // attempt #2
+          return navContainer.findComponentById("UIToolbarContainer");
         }
       }
     }
