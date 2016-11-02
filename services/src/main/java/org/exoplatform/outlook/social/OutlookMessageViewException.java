@@ -54,18 +54,18 @@ public class OutlookMessageViewException extends Exception {
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message {@link String}
+   * @param cause {@link String}
    */
   public OutlookMessageViewException(String message, Throwable cause) {
     super(message, cause);
   }
 
   /**
-   * @param message
-   * @param cause
-   * @param enableSuppression
-   * @param writableStackTrace
+   * @param message {@link String}
+   * @param cause {@link String}
+   * @param enableSuppression boolean
+   * @param writableStackTrace boolean
    */
   public OutlookMessageViewException(String message,
                                      Throwable cause,

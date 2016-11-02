@@ -73,7 +73,9 @@ public class OutlookMessage {
   }
 
   /**
-   * @param subject
+   * Set message subject.
+   * 
+   * @param subject {@link String}
    */
   protected void setSubject(String subject) {
     this.subject = subject;

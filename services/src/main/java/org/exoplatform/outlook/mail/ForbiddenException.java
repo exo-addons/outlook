@@ -36,15 +36,15 @@ public class ForbiddenException extends MailServerException {
   private static final long serialVersionUID = 8282124656996394956L;
 
   /**
-   * @param message
+   * @param message {@link String}
    */
   public ForbiddenException(String message) {
     super(message);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message {@link String}
+   * @param cause {@link Throwable}
    */
   public ForbiddenException(String message, Throwable cause) {
     super(message, cause);

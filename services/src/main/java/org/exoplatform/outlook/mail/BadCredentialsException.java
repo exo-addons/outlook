@@ -36,15 +36,15 @@ public class BadCredentialsException extends MailServerException {
   private static final long serialVersionUID = -1431333385461359936L;
 
   /**
-   * @param message
+   * @param message {@link String}
    */
   public BadCredentialsException(String message) {
     super(message);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message {@link String}
+   * @param cause {@link Throwable}
    */
   public BadCredentialsException(String message, Throwable cause) {
     super(message, cause);

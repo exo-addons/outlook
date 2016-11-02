@@ -36,22 +36,22 @@ public class MailServerException extends OutlookException {
   private static final long serialVersionUID = -671550264634503015L;
 
   /**
-   * @param message
+   * @param message {@link String}
    */
   public MailServerException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * @param cause {@link Throwable}
    */
   public MailServerException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message {@link String}
+   * @param cause {@link Throwable}
    */
   public MailServerException(String message, Throwable cause) {
     super(message, cause);

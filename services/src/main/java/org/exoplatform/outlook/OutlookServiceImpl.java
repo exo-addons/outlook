@@ -928,8 +928,17 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @param jcrService {@link RepositoryService}
    * @param sessionProviders {@link SessionProviderService}
    * @param identityRegistry {@link IdentityRegistry}
+   * @param hierarchyCreator {@link NodeHierarchyCreator}
    * @param finder {@link NodeFinder}
    * @param organization {@link OrganizationService}
+   * @param tokenService {@link CookieTokenService}
+   * @param driveService {@link ManageDriveService}
+   * @param listenerService {@link ListenerService}
+   * @param wikiService {@link WikiService}
+   * @param forumService {@link ForumService}
+   * @param trashService {@link TrashService}
+   * @param wikiRenderingService {@link RenderingService}
+   * @param resourceBundleService {@link ResourceBundleService}
    * @param params {@link InitParams}
    * @throws ConfigurationException when parameters configuration error
    * @throws MailServerException when Mail server API error
@@ -2571,7 +2580,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                           String categoryId,
                                           String forumId) throws Exception {
     // FYI Adapted code from UIForumPortlet.
-    
+
     // is guest or banned
     if (userProfile.getUserRole() == org.exoplatform.forum.service.UserProfile.GUEST || userProfile.getIsBanned()
         || userProfile.isDisabled()) {

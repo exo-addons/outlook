@@ -172,7 +172,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     /**
      * Gets file title.
      * 
-     * @param node the node
      * @return the title of Node.
      */
     public String getTitle() {
@@ -431,7 +430,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
     /**
      * @return <code>true</code> when node exists, <code>false</code> otherwise
-     * @throws RepositoryException
+     * @throws RepositoryException when error
      */
     public boolean isExists() throws RepositoryException {
       try {
@@ -461,9 +460,9 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
     /**
      * @return attachment file node or <code>null</code>
-     * @throws RepositoryException
-     * @throws NoSuchWorkspaceException
-     * @throws LoginException
+     * @throws RepositoryException when strorage error
+     * @throws NoSuchWorkspaceException when default workspace not found
+     * @throws LoginException when login error
      */
     public Node getNode() throws RepositoryException {
       return node();

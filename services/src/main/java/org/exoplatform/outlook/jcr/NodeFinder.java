@@ -42,6 +42,7 @@ public interface NodeFinder {
    * @param path {@link String}
    * @param symlinkTarget boolean, if {@code true} and found item is a symlink node, return the symlink target
    *          node, if {@code false} just return the item obtained from the session
+   * @return {@link Item}
    * @throws RepositoryException if repository error eccurs
    * @throws PathNotFoundException if item not found by given path
    */
@@ -53,6 +54,7 @@ public interface NodeFinder {
    * 
    * @param userSession {@link Session}
    * @param path {@link String}
+   * @return {@link Item}
    * @throws RepositoryException if repository error eccurs
    * @throws PathNotFoundException if item not found by given path
    */

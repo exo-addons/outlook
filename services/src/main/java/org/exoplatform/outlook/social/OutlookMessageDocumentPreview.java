@@ -52,11 +52,11 @@ public class OutlookMessageDocumentPreview extends UIDocumentPreview {
   }
 
   /**
-   * Check if a node is media/image
+   * Check if a node is media/image.
    * 
-   * @param data
-   * @return
-   * @throws Exception
+   * @param data {@link Node}
+   * @return boolean
+   * @throws Exception when error
    */
   protected boolean isMediaFile(Node data) throws Exception {
     return false;

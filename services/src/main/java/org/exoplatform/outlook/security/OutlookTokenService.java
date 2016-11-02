@@ -38,10 +38,10 @@ public class OutlookTokenService extends CookieTokenService {
   public static final String COOKIE_NAME = "remembermeoutlook";
   
   /**
-   * @param initParams
-   * @param chromatticManager
-   * @param codecInitializer
-   * @throws TokenServiceInitializationException
+   * @param initParams {@link InitParams}
+   * @param chromatticManager {@link ChromatticManager}
+   * @param codecInitializer {@link CodecInitializer}
+   * @throws TokenServiceInitializationException when initialization failed
    */
   public OutlookTokenService(InitParams initParams, ChromatticManager chromatticManager, CodecInitializer codecInitializer)
       throws TokenServiceInitializationException {
