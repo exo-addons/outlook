@@ -375,7 +375,7 @@ div.form-buttons {
 	padding-right: 5px;
 }
 
-.outlookGroupMenu .ms-ContextualMenu {
+#outlook-menu .ms-ContextualMenu {
 	min-width: 220px;
 }
 
