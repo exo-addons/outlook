@@ -34,22 +34,22 @@ public class BadParameterException extends OutlookException {
   private static final long serialVersionUID = 8675025886542058618L;
 
   /**
-   * @param message
+   * @param message error message
    */
   public BadParameterException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * @param cause error cause
    */
   public BadParameterException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message error message
+   * @param cause error cause
    */
   public BadParameterException(String message, Throwable cause) {
     super(message, cause);

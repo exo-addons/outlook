@@ -444,7 +444,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     /**
      * Gets the summary.
      * 
-     * @param node the node
      * @return the summary of Node. Return empty string if catch an exception.
      */
     public String getSummary() {

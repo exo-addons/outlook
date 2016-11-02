@@ -42,38 +42,38 @@ public interface OutlookService {
   /**
    * Build Outlook user object and associate it with current user in eXo portal.
    * 
-   * @param email
-   * @param userName
-   * @param ewsUrl
+   * @param email email
+   * @param userName user name
+   * @param ewsUrl Exchange web-service URL
    * @return {@link OutlookUser} object to access Outlook Mail API
-   * @throws OutlookException
-   * @throws RepositoryException
+   * @throws OutlookException Outlook exception
+   * @throws RepositoryException storage exception
    */
   OutlookUser getUser(String email, String userName, String ewsUrl) throws OutlookException, RepositoryException;
   
   /**
    * Build Outlook Email address object.
    * 
-   * @param email
-   * @param displayName
-   * @return
-   * @throws OutlookException
+   * @param email email
+   * @param displayName user display name
+   * @return OutlookEmail
+   * @throws OutlookException when error
    */
   OutlookEmail getAddress(String email, String displayName) throws OutlookException;
 
   /**
    * Build Outlook message object.
    * 
-   * @param messageId
-   * @param user
-   * @param from
-   * @param to
-   * @param created
-   * @param modified
-   * @param subject
-   * @param body
-   * @return
-   * @throws OutlookException
+   * @param messageId {@link String} email message ID
+   * @param user {@link OutlookUser}
+   * @param from {@link OutlookEmail}
+   * @param to {@link OutlookEmail}
+   * @param created {@link Calendar}
+   * @param modified {@link Calendar}
+   * @param subject {@link String} message subject
+   * @param body {@link String} message body
+   * @return {@link OutlookMessage}
+   * @throws OutlookException when error
    */
   OutlookMessage buildMessage(String messageId,
                               OutlookUser user,
@@ -87,17 +87,13 @@ public interface OutlookService {
   /**
    * Read Outlook message from server.
    * 
-   * @param user
-   * @param messageId
-   * @param messageId
-   * @param messageToken
-   * 
-   * @return
-   * @throws OutlookException
+   * @param messageId {@link String} email message ID
+   * @param user {@link OutlookUser}
+   * @param messageToken {@link String} secure token to access message on Exchange server 
+   * @return {@link OutlookMessage}
+   * @throws OutlookException when error
    */
   OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException;
-
-  // OutlookMessage getUserMessage(OutlookUser user, String messageId) throws OutlookException;
 
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
@@ -121,10 +117,11 @@ public interface OutlookService {
   /**
    * Return Office space handler.
    * 
+   * @param groupId {@link String} email message ID
    * @return {@link OutlookSpace}
-   * @throws OutlookSpaceException
-   * @throws OutlookException
-   * @throws RepositoryException
+   * @throws OutlookSpaceException when space access error happen
+   * @throws OutlookException when error
+   * @throws RepositoryException when storage error
    */
   OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException;
 

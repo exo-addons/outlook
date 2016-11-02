@@ -80,7 +80,7 @@ public class OutlookMessage {
   }
 
   /**
-   * @param body
+   * @param body message body
    */
   protected void setBody(String body) {
     this.body = body;

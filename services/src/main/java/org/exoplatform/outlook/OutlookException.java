@@ -34,22 +34,22 @@ public class OutlookException extends Exception {
   private static final long serialVersionUID = 6566123091112224590L;
 
   /**
-   * @param message
+   * @param message error message
    */
   public OutlookException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * @param cause error cause
    */
   public OutlookException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message error message
+   * @param cause error cause
    */
   public OutlookException(String message, Throwable cause) {
     super(message, cause);

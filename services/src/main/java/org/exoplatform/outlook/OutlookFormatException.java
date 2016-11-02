@@ -20,7 +20,7 @@
 package org.exoplatform.outlook;
 
 /**
- * Error in Anaplan response format.<br> 
+ * Error in Outlook response format.<br> 
  * 
  * Created by The eXo Platform SAS
  * 
@@ -36,22 +36,22 @@ public class OutlookFormatException extends OutlookException {
   private static final long serialVersionUID = -7588755544731933601L;
 
   /**
-   * @param message
+   * @param message error message
    */
   public OutlookFormatException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * @param cause error cause
    */
   public OutlookFormatException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message error message
+   * @param cause error cause
    */
   public OutlookFormatException(String message, Throwable cause) {
     super(message, cause);

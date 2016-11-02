@@ -61,7 +61,7 @@ public interface NodeFinder {
   /**
    * Find nodes linked to given node.
    * 
-   * @param userSession {@link Session}
+   * @param session {@link Session}
    * @param uuid {@link String}
    * @return {@link Collection} of nodes
    * @throws PathNotFoundException
@@ -80,7 +80,7 @@ public interface NodeFinder {
   /**
    * Return user home node of given user.
    * 
-   * @param localUser String with user name in organization
+   * @param userName {@link String} with user name in organization
    * @return {@link Node} user home node
    * @throws Exception
    */
