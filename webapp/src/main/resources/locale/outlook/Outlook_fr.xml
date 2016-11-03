@@ -3,10 +3,10 @@
   <Outlook>
     <!-- TODO -->
     <label>
-      <hasSavedFile>has saved file:</hasSavedFile>
-      <hasSavedNFiles>has saved {N} files:</hasSavedNFiles>
+      <hasSavedFile>a enregistré le fichier:</hasSavedFile>
+      <hasSavedNFiles>a enregistré {N} fichiers:</hasSavedNFiles>
     </label>
-  
+
     <command>
       <home>Accueil</home>
       <saveAttachment>Enregistrer les pièces jointes</saveAttachment>
@@ -26,114 +26,114 @@
     <logout>Déconnexion</logout>
     <logoutTitle>Déconnexion de l'intranet eXo</logoutTitle>
     <logoutQuestion>Voulez-vous vous déconnecter de l'intranet eXo?</logoutQuestion>
-    
+
     <homeOpenPortal>Ouvrir l'intranet dans une nouvelle fenêtre</homeOpenPortal>
 
     <homeNoActionsAvailable>Aucune action disponible dans ce contexte.</homeNoActionsAvailable>
-    
+
     <cancel>Annuler</cancel>
     <convert>Convertir</convert>
-    <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
+    <targetSpaceOptional>Espace cible (optionnel)</targetSpaceOptional>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
-    <personalDocuments>Documents Personels</personalDocuments>
+    <personalDocuments>Mes Documents</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
-  
+
     <!-- Save Attachment -->
     <saveAttachmentDescription>Ici vous pouvez enregistrer les pièces jointes comme documents dans votre intranet.</saveAttachmentDescription>
-    <selectAttachment>Selectionner les pièces jointes</selectAttachment>
+    <selectAttachment>Selectionnez les pièces jointes</selectAttachment>
     <selectAttachmentDescription>Les pièces jointes sélectionnées seront enregistrées dans l'espace cible.</selectAttachmentDescription>
-    <commentAttachment>Laissez un message (optionel)</commentAttachment>
+    <commentAttachment>Laissez un message (optionnel)</commentAttachment>
     <commentAttachmentDescription>Ce message sera contenu dans l'activité générée pour les pièces jointes.</commentAttachmentDescription>
     <selectSaveSpace>Espace cible</selectSaveSpace>
-    <selectSaveSpaceDescription>Sélectionnez l'espace où seront enregistrées vos pièces jointes</selectSaveSpaceDescription>
-    <selectFolder>Dossier destinataire</selectFolder>
+    <selectSaveSpaceDescription>Sélectionnez l'espace où les pièces jointes seront enregistrées</selectSaveSpaceDescription>
+    <selectFolder>Dossier cible</selectFolder>
     <save>Enregistrer</save>
-    <pathInfoSaveDescription>Le dossier destinataire dans l'espace documentaire cibleoù vos pièces jointes seront enregistrées.</pathInfoSaveDescription>
-    <pathUpDescription>Naviguer au dossier parent</pathUpDescription>
+    <pathInfoSaveDescription>Le dossier dans l'espace où les pièces jointes seront enregistrées.</pathInfoSaveDescription>
+    <pathUpDescription>Remonter au dossier parent</pathUpDescription>
     <pathAddDescription>Créer un nouveau dossier</pathAddDescription>
     <pathOpenDescription>Ouvrir dans une nouvelle fenêtre</pathOpenDescription>
     <cancelSaveAttachmentDescription>Ne pas enregister les pièces jointes de ce message.</cancelSaveAttachmentDescription>
-    <savingAttachment>Enregistrement de vos documents...</savingAttachment>
+    <savingAttachment>Enregistrement de vos documents en cours...</savingAttachment>
     <savedAttachment>Vos documents ont été enregistrés avec succès</savedAttachment>
-    <savedClickToOpen>Clickez un nom de fichier dans la liste pour l'ouvrir dans l'intranet</savedClickToOpen>
-    <addingNewFolder>Création du nouveau dossier</addingNewFolder>
-    <enterFolderNameAndCreate>Donnez un nom à ce dossier puis cliquez sur le bouton Ajouter.</enterFolderNameAndCreate>
+    <savedClickToOpen>Cliquez sur un fichier de la liste pour l'ouvrir dans l'intranet</savedClickToOpen>
+    <addingNewFolder>Ajout du dossier</addingNewFolder>
+    <enterFolderNameAndCreate>Nommez ce dossier puis cliquez sur "Ajouter".</enterFolderNameAndCreate>
     <folderName>Nom du dossier</folderName>
     <add>Ajouter</add>
-    
+
     <!-- Add Attachment -->
-    <addAttachmentDescription>Attacher les documents sélectionnés en pièce jointe</addAttachmentDescription>
-    <attachingDocuments>Selectionnez des documents</attachingDocuments>
-    <attachingDocumentsDescription>Les documents que vous cochez seront attachés au message</attachingDocumentsDescription>
+    <addAttachmentDescription>Attacher des documents de l'intranet à ce message</addAttachmentDescription>
+    <attachingDocuments>Selectionnez les documents</attachingDocuments>
+    <attachingDocumentsDescription>Les documents sélectionnés seront attachés au message</attachingDocumentsDescription>
     <documentSource>Source</documentSource>
     <documentSearch>Rechercher</documentSearch>
     <documentExplorer>Parcourir</documentExplorer>
     <searchName>Rechercher par nom</searchName>
     <currentFolder>Dossier courant</currentFolder>
-    <attach>Joindre</attach>
+    <attach>Attacher</attach>
     <addingAttachment>Attachement en cours...</addingAttachment>
-    <addedAttachment>Les documents ont été attachés en pièce jointe</addedAttachment>
+    <addedAttachment>Les documents ont été attachés au message</addedAttachment>
     <addedPartiallyAttachment>Certains documents n'ont pas pu être attachés au message. Voir les détails sous chaque fichier</addedPartiallyAttachment>
 
     <!-- Convert To Status -->
-    <convertToStatusDescription>Ce message sera converti en activité sur le flux. Par défaut, il sera partagé sur votre flux d'activité personnel. Choisissez un espace cible pour publier une activité dans son flux.</convertToStatusDescription>
+    <convertToStatusDescription>Ce message sera envoyé dans votre flux d'activité personnel ou bien dans celui de l'espace sélectionné.</convertToStatusDescription>
     <activityTargetSpaceDescription>Sélectionnez un espace pour y poster votre message</activityTargetSpaceDescription>
     <activityTitle>Titre</activityTitle>
     <activityTitleDescription>Ce sera le titre de votre activité</activityTitleDescription>
-    <activityText>Corps du message</activityText>
+    <activityText>Contenu du message</activityText>
     <activityTextDescription>Ceci s'affichera dans le corps de l'activité</activityTextDescription>
-    <convertingToStatus>Conversion du message en cours..</convertingToStatus>
-    <convertedToStatus>L'activité a été publiée avec succès</convertedToStatus>
+    <convertingToStatus>Conversion du message en cours...</convertingToStatus>
+    <convertedToStatus>L'activité a été publiée avec succès.</convertedToStatus>
     <convertToStatusError>Erreur à la conversion du message en activité</convertToStatusError>
-    <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux </convertedToUserActivity>
-    <convertedToSpaceActivity>L'activité a été publiée avec succès dans {SPACE_NAME}</convertedToSpaceActivity>
-    <openActivity>Afficher l'activity</openActivity>
-    
+    <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux.</convertedToUserActivity>
+    <convertedToSpaceActivity>L'activité a été publiée avec succès dans {SPACE_NAME}.</convertedToSpaceActivity>
+    <openActivity>Afficher l'activité</openActivity>
+
     <!-- Convert To Wiki -->
-    <convertToWikiDescription>Ce message peut être converti en page wiki. Par défaut, ce sera une page dans le wiki intranet. Choisissez un espace pour y générer la page wiki.</convertToWikiDescription>
+    <convertToWikiDescription>Ce message sera converti en page wiki de l'intranet ou de l'epace sélectionné.</convertToWikiDescription>
     <wikiPageTitle>Titre</wikiPageTitle>
     <wikiPageTitleDescription>Ceci sera le titre de votre page wiki</wikiPageTitleDescription>
     <wikiPageText>Contenu de la page</wikiPageText>
     <wikiPageTextDescription>Ce texte sera le contenu de votre page wiki.</wikiPageTextDescription>
     <wikiTargetSpaceDescription>Sélectionnez un espace pour convertir ce message en une page de son wiki.</wikiTargetSpaceDescription>
     <convertingToWiki>Conversion du message en wiki...</convertingToWiki>
-    <convertedToUserWiki>La page a été créée dans le wiki intranet</convertedToUserWiki>
-    <convertedToSpaceWiki>La page a été créée dans le wiki {SPACE_NAME}</convertedToSpaceWiki>
-    <openWikiPage>Ouvrir la page wiki</openWikiPage>  
-    
+    <convertedToUserWiki>La page a été créée dans le wiki intranet.</convertedToUserWiki>
+    <convertedToSpaceWiki>La page a été créée dans le wiki {SPACE_NAME}.</convertedToSpaceWiki>
+    <openWikiPage>Ouvrir la page wiki</openWikiPage>
+
     <!-- Convert To Forum (TODO translate it) -->
-    <convertToForumDescription>Ce message peut être converti en discussion de forum. Vous devez choisir un espace cible</convertToForumDescription>
+    <convertToForumDescription>Ce message sera converti en discussion dans le forum de l'espace cible.</convertToForumDescription>
     <forumTopicName>Titre de la discussion</forumTopicName>
     <forumTopicNameDescription>Ceci sera le titre de votre discussion de forum</forumTopicNameDescription>
-    <forumTopicText>Message</forumTopicText>
+    <forumTopicText>Contenu</forumTopicText>
     <forumTopicTextDescription>Ceci sera le contenu du premier message de la discussion</forumTopicTextDescription>
     <forumTargetSpaceDescription>Votre message sera converti en discussion dans le forum de cet espace.</forumTargetSpaceDescription>
     <convertingToForum>Conversion du message en discussion...</convertingToForum>
-    <convertedToUserForum>La discussion a été démarrée avec succès dans le forum de l'intranet</convertedToUserForum>
-    <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}</convertedToSpaceForum>
+    <convertedToUserForum>La discussion a été démarrée avec succès dans le forum de l'intranet.</convertedToUserForum>
+    <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}.</convertedToSpaceForum>
     <openForumTopic>Ouvrir la discussion</openForumTopic>
-    
+
     <!-- Post A Status (TODO translate it) -->
-    <postStatusDescription>Post a status in the activity stream. By default, it will go as a status update in your activity stream. Choosing a target space will create an activity in the space's stream.</postStatusDescription>
-    <activityMessage>Status update</activityMessage>
-    <activityMessagePlaceholder>Type your message here</activityMessagePlaceholder>
-    <activityMessageDescription>This will be displayed as your status in the activity stream</activityMessageDescription>
-    <postedToUserActivity>Your activity was successfully posted in your personal activity stream</postedToUserActivity>
-    <postedToSpaceActivity>Your activity was successfully posted in {SPACE_NAME}</postedToSpaceActivity>
-    <post>Share</post>
-    <postingStatus>Posting your status update...</postingStatus>
-    
+    <postStatusDescription>Envoyer un message dans votre flux d'activité ou dans l'espace cible.</postStatusDescription>
+    <activityMessage>Message</activityMessage>
+    <activityMessagePlaceholder>Entrez votre message ici</activityMessagePlaceholder>
+    <activityMessageDescription>Ceci s'affichera dans le flux d'activité</activityMessageDescription>
+    <postedToUserActivity>Votre message a été partagé dans votre flux d'activité personnel.</postedToUserActivity>
+    <postedToSpaceActivity>Votre message a été partagé dans le flux de l'espace {SPACE_NAME}.</postedToSpaceActivity>
+    <post>Partager</post>
+    <postingStatus>Envoi du message...</postingStatus>
+
     <!-- Start Discussion (Forum topic) (TODO translate it) -->
-    <startDiscussionDescription>Start a new discussion in a forum of a collaborative space.</startDiscussionDescription>
-    <forumTopicNamePlaceholder>Your topic name</forumTopicNamePlaceholder>
-    <forumTopicTextPlaceholder>Type your topic message here</forumTopicTextPlaceholder>
-    <forumNewTopicTargetSpaceDescription>Your discussion will be started in the space forum.</forumNewTopicTargetSpaceDescription>
-    <start>Start</start>
-    <creatingTopic>Creating discussion...</creatingTopic>
-    <createdTopic>Discussion created</createdTopic>
-    <startedTopicInUserForum>The discussion was successfully created in intranet forum</startedTopicInUserForum>
-    <startedTopicInSpaceForum>The discussion was successfully created in {SPACE_NAME}</startedTopicInSpaceForum>
-    
+    <startDiscussionDescription>Démarrez une nouvelle discussion dans le forum d'un espace.</startDiscussionDescription>
+    <forumTopicNamePlaceholder>Titre de la discussion</forumTopicNamePlaceholder>
+    <forumTopicTextPlaceholder>Entrez le contenu du message</forumTopicTextPlaceholder>
+    <forumNewTopicTargetSpaceDescription>Votre discussion sera lancée dans le forum de cet espace.</forumNewTopicTargetSpaceDescription>
+    <start>Démarrer</start>
+    <creatingTopic>Création de la discussion...</creatingTopic>
+    <createdTopic>Discussion créée</createdTopic>
+    <startedTopicInUserForum>La discussion a été créée avec succès dans le forum de l'intranet.</startedTopicInUserForum>
+    <startedTopicInSpaceForum>La discussion a étté créée avec succès dans l'espace {SPACE_NAME}.</startedTopicInSpaceForum>
+
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
       <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
@@ -153,7 +153,7 @@
       <sourcePathNotFound>Source ou chemin introuvable.</sourcePathNotFound>
       <addingAttachmentError>Erreur à l'ajout de la pièce jointe.</addingAttachmentError>
     </messages>
-    
+
     <activity>
       <from>De la part de</from>
       <on>le</on>
