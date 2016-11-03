@@ -33,7 +33,7 @@
 
     <cancel>Annuler</cancel>
     <convert>Convertir</convert>
-    <targetSpaceOptional>Espace cible (optionnel)</targetSpaceOptional>
+    <!-- TODO --><targetSpaceMandatory>Espace cible</targetSpaceMandatory>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Mes Documents</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
@@ -136,6 +136,7 @@
 
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
+      <!-- TODO --><fileHasNoPath>Erreur à la sélection du fichier - chemin introuvable.</fileHasNoPath>
       <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
       <nothingSavedTryAgain>Rien n'a été enregistré. Veuillez resoumettre le formulaire ou contactez votre administrateur.</nothingSavedTryAgain>
       <gettingTokenError>Erreur à la récupération du jeton d'accès sur le serveur email.</gettingTokenError>
