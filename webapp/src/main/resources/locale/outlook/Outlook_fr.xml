@@ -34,6 +34,7 @@
     <cancel>Annuler</cancel>
     <convert>Convertir</convert>
     <targetSpaceOptional>Espace cible (optionel)</targetSpaceOptional>
+    <!-- TODO --><targetSpaceMandatory>Target space</targetSpaceMandatory>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Documents Personels</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
