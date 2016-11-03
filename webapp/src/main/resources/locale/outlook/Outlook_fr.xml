@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bundle>
   <Outlook>
+    <!-- TODO -->
+    <label>
+      <hasSavedFile>has saved file:</hasSavedFile>
+      <hasSavedNFiles>has saved {N} files:</hasSavedNFiles>
+    </label>
+  
     <command>
       <home>Accueil</home>
       <saveAttachment>Enregistrer les pièces jointes</saveAttachment>
