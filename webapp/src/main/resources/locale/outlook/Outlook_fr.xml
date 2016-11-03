@@ -33,7 +33,7 @@
 
     <cancel>Annuler</cancel>
     <convert>Convertir</convert>
-    <!-- TODO --><targetSpaceMandatory>Espace cible</targetSpaceMandatory>
+    <targetSpaceMandatory>Espace cible</targetSpaceMandatory>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Mes Documents</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
@@ -101,7 +101,7 @@
     <convertedToSpaceWiki>La page a été créée dans le wiki {SPACE_NAME}.</convertedToSpaceWiki>
     <openWikiPage>Ouvrir la page wiki</openWikiPage>
 
-    <!-- Convert To Forum (TODO translate it) -->
+    <!-- Convert To Forum  -->
     <convertToForumDescription>Ce message sera converti en discussion dans le forum de l'espace cible.</convertToForumDescription>
     <forumTopicName>Titre de la discussion</forumTopicName>
     <forumTopicNameDescription>Ceci sera le titre de votre discussion de forum</forumTopicNameDescription>
@@ -113,7 +113,7 @@
     <convertedToSpaceForum>La discussion a été démarrée avec succès dans le forum {SPACE_NAME}.</convertedToSpaceForum>
     <openForumTopic>Ouvrir la discussion</openForumTopic>
 
-    <!-- Post A Status (TODO translate it) -->
+    <!-- Post A Status  -->
     <postStatusDescription>Envoyer un message dans votre flux d'activité ou dans l'espace cible.</postStatusDescription>
     <activityMessage>Message</activityMessage>
     <activityMessagePlaceholder>Entrez votre message ici</activityMessagePlaceholder>
@@ -123,7 +123,7 @@
     <post>Partager</post>
     <postingStatus>Envoi du message...</postingStatus>
 
-    <!-- Start Discussion (Forum topic) (TODO translate it) -->
+    <!-- Start Discussion (Forum topic)  -->
     <startDiscussionDescription>Démarrez une nouvelle discussion dans le forum d'un espace.</startDiscussionDescription>
     <forumTopicNamePlaceholder>Titre de la discussion</forumTopicNamePlaceholder>
     <forumTopicTextPlaceholder>Entrez le contenu du message</forumTopicTextPlaceholder>
@@ -136,20 +136,20 @@
 
     <messages>
       <folderHasNoPath>Erreur à la sélection du dossier - chemin introuvable. Essayez de recharger la page.</folderHasNoPath>
-      <!-- TODO --><fileHasNoPath>Erreur à la sélection du fichier - chemin introuvable.</fileHasNoPath>
+      <fileHasNoPath>Erreur à la sélection du fichier - chemin introuvable.</fileHasNoPath>
       <spacePathNotFound>Espace ou chemin introuvable</spacePathNotFound>
       <nothingSavedTryAgain>Rien n'a été enregistré. Veuillez resoumettre le formulaire ou contactez votre administrateur.</nothingSavedTryAgain>
       <gettingTokenError>Erreur à la récupération du jeton d'accès sur le serveur email.</gettingTokenError>
       <attachmentNotSelected>Aucune pièce jointe sélectionnée. Cochez-en au moins une et resoumettez le formulaire à nouveau.</attachmentNotSelected>
       <folderNameRequired>Nom du dossier requis</folderNameRequired>
-      <menuNameUndefined>nom du menu indéfini. Veuillez contacter votre administrateur.</menuNameUndefined>
+      <menuNameUndefined>Nom du menu indéfini. Veuillez contacter votre administrateur.</menuNameUndefined>
       <youDontHaveSpaces>Vous n'êtes membre d'aucun espace.</youDontHaveSpaces>
       <joinSpaces>You pouvez rejoindre des espaces</joinSpaces>
       <atThisPage>sur cette page</atThisPage>
       <messageItemReadError>Erreur à la lecture du message.</messageItemReadError>
       <convertToStatusError>Erreur à la conversion du message en activité.</convertToStatusError>
       <gettingSubjectError>Erreur à la récupération de l'objet du message.</gettingSubjectError>
-      <messageIdNotFound>Impossible de trouver l'UD du message courant</messageIdNotFound>
+      <messageIdNotFound>Impossible de trouver l'ID du message courant</messageIdNotFound>
       <savingMessageError>Erreur à l'enregistrement du message (en brouillon).</savingMessageError>
       <sourcePathNotFound>Source ou chemin introuvable.</sourcePathNotFound>
       <addingAttachmentError>Erreur à l'ajout de la pièce jointe.</addingAttachmentError>
