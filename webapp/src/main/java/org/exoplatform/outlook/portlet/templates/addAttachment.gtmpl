@@ -40,11 +40,15 @@
 				<div class="documentSelectorTab documentSearch">
 					<form role="form">
 						<div class="ms-SearchBox">
-						  <input class="ms-SearchBox-field">
-						  <label class="ms-SearchBox-label"><i class="ms-SearchBox-icon ms-Icon ms-Icon--search"></i>&{Outlook.searchName}</label>
-						  <button class="ms-SearchBox-closeButton"><i class="ms-Icon ms-Icon--x"></i></button>
+							<input class="ms-SearchBox-field">
+							<label class="ms-SearchBox-label">
+								<i class="ms-SearchBox-icon ms-Icon ms-Icon--search"></i>&{Outlook.searchName}
+							</label>
+							<button class="ms-SearchBox-closeButton">
+								<i class="ms-Icon ms-Icon--x"></i>
+							</button>
 						</div>
-					</form>	
+					</form>
 					<div class="documentSelectorContent ms-borderColor-themeTertiary">
 						<ul class="ms-List documentSearchResults">
 						</ul>
@@ -75,7 +79,7 @@
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		</div>
 	</div>
-	
+
 	<div id="attach">
 		<form role="form">
 			<div class="ms-Grid-row">
@@ -101,7 +105,7 @@
 			</div>
 		</form>
 	</div>
-	
+
 	<div id="attaching" class="ms-Grid-row centered" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		<div class="ms-Grid-col ms-u-sm8 text-centered">

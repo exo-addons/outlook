@@ -73,7 +73,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
@@ -89,7 +88,6 @@ import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
-import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -794,15 +792,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected final SessionProviderService                      sessionProviders;
 
-  protected final IdentityRegistry                            identityRegistry;
-
   protected final NodeFinder                                  finder;
 
   protected final NodeHierarchyCreator                        hierarchyCreator;
 
   protected final OrganizationService                         organization;
-
-  protected final CookieTokenService                          tokenService;
 
   protected final ManageDriveService                          driveService;
 
@@ -927,11 +921,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * 
    * @param jcrService {@link RepositoryService}
    * @param sessionProviders {@link SessionProviderService}
-   * @param identityRegistry {@link IdentityRegistry}
    * @param hierarchyCreator {@link NodeHierarchyCreator}
    * @param finder {@link NodeFinder}
    * @param organization {@link OrganizationService}
-   * @param tokenService {@link CookieTokenService}
    * @param driveService {@link ManageDriveService}
    * @param listenerService {@link ListenerService}
    * @param wikiService {@link WikiService}
@@ -945,16 +937,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   public OutlookServiceImpl(RepositoryService jcrService,
                             SessionProviderService sessionProviders,
-                            IdentityRegistry identityRegistry,
                             NodeHierarchyCreator hierarchyCreator,
                             NodeFinder finder,
                             OrganizationService organization,
-                            CookieTokenService tokenService,
-                            ManageDriveService driveService,
                             ListenerService listenerService,
+                            ManageDriveService driveService,
+                            TrashService trashService,
                             WikiService wikiService,
                             ForumService forumService,
-                            TrashService trashService,
                             RenderingService wikiRenderingService,
                             ResourceBundleService resourceBundleService,
                             InitParams params)
@@ -962,11 +952,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     this.jcrService = jcrService;
     this.sessionProviders = sessionProviders;
-    this.identityRegistry = identityRegistry;
     this.hierarchyCreator = hierarchyCreator;
     this.finder = finder;
     this.organization = organization;
-    this.tokenService = tokenService;
     this.driveService = driveService;
     this.listenerService = listenerService;
     this.wikiService = wikiService;
@@ -1335,10 +1323,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return UUID.nameUUIDFromBytes(s.toString().getBytes());
   }
 
-  protected String nodePath(String workspace, String path) {
-    return new StringBuilder().append(workspace).append("/").append(path).toString();
-  }
-
   protected org.exoplatform.services.organization.User getExoUser(String userName) throws OutlookException {
     try {
       return organization.getUserHandler().findUserByName(userName);
@@ -1641,7 +1625,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     try {
       node.setWebdavUrl(org.exoplatform.wcm.webui.Utils.getWebdavURL(node.getNode(), false, true));
     } catch (Exception e) {
-      throw new OutlookException("Error generating WebDav URL for node " + node.getPath(), e);
+      throw new OutlookException("Error generating WebDav URL for node " + node.getFullPath(), e);
     }
   }
 

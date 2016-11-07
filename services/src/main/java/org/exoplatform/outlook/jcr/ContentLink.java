@@ -21,21 +21,17 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityRegistry;
-import org.exoplatform.social.core.storage.cache.model.data.IdentityData;
-import org.exoplatform.social.core.storage.cache.model.key.IdentityKey;
 
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -189,8 +185,8 @@ public class ContentLink {
     this(jcrService, sessionProviders, finder, organization, identityRegistry, cacheService, null);
   }
 
-  public String create(String userId, String nodePath) throws Exception {
-    Node node = getNode(userId, nodePath);
+  public String create(String userId, String workspace, String nodePath) throws Exception {
+    Node node = node(userId, workspace, nodePath);
     return create(userId, node);
   }
 
@@ -269,19 +265,13 @@ public class ContentLink {
     return null;
   }
 
-  public String getNodePath(Node node) throws Exception {
-    String workspace = node.getSession().getWorkspace().getName();
-    String path = node.getPath();
-    return nodePath(workspace, path);
-  }
-
-  public Node getNode(String userId, String nodePath) throws Exception {
+  protected Node getNode(String userId, String nodePath) throws Exception {
     String workspace, path;
     if (nodePath.startsWith("/")) {
       workspace = jcrService.getCurrentRepository().getConfiguration().getDefaultWorkspaceName();
       path = nodePath;
     } else {
-      // TODO not used, this code also exists in OutlookServiceImpl.node()
+      // used when path given from portlet/REST request where it prefixed with a workspace name
       int i = nodePath.indexOf('/');
       if (i > 0) {
         workspace = nodePath.substring(0, i);
@@ -316,10 +306,10 @@ public class ContentLink {
   protected Node node(String userId, String workspace, String path) throws Exception {
     // validate user exists
     User user = organization.getUserHandler().findUserByName(userId);
-    String nodePath = nodePath(workspace, path);
+    String fullPath = HierarchyNode.fullPath(workspace, path);
     if (user == null) {
-      LOG.warn("Attempt to access node (" + nodePath + ") under not existing user " + userId);
-      throw new BadParameterException("User not found for " + nodePath);
+      LOG.warn("Attempt to access node (" + fullPath + ") under not existing user " + userId);
+      throw new BadParameterException("User not found for " + fullPath);
     }
 
     // use user session here:
@@ -337,7 +327,7 @@ public class ContentLink {
         SessionProvider userProvider = new SessionProvider(state);
         sessionProviders.setSessionProvider(null, userProvider);
       } else {
-        LOG.warn("User identity not found " + userId + " for content of " + nodePath);
+        LOG.warn("User identity not found " + userId + " for content of " + fullPath);
         throw new OutlookException("User identity not found " + userId);
       }
 
@@ -356,10 +346,6 @@ public class ContentLink {
       ConversationState.setCurrent(contextState);
       sessionProviders.setSessionProvider(null, contextProvider);
     }
-  }
-
-  protected String nodePath(String workspace, String path) {
-    return new StringBuilder().append(workspace).append("/").append(path).toString();
   }
 
   protected UUID generateId(String workspace, String path) {

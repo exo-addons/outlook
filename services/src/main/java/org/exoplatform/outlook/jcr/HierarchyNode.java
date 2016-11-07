@@ -68,6 +68,8 @@ public abstract class HierarchyNode {
   protected final String   path;
 
   protected final String   name;
+  
+  protected final String   fullPath;
 
   protected final String   title;
 
@@ -91,10 +93,11 @@ public abstract class HierarchyNode {
    * @param parentPath {@link String}
    * @param node {@link Node}
    * @throws RepositoryException storage error
-   * @throws BadParameterException  when parent path is {@code null}
+   * @throws BadParameterException when parent path is {@code null}
    */
   protected HierarchyNode(String parentPath, Node node) throws RepositoryException, BadParameterException {
     this.path = node.getPath();
+    this.fullPath = fullPath(node.getSession().getWorkspace().getName(), this.path);
     this.node = node;
     this.name = node.getName();
 
@@ -161,7 +164,7 @@ public abstract class HierarchyNode {
           // ignore here
         }
       }
-      return this.getPath().equals(other.getPath());
+      return this.getFullPath().equals(other.getFullPath());
     }
     return super.equals(obj);
   }
@@ -199,6 +202,13 @@ public abstract class HierarchyNode {
    */
   public Node getNode() {
     return node;
+  }
+
+  /**
+   * @return the full path
+   */
+  public String getFullPath() {
+    return fullPath;
   }
 
   /**
@@ -284,6 +294,10 @@ public abstract class HierarchyNode {
       reversedSubpath.add(PATH_SEPARATOR);
     }
     return pathLabel.toString();
+  }
+
+  public static String fullPath(String workspace, String path) {
+    return new StringBuilder().append(workspace).append(path).toString();
   }
 
   public abstract boolean isFolder();

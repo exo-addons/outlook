@@ -1,6 +1,6 @@
 #{param name=files/}
 <% for (c in files) { %>
-<li class="ms-ListItem selectableItem" data-path="${c.path}" data-pathlabel="${c.pathLabel}" data-portalurl="${c.url}"
+<li class="ms-ListItem selectableItem" data-path="${c.fullPath}" data-pathlabel="${c.pathLabel}" data-portalurl="${c.url}"
 	data-downloadurl="${c.webdavUrl}" data-isfolder="${c.isFolder()}">
 	<div class="ms-ListItem-primaryText">${c.title}</div>
 	<div class='ms-ListItem-selectionTarget js-toggleSelection'></div>

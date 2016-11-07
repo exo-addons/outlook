@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2016 eXo Platform SAS.
+    
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+    
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <!-- XXX it is a crap we need to do as observed in wiki-jpa test config -->
+  <component>
+    <type>org.exoplatform.wiki.jpa.mock.DummyDependantComponent</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.naming.InitialContextInitializer</key>
+    <type>org.exoplatform.services.naming.InitialContextInitializer</type>
+    <init-params>
+      <properties-param>
+        <name>default-properties</name>
+        <description>Default initial context properties</description>
+        <property name="java.naming.factory.initial" value="org.exoplatform.services.naming.SimpleContextFactory" />
+      </properties-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.outlook.jcr.ContentLink</key>
+    <type>org.exoplatform.outlook.jcr.ContentLink</type>
+    <init-params>
+      <properties-param>
+        <name>link-configuration</name>
+        <property name="server-host" value="" />
+        <property name="server-schema" value="http" />
+      </properties-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.outlook.jcr.NodeFinder</key>
+    <type>org.exoplatform.outlook.jcr.JCRNodeFinder</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.idgenerator.IDGeneratorService</key>
+    <type>org.exoplatform.services.idgenerator.impl.IDGeneratorServiceImpl</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.services.security.IdentityRegistry</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.document.DocumentReaderService</key>
+    <type>org.exoplatform.services.document.impl.DocumentReaderServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.services.listener.ListenerService</key>
+    <type>org.exoplatform.services.listener.ListenerService</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.web.security.codec.CodecInitializer</type>
+    <init-params />
+  </component>
+
+  <!-- component>
+    <key>org.exoplatform.web.security.security.CookieTokenService</key>
+    <type>org.exoplatform.web.security.security.CookieTokenService</type>
+    <init-params>
+      <values-param>
+        <name>service.configuration</name>
+        <value>jcr-token</value>
+        <value>7</value>
+        <value>DAY</value>
+        <value>autologin</value>
+      </values-param>
+    </init-params>
+  </component -->
+
+  <component>
+    <type>org.exoplatform.services.cms.impl.DMSConfiguration</type>
+  </component>
+  
+  <!-- component>
+    <key>org.exoplatform.wcm.ext.component.document.service.IShareDocumentService</key>
+    <type>org.exoplatform.wcm.ext.component.document.service.ShareDocumentService</type>
+  </component -->
+
+  <component>
+    <key>org.exoplatform.services.cms.link.LinkManager</key>
+    <type>org.exoplatform.services.cms.link.impl.LinkManagerImpl</type>
+  </component>
+
+  <!-- component>
+    <key>org.exoplatform.wiki.rendering.RenderingService</key>
+    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
+  </component>
+  <component>
+    <key>org.exoplatform.wiki.service.WikiService</key>
+    <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>wiki.editPage.livingTime</name>
+        <value>${wiki.editPage.livingTime:1800000}</value>
+      </value-param>
+      <values-param>
+        <name>xwiki/2.0</name>
+        <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>
+        <value>jar:/wikisyntax/help/xWiki2.0_Full.txt</value>
+      </values-param>
+      <properties-param>
+        <name>preferences</name>
+        <property name="defaultSyntax" value="xwiki/2.0" />
+      </properties-param>
+    </init-params>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.bench.WikiDataInjector</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.portal.config.UserACL</key>
+    <type>org.exoplatform.portal.config.UserACL</type>
+    <init-params>
+      <value-param>
+        <name>super.user</name>
+        <value>root</value>
+      </value-param>
+      <value-param>
+        <name>guests.group</name>
+        <value>/platform/guests</value>
+      </value-param>
+      <value-param>
+        <name>navigation.creator.membership.type</name>
+        <value>manager</value>
+      </value-param>
+    </init-params>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.DataStorage</key>
+    <type>org.exoplatform.wiki.jpa.JPADataStorage</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.WikiDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.DraftPageDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.DraftPageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageVersionDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageMoveDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.TemplateDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.EmotionIconDAO</type>
+  </component -->
+
+  <!-- component>
+    <key>org.exoplatform.commons.api.persistence.DataInitializer</key>
+    <type>org.exoplatform.commons.persistence.impl.LiquibaseDataInitializer</type>
+    <init-params>
+      <value-param>
+        <name>liquibase.datasource</name>
+        <value>java:/comp/env/exo-jpa_portal</value>
+      </value-param>
+      <value-param>
+        <name>liquibase.contexts</name>
+        <value>production</value>
+      </value-param>
+    </init-params>
+  </component -->
+
+  <!-- component>
+    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
+  </component -->
+
+  <!-- component>
+    <key>org.exoplatform.services.jdbc.DataSourceProvider</key>
+    <type>org.exoplatform.services.jdbc.impl.DataSourceProviderImpl</type>
+  </component -->
+
+  <!-- component>
+    <key>org.exoplatform.addons.es.index.IndexingService</key>
+    <type>org.exoplatform.addons.es.index.impl.QueueIndexingService</type>
+  </component>
+  <component>
+    <key>org.exoplatform.addons.es.index.IndexingOperationProcessor</key>
+    <type>org.exoplatform.addons.es.index.impl.ElasticIndexingOperationProcessor</type>
+  </component>
+  <component>
+    <key>org.exoplatform.addons.es.dao.IndexingOperationDAO</key>
+    <type>org.exoplatform.addons.es.dao.impl.IndexingOperationDAOImpl</type>
+  </component>
+  <component>
+    <type>org.exoplatform.addons.es.client.ElasticIndexingClient</type>
+  </component>
+  <component>
+    <type>org.exoplatform.addons.es.client.ElasticSearchingClient</type>
+  </component>
+  <component>
+    <type>org.exoplatform.addons.es.client.ElasticIndexingAuditTrail</type>
+  </component>
+  <component>
+    <type>org.exoplatform.addons.es.client.ElasticContentRequestBuilder</type>
+  </component -->
+
+  <component>
+    <key>org.exoplatform.services.cache.CacheService</key>
+    <jmx-name>cache:type=CacheService</jmx-name>
+    <type>org.exoplatform.services.cache.impl.CacheServiceImpl</type>
+    <init-params>
+      <object-param>
+        <name>cache.config.default</name>
+        <object type="org.exoplatform.services.cache.ExoCacheConfig">
+          <field name="name">
+            <string>default</string>
+          </field>
+          <field name="maxSize">
+            <int>30000</int>
+          </field>
+          <field name="liveTime">
+            <long>60000</long>
+          </field>
+          <field name="distributed">
+            <boolean>false</boolean>
+          </field>
+          <field name="implementation">
+            <string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string>
+          </field>
+        </object>
+      </object-param>
+    </init-params>
+  </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.cache.CacheService</target-component>
+    <component-plugin>
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description></description>
+      <init-params>
+        <object-param>
+          <name>OutlookContentLinkCache</name>
+          <description></description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name">
+              <string>OutlookContentLinkCache</string>
+            </field>
+            <field name="maxSize">
+              <int>300</int>
+            </field>
+            <field name="liveTime">
+              <long>5</long>
+            </field>
+            <field name="implementation">
+              <string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string>
+            </field>
+          </object>
+        </object-param>
+        <object-param profiles="cluster">
+          <name>OutlookContentLinkCache</name>
+          <description>The JBoss Cache configuration for the IdentityCache</description>
+          <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
+            <field name="name">
+              <string>OutlookContentLinkCache</string>
+            </field>
+            <field name="strategy">
+              <string>LIRS</string>
+            </field>
+            <field name="maxEntries">
+              <int>300</int>
+            </field>
+            <field name="lifespan">
+              <long>5</long>
+            </field>
+            <field name="replicated">
+              <boolean>true</boolean>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- Bind datasource -->
+  <!-- external-component-plugins>
+    <target-component>org.exoplatform.services.naming.InitialContextInitializer</target-component>
+    <component-plugin>
+      <name>bind.datasource</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.naming.BindReferencePlugin</type>
+      <init-params>
+        <value-param>
+          <name>bind-name</name>
+          <value>java:/comp/env/exo-jpa_portal</value>
+        </value-param>
+        <value-param>
+          <name>class-name</name>
+          <value>javax.sql.DataSource</value>
+        </value-param>
+        <value-param>
+          <name>factory</name>
+          <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+        </value-param>
+        <properties-param>
+          <name>ref-addresses</name>
+          <description>ref-addresses</description>
+          <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+          <property name="url" value="jdbc:hsqldb:mem:db1" />
+          <property name="username" value="sa" />
+          <property name="password" value="" />
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins -->
+
+  <!-- Data Initialization for ES -->
+  <!-- external-component-plugins>
+    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
+    <component-plugin>
+      <name>WikiChangeLogsPlugin</name>
+      <set-method>addChangeLogsPlugin</set-method>
+      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
+      <init-params>
+        <values-param>
+          <name>changelogs</name>
+          <description>Change logs of wiki</description>
+          <value>db/changelog/exo-search.db.changelog-1.0.0.xml</value>
+          <value>db/changelog/file.db.changelog-1.0.0.xml</value>
+          <value>db/changelog/wiki.db.changelog-1.0.0.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins -->
+  
+  <import>classpath:/conf/portal/test-jcr-configuration.xml</import>
+  <import>classpath:/conf/portal/test-organization-configuration.xml</import>
+
+  <!-- import>jar:conf/portal/files-configuration.xml</import -->
+  
+  <remove-configuration>org.exoplatform.commons.api.persistence.DataInitializer</remove-configuration>
+  <remove-configuration>org.exoplatform.wcm.ext.component.document.service.ContentViewerRESTService</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.service.impl.SessionManager</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.mow.core.api.MOWService</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.service.WikiService</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.service.WikiRestService</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.rendering.render.xwiki.image.BaseImageWriterImpl</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.service.DataStorage</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.service.image.ResizeImageService</remove-configuration>
+  <remove-configuration>org.exoplatform.wiki.resolver.PageResolver</remove-configuration>
+
+</configuration>

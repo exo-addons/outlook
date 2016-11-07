@@ -558,13 +558,13 @@ public class Outlook {
       Folder userFolder = outlook.getUserDocuments().getRootFolder();
       sources.add(new AttachmentSource(SOURCE_ID_PERSONAL,
                                        i18n.getString("Outlook.personalDocuments"),
-                                       userFolder.getPath(),
+                                       userFolder.getFullPath(),
                                        userFolder.getPathLabel()));
       for (OutlookSpace space : outlook.getUserSpaces()) {
         Folder spaceFolder = space.getRootFolder();
         sources.add(new AttachmentSource(space.getGroupId(),
                                          space.getTitle(),
-                                         spaceFolder.getPath(),
+                                         spaceFolder.getFullPath(),
                                          spaceFolder.getPathLabel()));
       }
       return addAttachment.with().sources(sources).ok();

@@ -1,8 +1,8 @@
 #{param name=folder/}
-<div class="parentFolder" data-path="${folder.path}" data-pathlabel="${folder.pathLabel}" data-portalurl="${folder.url}"
+<div class="parentFolder" data-path="${folder.fullPath}" data-pathlabel="${folder.pathLabel}" data-portalurl="${folder.url}"
 	style="display: none;"></div>
 <% for (c in folder.children) {%>
-<li class="ms-ListItem selectableItem ${c.isFolder() ? 'isFolder' : ''}" data-path="${c.path}" data-pathlabel="${c.pathLabel}" data-portalurl="${c.url}"
+<li class="ms-ListItem selectableItem ${c.isFolder() ? 'isFolder' : ''}" data-path="${c.fullPath}" data-pathlabel="${c.pathLabel}" data-portalurl="${c.url}"
 	data-downloadurl="${c.webdavUrl}" data-isfolder="${c.isFolder()}">
 	<div class="ms-ListItem-primaryText">${c.title}</div>
 	<% 

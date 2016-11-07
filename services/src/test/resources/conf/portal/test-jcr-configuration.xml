@@ -53,7 +53,7 @@
         <property name="log4j.appender.file.layout" value="org.apache.log4j.PatternLayout" />
         <property name="log4j.appender.file.layout.ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n" />
 
-        <property name="log4j.category.org.exoplatform.anaplan" value="DEBUG" />
+        <property name="log4j.category.org.exoplatform.outlook" value="DEBUG" />
 
       </properties-param>
     </init-params>
@@ -93,57 +93,6 @@
   <component>
     <key>org.exoplatform.services.jcr.RepositoryService</key>
     <type>org.exoplatform.services.jcr.impl.RepositoryServiceImpl</type>
-    <component-plugins>
-      <component-plugin>
-        <name>add.namespaces</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
-        <init-params>
-          <properties-param>
-            <name>namespaces</name>
-            <!-- property name="dc" value="http://purl.org/dc/elements/1.1/" / -->
-            <property name="jos" value="http://www.exoplatform.com/jcr-services/organization-service/1.0/" />
-            <property name="anaplan" value="http://www.exoplatform.com/jcr/anaplan/1.0/" />
-          </properties-param>
-        </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>add.nodeType</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-        <init-params>
-          <values-param>
-            <name>autoCreatedInNewRepository</name>
-            <description>Node types configuration file</description>
-            <value>jar:/conf/organization-nodetypes.xml</value>
-          </values-param>
-        </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>add.nodeType</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-        <init-params>
-          <values-param>
-            <name>autoCreatedInNewRepository</name>
-            <description>Cloud Drive node types configuration file</description>
-            <value>jar:/conf/portal/jcr/anaplan-nodetypes.xml</value>
-          </values-param>
-        </init-params>
-      </component-plugin>
-      <component-plugin>
-        <name>add.test.nodeType</name>
-        <set-method>addPlugin</set-method>
-        <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-        <init-params>
-          <values-param>
-            <name>autoCreatedInNewRepository</name>
-            <description>Cloud Drive node types configuration file</description>
-            <value>jar:/conf/portal/jcr/test-nodetypes.xml</value>
-          </values-param>
-        </init-params>
-      </component-plugin>
-    </component-plugins>
   </component>
 
   <component>
@@ -175,6 +124,60 @@
       </value-param>
     </init-params>
   </component>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.namespaces</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+      <init-params>
+        <properties-param>
+          <name>namespaces</name>
+          <property name="dc" value="http://purl.org/dc/elements/1.1/" />
+          <property name="jos" value="http://www.exoplatform.com/jcr-services/organization-service/1.0/" />
+          <property name="publication" value="http://www.exoplatform.com/jcr/publication/1.1/"/>
+          <property name="mso" value="http://www.exoplatform.com/jcr/microsoftoffice/1.0/" />
+        </properties-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file for JCR Org service</description>
+          <value>jar:/conf/organization-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Outlook node types configuration file</description>
+          <value>jar:/conf/portal/jcr/outlook-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.test.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file for tests</description>
+          <value>jar:/conf/portal/jcr/test-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
   <!-- HSQLDB Configuration -->
   <external-component-plugins>
@@ -208,4 +211,119 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator</target-component>
+    <component-plugin>
+      <name>addPaths</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.ext.hierarchy.impl.AddPathPlugin</type>    
+      <init-params>
+        <object-param>
+          <name>cms.configuration</name>
+          <description>configuration for public tag node</description>
+          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
+            <field name="workspaces">
+              <collection type="java.util.ArrayList">
+                <value><string>collaboration</string></value>                               
+              </collection>               
+            </field>
+            <field  name="jcrPaths">
+              <collection type="java.util.ArrayList">
+              <value>              	
+	              	<object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">              	 	
+	              		<field  name="alias"><string>newDocumentsTrashPath</string></field>
+	                  <field  name="path"><string>/Trash</string></field>
+                    <field name="mixinTypes">
+                      <collection type="java.util.ArrayList">
+                        <value><string>exo:hiddenable</string></value>
+                        <value><string>exo:trashFolder</string></value>
+                      </collection>
+                    </field>                      
+	                  <field name="permissions">
+			                <collection type="java.util.ArrayList">               
+			                  <value>                            
+			                    <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+			                      <field name="identity"><string>*:/platform/administrators</string></field>
+			                      <field name="read"><string>true</string></field>                
+			                      <field name="addNode"><string>true</string></field>                
+			                      <field name="setProperty"><string>true</string></field>                
+			                      <field name="remove"><string>true</string></field>                
+			                    </object>  
+			                  </value>
+			                </collection>
+			              </field>   			               
+	              	</object>
+              	</value>              		          
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>exoApplicationDataNode</string></field>
+                    <field  name="path"><string>/Application Data</string></field>
+                    <field name="mixinTypes">
+                      <collection type="java.util.ArrayList">
+                        <value><string>exo:hiddenable</string></value>
+                      </collection>
+                    </field>
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                            <field name="identity"><string>*:/platform/administrators</string></field>
+                            <field name="read"><string>true</string></field>                
+                            <field name="addNode"><string>true</string></field>                
+                            <field name="setProperty"><string>true</string></field>                
+                            <field name="remove"><string>true</string></field>                
+                          </object>  
+                        </value>
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                            <field name="identity"><string>*:/platform/users</string></field>
+                            <field name="read"><string>true</string></field>                
+                            <field name="addNode"><string>true</string></field>                
+                            <field name="setProperty"><string>true</string></field>                
+                            <field name="remove"><string>true</string></field>                
+                          </object>  
+                        </value>
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+                
+                <value>               
+                  <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$JcrPath">                 
+                    <field  name="alias"><string>exoPublicTagNode</string></field>
+                    <field  name="path"><string>/tags</string></field>
+                    <field name="permissions">
+                      <collection type="java.util.ArrayList">               
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                            <field name="identity"><string>*:/platform/administrators</string></field>
+                            <field name="read"><string>true</string></field>                
+                            <field name="addNode"><string>true</string></field>                
+                            <field name="setProperty"><string>true</string></field>                
+                            <field name="remove"><string>true</string></field>                
+                          </object>  
+                        </value>
+                        <value>                            
+                          <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig$Permission">             
+                            <field name="identity"><string>*:/platform/users</string></field>
+                            <field name="read"><string>true</string></field>                
+                            <field name="addNode"><string>true</string></field>                
+                            <field name="setProperty"><string>true</string></field>                
+                            <field name="remove"><string>true</string></field>                
+                          </object>  
+                        </value>
+                      </collection>
+                    </field>                       
+                  </object>
+                </value>
+
+              </collection>                               
+            </field>
+          </object>
+        </object-param>
+      </init-params>            
+    </component-plugin>
+  </external-component-plugins>
+    
 </configuration>

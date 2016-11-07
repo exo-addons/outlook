@@ -97,11 +97,11 @@
       <artifactId>forum-forum-service</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>org.exoplatform.forum</groupId>
       <artifactId>forum-component-bbcode</artifactId>
       <scope>provided</scope>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>org.exoplatform.integration</groupId>
       <artifactId>integ-forum-social</artifactId>
@@ -137,6 +137,21 @@
       <type>jar</type>
       <scope>test</scope>
     </dependency>
+    <!-- dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-testing</artifactId>
+      <scope>test</scope>
+    </dependency -->
+    <!-- dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-injector</artifactId>
+      <scope>test</scope>
+    </dependency -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -145,7 +160,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
+      <artifactId>mockito-core</artifactId>
       <type>jar</type>
       <scope>test</scope>
     </dependency>
@@ -220,7 +235,7 @@
             <java.security.auth.login.config>${project.build.directory}/test-classes/conf/jaas.conf</java.security.auth.login.config>
           </systemPropertyVariables>
           <includes>
-            <include>**/**/NO_Test*.java</include>
+            <include>**/**/Test*.java</include>
           </includes>
           <forkCount>0</forkCount>
         </configuration>

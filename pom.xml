@@ -54,7 +54,7 @@
     <org.jsoup.version>1.9.2</org.jsoup.version>
     <!-- for tests -->
     <junit.version>4.12</junit.version>
-    <mockito.version>1.10.19</mockito.version>
+    <org.mockito.version>2.2.11</org.mockito.version>
     <org.exoplatform.jcr-services.version>1.17.0-M08</org.exoplatform.jcr-services.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
@@ -111,8 +111,8 @@
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>${mockito.version}</version>
+        <artifactId>mockito-core</artifactId>
+        <version>${org.mockito.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
