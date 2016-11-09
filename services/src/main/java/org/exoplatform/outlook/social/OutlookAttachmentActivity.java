@@ -48,13 +48,16 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -145,8 +148,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
     String            name;
 
-    String            mimeType;
-
     ThreadLocal<Node> node = new ThreadLocal<Node>();
 
     protected Attachment(String fileUUID, String name) {
@@ -195,7 +196,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       try {
         node = node();
         if (node != null) {
-          return node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+          String mimeType = node.getNode("jcr:content").getProperty("jcr:mimeType").getString();
+          if (mimeType.equals("application/rss+xml")) {
+            // XXX it's a stuff copied from FileUIActivity.gtmpl in PLF 4.4
+            mimeType = "text/html";
+          }
+          return mimeType;
         }
       } catch (RepositoryException e) {
         LOG.error("Error getting node mime type " + node, e);
@@ -308,6 +314,8 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
           String repositoryName = repository.getConfiguration().getName();
           String workspaceName = getWorkspace();
 
+          String mimeType = getMimeType();
+
           StringBuilder link = new StringBuilder();
           // we use relative URL
           link.append('/');
@@ -336,43 +344,58 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
             return friendlyService.getFriendlyUri(link.toString());
           } else {
             String path = node.getPath();
-            int imageHeight, imageWidth;
             try {
               if (node.hasNode(NodetypeConstant.JCR_CONTENT)) {
                 node = node.getNode(NodetypeConstant.JCR_CONTENT);
               }
-              ImageReader reader = ImageIO.getImageReadersByMIMEType(mimeType).next();
+              ImageReader reader = null;
+              Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(mimeType);
               ImageInputStream iis = ImageIO.createImageInputStream(node.getProperty("jcr:data").getStream());
-              reader.setInput(iis, true);
-              imageHeight = reader.getHeight(0);
-              imageWidth = reader.getWidth(0);
-              iis.close();
-              reader.dispose();
+              try {
+                reader = readers.next();
+                reader.setInput(iis, true);
+                int imageHeight = reader.getHeight(0);
+                int imageWidth = reader.getWidth(0);
 
-              // align sizes
-              if (imageHeight > imageWidth && imageHeight > 300) {
-                imageWidth = (300 * imageWidth) / imageHeight;
-                imageHeight = 300;
-              } else if (imageWidth > imageHeight && imageWidth > 300) {
-                imageHeight = (300 * imageHeight) / imageWidth;
-                imageWidth = 300;
-              } else if (imageWidth == imageHeight && imageHeight > 300) {
-                imageWidth = imageHeight = 300;
+                // align sizes
+                final int defaultDimension = 300;
+                if (imageHeight > imageWidth && imageHeight > defaultDimension) {
+                  imageWidth = (defaultDimension * imageWidth) / imageHeight;
+                  imageHeight = defaultDimension;
+                } else if (imageWidth > imageHeight && imageWidth > defaultDimension) {
+                  imageHeight = (defaultDimension * imageHeight) / imageWidth;
+                  imageWidth = defaultDimension;
+                } else if (imageWidth == imageHeight && imageHeight > defaultDimension) {
+                  imageWidth = imageHeight = 300;
+                }
+                
+                link.append("/thumbnailImage/custom/");
+                link.append(imageWidth);
+                link.append('x');
+                link.append(imageHeight);
+                link.append('/');
+              } catch (NoSuchElementException e) {
+                if (LOG.isDebugEnabled()) {
+                  LOG.debug("Cannot find image reader for node " + node, e);
+                }
+                link.append("/thumbnailImage/big/");
+              } finally {
+                try {
+                  iis.close();
+                } catch (IOException e) {
+                  LOG.warn("Error closing image data stream of " + node, e);
+                }
+                if (reader != null) {
+                  reader.dispose();
+                }
               }
             } catch (Exception e) {
-              LOG.warn("Cannot read node " + node + ":" + e.getMessage());
-              imageWidth = imageHeight = 300;
+              LOG.warn("Cannot read image node " + node + ":" + e.getMessage());
+              // large is 300x300 as documented in ThumbnailRESTService
+              //link.append("/thumbnailImage/custom/300x300/");
+              link.append("/thumbnailImage/large/");
             }
 
-            link.append('/');
-            link.append(portalName);
-            link.append('/');
-            link.append(restContextName);
-            link.append("/thumbnailImage/custom/");
-            link.append(imageWidth);
-            link.append('x');
-            link.append(imageHeight);
-            link.append('/');
             link.append(repositoryName);
             link.append('/');
             link.append(workspaceName);
@@ -496,6 +519,14 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return node;
     }
 
+    public String getFullPath() throws RepositoryException {
+      Node node = node();
+      StringBuilder path = new StringBuilder();
+      if (node != null) {
+        path.append(node.getSession().getWorkspace().getName()).append(":").append(node.getPath()).toString();
+      }
+      return path.toString();
+    }
   }
 
   protected List<Attachment>     files;

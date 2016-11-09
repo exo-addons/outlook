@@ -73,6 +73,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.services.wcm.core.NodetypeConstant;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
@@ -162,14 +163,6 @@ import javax.servlet.http.HttpServletRequest;
 public class OutlookServiceImpl implements OutlookService, Startable {
 
   public static final String            MAILSERVER_URL         = "mailserver-url";
-
-  protected static final String         EXO_DATETIME           = "exo:datetime";
-
-  protected static final String         EXO_MODIFY             = "exo:modify";
-
-  protected static final String         EXO_RSSENABLE          = "exo:rss-enable";
-
-  protected static final String         EXO_OWNEABLE           = "exo:owneable";
 
   protected static final String         EXO_PRIVILEGEABLE      = "exo:privilegeable";
 
@@ -1294,7 +1287,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   // *********************** implementation level ***************
 
   protected String nodeTitle(Node node) throws RepositoryException {
-    return node.getProperty("exo:title").getString();
+    return node.getProperty(NodetypeConstant.EXO_TITLE).getString();
   }
 
   protected Node nodeContent(Node node) throws RepositoryException {
@@ -1452,26 +1445,44 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
-    if (!file.hasProperty("exo:title")) {
-      file.addMixin(EXO_RSSENABLE);
+    if (!file.hasProperty(NodetypeConstant.EXO_TITLE)) {
+      file.addMixin(NodetypeConstant.EXO_RSS_ENABLE);
     }
-    file.setProperty("exo:title", title);
+    file.setProperty(NodetypeConstant.EXO_TITLE, title);
     // file.setProperty("exo:summary", summary);
     try {
-      file.setProperty("exo:name", title);
+      file.setProperty(NodetypeConstant.EXO_NAME, title);
     } catch (ConstraintViolationException | ValueFormatException e) {
       LOG.warn("Cannot set exo:name property to '" + title + "' for file " + file.getPath() + ": " + e);
     }
 
-    if (file.isNodeType(EXO_DATETIME)) {
-      file.setProperty("exo:dateCreated", fileDate);
-      file.setProperty("exo:dateModified", fileDate);
+    if (file.isNodeType(NodetypeConstant.EXO_DATETIME)) {
+      file.setProperty(NodetypeConstant.EXO_DATE_CREATED, fileDate);
+      file.setProperty(NodetypeConstant.EXO_DATE_MODIFIED, fileDate);
     }
 
-    if (file.isNodeType(EXO_MODIFY)) {
-      file.setProperty("exo:lastModifiedDate", fileDate);
-      file.setProperty("exo:lastModifier", file.getSession().getUserID());
+    if (file.isNodeType(NodetypeConstant.EXO_MODIFY)) {
+      file.setProperty(NodetypeConstant.EXO_LAST_MODIFIED_DATE, fileDate);
+      file.setProperty(NodetypeConstant.EXO_LAST_MODIFIER, file.getSession().getUserID());
     }
+
+    // Added when upgraded to PLF 4.4
+    if (!file.isNodeType(NodetypeConstant.MIX_REFERENCEABLE)) {
+      file.addMixin(NodetypeConstant.MIX_REFERENCEABLE);
+    }
+
+    if (!file.isNodeType(NodetypeConstant.MIX_COMMENTABLE)) {
+      file.addMixin(NodetypeConstant.MIX_COMMENTABLE);
+    }
+
+    if (!file.isNodeType(NodetypeConstant.MIX_VOTABLE)) {
+      file.addMixin(NodetypeConstant.MIX_VOTABLE);
+    }
+
+    if (!file.isNodeType(NodetypeConstant.MIX_I18N)) {
+      file.addMixin(NodetypeConstant.MIX_I18N);
+    }
+
     return file;
   }
 
@@ -1529,22 +1540,22 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
       }
 
-      folder.setProperty("exo:title", title);
+      folder.setProperty(NodetypeConstant.EXO_TITLE, title);
       try {
-        folder.setProperty("exo:name", title);
+        folder.setProperty(NodetypeConstant.EXO_NAME, title);
       } catch (ConstraintViolationException | ValueFormatException e) {
         LOG.warn("Cannot set exo:name property to '" + title + "' for folder " + folder.getPath() + ": " + e);
       }
 
       Calendar folderDate = Calendar.getInstance();
-      if (folder.isNodeType(EXO_DATETIME)) {
-        folder.setProperty("exo:dateCreated", folderDate);
-        folder.setProperty("exo:dateModified", folderDate);
+      if (folder.isNodeType(NodetypeConstant.EXO_DATETIME)) {
+        folder.setProperty(NodetypeConstant.EXO_DATE_CREATED, folderDate);
+        folder.setProperty(NodetypeConstant.EXO_DATE_MODIFIED, folderDate);
       }
 
-      if (folder.isNodeType(EXO_MODIFY)) {
-        folder.setProperty("exo:lastModifiedDate", folderDate);
-        folder.setProperty("exo:lastModifier", folder.getSession().getUserID());
+      if (folder.isNodeType(NodetypeConstant.EXO_MODIFY)) {
+        folder.setProperty(NodetypeConstant.EXO_LAST_MODIFIED_DATE, folderDate);
+        folder.setProperty(NodetypeConstant.EXO_LAST_MODIFIER, folder.getSession().getUserID());
       }
     }
     return folder;
