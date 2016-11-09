@@ -299,6 +299,33 @@ public abstract class HierarchyNode {
   public static String fullPath(String workspace, String path) {
     return new StringBuilder().append(workspace).append(path).toString();
   }
+  
+  public static String getPath(String fullPath) throws BadParameterException {
+    if (fullPath.startsWith("/")) {
+      return fullPath;
+    } else {
+      int i = fullPath.indexOf('/');
+      if (i > 0) {
+        //workspace = nodePath.substring(0, i);
+        return fullPath.substring(i);
+      } else {
+        throw new BadParameterException("Invalid path " + fullPath);
+      }
+    }
+  }
+  
+  public static String getWorkspace(String fullPath) throws BadParameterException {
+    if (fullPath.startsWith("/")) {
+      return null;
+    } else {
+      int i = fullPath.indexOf('/');
+      if (i > 0) {
+        return fullPath.substring(0, i);
+      } else {
+        throw new BadParameterException("Invalid path " + fullPath);
+      }
+    }
+  }
 
   public abstract boolean isFolder();
 

@@ -280,10 +280,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     public Folder getFolder(String path) throws OutlookException, RepositoryException {
       String rootPath = getPath();
       Folder folder;
-      if (rootPath.equals(path)) {
+      String folderPath = HierarchyNode.getPath(path);
+      if (rootPath.equals(folderPath)) {
         folder = this;
-      } else if (path.startsWith(rootPath)) {
-        Node node = node(path);
+      } else if (folderPath.startsWith(rootPath)) {
+        Node node = node(folderPath);
         folder = new UserFolder(node.getParent().getPath(), node);
       } else {
         throw new BadParameterException("Path does not belong to space documents: " + path);
@@ -573,10 +574,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     public Folder getFolder(String path) throws OutlookException, RepositoryException {
       Folder parent = getRootFolder();
       Folder folder;
-      if (rootPath.equals(path)) {
+      String folderPath = HierarchyNode.getPath(path);
+      if (rootPath.equals(folderPath)) {
         folder = parent;
-      } else if (path.startsWith(rootPath)) {
-        folder = new SpaceFolder(parent, node(path));
+      } else if (folderPath.startsWith(rootPath)) {
+        folder = new SpaceFolder(parent, node(folderPath));
       } else {
         throw new BadParameterException("Path does not belong to space documents: " + path);
       }
