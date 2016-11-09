@@ -90,6 +90,9 @@ Outlook add-on offers a service to generate Add-in manifests for Office365/Excha
 If it happens that your eXo Platform server will be available to Office365/Exchange under another host name, then you can point that name explicitly via `hostName` query parameter: 
 `https://your.exoplatform.server/portal/rest/outlook/manifest?hostName=acme.com`
 
+Another helpful parameter can be used `displayName`. Thansk to this you can install several eXo add-ins for Outlook into Office365/Exchange catalog.
+`https://your.exoplatform.server/portal/rest/outlook/manifest?hostName=acme.com&displayName=eXo%20Platform`
+
 Since manifest installed into Office365/Exchange service, it may be required to keep the add-in ID the same as first time it was. The generator supports use of provided GUID via `guid` query parameter: 
 `https://your.exoplatform.server/portal/rest/outlook/manifest?guid=05425534-77d2-4997-9856-52a13927452e` 
 You can save this URL for use between updates of the add-on, thus next time you'll request the generator it will return a manifest with given ID of your add-in.
