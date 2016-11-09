@@ -55,6 +55,8 @@ import javax.ws.rs.core.UriInfo;
 public class ContentService implements ResourceContainer {
 
   protected static final Log  LOG = ExoLogger.getLogger(ContentService.class);
+  
+  public static final String DEFAILT_DISPLAY_NAME = "eXo Platform";
 
   protected final ContentLink contentLink;
 
@@ -144,7 +146,8 @@ public class ContentService implements ResourceContainer {
   public Response manifest(@Context UriInfo uriInfo,
                            @Context HttpServletRequest request,
                            @QueryParam("guid") String guid,
-                           @QueryParam("hostName") String hostName) {
+                           @QueryParam("hostName") String hostName,
+                           @QueryParam("displayName") String displayName) {
     String clientHost = getClientHost(request);
 
     if (LOG.isDebugEnabled()) {
@@ -172,11 +175,18 @@ public class ContentService implements ResourceContainer {
                                         "UTF-8").useDelimiter("\\A")) {
       String mTemplate = mScanner.next();
       String manifest = mTemplate.replaceAll("\\$BASE_URL", serverURL);
+      
       if (guid == null || (guid = guid.trim()).length() == 0) {
         // Generate RFC4122 version 4 UUID (as observed in https://github.com/OfficeDev/generator-office)
         guid = UUID.randomUUID().toString();
       }
       manifest = manifest.replaceAll("\\$GUID", guid);
+      
+      if (displayName == null || (displayName = displayName.trim()).length() > 0) {
+        displayName = DEFAILT_DISPLAY_NAME;
+      }
+      manifest = manifest.replaceAll("\\$DISPLAY_NAME", displayName);
+      
       resp = Response.ok().entity(manifest);
     } catch (Throwable e) {
       LOG.error("Error while generating manifest for " + clientHost, e);

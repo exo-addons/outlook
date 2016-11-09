@@ -10,7 +10,7 @@
   <Version>1.0.0</Version>
   <ProviderName>eXo Platform SAS</ProviderName>
   <DefaultLocale>en-us</DefaultLocale>
-  <DisplayName DefaultValue="eXo Platform" />
+  <DisplayName DefaultValue="$DISPLAY_NAME" />
   <Description DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
     <Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook"/>
   </Description>
