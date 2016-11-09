@@ -182,7 +182,7 @@ public class ContentService implements ResourceContainer {
       }
       manifest = manifest.replaceAll("\\$GUID", guid);
       
-      if (displayName == null || (displayName = displayName.trim()).length() > 0) {
+      if (displayName == null || (displayName = displayName.trim()).length() == 0) {
         displayName = DEFAILT_DISPLAY_NAME;
       }
       manifest = manifest.replaceAll("\\$DISPLAY_NAME", displayName);
