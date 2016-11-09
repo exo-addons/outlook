@@ -125,33 +125,12 @@
       <type>jar</type>
       <scope>test</scope>
     </dependency>
-    <!-- dependency>
-      <groupId>org.exoplatform.platform</groupId>
-      <artifactId>exo.platform.component.organization</artifactId>
-      <scope>test</scope>
-      <type>jar</type>
-    </dependency -->
     <dependency>
       <groupId>org.exoplatform</groupId>
       <artifactId>exo-jcr-services</artifactId>
       <type>jar</type>
       <scope>test</scope>
     </dependency>
-    <!-- dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-testing</artifactId>
-      <scope>test</scope>
-    </dependency -->
-    <!-- dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-jpa</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-injector</artifactId>
-      <scope>test</scope>
-    </dependency -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
