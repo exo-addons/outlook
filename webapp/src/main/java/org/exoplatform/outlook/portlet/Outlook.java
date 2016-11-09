@@ -697,7 +697,7 @@ public class Outlook {
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
           ExoSocialActivity activity = space.postActivity(user, message);
-          return convertedStatus.with().status(new UserStatus(null, space.getGroupId(), activity.getPermaLink())).ok();
+          return convertedStatus.with().status(new UserStatus(null, space.getTitle(), activity.getPermaLink())).ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error converting message to activity status : space not found " + groupId + ". OutlookUser "

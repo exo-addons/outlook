@@ -47,18 +47,18 @@ import javax.portlet.PortletRequest;
 @ComponentConfig(template = "classpath:groovy/templates/OutlookMessageViewer.gtmpl")
 public class OutlookMessageViewer extends BaseOutlookMessageViewer {
 
-  protected static final Log                     LOG             = ExoLogger.getLogger(OutlookMessageViewer.class);
+  protected static final Log                     LOG        = ExoLogger.getLogger(OutlookMessageViewer.class);
 
-  public static final String                     EVENT_NAME      = "ShowOutlookMessage";
+  public static final String                     EVENT_NAME = "ShowOutlookMessage";
 
-  protected static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
+  protected static final List<UIExtensionFilter> FILTERS    = Arrays.asList(new UIExtensionFilter[] {
       new OutlookMessageFileFilter() });
 
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
   }
-  
+
   /**
    * Gets the webdav url (adopted code from FileUIActivity).
    * 
@@ -67,37 +67,40 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
    */
   public String getWebdavLink() throws Exception {
     final Node node = getCurrentNode();
-    
-    PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
-    PortletRequest portletRequest = portletRequestContext.getRequest();
-    String repository = ((ManageableRepository)node.getSession().getRepository()).getConfiguration().getName();
-    String workspace = node.getSession().getWorkspace().getName();
-    String baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
-        + String.format("%s", portletRequest.getServerPort());
+    if (node != null) {
+      PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
+      PortletRequest portletRequest = portletRequestContext.getRequest();
+      String repository = ((ManageableRepository) node.getSession().getRepository()).getConfiguration().getName();
+      String workspace = node.getSession().getWorkspace().getName();
+      String baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
+          + String.format("%s", portletRequest.getServerPort());
 
-    FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
+      FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
 
-    StringBuilder link = new StringBuilder(baseURI); 
-    link.append('/');
-    link.append(PortalContainer.getCurrentPortalContainerName());
-    link.append('/');
-    link.append(PortalContainer.getCurrentRestContextName());
-    link.append("/jcr/");
-    link.append(repository);
-    link.append('/');
-    link.append(workspace);
-    
-    if (node.isNodeType("nt:frozenNode")) {
-      String uuid = node.getProperty("jcr:frozenUuid").getString();
-      Node originalNode = node.getSession().getNodeByUUID(uuid);
-      link.append(originalNode.getPath());
-      link.append("?version=");
-      link.append(node.getParent().getName());
+      StringBuilder link = new StringBuilder(baseURI);
+      link.append('/');
+      link.append(PortalContainer.getCurrentPortalContainerName());
+      link.append('/');
+      link.append(PortalContainer.getCurrentRestContextName());
+      link.append("/jcr/");
+      link.append(repository);
+      link.append('/');
+      link.append(workspace);
+
+      if (node.isNodeType("nt:frozenNode")) {
+        String uuid = node.getProperty("jcr:frozenUuid").getString();
+        Node originalNode = node.getSession().getNodeByUUID(uuid);
+        link.append(originalNode.getPath());
+        link.append("?version=");
+        link.append(node.getParent().getName());
+      } else {
+        link.append(node.getPath());
+      }
+
+      return friendlyService.getFriendlyUri(link.toString());
     } else {
-      link.append(node.getPath());
+      return "#"; // should not happen here
     }
-
-    return friendlyService.getFriendlyUri(link.toString());
   }
 
 }

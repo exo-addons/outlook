@@ -94,13 +94,12 @@ body {
 	vertical-align: middle;
 }
 
-.showLogoutLink i:hover:before, .showLogoutLink:visited i:before, .brandLink:visited {
+.showLogoutTitle, .brandTitle {
 	color: #ffb900;
 }
 
-/*.showLogoutLink i {
-	margin-right: 3px;
-	margin-top: 3px;
+/*.showLogoutLink:visited, .brandLink:visited {
+	color: #ffb900;
 }*/
 
 .showLogout {

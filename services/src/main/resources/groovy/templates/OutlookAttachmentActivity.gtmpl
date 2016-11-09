@@ -406,13 +406,15 @@
 					 <% }%>
 						 <ul class="pull-left statusAction">
 						 <%
-		          if (file) {
+						 	/* ============== Adaptation for Outlook message file download ============== */
+		          if (file && file.isExists()) {
 								if (file.isSupportPreview()) { 
 						%> 	<li><a href="${file.viewLink}"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
 							<%} else { %>
 		          	<li><a href="${file.downloadLink}"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
 		          <%}
-							}%>
+							}
+							/* =========================== */ %>
 						 </ul>
 					</div><!--end actionBar-->
 					

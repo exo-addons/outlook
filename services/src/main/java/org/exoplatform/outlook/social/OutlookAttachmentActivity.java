@@ -497,7 +497,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
         try {
           // check node/session is valid
           node.getIndex();
-        } catch (InvalidItemStateException e) {
+        } catch (InvalidItemStateException | AccessDeniedException e) {
           node = null;
         }
       }
@@ -512,8 +512,8 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
           } else {
             this.node.set(node);
           }
-        } catch (ItemNotFoundException e) {
-          // node was removed
+        } catch (ItemNotFoundException | AccessDeniedException e) {
+          // node was removed or not accessible
         }
       }
       return node;

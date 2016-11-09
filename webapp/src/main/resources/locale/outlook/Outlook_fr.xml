@@ -33,6 +33,7 @@
 
     <cancel>Annuler</cancel>
     <convert>Convertir</convert>
+    <targetSpaceOptional>Espace cible (optionnel)</targetSpaceOptional>
     <targetSpaceMandatory>Espace cible</targetSpaceMandatory>
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Mes Documents</personalDocuments>
