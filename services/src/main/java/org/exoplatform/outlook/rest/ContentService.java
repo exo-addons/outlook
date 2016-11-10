@@ -56,7 +56,7 @@ public class ContentService implements ResourceContainer {
 
   protected static final Log  LOG = ExoLogger.getLogger(ContentService.class);
   
-  public static final String DEFAILT_DISPLAY_NAME = "eXo Platform";
+  public static final String DEFAULT_DISPLAY_NAME = "eXo Platform";
 
   protected final ContentLink contentLink;
 
@@ -183,7 +183,7 @@ public class ContentService implements ResourceContainer {
       manifest = manifest.replaceAll("\\$GUID", guid);
       
       if (displayName == null || (displayName = displayName.trim()).length() == 0) {
-        displayName = DEFAILT_DISPLAY_NAME;
+        displayName = DEFAULT_DISPLAY_NAME;
       }
       manifest = manifest.replaceAll("\\$DISPLAY_NAME", displayName);
       
