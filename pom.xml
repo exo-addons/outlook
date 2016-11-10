@@ -38,8 +38,9 @@
     <module>packaging</module>
   </modules>
   <scm>
-    <connection>https://github.com/exo-addons/outlook/</connection>
-    <developerConnection>https://github.com/exo-addons/outlook/</developerConnection>
+    <connection>git@github.com:exo-addons/outlook.git</connection>
+    <developerConnection>git@github.com:exo-addons/outlook.git</developerConnection>
+    <tag>HEAD</tag>
     <url>https://github.com/exo-addons/outlook/</url>
   </scm>
   <properties>
