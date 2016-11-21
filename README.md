@@ -103,9 +103,9 @@ Outlook Add-on doesn't need configuring something when run on publicly available
 
 There are two optional configuration parameters that can be specified in _exo.properties_ of eXo Platform: 
 * `outlook.exo.server.host` to provide a public domain name of the eXo Platform server where Ourlook add-on runs, by default it's empy and so the add-on will determine a host name of the server from local network interfaces available in Java runtime.
-* `outlook.exo.server.schema` it is _http_ by default and can be set to _https_ to force HTTPS schema for links to the user content, what is +strictly recommended+ for security purpose. 
+* `outlook.exo.server.schema` it is _http_ by default and can be set to _https_ to force HTTPS schema for links to the user content, what is *strictly recommended* for security purpose. 
 
-Below a sample smippet to add to your _exo.properties_ file. It tells that your server will be access at _myintranet.com_ domain and all links should have HTTPS schema.
+Below a sample smippet to add to your _exo.properties_ file. It tells that your server will be accessed at _myintranet.com_ domain and all links should have HTTPS schema.
 
 ```
 outlook.exo.server.host=myintranet.com
