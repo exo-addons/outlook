@@ -97,6 +97,23 @@ Since manifest installed into Office365/Exchange service, it may be required to 
 `https://your.exoplatform.server/portal/rest/outlook/manifest?guid=05425534-77d2-4997-9856-52a13927452e` 
 You can save this URL for use between updates of the add-on, thus next time you'll request the generator it will return a manifest with given ID of your add-in.
 
+##Configuration
+
+Outlook Add-on doesn't need configuring something when run on publicly available server. But configration may be required when eXo Platform deployed behind proxy or/and accessible with DNS name not known to the server runtime. As you'll find in Security section, user content may be accessed by Office365/Exchange services, and for this purpose that services should know the URL of the eXo Platform server resource. 
+
+There are two optional configuration parameters that can be specified in _exo.properties_ of eXo Platform: 
+* `outlook.exo.server.host` to provide a public domain name of the eXo Platform server where Ourlook add-on runs, by default it's empy and so the add-on will determine a host name of the server from local network interfaces available in Java runtime.
+* `outlook.exo.server.schema` it is _http_ by default and can be set to _https_ to force HTTPS schema for links to the user content, what is +strictly recommended+ for security purpose. 
+
+Below a sample smippet to add to your _exo.properties_ file. It tells that your server will be access at _myintranet.com_ domain and all links should have HTTPS schema.
+
+```
+outlook.exo.server.host=myintranet.com
+outlook.exo.server.schema=https
+```
+
+Technically these parameters will be substituted into `org.exoplatform.outlook.jcr.ContentLink` component configuration of the add-on.
+
 ##Security
 
 ###Add-in pages access
