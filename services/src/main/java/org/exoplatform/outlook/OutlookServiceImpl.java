@@ -135,6 +135,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -175,6 +176,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
 
   protected static final String         SPACES_HOME            = "/Groups/spaces";
+
+  protected static final String         ROOT_USER              = "root";
 
   protected static final String         PERSONAL_DOCUMENTS     = "Personal Documents";
 
@@ -233,7 +236,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     protected Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
       Folder folder = new UserFolder(parent, node);
-      // initDocumentLink(space, folder);
       return folder;
     }
 
@@ -243,7 +245,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     protected Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
       Folder folder = new UserFolder(rootPath, node);
-      // initDocumentLink(space, folder);
       return folder;
     }
 
@@ -305,7 +306,35 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       if (text == null || text.length() == 0) {
         Query q = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
             + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
-        fetchQuery(q.execute(), 20, res);
+        final String currentUser = currentUserId();
+        // fetch and filter nodes: not trashed and not system
+        fetchQuery(q.execute(), 20, res, node -> {
+          try {
+            // XXX skip some known system locations/names
+            String path = node.getPath();
+            if (path.indexOf("/ApplicationData") >= 0 || path.indexOf("exo:applications") >= 0) {
+              return false;
+            }
+            // skip trashed
+            if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
+              return false;
+            }
+            // access all nodes except of owned by root, but only if it is not his session
+            AccessControlList acl = ((ExtendedNode) node).getACL();
+            String owner = acl.getOwner();
+            if (currentUser.equals(owner)) {
+              return true;
+            } else {
+              return !ROOT_USER.equals(owner);
+            }
+          } catch (RepositoryException e) {
+            // ignore it
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("Error getting ACL/owner of " + node, e);
+            }
+            return false;
+          }
+        });
       } else {
         Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
             + "' AND jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text
@@ -315,7 +344,23 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // and add all others up to total 20 files
         Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
             + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
-        fetchQuery(qOthers.execute(), 17, res);
+        fetchQuery(qOthers.execute(), 20 - res.size(), res);
+      }
+
+      if (res.size() < 20) {
+        // If have some space, then fetch latest from spaces
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM nt:file WHERE jcr:path LIKE '");
+        sql.append(SPACES_HOME);
+        sql.append("/%/Documents/%'");
+        if (text != null && text.length() > 0) {
+          sql.append(" AND exo:title LIKE '%");
+          sql.append(text);
+          sql.append("%'");
+        }
+        sql.append(" ORDER BY exo:lastModifiedDate DESC, exo:title ASC");
+        Query qSpaces = qm.createQuery(sql.toString(), Query.SQL);
+        fetchQuery(qSpaces.execute(), 20 - res.size(), res);
       }
       return res;
     }
@@ -541,6 +586,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
         if (uploads == null) {
           final Node parent = getNode();
+          // TODO Need care about permissions: https://github.com/exo-addons/outlook/issues/6
           Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
           uploads = newFolder(this, subfolderNode);
           parent.save();
@@ -624,7 +670,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // and add all others up to total 20 files
         Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
             + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
-        fetchQuery(qOthers.execute(), 17, res);
+        fetchQuery(qOthers.execute(), 20 - res.size(), res);
       } else {
         Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
             + "' AND jcr:path LIKE '" + root.getPath() + "/%' AND exo:title LIKE '%" + text
@@ -634,7 +680,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // and add all others up to total 20 files
         Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
             + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
-        fetchQuery(qOthers.execute(), 17, res);
+        fetchQuery(qOthers.execute(), 20 - res.size(), res);
       }
       return res;
     }
@@ -1957,28 +2003,90 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res) throws RepositoryException, OutlookException {
+    fetchQuery(qr, limit, res, n -> true);
+  }
+
+  protected void fetchQuery_old(QueryResult qr, int limit, Set<File> res, Predicate<Node> acceptNode)
+                                                                                                      throws RepositoryException,
+                                                                                                      OutlookException {
     SpaceService spaceService = spaceService();
     for (NodeIterator niter = qr.getNodes(); niter.getPosition() < limit && niter.hasNext();) {
       Node node = niter.nextNode();
-      String path = node.getPath();
-      if (path.indexOf("/ApplicationData") < 0 && path.indexOf("exo:applications") < 0) {
-        try {
-          AccessControlList acl = ((ExtendedNode) node).getACL();
-          String owner = acl.getOwner();
-          if ("root".equals(owner)) {
+      try {
+        String path = node.getPath();
+        if (path.indexOf("/ApplicationData") < 0 && path.indexOf("exo:applications") < 0) {
+          if (acceptNode.test(node)) {
+            if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
+              limit++;
+            } else {
+              // detect is it space and then check if space member
+              Space space;
+              if (path.startsWith(SPACES_HOME)) {
+                try {
+                  String groupId = path.substring(7, path.indexOf("/", SPACES_HOME.length() + 1));
+                  space = spaceService.getSpaceByGroupId(groupId);
+                  if (space != null) {
+                    Set<String> allMemembers = new HashSet<String>();
+                    for (String s : space.getManagers()) {
+                      allMemembers.add(s);
+                    }
+                    for (String s : space.getMembers()) {
+                      allMemembers.add(s);
+                    }
+                    if (!allMemembers.contains(currentUserId())) {
+                      // when not a space member - skip this file (but user still may be an owner of it!)
+                      limit++;
+                      continue;
+                    }
+                  }
+                } catch (IndexOutOfBoundsException e) {
+                  // XXX something not clear with space path, will use portal page path as for Personal
+                  // Documents
+                  // (it works well in PLF 4.3)
+                  space = null;
+                }
+              } else {
+                space = null;
+              }
+
+              UserFile file = new UserFile(node.getParent().getPath(), node);
+              if (space != null) {
+                initDocumentLink(SiteType.GROUP, // GROUP
+                                 space.getGroupId().replace("/", "."),
+                                 space.getGroupId(), // /spaces/product_team
+                                 space.getShortName() + "/documents", // product_team/documents
+                                 file);
+              } else {
+                initDocumentLink(SiteType.PORTAL, // PORTAL
+                                 PERSONAL_DOCUMENTS,
+                                 "intranet", // intranet
+                                 "documents", // documents
+                                 file);
+              }
+              res.add(file);
+            }
+          } else {
             limit++;
-            continue;
           }
-        } catch (RepositoryException e) {
-          // ignore it
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Error getting node ACL/owner", e);
-          }
-        }
-        if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
-          limit++;
         } else {
+          limit++;
+        }
+      } catch (RepositoryException e) {
+        LOG.warn("Error read queried node " + e.getMessage() + ". Node skipped: " + node);
+        limit++;
+      }
+    }
+  }
+
+  protected void fetchQuery(QueryResult qr, int limit, Set<File> res, Predicate<Node> acceptNode) throws RepositoryException,
+                                                                                                  OutlookException {
+    SpaceService spaceService = spaceService();
+    for (NodeIterator niter = qr.getNodes(); niter.getPosition() < limit && niter.hasNext();) {
+      Node node = niter.nextNode();
+      try {
+        if (acceptNode.test(node)) {
           // detect is it space and then check if space member
+          String path = node.getPath();
           Space space;
           if (path.startsWith(SPACES_HOME)) {
             try {
@@ -1999,8 +2107,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                 }
               }
             } catch (IndexOutOfBoundsException e) {
-              // XXX something not clear with space path, will use portal page path as for Personal Documents
-              // (it works well in PLF 4.3)
+              // XXX something not clear with space path, will use portal page path as for Personal
+              // Documents (it works well in PLF 4.3)
               space = null;
             }
           } else {
@@ -2022,11 +2130,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                              file);
           }
           res.add(file);
+        } else {
+          limit++;
         }
-      } else {
+      } catch (RepositoryException e) {
+        LOG.warn("Error read queried node " + e.getMessage() + ". Node skipped: " + node);
         limit++;
       }
     }
+
   }
 
   /**
