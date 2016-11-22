@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2003-2016 eXo Platform SAS.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.exoplatform.outlook.jcr;
 
@@ -53,6 +71,8 @@ public class ContentLink {
 
   public static final String    LINK_CACHE_NAME    = "OutlookContentLinkCache";
 
+  public static final String    EXO_BASE_URL       = "exo.base.url";
+
   public static final int       KEY_EXPIRE_SECONDS = 60;
 
   protected static final Log    LOG                = ExoLogger.getLogger(ContentLink.class);
@@ -98,6 +118,18 @@ public class ContentLink {
 
   protected final String                  restUrl;
 
+  /**
+   * Instantiates a new content link.
+   *
+   * @param jcrService the jcr service
+   * @param sessionProviders the session providers
+   * @param finder the finder
+   * @param organization the organization
+   * @param identityRegistry the identity registry
+   * @param cacheService the cache service
+   * @param params the params
+   * @throws ConfigurationException the configuration exception
+   */
   public ContentLink(RepositoryService jcrService,
                      SessionProviderService sessionProviders,
                      NodeFinder finder,
@@ -114,75 +146,73 @@ public class ContentLink {
 
     this.activeLinks = cacheService.getCacheInstance(LINK_CACHE_NAME);
 
-    /////
     if (params != null) {
       PropertiesParam param = params.getPropertiesParam("link-configuration");
-
       if (param != null) {
         config = Collections.unmodifiableMap(param.getProperties());
       } else {
-        LOG.warn("Property parameters link-configuration not found will use default settings.");
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Property parameters link-configuration not found, will use default settings.");
+        }
         config = Collections.<String, String> emptyMap();
       }
     } else {
-      LOG.warn("Component configuration not found will use default settings.");
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Component configuration not found, will use default settings.");
+      }
       config = Collections.<String, String> emptyMap();
     }
 
-    String schema = config.get(CONFIG_SCHEMA);
-    if (schema == null || (schema = schema.trim()).length() == 0) {
-      schema = "http";
-    }
+    StringBuilder restUrl = new StringBuilder();
+    String exoBaseUrl = System.getProperty(EXO_BASE_URL);
+    if (exoBaseUrl == null || exoBaseUrl.toUpperCase().toLowerCase().startsWith("http://localhost")) {
+      // seems we have base URL not set explicitly for the server
+      String schema = config.get(CONFIG_SCHEMA);
+      if (schema == null || (schema = schema.trim()).length() == 0) {
+        schema = "http";
+      }
 
-    String host = config.get(CONFIG_HOST);
-    if (host == null || host.trim().length() == 0) {
-      host = null;
-      try {
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-        while (host == null && interfaces.hasMoreElements()) {
-          NetworkInterface nic = interfaces.nextElement();
-          Enumeration<InetAddress> addresses = nic.getInetAddresses();
-          while (host == null && addresses.hasMoreElements()) {
-            InetAddress address = addresses.nextElement();
-            if (!address.isLoopbackAddress()) {
-              host = address.getHostName();
+      String host = config.get(CONFIG_HOST);
+      if (host == null || host.trim().length() == 0) {
+        host = null;
+        try {
+          Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+          while (host == null && interfaces.hasMoreElements()) {
+            NetworkInterface nic = interfaces.nextElement();
+            Enumeration<InetAddress> addresses = nic.getInetAddresses();
+            while (host == null && addresses.hasMoreElements()) {
+              InetAddress address = addresses.nextElement();
+              if (!address.isLoopbackAddress()) {
+                host = address.getHostName();
+              }
             }
           }
+        } catch (SocketException e) {
+          // cannot get net interfaces
         }
-      } catch (SocketException e) {
-        // cannot get net interfaces
-      }
 
-      if (host == null) {
-        try {
-          host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-          host = "localhost";
+        if (host == null) {
+          try {
+            host = InetAddress.getLocalHost().getHostName();
+          } catch (UnknownHostException e) {
+            host = "localhost:8080"; // assume development environment otherwise
+          }
         }
       }
-
-      LOG.warn("Configuration of " + CONFIG_HOST + " is not set, will use " + host);
+      restUrl.append(schema);
+      restUrl.append("://");
+      restUrl.append(host);
+    } else {
+      restUrl.append(exoBaseUrl);
     }
 
-    StringBuilder restUrl = new StringBuilder();
-    restUrl.append(schema);
-    restUrl.append("://");
-    restUrl.append(host);
     restUrl.append('/');
     restUrl.append(PortalContainer.getCurrentPortalContainerName());
     restUrl.append('/');
     restUrl.append(PortalContainer.getCurrentRestContextName());
     this.restUrl = restUrl.toString();
-  }
 
-  public ContentLink(RepositoryService jcrService,
-                     SessionProviderService sessionProviders,
-                     NodeFinder finder,
-                     OrganizationService organization,
-                     IdentityRegistry identityRegistry,
-                     CacheService cacheService)
-      throws ConfigurationException {
-    this(jcrService, sessionProviders, finder, organization, identityRegistry, cacheService, null);
+    LOG.info("Default service URL for content links is " + this.restUrl);
   }
 
   public String create(String userId, String workspace, String nodePath) throws Exception {
@@ -204,11 +234,29 @@ public class ContentLink {
     return key;
   }
 
+  /**
+   * Creates the url.
+   *
+   * @param userId the user id
+   * @param nodePath the node path
+   * @param serverLink the server link
+   * @return the link resource
+   * @throws Exception the exception
+   */
   public LinkResource createUrl(String userId, String nodePath, String serverLink) throws Exception {
     Node node = getNode(userId, nodePath);
     return createUrl(userId, node, serverLink);
   }
 
+  /**
+   * Creates the url.
+   *
+   * @param userId the user id
+   * @param node the node
+   * @param serverLink the server link
+   * @return the link resource
+   * @throws RepositoryException the repository exception
+   */
   public LinkResource createUrl(String userId, Node node, String serverLink) throws RepositoryException {
     String key = create(userId, node);
     StringBuilder link = new StringBuilder();

@@ -39,13 +39,6 @@
   <component>
     <key>org.exoplatform.outlook.jcr.ContentLink</key>
     <type>org.exoplatform.outlook.jcr.ContentLink</type>
-    <init-params>
-      <properties-param>
-        <name>link-configuration</name>
-        <property name="server-host" value="" />
-        <property name="server-schema" value="http" />
-      </properties-param>
-    </init-params>
   </component>
 
   <component>

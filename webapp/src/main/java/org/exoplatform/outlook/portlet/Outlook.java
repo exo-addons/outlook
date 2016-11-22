@@ -633,6 +633,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * File link.
+   *
+   * @param nodePath the node path
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response fileLink(String nodePath, RequestContext context) {
@@ -643,12 +650,13 @@ public class Outlook {
         if (scheme != null) {
           prefix.append(scheme);
         } else {
-          prefix.append("http");
+          prefix.append(scheme = "http");
         }
         prefix.append("://");
         prefix.append(context.getHttpContext().getServerName());
         int port = context.getHttpContext().getServerPort();
-        if (port > 0 && port != 80 && port != 443) {
+        if (port > 0 && (port != 80 || (port == 80 && !scheme.equalsIgnoreCase("http")))
+            && (port != 443 || (port == 443 && !scheme.equalsIgnoreCase("https")))) {
           prefix.append(':');
           prefix.append(port);
         }
