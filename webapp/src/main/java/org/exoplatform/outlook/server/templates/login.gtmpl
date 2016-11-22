@@ -136,10 +136,12 @@
 					<div class="ms-Dialog-content">
 						<p class="ms-Dialog-subText">&{Outlook.login.signInDescription}</p>
 						<div class="ms-TextField">
-							<label for="userName" class="ms-Label">&{Outlook.login.userName}</label><input name="userName" class="ms-TextField-field" type="text">
+							<label for="userName" class="ms-Label">&{Outlook.login.userName}</label>
+							<input name="userName" class="ms-TextField-field" type="text" autocorrect="off" autocapitalize="none">
 						</div>
 						<div class="ms-TextField">
-							<label for="password" class="ms-Label">&{Outlook.login.password}</label><input name="password" class="ms-TextField-field" type="password">
+							<label for="password" class="ms-Label">&{Outlook.login.password}</label>
+							<input name="password" class="ms-TextField-field" type="password">
 						</div>
 					</div>
 					<div class="ms-Dialog-actions text-centered">
