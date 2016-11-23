@@ -16,7 +16,7 @@
       <userInfo>Users</userInfo>
       <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
-      <convertToStatus>Convert to Status Update</convertToStatus>
+      <convertToStatus>Convert to Activity</convertToStatus>
       <convertToWiki>Convert to Wiki Page</convertToWiki>
       <convertToForum>Convert to Forum Topic</convertToForum>
     </command>
@@ -77,16 +77,16 @@
     <!-- Convert To Status -->
     <convertToStatusDescription>This message can be converted to a new post on your personal activity stream or on the stream of the selected space.</convertToStatusDescription>
     <activityTargetSpaceDescription>If selected, your message will be posted on the space's activity stream.</activityTargetSpaceDescription>
-    <activityTitle>Post title</activityTitle>
+    <activityTitle>Activity title</activityTitle>
     <activityTitleDescription>This will be the title of the activity stream post</activityTitleDescription>
-    <activityText>Post content</activityText>
+    <activityText>Activity content</activityText>
     <activityTextDescription>This will be the body of the activity stream post</activityTextDescription>
-    <convertingToStatus>Posting the message...</convertingToStatus>
-    <convertedToStatus>The message was successfully posted.</convertedToStatus>
+    <convertingToStatus>Posting the activity...</convertingToStatus>
+    <convertedToStatus>The activity was successfully posted.</convertedToStatus>
     <convertToStatusError>Error converting the message to an activity stream post</convertToStatusError>
     <convertedToUserActivity>The activity was successfully posted in your personal stream.</convertedToUserActivity>
     <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME}'s stream.</convertedToSpaceActivity>
-    <openActivity>View the post</openActivity>
+    <openActivity>View the activity</openActivity>
 
     <!-- Convert To Wiki -->
     <convertToWikiDescription>This message will be converted to a page in the general intranet wiki or in the selected space's wiki.</convertToWikiDescription>
