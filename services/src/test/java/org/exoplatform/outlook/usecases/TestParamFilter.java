@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by The eXo Platform SAS.
@@ -120,8 +121,10 @@ public class TestParamFilter {
     try {
       String domain = getBaseDomainOriginal(msOutlookUrl);
       assertEquals("Wrong domain extracted", "community.exoplatform.com", domain);
+    } catch(URISyntaxException e) {
+      // OK, it's expected as MS's link doesn't respect standards (contains | in the query) 
     } catch(Exception e) {
-      fail("Exception should not happen for " + msOutlookUrl + " but it happen " + e);
+      fail("Exception should not happen for " + msOutlookUrl + " but it was " + e);
     }
   }
   
@@ -135,7 +138,7 @@ public class TestParamFilter {
       String domain = getBaseDomainFixed(msOutlookUrl);
       assertEquals("Wrong domain extracted", "exoplatform.com", domain);
     } catch(Exception e) {
-      fail("Exception should not happen for " + msOutlookUrl + " but it happen " + e);
+      fail("Exception should not happen for " + msOutlookUrl + " but it was " + e);
     }
   }
 
