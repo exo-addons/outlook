@@ -1485,7 +1485,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // such node already exists - find new name for the file (by adding sibling index to the end)
         siblingNumber++;
         int extIndex = baseName.lastIndexOf(".");
-        if (extIndex > 0 && extIndex < title.length()) {
+        if (extIndex > 0 && extIndex != baseName.length() - 1) {
           String jcrName = baseName.substring(0, extIndex);
           String jcrExt = baseName.substring(extIndex + 1);
           name = new StringBuilder(jcrName).append('-').append(siblingNumber).append('.').append(jcrExt).toString();
@@ -1508,7 +1508,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     if (siblingNumber > 0) {
       int extIndex = title.lastIndexOf(".");
-      if (extIndex > 0 && extIndex < title.length()) {
+      if (extIndex > 0 && extIndex != title.length() - 1) {
         String titleName = title.substring(0, extIndex);
         String titleExt = title.substring(extIndex + 1);
         title = new StringBuilder(titleName).append(" (").append(siblingNumber).append(").").append(titleExt).toString();
@@ -2741,6 +2741,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         } else if (!(Character.isLetterOrDigit(c) || Character.isWhitespace(c) || c == '.' || c == '-' || c == '_')) {
           cleanedStr.deleteCharAt(i--);
         }
+      }
+      // XXX finally ensure the name doesn't hava a dot at the end
+      // https://github.com/exo-addons/outlook/issues/5
+      // https://jira.exoplatform.org/browse/COMMONS-510
+      int lastCharIndex = cleanedStr.length() - 1;
+      char c = cleanedStr.charAt(lastCharIndex);
+      if (c == '.') {
+        cleanedStr.deleteCharAt(lastCharIndex);
       }
     }
     return cleanedStr.toString().trim(); // finally trim also
