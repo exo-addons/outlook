@@ -68,8 +68,10 @@ import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -139,6 +141,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -585,14 +588,35 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           }
         }
         if (uploads == null) {
-          final Node parent = getNode();
-          // TODO Need care about permissions: https://github.com/exo-addons/outlook/issues/6
-          Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
-          uploads = newFolder(this, subfolderNode);
-          parent.save();
-          initDocumentLink(OutlookSpaceImpl.this, uploads);
-          subfolders.add(uploads);
-          defaultSubfolder = uploads;
+          try {
+            // TODO Do we need care about permissions? https://github.com/exo-addons/outlook/issues/6
+            Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
+            uploads = newFolder(this, subfolderNode);
+            node.save();
+            initDocumentLink(OutlookSpaceImpl.this, uploads);
+            subfolders.add(uploads);
+            defaultSubfolder = uploads;
+          } catch (AccessDeniedException e) {
+            // gather some info about the user for the log
+            String currentUserId = currentUserId();
+            StringBuilder userInfo = new StringBuilder();
+            userInfo.append(currentUserId);
+            try {
+              userInfo.append('[');
+              for (Membership m : organization.getMembershipHandler().findMembershipsByUser(currentUserId())) {
+                userInfo.append(m.getMembershipType());
+                userInfo.append(':');
+                userInfo.append(m.getGroupId());
+                userInfo.append(' ');
+              }
+              userInfo.setCharAt(userInfo.length() - 1, ']');
+            } catch (Exception oe) {
+              LOG.warn("Error getting organization user " + currentUserId, e);
+            }
+            LOG.error("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: " + userInfo.toString()
+                + ". Parent node: " + node, e);
+            throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
+          }
         }
         return subfolders;
       }
@@ -2004,78 +2028,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res) throws RepositoryException, OutlookException {
     fetchQuery(qr, limit, res, n -> true);
-  }
-
-  protected void fetchQuery_old(QueryResult qr, int limit, Set<File> res, Predicate<Node> acceptNode)
-                                                                                                      throws RepositoryException,
-                                                                                                      OutlookException {
-    SpaceService spaceService = spaceService();
-    for (NodeIterator niter = qr.getNodes(); niter.getPosition() < limit && niter.hasNext();) {
-      Node node = niter.nextNode();
-      try {
-        String path = node.getPath();
-        if (path.indexOf("/ApplicationData") < 0 && path.indexOf("exo:applications") < 0) {
-          if (acceptNode.test(node)) {
-            if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
-              limit++;
-            } else {
-              // detect is it space and then check if space member
-              Space space;
-              if (path.startsWith(SPACES_HOME)) {
-                try {
-                  String groupId = path.substring(7, path.indexOf("/", SPACES_HOME.length() + 1));
-                  space = spaceService.getSpaceByGroupId(groupId);
-                  if (space != null) {
-                    Set<String> allMemembers = new HashSet<String>();
-                    for (String s : space.getManagers()) {
-                      allMemembers.add(s);
-                    }
-                    for (String s : space.getMembers()) {
-                      allMemembers.add(s);
-                    }
-                    if (!allMemembers.contains(currentUserId())) {
-                      // when not a space member - skip this file (but user still may be an owner of it!)
-                      limit++;
-                      continue;
-                    }
-                  }
-                } catch (IndexOutOfBoundsException e) {
-                  // XXX something not clear with space path, will use portal page path as for Personal
-                  // Documents
-                  // (it works well in PLF 4.3)
-                  space = null;
-                }
-              } else {
-                space = null;
-              }
-
-              UserFile file = new UserFile(node.getParent().getPath(), node);
-              if (space != null) {
-                initDocumentLink(SiteType.GROUP, // GROUP
-                                 space.getGroupId().replace("/", "."),
-                                 space.getGroupId(), // /spaces/product_team
-                                 space.getShortName() + "/documents", // product_team/documents
-                                 file);
-              } else {
-                initDocumentLink(SiteType.PORTAL, // PORTAL
-                                 PERSONAL_DOCUMENTS,
-                                 "intranet", // intranet
-                                 "documents", // documents
-                                 file);
-              }
-              res.add(file);
-            }
-          } else {
-            limit++;
-          }
-        } else {
-          limit++;
-        }
-      } catch (RepositoryException e) {
-        LOG.warn("Error read queried node " + e.getMessage() + ". Node skipped: " + node);
-        limit++;
-      }
-    }
   }
 
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res, Predicate<Node> acceptNode) throws RepositoryException,

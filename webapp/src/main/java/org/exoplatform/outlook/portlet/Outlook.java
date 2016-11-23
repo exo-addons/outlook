@@ -28,6 +28,7 @@ import juzu.request.RequestContext;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.forum.service.Topic;
+import org.exoplatform.outlook.AccessException;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookEmail;
 import org.exoplatform.outlook.OutlookException;
@@ -424,11 +425,18 @@ public class Outlook {
 
   // *********** Save Attachment command **********
 
+  /**
+   * Save attachment form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response saveAttachmentForm() {
     try {
       return saveAttachment.with().spaces(outlook.getUserSpaces()).ok();
+    } catch (AccessException e) {
+      return errorMessage(e.getMessage(), 403);
     } catch (Throwable e) {
       LOG.error("Error showing save attachments form", e);
       return errorMessage(e.getMessage(), 500);
@@ -487,6 +495,21 @@ public class Outlook {
     }
   }
 
+  /**
+   * Save attachment.
+   *
+   * @param groupId the group id
+   * @param path the path
+   * @param comment the comment
+   * @param ewsUrl the ews url
+   * @param userEmail the user email
+   * @param userName the user name
+   * @param messageId the message id
+   * @param attachmentToken the attachment token
+   * @param attachmentIds the attachment ids
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response saveAttachment(String groupId,
@@ -549,6 +572,9 @@ public class Outlook {
 
   // *************** Attach Document command ***********
 
+  /**
+   * @return
+   */
   @Ajax
   @Resource
   public Response addAttachmentForm() {
@@ -568,6 +594,8 @@ public class Outlook {
                                          spaceFolder.getPathLabel()));
       }
       return addAttachment.with().sources(sources).ok();
+    } catch (AccessException e) {
+      return errorMessage(e.getMessage(), 403);
     } catch (Throwable e) {
       LOG.error("Error showing add attachments form", e);
       return errorMessage(e.getMessage(), 500);
@@ -601,6 +629,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * Search files.
+   *
+   * @param sourceId the source id
+   * @param text the text
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response searchFiles(String sourceId, String text) {
