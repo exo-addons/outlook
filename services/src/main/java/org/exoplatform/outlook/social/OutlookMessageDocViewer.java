@@ -49,6 +49,7 @@ import javax.jcr.Node;
      @EventConfig(listeners = UIBaseNodePresentation.OpenDocInDesktopActionListener.class)    
    }
 )
+@Deprecated // TODO not used
 public class OutlookMessageDocViewer extends UIDocViewer {
 
   /**

@@ -20,11 +20,14 @@
 package org.exoplatform.outlook.social;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.services.cms.documents.DocumentService;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -44,6 +47,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
@@ -78,6 +82,7 @@ import javax.jcr.RepositoryException;
                                          @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
+                                         @EventConfig(listeners = FileUIActivity.OpenFileActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
 public class OutlookMessageActivity extends FileUIActivity {
 
@@ -101,6 +106,7 @@ public class OutlookMessageActivity extends FileUIActivity {
 
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
 
+  @Deprecated // TODO not used
   public static class ViewDocumentActionListener extends EventListener<OutlookMessageActivity> {
     @Override
     public void execute(Event<OutlookMessageActivity> event) throws Exception {
@@ -120,10 +126,17 @@ public class OutlookMessageActivity extends FileUIActivity {
     }
   }
 
-  protected static ThreadLocal<Boolean> scriptInitialized = new ThreadLocal<Boolean>();
+  protected static ThreadLocal<Boolean>  scriptInitialized = new ThreadLocal<Boolean>();
+
+  protected DocumentService              documentService;
+
+  protected final OutlookActivitySupport util;
 
   public OutlookMessageActivity() throws Exception {
     super();
+    RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);
+    this.util = new OutlookActivitySupport(CommonsUtils.getService(DocumentService.class),
+                                           repositoryService.getCurrentRepository());
   }
 
   /**
@@ -232,40 +245,47 @@ public class OutlookMessageActivity extends FileUIActivity {
     return super.getSummary(node);
   }
 
+  /**
+   * Render content presentation.
+   *
+   * @throws Exception the exception
+   */
   public void renderContentPresentation() throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
     uicontentpresentation.setNode(getContentNode());
     UIComponent fileComponent = uicontentpresentation.getUIComponent(getMimeType());
     uicontentpresentation.renderUIComponent(fileComponent);
 
-    // init script for UI tuning once
+    // init script for UI support once
     WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
-    Object init = rcontext.getAttribute(getClass());
+    Object init = rcontext.getAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED);
     if (init == null || Boolean.FALSE.equals(init)) {
-      rcontext.setAttribute(getClass(), Boolean.TRUE);
+      rcontext.setAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED, Boolean.TRUE);
       JavascriptManager jsManager = rcontext.getJavascriptManager();
-      jsManager.require("SHARED/jquery", "$")
-               .addScripts("$(function() {\n" //
-                   // do in timeout to run after stream refresh (by user)
-                   + "  setTimeout(function() {\n" //
-                   + "    $('.outlookMessageActivityContent').each(function(ai, activity) {\n" //
-                   + "      var $activity = $(activity);\n" //
-                   + "      $activity.find('.outlookMessageIframe').each(function(ii, iframe) {\n" //
-                   + "        var $iframe = $(iframe);\n" //
-                   + "        $iframe.ready(function() {\n" //
-                   + "          var $body = $iframe.contents().find('body,div:first');\n" //
-                   + "          $body.first().css('overflow', 'hidden');\n" //
-                   + "        });\n" //
-                   + "        $iframe.parents('.messageBody').click(function(event) {\n" //
-                   + "          event.stopPropagation();\n" //
-                   + "          var activitylink = $activity.data('activitylink');\n" //
-                   + "          eval(activitylink);\n" //
-                   + "        });\n" //
-                   + "      });\n" //
-                   + "    });\n" //
-                   + "  }, 1500);\n" //
-                   + "});\n" //
-      );
+      jsManager.require("SHARED/outlookView", "outlookView");
+      // TODO cleanup
+      // jsManager.require("SHARED/jquery", "$")
+      // .addScripts("$(function() {\n" //
+      // // do in timeout to run after stream refresh (by user)
+      // + " setTimeout(function() {\n" //
+      // + " $('.outlookMessageActivityContent').each(function(ai, activity) {\n" //
+      // + " var $activity = $(activity);\n" //
+      // + " $activity.find('.outlookMessageIframe').each(function(ii, iframe) {\n" //
+      // + " var $iframe = $(iframe);\n" //
+      // + " $iframe.ready(function() {\n" //
+      // + " var $body = $iframe.contents().find('body,div:first');\n" //
+      // + " $body.first().css('overflow', 'hidden');\n" //
+      // + " });\n" //
+      // + " $iframe.parents('.messageBody').click(function(event) {\n" //
+      // + " event.stopPropagation();\n" //
+      // + " var activitylink = $activity.data('activitylink');\n" //
+      // + " eval(activitylink);\n" //
+      // + " });\n" //
+      // + " });\n" //
+      // + " });\n" //
+      // + " }, 1500);\n" //
+      // + "});\n" //
+      // );
     }
   }
 
@@ -275,6 +295,7 @@ public class OutlookMessageActivity extends FileUIActivity {
    * 
    * @return {@link String}
    */
+  @Deprecated
   public String getViewLink() {
     try {
       Node data = getContentNode();
@@ -287,6 +308,23 @@ public class OutlookMessageActivity extends FileUIActivity {
       LOG.error(e.getMessage(), e);
       return StringUtils.EMPTY;
     }
+  }
+
+  public String getPreviewLink(WebuiBindingContext ctx) {
+    Node node = null;
+    try {
+      node = getContentNode();
+      if (node != null) {
+        if (isFileSupportPreview(node)) {
+          return util.getPreviewLink(ctx, OutlookMessageActivity.this, node);
+        } else {
+          return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Error getting document preview link " + node, e);
+    }
+    return StringUtils.EMPTY;
   }
 
 }

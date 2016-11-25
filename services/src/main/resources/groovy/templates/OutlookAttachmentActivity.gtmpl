@@ -197,32 +197,7 @@
 				spaceImageSource = LinkProvider.SPACE_DEFAULT_AVATAR_URL;
 			}
 		}
-	
-	  //ECMS declare variables - BEGIN
-	  //ECMS declare variables - END
-	  
-	  //def docTypeName = uicomponent.getDocTypeName();
-	  //def docSummary = uicomponent.getDocSummary();
-		//def docDownloadUrl = uicomponent.getDownloadLink();
-		//def docOpenUri = uicomponent.getCurrentDocOpenUri();
-		//def fileType = org.exoplatform.services.cms.impl.Utils.getFileType(currentNode);
-		//def escapedOwnerName = ownerName.replace("'", "\\'").replace("&#39;", "\\&#39;");
-		//def escapedActivityPostedTime = activityPostedTime.replace("'", "\\'").replace("&#39;", "\\&#39;");
-		//def escapedActivityStatus = activityStatus != null ? StringEscapeUtils.escapeHtml(activityStatus.replace("'", "\\'").replace("&#39;", "\\&#39;")) : "";
-		//def docPreviewUri = "javascript:require(['SHARED/social-ui-activity'], function(activity) {activity.previewDoc({doc: {id:'" + currentNode.getUUID() + "', repository:'" + repository + "', workspace:'" + preferenceWS + "', path:'" + currentNode.getPath() + "', title:'" + currentNode.getName() + "', downloadUrl:'" + docDownloadUrl + "', openUrl:'" + docOpenUri + "'}, author: {username:'" + ownerIdentity.getRemoteId() + "', fullname:'" + escapedOwnerName + "', avatarUrl:'" + ownerAvatar + "', profileUrl:'" + ownerUri + "'}, activity: {id: '" + activity.id + "', postTime:'" + escapedActivityPostedTime + "', status: '" + escapedActivityStatus + "', liked: " + uicomponent.isLiked() + ", likes: " + identityLikesNum + "}})})";
-		//def docFolderRelativePath = uicomponent.getDocFolderRelativePath();
-		//def docFolderBreadCrumb = uicomponent.getDocFolderRelativePathWithLinks();
-	  //def description = uicomponent.getSummary(currentNode); 
-    //description = ContentReader.simpleEscapeHtml(description);
-
-	  //def openInOfficeConnector = WCMCoreUtils.getService(OpenInOfficeConnector.class);
-	  //def _documentInfos = openInOfficeConnector.getDocumentInfos(currentNode.getName());
-
-	  //def remoteEditClass=_documentInfos[1];
-	  //def remoteEditTitle=_ctx.appRes(_documentInfos[0]);
-		// TODO <<< comment it out as not required
-	
-	  // END ECMS
+		// END ECMS
 	%>
 	
 	<div class="activityStream uiContentActivity fileActivity" id="activityContainer${activity.id}">
@@ -299,16 +274,16 @@
 	          	def labelHasSavedFile = _ctx.appRes("Outlook.label.hasSavedFile")
 	          	if (file.isExists()) {
 								if (file.isImage()) { %>
-	            <div id="MediaContent${activity.id}" class=" pull-left mediaContent" rel="tooltip" data-placement="bottom" data-original-title="$activityTitle">
-						   <a href="${file.link}" style="cursor:pointer"  rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
+	            <div id="MediaContent${activity.id}" class="pull-left mediaContent" rel="tooltip" data-placement="bottom" data-original-title="$activityTitle">
+						   <a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}" style="cursor:pointer" data-placement="bottom" data-original-title="${file.title}">
 								<span><img src="${file.thumbnailImageLink}" onerror="var self = this; require(['SHARED/wcm-utils'], function(wcmutil) { wcmutil.WCMUtils.loadFallbackImage(self); });" alt="${file.title}" /></span>
 								<span class="fallbackImage" style="display: none;"><i class="${file.cssClassIcon}"></i></span>
 								<button class="btn btn-large btn-block doc-preview-thumbnail-footer" type="button"><%=_ctx.appRes("SocialIntegration.preview");%></button>
 						   </a>
-						 </div>
+						 	</div>
 							<%} else if(file.isSupportThumbnailView()){%>
 	            <div id="MediaContent${activity.id}" class="pull-left mediaContent docTypeContent">
-	              <a href="${file.link}" rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
+	              <a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}" rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
 	              	<span><img src="${file.thumbnailImageLink}" onerror="var self = this; require(['SHARED/wcm-utils'], function(wcmutil) { wcmutil.WCMUtils.loadFallbackImage(self); });" alt="${file.title}"/></span>
 									<span class="fallbackImage" style="display: none;"><i class="${file.cssClassIcon}"></i></span>
 									<button class="btn btn-large btn-block doc-preview-thumbnail-footer" type="button"><%=_ctx.appRes("SocialIntegration.preview");%></button>
@@ -320,7 +295,7 @@
 		          </div>
 		        	<%} else { %>
 	            <div id="MediaContent${activity.id}" class="fileTypeContent">
-	              <a href="${file.link}"  data-original-title="${file.title}" rel="tooltip" data-placement="bottom"><i class="${file.cssClassIcon}"></i></a>
+	              <a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}" rel="tooltip" data-original-title="${file.title}" data-placement="bottom"><i class="${file.cssClassIcon}"></i></a>
 	          	</div>
 	          	<%}
 						    rcontext.getJavascriptManager().require("SHARED/openDocumentInOffice", "od")
@@ -328,7 +303,7 @@
 	          	%>
 	          	<div class="text">
 		            <div class="attachmentInfo"><a title="$ownerName" href="$ownerUri">$ownerName</a> $labelHasSavedFile</div>
-		            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${file.title}" href="${file.link}"> ${file.title} </a>
+		            <a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${file.title}" href="${file.openLink}"> ${file.title} </a>
 		            <div class="descriptionText">${file.summary}</div>
 		            <div class="inforFile">				        
 									<div class="versionFile">	
@@ -363,7 +338,7 @@
 		            for (f in files) {
 		            	if (f.isExists()) {%>
 			             	<li>
-			             		<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${f.title}" href="${f.link}"> ${f.title} </a>
+			             		<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="${f.title}" href="javascript:void(0)" onclick="${f.getPreviewLink(_ctx)}"> ${f.title} </a>
 			             	</li>
 		          	<%} else {%>
 		          			<li>
@@ -409,11 +384,10 @@
 						 	/* ============== Adaptation for Outlook message file download ============== */
 		          if (file && file.isExists()) {
 								if (file.isSupportPreview()) { 
-						%> 	<li><a href="${file.viewLink}"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
-							<%} else { %>
+						%> 	<li><a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
+							<%}%>
 		          	<li><a href="${file.downloadLink}"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
-		          <%}
-							}
+						<%}
 							/* =========================== */ %>
 						 </ul>
 					</div><!--end actionBar-->

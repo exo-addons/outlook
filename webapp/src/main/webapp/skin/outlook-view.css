@@ -9,9 +9,10 @@
   position:absolute;
   left:0;
   top:0;
-  background:linear-gradient(transparent 100px, white);
+  background: linear-gradient(transparent 100px, white);
+  background: -webkit-linear-gradient(top, rgba(255,255,255,0) 100px, white);
   cursor:pointer;
-  z-index: 20;
+  z-index: auto;
 }
 
 .outlookMessageActivityContent .outlookMessageIframe {
@@ -39,10 +40,17 @@
 	height: 400px;
 }
 
-.outlookMessageActivityContent .outlookMessageViewer {
+#documentPreviewContainer .outlookMessageViewer {
+	height: 90%;
+  padding: 12px;
+  background-color: white;
+}
+
+.outlookMessageActivityContent .outlookMessageViewer, .outlookMessageActivityContent .outlookMessageViewer .messageBody {
 	height: 200px !important;
 }
 
+/** NOT USED */
 .outlookMessagePreview .messageFooter {
 	height: 25px;
   max-height: 3%;
@@ -57,12 +65,9 @@
 	display: none;
 }
 
+/** NOT USED */
 .outlookMessagePreview .messageBody {
 	height: 97%;
-}
-
-.outlookMessageActivityContent .messageBody, .UIDocumentWorkspace .messageBody {
-	height: 100%;
 }
 
 .messageBody {
@@ -72,24 +77,11 @@
 	padding-left: 7px;
 	min-width: 100%;
 	max-height: 100%;
+	height: 100%;
 	border-width: 0px 0px 0px 12px;
 	border-style: solid;
 	border-color: #999999;
 	background-color: white;
-}
-
-.messageBody_NOT_USED:before {
-	top: 0px;
-	left: -17px;
-	bottom: 0;
-	right: 2px;
-	height: 100%;
-	content: "";
-	position: absolute;
-	border-width: 0px 0px 0px 12px;
-	border-style: solid;
-	border-color: #999999;
-	z-index: 10;
 }
 
 .attachmentFiles {

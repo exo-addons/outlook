@@ -19,15 +19,26 @@
  */
 package org.exoplatform.outlook.social;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.ecm.webui.component.explorer.UIJCRExplorer;
 import org.exoplatform.ecm.webui.component.explorer.UIJcrExplorerContainer;
 import org.exoplatform.outlook.OutlookService;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.rest.ApplicationContext;
+import org.exoplatform.services.rest.impl.ApplicationContextImpl;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIApplication;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.Session;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  * Created by The eXo Platform SAS
@@ -57,6 +68,46 @@ public class OutlookMessageFileFilter extends org.exoplatform.webui.ext.filter.i
         if (jcrExplorerContainer != null) {
           UIJCRExplorer jcrExplorer = jcrExplorerContainer.getChild(UIJCRExplorer.class);
           contextNode = jcrExplorer.getCurrentNode();
+        }
+      }
+
+      if (contextNode == null) {
+        // XXX in Platform 4.4 we rely on ContentViewerRESTService for activity preview in portal which does a
+        // nasty thing inside:
+        // it constructs a portal request objects and simulate with them a WebUI rendering on directly
+        // instantiated UIDocViewer object, then return the markup in the response.
+        // We cannot inject in any place here to add Node instance to the UIDocViewer object
+        // context before its rendering call in the REST service.
+        // Thus we'll check here isn't a GET call to this REST service using eXo WS internals
+        ApplicationContext restContext = ApplicationContextImpl.getCurrent();
+        if (restContext != null && restContext.getContainerRequest().getMethod().equals(HttpMethod.GET)
+            && restContext.getPath().startsWith("/contentviewer")) {
+          // we are in ContentViewerRESTService request here, get the request node and use it for test below
+          MultivaluedMap<String, String> pathParams = restContext.getPathParameters();
+          if (pathParams != null) {
+            List<String> repoNameList = pathParams.get("repoName");
+            List<String> workspaceNameList = pathParams.get("workspaceName");
+            List<String> uuidList = pathParams.get("uuid");
+            if (repoNameList != null && !repoNameList.isEmpty() && workspaceNameList != null && !workspaceNameList.isEmpty()
+                && workspaceNameList != null && !workspaceNameList.isEmpty()) {
+              String repoName = repoNameList.get(0);
+              String workspaceName = workspaceNameList.get(0);
+              String uuid = uuidList.get(0);
+              // here we could check more precise about the REST method (via exact path order
+              // repoName/workspace/uuid), but so far the service has
+              // only a single method - an one we want detect here
+              // if (restPath.startsWith(new StringBuilder("/contentviewer/").append(repoName).toString())) {
+              RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);
+              ManageableRepository repository = repositoryService.getCurrentRepository();
+              // obviously repoName should be the save as the current one
+              if (repository.getConfiguration().getName().equals(repoName)) {
+                SessionProviderService service = CommonsUtils.getService(SessionProviderService.class);
+                SessionProvider sessionProvider = service.getSystemSessionProvider(null);
+                Session session = sessionProvider.getSession(workspaceName, repository);
+                contextNode = session.getNodeByUUID(uuid);
+              }
+            }
+          }
         }
       }
     }

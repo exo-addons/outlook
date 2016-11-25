@@ -20,11 +20,15 @@
 package org.exoplatform.outlook.social;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.forum.common.CommonUtils;
+import org.exoplatform.outlook.jcr.ContentLink;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -36,6 +40,7 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by The eXo Platform SAS
@@ -68,12 +73,29 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
   public String getWebdavLink() throws Exception {
     final Node node = getCurrentNode();
     if (node != null) {
-      PortletRequestContext portletRequestContext = WebuiRequestContext.getCurrentInstance();
-      PortletRequest portletRequest = portletRequestContext.getRequest();
+      String baseURI;
+      RequestContext requestContext = WebuiRequestContext.getCurrentInstance();
+      if (PortletRequestContext.class.isAssignableFrom(requestContext.getClass())) {
+        PortletRequestContext portletRequestContext = PortletRequestContext.class.cast(requestContext);
+        PortletRequest portletRequest = portletRequestContext.getRequest();
+        baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
+            + String.format("%s", portletRequest.getServerPort());
+      } else if (PortalRequestContext.class.isAssignableFrom(requestContext.getClass())) {
+        PortalRequestContext portalRequestContext = PortalRequestContext.class.cast(requestContext);
+        HttpServletRequest httpRequest = portalRequestContext.getRequest();
+        baseURI = httpRequest.getScheme() + "://" + httpRequest.getServerName() + ":"
+            + String.format("%s", httpRequest.getServerPort());
+      } else {
+        // should not happen here as this code always will run in portal or portlet request
+        baseURI = System.getProperty(ContentLink.EXO_BASE_URL);
+        if (baseURI == null) {
+          LOG.warn("Cannot construct a base URL of WebDav link for " + node.getPath() + ". Is it a portal/portlet request?");
+          baseURI = CommonUtils.EMPTY_STR; // it will be a relative URL
+        }
+      }
+
       String repository = ((ManageableRepository) node.getSession().getRepository()).getConfiguration().getName();
       String workspace = node.getSession().getWorkspace().getName();
-      String baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
-          + String.format("%s", portletRequest.getServerPort());
 
       FriendlyService friendlyService = WCMCoreUtils.getService(FriendlyService.class);
 
@@ -102,5 +124,22 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
       return "#"; // should not happen here
     }
   }
+
+  // TODO cleanup
+  // /**
+  // * {@inheritDoc}
+  // */
+  // @Override
+  // public void processRender(WebuiRequestContext context) throws Exception {
+  // // init script for UI support once
+  // Object init = context.getAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED);
+  // if (init == null || Boolean.FALSE.equals(init)) {
+  // context.setAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED, Boolean.TRUE);
+  // JavascriptManager jsManager = context.getJavascriptManager();
+  // jsManager.require("SHARED/outlookView", "outlookView");
+  // }
+  //
+  // super.processRender(context);
+  // }
 
 }

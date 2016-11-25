@@ -98,10 +98,6 @@ body {
 	color: #ffb900;
 }
 
-/*.showLogoutLink:visited, .brandLink:visited {
-	color: #ffb900;
-}*/
-
 .showLogout {
 	float: right;	
 	margin-top: 2px;
@@ -339,6 +335,7 @@ div.form-buttons {
 	left: 0;
 	top: 0;
 	background: linear-gradient(transparent 25px, white);
+	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 25px, white);
 }
 
 .messageEditor, .statusText, .topicText {

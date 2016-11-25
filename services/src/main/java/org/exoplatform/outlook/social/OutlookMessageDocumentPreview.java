@@ -38,6 +38,7 @@ import javax.jcr.Node;
  */
 @ComponentConfig(template = "classpath:groovy/ecm/social-integration/UIDocumentPreview.gtmpl",
                  events = { @EventConfig(listeners = UIDocumentPreview.CloseActionListener.class) })
+@Deprecated // TODO not used
 public class OutlookMessageDocumentPreview extends UIDocumentPreview {
 
   public OutlookMessageDocumentPreview() throws Exception {

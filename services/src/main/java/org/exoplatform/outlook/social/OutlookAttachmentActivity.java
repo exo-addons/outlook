@@ -20,29 +20,38 @@
 package org.exoplatform.outlook.social;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
+import org.exoplatform.services.cms.documents.DocumentService;
 import org.exoplatform.services.cms.documents.TrashService;
+import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.wcm.core.NodeLocation;
 import org.exoplatform.services.wcm.core.NodetypeConstant;
 import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
+import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
+import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
@@ -112,6 +121,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookAttachmentActivity.class);
 
+  @Deprecated // TODO not used 
   public static class ViewDocumentActionListener extends EventListener<OutlookAttachmentActivity> {
     @Override
     public void execute(Event<OutlookAttachmentActivity> event) throws Exception {
@@ -131,6 +141,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
         OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
                                                                                    null,
                                                                                    "UIDocumentPreview");
+
         preview.setBaseUIActivity(activity);
         preview.setContentInfo(file.getPath(), repository.getConfiguration().getName(), activity.getWorkspace(), file);
 
@@ -368,7 +379,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
                 } else if (imageWidth == imageHeight && imageHeight > defaultDimension) {
                   imageWidth = imageHeight = 300;
                 }
-                
+
                 link.append("/thumbnailImage/custom/");
                 link.append(imageWidth);
                 link.append('x');
@@ -392,7 +403,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
             } catch (Exception e) {
               LOG.warn("Cannot read image node " + node + ":" + e.getMessage());
               // large is 300x300 as documented in ThumbnailRESTService
-              //link.append("/thumbnailImage/custom/300x300/");
+              // link.append("/thumbnailImage/custom/300x300/");
               link.append("/thumbnailImage/large/");
             }
 
@@ -412,13 +423,40 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    public String getOpenLink() {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return util.getDocOpenUri(node);
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting document open link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    public String getPreviewLink(WebuiBindingContext ctx) {
+      Node node = null;
+      try {
+        node = node();
+        if (node != null) {
+          return util.getPreviewLink(ctx, OutlookAttachmentActivity.this, node);
+        }
+      } catch (Exception e) {
+        LOG.error("Error getting document preview link " + node, e);
+      }
+      return StringUtils.EMPTY;
+    }
+
+    @Deprecated // TODO NOT used in PLF 4.4
     public String getViewLink() {
       Node node = null;
       try {
         node = node();
         if (node != null) {
           if (isSupportPreview()) {
-            return event("ViewDocument", getId(), node.getUUID());
+            return event("ViewDocument", getId(), fileUUID);
           } else {
             // TODO do we want "edit" functionality here? what could be else?
             return org.exoplatform.wcm.webui.Utils.getEditLink(node, false, false);
@@ -430,6 +468,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    @Deprecated // TODO NOT used in PLF 4.4
     public String getLink() throws Exception {
       return isSupportPreview() ? getViewLink() : getDownloadLink();
     }
@@ -533,9 +572,15 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
   protected ManageableRepository repository;
 
+  protected DocumentService      documentService;
+  
+  protected final OutlookActivitySupport util;
+
   public OutlookAttachmentActivity() throws Exception {
-    RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
+    RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);
     this.repository = repositoryService.getCurrentRepository();
+    this.documentService = CommonsUtils.getService(DocumentService.class);
+    this.util = new OutlookActivitySupport(documentService, repository);
   }
 
   public List<Attachment> getFiles() throws RepositoryException, RepositoryConfigurationException {

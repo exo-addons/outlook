@@ -99,7 +99,7 @@
   def activityStatus = uicomponent.getActivityStatus();
   def contentName = uicomponent.getContentName();
   def activityContentTitle = Text.unescapeIllegalJcrChars(activity.title);
-  def contentActivityUri =  uicomponent.getViewLink();
+  def contentActivityUri =  uicomponent.getPreviewLink(_ctx);
   def mimeType = uicomponent.getMimeType();
   
   //
@@ -305,14 +305,14 @@
 					<div class="clearfix isPreviewable">
           	<div class="text">
 							<%if (currentNode) {%>
-							<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$activityContentTitle" href="$contentActivityUri"> $activityContentTitle </a>
+							<a class="linkTitle" rel="tooltip" data-placement="bottom" data-original-title="$activityContentTitle" href="${uicomponent.currentDocOpenUri}"> $activityContentTitle </a>
 							<%} else {%>
 							<span>$activityStatus</span><!-- TODO -->
 							<%}%>
 							<div class="descriptionText">$description</div><!-- TODO -->		
 						</div><!--end text-->
           
-          	<div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer" data-activitylink="$contentActivityUri">
+          	<div id="MediaContent${activity.id}" class="outlookMessageActivityContent PlayerContianer" onclick="$contentActivityUri">
 							<% uicomponent.renderContentPresentation() %>
 					 	</div>
 					</div>	
@@ -350,12 +350,11 @@
 						<li style="display:none;" ><a href="<%=uicomponent.event("OpenFile")%>"><i class="uiIcon16x16FileDefault uiIconEcmsOpenDocument_$activity.id $remoteEditClass" ></i>&nbsp;$remoteEditTitle</a></li>
 				 	<%}%>
 					<% if (uicomponent.isFileSupportPreview(currentNode)) { %>
-						<li><a href="$contentActivityUri"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
+						<li><a onclick="$contentActivityUri" href="javascript:void(0)"><i class="uiIconWatch uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.view");%></a></li>
 					<% }%>
 						<li><a href="$downloadLink"><i class="uiIconDownload uiIconLightGray"></i>&nbsp;<%=_ctx.appRes("SocialIntegration.download");%></a></li>
 					 </ul>
 				</div><!--end actionBar-->
-				
 				
 				<% if (identityLikesNum > 0 || uicomponent.isLiked()) {%>
 				  <div class="listLikedBox $listPeopleBGClass">		
@@ -382,8 +381,6 @@
 		          </div>
 		      </div>
 		    <%}%>
-
-
 
 				<div id="CommentBlockBound${activity.id}" class="commentBox">					
 					  <% if (uicomponent.commentListToggleable()) {
