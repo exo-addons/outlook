@@ -11,12 +11,10 @@
 	function initIOSPreviewFrame() {
 		if (!previewListener && isIOS) {
 			$("body").on("DOMNodeInserted", "div#documentPreviewContainer", function(event) {
-				//console.log("DOMNodeInserted " + event.type + " " + event.target);
 				if (!previewWorker) {
 					// XXX We need special behaviour for iOS devices about iframe scrolling, as suggested in
 					// http://stackoverflow.com/questions/4599153/iframes-and-the-safari-on-the-ipad-how-can-the-user-scroll-the-content
 					previewWorker = setTimeout(function() {
-						//console.log("messageBody fixed " + event.target);
 						$(event.target).find("#uiDocumentPreview .outlookMessageViewer .messageBody").css({
 						  // width : $this.attr('width'),
 						  // height : $this.attr('height'),
@@ -54,9 +52,6 @@
 								});
 								$messageBody.click(function(event) {
 									event.stopPropagation();
-									// TODO cleanup
-									// var activitylink = $activity.data('activitylink');
-									// eval(activitylink);
 									$activity.click();
 								});
 							});
