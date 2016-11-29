@@ -305,10 +305,6 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.error             error;
 
   @Inject
-  @Path("errorMessage.gtmpl")
-  org.exoplatform.outlook.portlet.templates.errorMessage      errorMessage;
-
-  @Inject
   ResourceBundle                                              i18n;
 
   @Inject

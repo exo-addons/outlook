@@ -34,7 +34,7 @@
 	<% 	} else { %>
 	<div id="outlook-no-menu">&{Outlook.homeNoActionsAvailable}</div>
 	<%	} %>
-	<div id="outlook-brand-bar" class="ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+	<div id="outlook-brand-bar" class="ms-bgColor-themePrimary ms-borderColor-themePrimary">
 		<ul class="brandBar ms-font-m">
 			<li class="brand">
 				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover brandLink" href="/portal" target="_blank">

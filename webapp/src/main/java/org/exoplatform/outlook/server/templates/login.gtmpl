@@ -20,7 +20,7 @@
 	
 	<!-- Welcome screen -->
 	<div id="welcomePage" class="ms-Grid">
-		<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+		<div class="ms-Grid-row ms-bgColor-themePrimary ms-borderColor-themePrimary">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
 				<img src="images/exo-icon-64.png" class="welcomeIcon">
@@ -30,7 +30,7 @@
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 		</div>
-		<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+		<div class="ms-Grid-row ms-bgColor-themePrimary ms-borderColor-themePrimary">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
 				<div class="ms-Dialog-header welcomeHeader">
@@ -157,7 +157,7 @@
 		</div>
 	</div>
 	
-	<div id="signInProgress" class="ms-Grid ms-bgColor-themeDarkAlt ms-borderColor-themeDark" style="display: none;">
+	<div id="signInProgress" class="ms-Grid ms-bgColor-themePrimary ms-borderColor-themePrimary" style="display: none;">
 		<div class="text-centered signingIn">
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered">
@@ -167,7 +167,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="ms-Grid-row ms-bgColor-themeDarkAlt ms-borderColor-themeDark">
+			<div class="ms-Grid-row"> <!-- ms-bgColor-themeDarkAlt ms-borderColor-themeDark -->
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered ms-font-m-plus ">
 					<div class="ms-Spinner ms-Spinner--large ms-fontColor-themeLighterAlt progressSpinner" style="display: inline-block;"></div>
 					<div class="ms-fontColor-themeLight">&{Outlook.login.signingIn}</div>
