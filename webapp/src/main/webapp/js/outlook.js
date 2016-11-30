@@ -104,6 +104,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 			} // else, already added
 		}
 	}
+	
+	var isIOS = /iPhone|iPod|iPad/.test(navigator.userAgent);
 
 	Office.initialize = function(reason) {
 
@@ -1607,8 +1609,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									process.reject(response, status, jqXHR);
 								} else {
 									clearError();
-									$container.data("menu-name", menuName);
 									// know last loaded
+									$container.data("menu-name", menuName);
+									// XXX force iOS don't use native style for inputs (shadow on upper border) 
+									if (isIOS) {
+										$container.find("input[type='text'], textarea").css({
+										  "-webkit-appearance" : "none"
+										});
+									}
 									try {
 										var commandFunc = menuName + "Init";
 										if (eval("typeof " + commandFunc + " === 'function'")) {

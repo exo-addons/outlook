@@ -86,6 +86,10 @@ body {
 	list-style: none;
 }
 
+.brandBar a, .brandBar a:visited {
+	text-decoration: none;
+}
+
 .brand, .showLogout {
 	display: inline-block;
 }
