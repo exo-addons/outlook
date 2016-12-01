@@ -101,6 +101,7 @@ public class Outlook {
   /** . */
   public final static String  SOURCE_ID_ALL_SPACES      = "*";
 
+  /** The Constant SOURCE_ID_PERSONAL. */
   public final static String  SOURCE_ID_PERSONAL        = "PERSONAL_DOCUMENTS";
 
   /** . */
@@ -130,39 +131,81 @@ public class Outlook {
   /** . */
   private final static String DOMAIN_ATTRIBUTE_NAME     = "Domain";
 
+  /** The Constant LOG. */
   private static final Log    LOG                       = ExoLogger.getLogger(Outlook.class);
 
+  /**
+   * The Class UserStatus.
+   */
   public class UserStatus extends ActivityStatus {
 
+    /**
+     * Instantiates a new user status.
+     *
+     * @param userTitle the user title
+     * @param spaceName the space name
+     * @param link the link
+     */
     protected UserStatus(String userTitle, String spaceName, String link) {
       super(userTitle, spaceName, link);
     }
 
+    /**
+     * Gets the converted to space activity.
+     *
+     * @return the converted to space activity
+     */
     public String getConvertedToSpaceActivity() {
       String msg = i18n.getString("Outlook.convertedToSpaceActivity");
       return msg.replace("{SPACE_NAME}", spaceName);
     }
   }
 
+  /**
+   * The Class UserWikiPage.
+   */
   public class UserWikiPage extends WikiPage {
 
+    /** The space name. */
     final String spaceName;
 
+    /**
+     * Instantiates a new user wiki page.
+     *
+     * @param id the id
+     * @param title the title
+     * @param link the link
+     * @param spaceName the space name
+     */
     protected UserWikiPage(String id, String title, String link, String spaceName) {
       super(id, title, link);
       this.spaceName = spaceName;
     }
 
+    /**
+     * Instantiates a new user wiki page.
+     *
+     * @param id the id
+     * @param title the title
+     * @param link the link
+     */
     protected UserWikiPage(String id, String title, String link) {
       this(id, title, link, null);
     }
 
+    /**
+     * Gets the converted to space wiki.
+     *
+     * @return the converted to space wiki
+     */
     public String getConvertedToSpaceWiki() {
       String msg = i18n.getString("Outlook.convertedToSpaceWiki");
       return msg.replace("{SPACE_NAME}", spaceName);
     }
 
     /**
+     * Checks if is in space.
+     *
      * @return the isSpace
      */
     public boolean isInSpace() {
@@ -170,30 +213,61 @@ public class Outlook {
     }
   }
 
+  /**
+   * The Class UserForumTopic.
+   */
   public class UserForumTopic extends ForumTopic {
 
+    /** The space name. */
     final String spaceName;
 
+    /**
+     * Instantiates a new user forum topic.
+     *
+     * @param id the id
+     * @param title the title
+     * @param link the link
+     * @param spaceName the space name
+     */
     protected UserForumTopic(String id, String title, String link, String spaceName) {
       super(id, title, link);
       this.spaceName = spaceName;
     }
 
+    /**
+     * Instantiates a new user forum topic.
+     *
+     * @param id the id
+     * @param title the title
+     * @param link the link
+     */
     protected UserForumTopic(String id, String title, String link) {
       this(id, title, link, null);
     }
 
+    /**
+     * Gets the converted to space forum.
+     *
+     * @return the converted to space forum
+     */
     public String getConvertedToSpaceForum() {
       String msg = i18n.getString("Outlook.convertedToSpaceForum");
       return msg.replace("{SPACE_NAME}", spaceName);
     }
 
+    /**
+     * Gets the started topic in space forum.
+     *
+     * @return the started topic in space forum
+     */
     public String getStartedTopicInSpaceForum() {
       String msg = i18n.getString("Outlook.startedTopicInSpaceForum");
       return msg.replace("{SPACE_NAME}", spaceName);
     }
 
     /**
+     * Checks if is in space.
+     *
      * @return the isSpace
      */
     public boolean isInSpace() {
@@ -201,119 +275,153 @@ public class Outlook {
     }
   }
 
+  /** The preferences. */
   @Inject
   Provider<PortletPreferences>                                preferences;
 
+  /** The outlook. */
   @Inject
   OutlookService                                              outlook;
 
+  /** The remember me tokens. */
   @Inject
   CookieTokenService                                          rememberMeTokens;
 
+  /** The outlook tokens. */
   @Inject
   OutlookTokenService                                         outlookTokens;
 
+  /** The content link. */
   @Inject
   ContentLink                                                 contentLink;
 
+  /** The index. */
   @Inject
   @Path("index.gtmpl")
   org.exoplatform.outlook.portlet.templates.index             index;
 
+  /** The save attachment. */
   @Inject
   @Path("saveAttachment.gtmpl")
   org.exoplatform.outlook.portlet.templates.saveAttachment    saveAttachment;
 
+  /** The saved attachment. */
   @Inject
   @Path("savedAttachment.gtmpl")
   org.exoplatform.outlook.portlet.templates.savedAttachment   savedAttachment;
 
+  /** The folders. */
   @Inject
   @Path("folders.gtmpl")
   org.exoplatform.outlook.portlet.templates.folders           folders;
 
+  /** The files explorer. */
   @Inject
   @Path("filesExplorer.gtmpl")
   org.exoplatform.outlook.portlet.templates.filesExplorer     filesExplorer;
 
+  /** The files search. */
   @Inject
   @Path("filesSearch.gtmpl")
   org.exoplatform.outlook.portlet.templates.filesSearch       filesSearch;
 
+  /** The add folder dialog. */
   @Inject
   @Path("addFolderDialog.gtmpl")
   org.exoplatform.outlook.portlet.templates.addFolderDialog   addFolderDialog;
 
+  /** The add attachment. */
   @Inject
   @Path("addAttachment.gtmpl")
   org.exoplatform.outlook.portlet.templates.addAttachment     addAttachment;
 
+  /** The post status. */
   @Inject
   @Path("postStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postStatus        postStatus;
 
+  /** The posted status. */
   @Inject
   @Path("postedStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postedStatus      postedStatus;
 
+  /** The start discussion. */
   @Inject
   @Path("startDiscussion.gtmpl")
   org.exoplatform.outlook.portlet.templates.startDiscussion   startDiscussion;
 
+  /** The started discussion. */
   @Inject
   @Path("startedDiscussion.gtmpl")
   org.exoplatform.outlook.portlet.templates.startedDiscussion startedDiscussion;
 
+  /** The unified search. */
   @Inject
   @Path("unifiedSearch.gtmpl")
   org.exoplatform.outlook.portlet.templates.unifiedSearch     unifiedSearch;
 
+  /** The user info. */
   @Inject
   @Path("userInfo.gtmpl")
   org.exoplatform.outlook.portlet.templates.userInfo          userInfo;
 
+  /** The convert to status. */
   @Inject
   @Path("convertToStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertToStatus   convertToStatus;
 
+  /** The converted status. */
   @Inject
   @Path("convertedStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertedStatus   convertedStatus;
 
+  /** The convert to wiki. */
   @Inject
   @Path("convertToWiki.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertToWiki     convertToWiki;
 
+  /** The converted wiki. */
   @Inject
   @Path("convertedWiki.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertedWiki     convertedWiki;
 
+  /** The convert to forum. */
   @Inject
   @Path("convertToForum.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertToForum    convertToForum;
 
+  /** The converted forum. */
   @Inject
   @Path("convertedForum.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertedForum    convertedForum;
 
+  /** The home. */
   @Inject
   @Path("home.gtmpl")
   org.exoplatform.outlook.portlet.templates.home              home;
 
+  /** The error. */
   @Inject
   @Path("error.gtmpl")
   org.exoplatform.outlook.portlet.templates.error             error;
 
+  /** The i 18 n. */
   @Inject
   ResourceBundle                                              i18n;
 
+  /** The i 18 n JSON. */
   @Inject
   ResourceBundleSerializer                                    i18nJSON;
 
+  /** The all menu items. */
   private final Map<String, MenuItem>                         allMenuItems  = new LinkedHashMap<String, MenuItem>();
 
+  /** The root menu items. */
   private final Set<MenuItem>                                 rootMenuItems = new LinkedHashSet<MenuItem>();
 
+  /**
+   * Instantiates a new outlook.
+   */
   public Outlook() {
     addRootMenuItem(new MenuItem("home"));
     addRootMenuItem(new MenuItem("saveAttachment"));
@@ -335,11 +443,21 @@ public class Outlook {
     // addRootMenuItem(new MenuItem("userInfo"));
   }
 
+  /**
+   * Adds the root menu item.
+   *
+   * @param item the item
+   */
   private void addRootMenuItem(MenuItem item) {
     rootMenuItems.add(item);
     addMenuItem(item);
   }
 
+  /**
+   * Adds the menu item.
+   *
+   * @param item the item
+   */
   private void addMenuItem(MenuItem item) {
     allMenuItems.put(item.getName(), item);
     if (item.hasSubmenu()) {
@@ -349,6 +467,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * Index.
+   *
+   * @param command the command
+   * @param resourceContext the resource context
+   * @return the response
+   */
   @View
   public Response index(String command, RequestContext resourceContext) {
     Collection<MenuItem> menu = new ArrayList<MenuItem>();
@@ -384,6 +509,12 @@ public class Outlook {
     }
   }
 
+  /**
+   * Error.
+   *
+   * @param message the message
+   * @return the response
+   */
   @View
   public Response error(String message) {
     return error.with().message(message).ok();
@@ -391,6 +522,11 @@ public class Outlook {
 
   // ********** Logout *************
 
+  /**
+   * Logout.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response logout() {
@@ -408,6 +544,11 @@ public class Outlook {
 
   // ********** Home page **********
 
+  /**
+   * Home form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response homeForm() {
@@ -439,6 +580,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * Folders.
+   *
+   * @param groupId the group id
+   * @param path the path
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response folders(String groupId, String path) {
@@ -455,6 +603,11 @@ public class Outlook {
     }
   }
 
+  /**
+   * Adds the folder dialog.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response addFolderDialog() {
@@ -466,6 +619,14 @@ public class Outlook {
     }
   }
 
+  /**
+   * Adds the folder.
+   *
+   * @param groupId the group id
+   * @param path the path
+   * @param name the name
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response addFolder(String groupId, String path, String name) {
@@ -569,7 +730,9 @@ public class Outlook {
   // *************** Attach Document command ***********
 
   /**
-   * @return
+   * Adds the attachment form.
+   *
+   * @return the response
    */
   @Ajax
   @Resource
@@ -598,6 +761,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * Explore files.
+   *
+   * @param sourceId the source id
+   * @param path the path
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response exploreFiles(String sourceId, String path) {
@@ -713,6 +883,11 @@ public class Outlook {
 
   // *************** Post UserStatus command ***********
 
+  /**
+   * Post status form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response postStatusForm() {
@@ -724,6 +899,16 @@ public class Outlook {
     }
   }
 
+  /**
+   * Post status.
+   *
+   * @param groupId the group id
+   * @param message the message
+   * @param userName the user name
+   * @param userEmail the user email
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response postStatus(String groupId, String message, String userName, String userEmail, RequestContext context) {
@@ -757,6 +942,11 @@ public class Outlook {
 
   // *************** Start Discussion command ***********
 
+  /**
+   * Start discussion form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response startDiscussionForm() {
@@ -768,6 +958,17 @@ public class Outlook {
     }
   }
 
+  /**
+   * Start discussion.
+   *
+   * @param groupId the group id
+   * @param name the name
+   * @param text the text
+   * @param userName the user name
+   * @param userEmail the user email
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response startDiscussion(String groupId,
@@ -806,6 +1007,12 @@ public class Outlook {
 
   // *************** Search command ***********
 
+  /**
+   * Search form.
+   *
+   * @param httpContext the http context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response searchForm(HttpContext httpContext) {
@@ -819,6 +1026,13 @@ public class Outlook {
     }
   }
 
+  /**
+   * Search.
+   *
+   * @param sourceId the source id
+   * @param text the text
+   * @return the response
+   */
   @Ajax
   @Resource
   @Deprecated
@@ -853,6 +1067,11 @@ public class Outlook {
 
   // *************** OutlookUser info command ***********
 
+  /**
+   * User info form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response userInfoForm() {
@@ -866,6 +1085,11 @@ public class Outlook {
 
   // *************** Convert To UserStatus command ***********
 
+  /**
+   * Convert to status form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToStatusForm() {
@@ -877,6 +1101,22 @@ public class Outlook {
     }
   }
 
+  /**
+   * Convert to status.
+   *
+   * @param groupId the group id
+   * @param messageId the message id
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
+   * @param userEmail the user email
+   * @param fromName the from name
+   * @param fromEmail the from email
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToStatus(String groupId,
@@ -918,6 +1158,16 @@ public class Outlook {
     }
   }
 
+  /**
+   * Gets the message.
+   *
+   * @param ewsUrl the ews url
+   * @param userEmail the user email
+   * @param userName the user name
+   * @param messageId the message id
+   * @param messageToken the message token
+   * @return the message
+   */
   @Ajax
   @Resource
   public Response getMessage(String ewsUrl, String userEmail, String userName, String messageId, String messageToken) {
@@ -948,6 +1198,11 @@ public class Outlook {
 
   // *************** Convert To Wiki command ***********
 
+  /**
+   * Convert to wiki form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToWikiForm() {
@@ -959,6 +1214,22 @@ public class Outlook {
     }
   }
 
+  /**
+   * Convert to wiki.
+   *
+   * @param groupId the group id
+   * @param messageId the message id
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
+   * @param userEmail the user email
+   * @param fromName the from name
+   * @param fromEmail the from email
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToWiki(String groupId,
@@ -1003,6 +1274,11 @@ public class Outlook {
 
   // *************** Convert To Forum command ***********
 
+  /**
+   * Convert to forum form.
+   *
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToForumForm() {
@@ -1014,6 +1290,22 @@ public class Outlook {
     }
   }
 
+  /**
+   * Convert to forum.
+   *
+   * @param groupId the group id
+   * @param messageId the message id
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
+   * @param userEmail the user email
+   * @param fromName the from name
+   * @param fromEmail the from email
+   * @param context the context
+   * @return the response
+   */
   @Ajax
   @Resource
   public Response convertToForum(String groupId,
@@ -1059,6 +1351,13 @@ public class Outlook {
 
   // *************** Post-Login *************
 
+  /**
+   * Rememberme.
+   *
+   * @param context the context
+   * @return the response
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   @Ajax
   @Resource
   public Response rememberme(RequestContext context) throws IOException {
@@ -1127,11 +1426,24 @@ public class Outlook {
 
   // ***************** internals *****************
 
+  /**
+   * Error message.
+   *
+   * @param text the text
+   * @param status the status
+   * @return the response
+   */
   Response errorMessage(String text, int status) {
     return Response.content(status, text != null ? text : "");
     // return errorMessage.with().message(text != null ? text : "").status(status);
   }
 
+  /**
+   * User menu item.
+   *
+   * @param item the item
+   * @return the menu item
+   */
   MenuItem userMenuItem(MenuItem item) {
     MenuItem userItem = item.clone();
     userItem.setTitle(i18n.getString(new StringBuilder("Outlook.command.").append(userItem.name).toString()));
@@ -1143,6 +1455,9 @@ public class Outlook {
     return userItem;
   }
 
+  /**
+   * Full logout.
+   */
   void fullLogout() {
     // XXX repeating logic of UIPortal.LogoutActionListener
     PortalRequestContext prContext = Util.getPortalRequestContext();
@@ -1185,6 +1500,21 @@ public class Outlook {
     res.addCookie(rememberMeOutlookCookie);
   }
 
+  /**
+   * Message.
+   *
+   * @param user the user
+   * @param messageId the message id
+   * @param fromEmail the from email
+   * @param fromName the from name
+   * @param created the created
+   * @param modified the modified
+   * @param subject the subject
+   * @param body the body
+   * @return the outlook message
+   * @throws OutlookException the outlook exception
+   * @throws ParseException the parse exception
+   */
   private OutlookMessage message(OutlookUser user,
                                  String messageId,
                                  String fromEmail,
@@ -1202,6 +1532,11 @@ public class Outlook {
     return message;
   }
 
+  /**
+   * Request command.
+   *
+   * @return the string
+   */
   private String requestCommand() {
     PortalRequestContext portalRequest = Util.getPortalRequestContext();
     if (portalRequest != null) {
@@ -1211,6 +1546,16 @@ public class Outlook {
     return null;
   }
 
+  /**
+   * Builds the cookie value.
+   *
+   * @param name the name
+   * @param value the value
+   * @param domain the domain
+   * @param path the path
+   * @param maxAge the max age
+   * @return the string
+   */
   private static String buildCookieValue(String name, String value, String domain, String path, int maxAge) {
     StringBuilder sb = new StringBuilder(name).append(NAME_VALUE_DELIMITER);
     if (value != null && !value.isEmpty()) {
