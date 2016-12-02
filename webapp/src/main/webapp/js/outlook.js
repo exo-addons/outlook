@@ -513,9 +513,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				function convertToStatusInit() {
 					var $convertToStatus = $("#outlook-convertToStatus");
-					var $title = $convertToStatus.find("input[name='activityTitle']");
-					var $text = $convertToStatus.find("div.messageText");
-					var $editor = $convertToStatus.find("div.messageEditor");
+					var $title = $convertToStatus.find("textarea[name='activityTitle']");
+					var $viewer = $convertToStatus.find("div.messageViewerContainer");
+					var $subject = $viewer.find("div.messageSubject");
+					var $text = $viewer.find("div.messageText");
+					var $editor = $convertToStatus.find("div.messageEditorContainer");
+					var $editorSubject, $editorText;
 					var $form = $convertToStatus.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
 					var $groupId = $groupIdDropdown.find("select[name='groupId']");
@@ -532,10 +535,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$convertToStatus.find(".editMessageText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						$editor.append($text.children());
-						$text.hide();
+						$editorSubject = $editor.find("input[name='messageSubject']");
+						$editorSubject.val($subject.text());
+						$editorText = $editor.find("div.messageText");
+						$editorText.append($text.children());
+						$viewer.hide();
 						$editor.show();
-						$text = $editor;
 					});
 
 					// init spaces dropdown
@@ -552,11 +557,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 					var subject = Office.context.mailbox.item.subject;
 					if (internetMessageId) {
-						$title.val(subject);
+						$subject.text(subject);
 					} else {
 						Office.context.mailbox.item.subject.getAsync(function callback(asyncResult) {
 							if (asyncResult.status === "succeeded") {
-								$title.val(asyncResult.value);
+								$subject.text(asyncResult.value);
 							} else {
 								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: " //
 									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
@@ -587,11 +592,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										} else {
 											clearError();
 											groupId = groupId ? groupId : "";
-											//console.log(">> groupId: " + groupId);
-											//console.log(">> title: " + $title.val());
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
-											//console.log(">> convertToStatus textType: " + textType);
 											$convertButton.prop("disabled", false);
 											$form.submit(function(event) {
 												event.preventDefault();
@@ -611,8 +613,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 													$convertedInfo.jzLoad("Outlook.convertToStatus()", {
 														groupId : groupId,
 														messageId : mid,
-														subject : $title.val(),
-														body : $text.html(),
+														title : $title.val(),
+														subject : $editorSubject ? $editorSubject.val() : $subject.text(),
+														body : $editorText ? $editorText.html() : $text.html(),
 														created : formatISODate(created),
 														modified : formatISODate(modified),
 														userName : userName,

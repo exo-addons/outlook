@@ -206,7 +206,6 @@
      }
 	  
     def binarySrc = uicomponent.getWebdavURL();
-    def summary =  uicomponent.getSummary(currentNode);
     String repository = ((ManageableRepository)currentNode.getSession().getRepository()).getConfiguration().getName();
     def preferenceWS  = currentNode.getSession().getWorkspace().getName();
     
@@ -222,8 +221,6 @@
 	  String restContextName = org.exoplatform.ecm.webui.utils.Utils.getRestContextName(portalName);
 	  if(mimeType.equals("application/rss+xml")) mimeType="text/html";  
 	  //ECMS declare variables - END
-	  def docTypeName = uicomponent.getDocTypeName();
-	  def docSummary = uicomponent.getDocSummary();
 	  def downloadLink = uicomponent.getDownloadLink();
 	  def size = uicomponent.getSize(currentNode);
 	  def fileSize = uicomponent.getFileSize(currentNode);

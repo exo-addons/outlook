@@ -1106,6 +1106,7 @@ public class Outlook {
    *
    * @param groupId the group id
    * @param messageId the message id
+   * @param title the user message to the activity
    * @param subject the subject
    * @param body the body
    * @param created the created
@@ -1121,6 +1122,7 @@ public class Outlook {
   @Resource
   public Response convertToStatus(String groupId,
                                   String messageId,
+                                  String title,
                                   String subject,
                                   String body,
                                   String created,
@@ -1132,7 +1134,7 @@ public class Outlook {
                                   RequestContext context) {
     try {
       OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, title, subject, body);
 
       if (groupId != null && groupId.length() > 0) {
         // space activity requested
@@ -1219,6 +1221,7 @@ public class Outlook {
    *
    * @param groupId the group id
    * @param messageId the message id
+   * @param comment the comment
    * @param subject the subject
    * @param body the body
    * @param created the created
@@ -1245,7 +1248,7 @@ public class Outlook {
                                 RequestContext context) {
     try {
       OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, null, subject, body);
 
       if (groupId != null && groupId.length() > 0) {
         // space wiki requested
@@ -1321,7 +1324,7 @@ public class Outlook {
                                  RequestContext context) {
     try {
       OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, subject, body);
+      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, null, subject, body);
 
       if (groupId != null && groupId.length() > 0) {
         // space forum requested
@@ -1509,6 +1512,7 @@ public class Outlook {
    * @param fromName the from name
    * @param created the created
    * @param modified the modified
+   * @param title the title
    * @param subject the subject
    * @param body the body
    * @return the outlook message
@@ -1521,6 +1525,7 @@ public class Outlook {
                                  String fromName,
                                  String created,
                                  String modified,
+                                 String title,
                                  String subject,
                                  String body) throws OutlookException, ParseException {
     OutlookEmail from = outlook.getAddress(fromEmail, fromName);
@@ -1528,7 +1533,15 @@ public class Outlook {
     createdDate.setTime(OutlookMessage.DATE_FORMAT.parse(created));
     Calendar modifiedDate = Calendar.getInstance();
     modifiedDate.setTime(OutlookMessage.DATE_FORMAT.parse(modified));
-    OutlookMessage message = outlook.buildMessage(messageId, user, from, null, createdDate, modifiedDate, subject, body);
+    OutlookMessage message = outlook.buildMessage(messageId,
+                                                  user,
+                                                  from,
+                                                  null,
+                                                  createdDate,
+                                                  modifiedDate,
+                                                  title,
+                                                  subject,
+                                                  body);
     return message;
   }
 

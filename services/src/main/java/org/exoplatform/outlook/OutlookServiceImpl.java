@@ -1,18 +1,20 @@
 /*
  * Copyright (C) 2003-2016 eXo Platform SAS.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.exoplatform.outlook;
 
@@ -71,7 +73,6 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -443,12 +444,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           messagesFolder.save();
           message.setFileNode(messageFile);
 
+          String userMessage = message.getTitle();
+          userMessage = userMessage != null && userMessage.length() > 0 ? safeText(userMessage) : null;
+
           final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
           try {
             org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
             ExoSocialActivity activity =
                                        org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                                  "SocialIntegration.messages.createdBy",
+                                                                                                                  userMessage,
                                                                                                                   true,
                                                                                                                   false,
                                                                                                                   "",
@@ -721,12 +725,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       messagesFolder.save();
       message.setFileNode(messageFile);
 
+      String userMessage = message.getTitle();
+      userMessage = userMessage != null && userMessage.length() > 0 ? safeText(userMessage) : null;
+
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
         org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
         ExoSocialActivity activity =
                                    org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                              "SocialIntegration.messages.createdBy",
+                                                                                                              userMessage,
                                                                                                               true,
                                                                                                               false,
                                                                                                               "",
@@ -1191,12 +1198,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                      List<OutlookEmail> to,
                                      Calendar created,
                                      Calendar modified,
+                                     String title,
                                      String subject,
                                      String body) throws OutlookException {
     OutlookMessage message = new OutlookMessage(user);
     message.setId(id);
     message.setFrom(from);
     message.setTo(to);
+    message.setTitle(title);
     message.setSubject(subject);
     message.setBody(body);
     message.setCreated(created);

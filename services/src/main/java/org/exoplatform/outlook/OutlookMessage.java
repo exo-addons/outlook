@@ -39,7 +39,7 @@ import javax.jcr.Node;
  */
 public class OutlookMessage {
 
-  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
+  public static final DateFormat DATE_FORMAT        = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 
   /**
    * Date format was used when message was read in JS client.
@@ -51,9 +51,11 @@ public class OutlookMessage {
 
   protected OutlookEmail         from;
 
-  protected List<OutlookEmail>   to          = new ArrayList<OutlookEmail>();
+  protected List<OutlookEmail>   to                 = new ArrayList<OutlookEmail>();
 
   protected String               id;
+
+  protected String               title;
 
   protected String               subject;
 
@@ -70,6 +72,13 @@ public class OutlookMessage {
   protected OutlookMessage(OutlookUser user) {
     this.user = user;
     this.from = user;
+  }
+
+  /**
+   * @param title the title to set
+   */
+  protected void setTitle(String comment) {
+    this.title = comment;
   }
 
   /**
@@ -170,6 +179,13 @@ public class OutlookMessage {
    */
   public String getId() {
     return id;
+  }
+
+  /**
+   * @return the title
+   */
+  public String getTitle() {
+    return title;
   }
 
   /**

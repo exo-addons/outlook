@@ -103,6 +103,8 @@ public class OutlookMessageActivity extends FileUIActivity {
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
+  
+  public static final String FAKE_TITLE = "SocialIntegration.messages.createdBy";
 
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
 
@@ -129,6 +131,8 @@ public class OutlookMessageActivity extends FileUIActivity {
   protected static ThreadLocal<Boolean>  scriptInitialized = new ThreadLocal<Boolean>();
 
   protected DocumentService              documentService;
+
+  protected String                       message, activityStatus;
 
   protected final OutlookActivitySupport util;
 
@@ -263,29 +267,6 @@ public class OutlookMessageActivity extends FileUIActivity {
       rcontext.setAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED, Boolean.TRUE);
       JavascriptManager jsManager = rcontext.getJavascriptManager();
       jsManager.require("SHARED/outlookView", "outlookView");
-      // TODO cleanup
-      // jsManager.require("SHARED/jquery", "$")
-      // .addScripts("$(function() {\n" //
-      // // do in timeout to run after stream refresh (by user)
-      // + " setTimeout(function() {\n" //
-      // + " $('.outlookMessageActivityContent').each(function(ai, activity) {\n" //
-      // + " var $activity = $(activity);\n" //
-      // + " $activity.find('.outlookMessageIframe').each(function(ii, iframe) {\n" //
-      // + " var $iframe = $(iframe);\n" //
-      // + " $iframe.ready(function() {\n" //
-      // + " var $body = $iframe.contents().find('body,div:first');\n" //
-      // + " $body.first().css('overflow', 'hidden');\n" //
-      // + " });\n" //
-      // + " $iframe.parents('.messageBody').click(function(event) {\n" //
-      // + " event.stopPropagation();\n" //
-      // + " var activitylink = $activity.data('activitylink');\n" //
-      // + " eval(activitylink);\n" //
-      // + " });\n" //
-      // + " });\n" //
-      // + " });\n" //
-      // + " }, 1500);\n" //
-      // + "});\n" //
-      // );
     }
   }
 
@@ -310,6 +291,12 @@ public class OutlookMessageActivity extends FileUIActivity {
     }
   }
 
+  /**
+   * Gets the preview link.
+   *
+   * @param ctx the ctx
+   * @return the preview link
+   */
   public String getPreviewLink(WebuiBindingContext ctx) {
     Node node = null;
     try {
@@ -325,6 +312,28 @@ public class OutlookMessageActivity extends FileUIActivity {
       LOG.error("Error getting document preview link " + node, e);
     }
     return StringUtils.EMPTY;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String getActivityStatus() {
+    if (message == null || message.length() == 0) {
+      return activityStatus;
+    } else if (!FAKE_TITLE.equals(message)) {
+      return message;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setUIActivityData(Map<String, String> activityParams) {
+    this.message = activityParams.get(FileUIActivity.MESSAGE);
+    this.activityStatus = activityParams.get(FileUIActivity.ACTIVITY_STATUS);
+    super.setUIActivityData(activityParams);
   }
 
 }

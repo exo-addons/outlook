@@ -329,6 +329,7 @@ div.form-buttons {
 	overflow: hidden;
 	padding: 0px;
 	position: relative;
+	z-index: 0;
 }
 
 .messageText:before {
@@ -342,14 +343,24 @@ div.form-buttons {
 	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 25px, white);
 }
 
-.messageEditor, .statusText, .topicText {
+.messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
 	height: 200px;
 	overflow: auto;
 	padding: 0px;
 }
 
-.messageEditor {
+.messageEditor, .messageEditorContainer>.messageText {
 	max-height: 250px;
+}
+
+.messageSubject, .messageEditorContainer>input[name='messageSubject'] {
+	margin-bottom: -1px !important;
+}
+
+div.messageSubject {
+	font-size: 1.0em;
+	height: 2.4em;
+	overflow: hidden;
 }
 
 .statusText, .topicText {

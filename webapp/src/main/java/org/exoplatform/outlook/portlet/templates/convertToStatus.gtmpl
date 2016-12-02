@@ -16,7 +16,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="activityTitle" class="ms-Label">&{Outlook.activityTitle}</label>
-					<input name="activityTitle" class="ms-TextField-field" type="text">
+					<textarea name="activityTitle" class="ms-TextField-field"></textarea>
 					<span class="ms-TextField-description">&{Outlook.activityTitleDescription}</span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
@@ -24,12 +24,19 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-					<label for="activityText" class="ms-Label">
+					<label for="messageSubject" class="ms-Label">
 						&{Outlook.activityText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.clickToEdit}</a>)</span>
 					</label>
-					<div class="ms-TextField-field messageText">
+					<div class="messageViewerContainer">
+						<div class="ms-TextField-field messageSubject">
+						</div>
+						<div class="ms-TextField-field messageText">
+						</div>	
 					</div>
-					<div class="ms-TextField-field messageEditor" contenteditable="true" style="display: none;">
+					<div class="messageEditorContainer" style="display: none;">
+						<input name="messageSubject" class="ms-TextField-field" type="text">
+						<div class="ms-TextField-field messageText" contenteditable="true" >
+						</div>
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>
 				</div>
