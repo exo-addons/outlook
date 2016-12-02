@@ -111,9 +111,9 @@ public class OutlookMessageActivity extends FileUIActivity {
 
   /** The Constant DEFAULT_TIME_FORMAT. */
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
-  
+
   /** The Constant FAKE_TITLE. */
-  public static final String FAKE_TITLE = "SocialIntegration.messages.createdBy";
+  public static final String FAKE_TITLE          = "SocialIntegration.messages.createdBy";
 
   /** The Constant LOG. */
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
@@ -123,15 +123,14 @@ public class OutlookMessageActivity extends FileUIActivity {
    * The class that is interested in processing a viewDocumentAction
    * event implements this interface, and the object created
    * with that class is registered with a component using the
-   * component's <code>addViewDocumentActionListener<code> method. When
+   * component's <code>addViewDocumentActionListener</code> method. When
    * the viewDocumentAction event occurs, that object's appropriate
    * method is invoked.
    *
-   * @see ViewDocumentActionEvent
    */
   @Deprecated // TODO not used
   public static class ViewDocumentActionListener extends EventListener<OutlookMessageActivity> {
-    
+
     /**
      * {@inheritDoc}
      */

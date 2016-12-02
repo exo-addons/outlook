@@ -20,7 +20,6 @@
 package org.exoplatform.outlook.social;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
@@ -28,24 +27,19 @@ import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
 import org.exoplatform.services.cms.documents.DocumentService;
 import org.exoplatform.services.cms.documents.TrashService;
-import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.config.RepositoryConfigurationException;
 import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.wcm.core.NodeLocation;
 import org.exoplatform.services.wcm.core.NodetypeConstant;
 import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.UIActivitiesContainer;
 import org.exoplatform.social.webui.composer.PopupContainer;
-import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -74,8 +68,6 @@ import javax.imageio.stream.ImageInputStream;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -136,15 +128,13 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
    * The class that is interested in processing a viewDocumentAction
    * event implements this interface, and the object created
    * with that class is registered with a component using the
-   * component's <code>addViewDocumentActionListener<code> method. When
+   * component's <code>addViewDocumentActionListener</code> method. When
    * the viewDocumentAction event occurs, that object's appropriate
    * method is invoked.
-   *
-   * @see ViewDocumentActionEvent
    */
-  @Deprecated // TODO not used 
+  @Deprecated // TODO not used
   public static class ViewDocumentActionListener extends EventListener<OutlookAttachmentActivity> {
-    
+
     /**
      * {@inheritDoc}
      */
@@ -183,7 +173,7 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
    * The Class Attachment.
    */
   public class Attachment {
-    
+
     /** The file UUID. */
     final String      fileUUID;
 
@@ -696,14 +686,14 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
   }
 
   /** The files. */
-  protected List<Attachment>     files;
+  protected List<Attachment>             files;
 
   /** The repository. */
-  protected ManageableRepository repository;
+  protected ManageableRepository         repository;
 
   /** The document service. */
-  protected DocumentService      documentService;
-  
+  protected DocumentService              documentService;
+
   /** The util. */
   protected final OutlookActivitySupport util;
 
