@@ -15,7 +15,7 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-					<label for="activityTitle" class="ms-Label">&{Outlook.activityTitle}</label>
+					<label for="activityTitle" class="ms-Label">&{Outlook.activityTitle} (&{Outlook.optional})</label>
 					<textarea name="activityTitle" class="ms-TextField-field"></textarea>
 					<span class="ms-TextField-description">&{Outlook.activityTitleDescription}</span>
 				</div>

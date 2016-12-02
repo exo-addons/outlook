@@ -38,6 +38,7 @@
     <clickToEdit>Cliquez pour modifier</clickToEdit>
     <personalDocuments>Mes Documents</personalDocuments>
     <allSpaces>Tous les espaces</allSpaces>
+    <optional>optionnel</optional>
 
     <!-- Save Attachment -->
     <saveAttachmentDescription>Ici vous pouvez enregistrer les pièces jointes comme documents dans votre intranet.</saveAttachmentDescription>

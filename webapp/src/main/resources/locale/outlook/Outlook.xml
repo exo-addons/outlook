@@ -37,6 +37,7 @@
     <clickToEdit>Click to edit</clickToEdit>
     <personalDocuments>My Documents</personalDocuments>
     <allSpaces>All Spaces</allSpaces>
+    <optional>optional</optional>
 
     <!-- Save Attachment -->
     <saveAttachmentDescription>Here you can save attachments as documents inside the intranet.</saveAttachmentDescription>
