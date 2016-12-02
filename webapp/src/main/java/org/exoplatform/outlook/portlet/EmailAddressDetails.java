@@ -20,17 +20,18 @@
 package org.exoplatform.outlook.portlet;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: EmailAddressDetails.java 00000 Jul 11, 2016 pnedonosko $
- * 
  */
 @Deprecated // TODO not used 
 public class EmailAddressDetails {
 
+  /** The name. */
   public String name;
 
+  /** The email. */
   public String email;
 
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2003-2016 eXo Platform SAS.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.exoplatform.outlook;
 
 import static org.junit.Assert.fail;
@@ -39,43 +57,61 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: BaseTestCase.java 00000 Nov 1, 2016 pnedonosko $
- * 
  */
 public abstract class BaseTestCase {
 
+  /** The Constant LOG. */
   protected static final Log       LOG            = ExoLogger.getLogger(BaseTestCase.class);
 
+  /** The Constant EXO_USER1. */
   protected static final String    EXO_USER1      = "root";
 
+  /** The tear down failed. */
   protected static AtomicBoolean   tearDownFailed = new AtomicBoolean(false);
 
+  /** The test name. */
   @Rule
   public TestName                  testName       = new TestName();
 
+  /** The container. */
   protected ExoContainer           container;
 
+  /** The identity registry. */
   protected IdentityRegistry       identityRegistry;
 
+  /** The repository service. */
   protected RepositoryService      repositoryService;
 
+  /** The session providers. */
   protected SessionProviderService sessionProviders;
 
+  /** The outlook service. */
   protected OutlookServiceImpl     outlookService;
 
+  /** The repository. */
   protected Repository             repository;
 
+  /** The session. */
   protected Session                session;
 
+  /** The test workspace. */
   protected String                 testWorkspace;
 
+  /** The test path. */
   protected String                 testPath;
 
+  /** The test root. */
   protected Node                   testRoot;
 
+  /**
+   * Inits the.
+   *
+   * @throws Exception the exception
+   */
   @Before
   public void init() throws Exception {
     if (tearDownFailed.get()) {
@@ -158,6 +194,11 @@ public abstract class BaseTestCase {
     }
   }
 
+  /**
+   * Cleanup.
+   *
+   * @throws Exception the exception
+   */
   @After
   public void cleanup() throws Exception {
     if (!tearDownFailed.get()) {
@@ -178,6 +219,13 @@ public abstract class BaseTestCase {
     }
   }
 
+  /**
+   * Login current user.
+   *
+   * @param exoUsername the exo username
+   * @param exoPassword the exo password
+   * @throws Exception the exception
+   */
   protected void loginCurrentUser(String exoUsername, String exoPassword) throws Exception {
     // login via Authenticator
     Authenticator authr = (Authenticator) container.getComponentInstanceOfType(Authenticator.class);
@@ -191,6 +239,16 @@ public abstract class BaseTestCase {
     identityRegistry.register(identity);
   }
 
+  /**
+   * Adds the test file.
+   *
+   * @param title the title
+   * @param mimeType the mime type
+   * @param content the content
+   * @return the node
+   * @throws RepositoryException the repository exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   protected Node addTestFile(String title, String mimeType, String content) throws RepositoryException, IOException {
     // use existing service to add a file exactly as it will be in runtime
     try (ByteArrayInputStream contentStream = new ByteArrayInputStream(content.getBytes("UTF-8"))) {

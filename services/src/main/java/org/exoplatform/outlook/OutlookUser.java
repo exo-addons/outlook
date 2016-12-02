@@ -36,16 +36,27 @@ import java.net.URI;
  */
 public abstract class OutlookUser extends OutlookEmail {
 
+  /** The local user. */
   protected final String localUser;
 
+  /** The mail server url. */
   protected URI          mailServerUrl;
 
+  /**
+   * Instantiates a new outlook user.
+   *
+   * @param email the email
+   * @param displayName the display name
+   * @param localUser the local user
+   */
   protected OutlookUser(String email, String displayName, String localUser) {
     super(email, displayName);
     this.localUser = localUser;
   }
 
   /**
+   * Gets the local user.
+   *
    * @return the localUser
    */
   public String getLocalUser() {
@@ -53,25 +64,70 @@ public abstract class OutlookUser extends OutlookEmail {
   }
 
   /**
+   * Gets the mail server url.
+   *
    * @return the mailServerUrl
    */
   public URI getMailServerUrl() {
     return mailServerUrl;
   }
 
+  /**
+   * Sets the mail server url.
+   *
+   * @param mailServerUrl the new mail server url
+   */
   protected void setMailServerUrl(URI mailServerUrl) {
     this.mailServerUrl = mailServerUrl;
   }
 
   // ****** abstract *****
 
+  /**
+   * Post activity.
+   *
+   * @param message the message
+   * @return the exo social activity
+   * @throws OutlookException the outlook exception
+   */
   public abstract ExoSocialActivity postActivity(OutlookMessage message) throws OutlookException;
 
+  /**
+   * Post activity.
+   *
+   * @param title the title
+   * @param body the body
+   * @return the exo social activity
+   * @throws Exception the exception
+   */
   public abstract ExoSocialActivity postActivity(String title, String body) throws Exception;
   
+  /**
+   * Post activity.
+   *
+   * @param text the text
+   * @return the exo social activity
+   * @throws Exception the exception
+   */
   public abstract ExoSocialActivity postActivity(String text) throws Exception;
 
+  /**
+   * Adds the wiki page.
+   *
+   * @param message the message
+   * @return the page
+   * @throws Exception the exception
+   */
   public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 
+  /**
+   * Adds the forum topic.
+   *
+   * @param categoryId the category id
+   * @param forumId the forum id
+   * @param message the message
+   * @return the topic
+   * @throws Exception the exception
+   */
   public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
 }

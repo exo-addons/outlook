@@ -33,11 +33,10 @@ import java.util.Map;
 import javax.jcr.Node;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessagePresentation.java 00000 Jul 14, 2016 pnedonosko $
- * 
  */
 @ComponentConfig(lifecycle = Lifecycle.class)
 public class OutlookMessagePresentation extends ContentPresentation {

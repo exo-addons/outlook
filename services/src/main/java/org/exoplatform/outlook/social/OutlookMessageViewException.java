@@ -20,26 +20,25 @@
 package org.exoplatform.outlook.social;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageViewException.java 00000 Jul 12, 2016 pnedonosko $
- * 
  */
 public class OutlookMessageViewException extends Exception {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 385592631491700809L;
 
   /**
-   * 
+   * Instantiates a new outlook message view exception.
    */
   public OutlookMessageViewException() {
   }
 
   /**
+   * Instantiates a new outlook message view exception.
+   *
    * @param message {@link String}
    */
   public OutlookMessageViewException(String message) {
@@ -47,6 +46,8 @@ public class OutlookMessageViewException extends Exception {
   }
 
   /**
+   * Instantiates a new outlook message view exception.
+   *
    * @param cause {@link Throwable}
    */
   public OutlookMessageViewException(Throwable cause) {
@@ -54,6 +55,8 @@ public class OutlookMessageViewException extends Exception {
   }
 
   /**
+   * Instantiates a new outlook message view exception.
+   *
    * @param message {@link String}
    * @param cause {@link String}
    */
@@ -62,6 +65,8 @@ public class OutlookMessageViewException extends Exception {
   }
 
   /**
+   * Instantiates a new outlook message view exception.
+   *
    * @param message {@link String}
    * @param cause {@link String}
    * @param enableSuppression boolean

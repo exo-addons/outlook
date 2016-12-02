@@ -1221,7 +1221,6 @@ public class Outlook {
    *
    * @param groupId the group id
    * @param messageId the message id
-   * @param comment the comment
    * @param subject the subject
    * @param body the body
    * @param created the created

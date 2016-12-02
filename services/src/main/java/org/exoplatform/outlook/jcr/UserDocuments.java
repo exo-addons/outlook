@@ -26,20 +26,50 @@ import java.util.Collection;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: UserDocuments.java 00000 Aug 12, 2016 pnedonosko $
- * 
  */
 public interface UserDocuments {
 
+  /**
+   * Gets the folder.
+   *
+   * @param path the path
+   * @return the folder
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
+  /**
+   * Gets the root folder.
+   *
+   * @return the root folder
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   Folder getRootFolder() throws OutlookException, RepositoryException;
 
+  /**
+   * Find all last documents.
+   *
+   * @param text the text
+   * @return the collection
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   Collection<File> findAllLastDocuments(String text) throws RepositoryException, OutlookException;
 
+  /**
+   * Find last documents.
+   *
+   * @param text the text
+   * @return the collection
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException;
 
 }

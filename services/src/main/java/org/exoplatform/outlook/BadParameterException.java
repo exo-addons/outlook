@@ -20,20 +20,19 @@
 package org.exoplatform.outlook;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: BadParameterException.java 00000 Feb 16, 2016 pnedonosko $
- * 
  */
 public class BadParameterException extends OutlookException {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8675025886542058618L;
 
   /**
+   * Instantiates a new bad parameter exception.
+   *
    * @param message error message
    */
   public BadParameterException(String message) {
@@ -41,6 +40,8 @@ public class BadParameterException extends OutlookException {
   }
 
   /**
+   * Instantiates a new bad parameter exception.
+   *
    * @param cause error cause
    */
   public BadParameterException(Throwable cause) {
@@ -48,6 +49,8 @@ public class BadParameterException extends OutlookException {
   }
 
   /**
+   * Instantiates a new bad parameter exception.
+   *
    * @param message error message
    * @param cause error cause
    */

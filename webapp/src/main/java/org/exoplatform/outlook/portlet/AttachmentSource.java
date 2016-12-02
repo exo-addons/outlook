@@ -20,22 +20,33 @@
 package org.exoplatform.outlook.portlet;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: AttachmentSource.java 00000 Aug 11, 2016 pnedonosko $
- * 
  */
 public class AttachmentSource {
 
+  /** The id. */
   protected final String id;
 
+  /** The title. */
   protected final String title;
 
+  /** The root path. */
   protected final String rootPath;
 
+  /** The root label. */
   protected final String rootLabel;
 
+  /**
+   * Instantiates a new attachment source.
+   *
+   * @param id the id
+   * @param title the title
+   * @param rootPath the root path
+   * @param rootLabel the root label
+   */
   protected AttachmentSource(String id, String title, String rootPath, String rootLabel) {
     super();
     this.id = id;
@@ -44,11 +55,19 @@ public class AttachmentSource {
     this.rootLabel = rootLabel;
   }
 
+  /**
+   * Instantiates a new attachment source.
+   *
+   * @param id the id
+   * @param title the title
+   */
   protected AttachmentSource(String id, String title) {
     this(id, title, null, null);
   }
 
   /**
+   * Gets the id.
+   *
    * @return the id
    */
   public String getId() {
@@ -56,6 +75,8 @@ public class AttachmentSource {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the title
    */
   public String getTitle() {
@@ -63,6 +84,8 @@ public class AttachmentSource {
   }
 
   /**
+   * Gets the root path.
+   *
    * @return the rootPath
    */
   public String getRootPath() {
@@ -70,6 +93,8 @@ public class AttachmentSource {
   }
 
   /**
+   * Gets the root label.
+   *
    * @return the rootLabel
    */
   public String getRootLabel() {

@@ -65,11 +65,10 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
- * 
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      // FYI original template:
@@ -86,30 +85,56 @@ import javax.jcr.RepositoryException;
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
 public class OutlookMessageActivity extends FileUIActivity {
 
+  /** The Constant ACTIVITY_TYPE. */
   public static final String ACTIVITY_TYPE       = "outlook:message";
 
+  /** The Constant FILE_UUID. */
   public static final String FILE_UUID           = "fileUUID";
 
+  /** The Constant REPOSITORY. */
   public static final String REPOSITORY          = "repository";
 
+  /** The Constant WORKSPACE. */
   public static final String WORKSPACE           = "workspace";
 
+  /** The Constant AUTHOR. */
   public static final String AUTHOR              = "author";
 
+  /** The Constant DATE_CREATED. */
   public static final String DATE_CREATED        = "dateCreated";
 
+  /** The Constant DATE_LAST_MODIFIED. */
   public static final String DATE_LAST_MODIFIED  = "lastModified";
 
+  /** The Constant DEFAULT_DATE_FORMAT. */
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
+  /** The Constant DEFAULT_TIME_FORMAT. */
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
   
+  /** The Constant FAKE_TITLE. */
   public static final String FAKE_TITLE = "SocialIntegration.messages.createdBy";
 
+  /** The Constant LOG. */
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
 
+  /**
+   * The listener interface for receiving viewDocumentAction events.
+   * The class that is interested in processing a viewDocumentAction
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addViewDocumentActionListener<code> method. When
+   * the viewDocumentAction event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see ViewDocumentActionEvent
+   */
   @Deprecated // TODO not used
   public static class ViewDocumentActionListener extends EventListener<OutlookMessageActivity> {
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(Event<OutlookMessageActivity> event) throws Exception {
       // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
@@ -128,14 +153,23 @@ public class OutlookMessageActivity extends FileUIActivity {
     }
   }
 
+  /** The script initialized. */
   protected static ThreadLocal<Boolean>  scriptInitialized = new ThreadLocal<Boolean>();
 
+  /** The document service. */
   protected DocumentService              documentService;
 
+  /** The activity status. */
   protected String                       message, activityStatus;
 
+  /** The util. */
   protected final OutlookActivitySupport util;
 
+  /**
+   * Instantiates a new outlook message activity.
+   *
+   * @throws Exception the exception
+   */
   public OutlookMessageActivity() throws Exception {
     super();
     RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);

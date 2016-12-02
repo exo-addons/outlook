@@ -43,10 +43,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class OutlookLoginFilter implements Filter {
 
+  /** The Constant LOG. */
   protected static final Logger LOG                 = LoggerFactory.getLogger(OutlookLoginFilter.class);
 
+  /** The Constant OUTLOOK_LOGIN. */
   public static final String    OUTLOOK_LOGIN       = "/outlook/login";
 
+  /** The Constant OUTLOOK_INITIAL_URI. */
   public static final String    OUTLOOK_INITIAL_URI = "initialURI=%2Fportal%2Fintranet%2Foutlook";
 
   /**

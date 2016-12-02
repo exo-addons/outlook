@@ -30,17 +30,21 @@ import java.io.Writer;
 import javax.jcr.Node;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageDocumentPreview.java 00000 Jul 14, 2016 pnedonosko $
- * 
  */
 @ComponentConfig(template = "classpath:groovy/ecm/social-integration/UIDocumentPreview.gtmpl",
                  events = { @EventConfig(listeners = UIDocumentPreview.CloseActionListener.class) })
 @Deprecated // TODO not used
 public class OutlookMessageDocumentPreview extends UIDocumentPreview {
 
+  /**
+   * Instantiates a new outlook message document preview.
+   *
+   * @throws Exception the exception
+   */
   public OutlookMessageDocumentPreview() throws Exception {
     super();
     // replace original UIDocViewer with an one that uses UI extension context with content node
@@ -48,6 +52,12 @@ public class OutlookMessageDocumentPreview extends UIDocumentPreview {
     this.addChild(OutlookMessageDocViewer.class, null, "UIDocViewer");
   }
 
+  /**
+   * Checks if is web content.
+   *
+   * @return true, if is web content
+   * @throws Exception the exception
+   */
   protected boolean isWebContent() throws Exception {
     return true;
   }

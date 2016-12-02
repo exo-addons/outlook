@@ -20,20 +20,19 @@
 package org.exoplatform.outlook;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OnlyofficeEditorException.java 00000 Jan 31, 2016 pnedonosko $
- * 
  */
 public class OutlookException extends Exception {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 6566123091112224590L;
 
   /**
+   * Instantiates a new outlook exception.
+   *
    * @param message error message
    */
   public OutlookException(String message) {
@@ -41,6 +40,8 @@ public class OutlookException extends Exception {
   }
 
   /**
+   * Instantiates a new outlook exception.
+   *
    * @param cause error cause
    */
   public OutlookException(Throwable cause) {
@@ -48,6 +49,8 @@ public class OutlookException extends Exception {
   }
 
   /**
+   * Instantiates a new outlook exception.
+   *
    * @param message error message
    * @param cause error cause
    */

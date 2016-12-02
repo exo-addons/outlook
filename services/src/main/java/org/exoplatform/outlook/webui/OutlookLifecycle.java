@@ -45,12 +45,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
 
+  /** The Constant LOG. */
   protected static final Log           LOG             = ExoLogger.getLogger(OutlookLifecycle.class);
 
+  /** The toolbar rendered. */
   protected final ThreadLocal<Boolean> toolbarRendered = new ThreadLocal<Boolean>();
 
   /**
-   * 
+   * Instantiates a new outlook lifecycle.
    */
   public OutlookLifecycle() {
     //
@@ -115,6 +117,14 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
 
   // ******* internals ******
 
+  /**
+   * Find toolbar component.
+   *
+   * @param app the app
+   * @param context the context
+   * @return the UI component
+   * @throws Exception the exception
+   */
   protected UIComponent findToolbarComponent(Application app, WebuiRequestContext context) throws Exception {
     ExoContainer container = app.getApplicationServiceContainer();
     if (container != null) {

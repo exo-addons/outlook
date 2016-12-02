@@ -27,17 +27,19 @@ import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.security.security.TokenServiceInitializationException;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookTokenService.java 00000 Jul 4, 2016 pnedonosko $
- * 
  */
 public class OutlookTokenService extends CookieTokenService {
 
+  /** The Constant COOKIE_NAME. */
   public static final String COOKIE_NAME = "remembermeoutlook";
   
   /**
+   * Instantiates a new outlook token service.
+   *
    * @param initParams {@link InitParams}
    * @param chromatticManager {@link ChromatticManager}
    * @param codecInitializer {@link CodecInitializer}
@@ -48,6 +50,9 @@ public class OutlookTokenService extends CookieTokenService {
     super(initParams, chromatticManager, codecInitializer);
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected String nextTokenId() {
     return LoginServlet.COOKIE_NAME + nextRandom();

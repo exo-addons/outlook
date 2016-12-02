@@ -32,14 +32,14 @@ import org.exoplatform.webui.ext.manager.UIAbstractManagerComponent;
 import javax.jcr.Node;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: BaseOutlookMessageViewer.java 00000 Jul 12, 2016 pnedonosko $
- * 
  */
 public class BaseOutlookMessageViewer extends UIAbstractManagerComponent {
 
+  /** The Constant LOG. */
   protected static final Log LOG = ExoLogger.getLogger(BaseOutlookMessageViewer.class);
 
   /**
@@ -50,6 +50,12 @@ public class BaseOutlookMessageViewer extends UIAbstractManagerComponent {
     return UIAbstractManager.class;
   }
 
+  /**
+   * Gets the current node.
+   *
+   * @return the current node
+   * @throws Exception the exception
+   */
   public Node getCurrentNode() throws Exception {
     Node node = currentNode();
     if (node == null) {
@@ -59,6 +65,12 @@ public class BaseOutlookMessageViewer extends UIAbstractManagerComponent {
     return node;
   }
   
+  /**
+   * Current node.
+   *
+   * @return the node
+   * @throws Exception the exception
+   */
   protected Node currentNode() throws Exception {
     Node node = null;
 

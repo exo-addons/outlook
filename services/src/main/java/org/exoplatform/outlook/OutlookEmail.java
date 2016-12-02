@@ -30,10 +30,18 @@ package org.exoplatform.outlook;
  */
 public class OutlookEmail {
 
+  /** The display name. */
   protected final String displayName;
 
+  /** The email. */
   protected String       email;
 
+  /**
+   * Instantiates a new outlook email.
+   *
+   * @param email the email
+   * @param displayName the display name
+   */
   protected OutlookEmail(String email, String displayName) {
     this.email = email;
     this.displayName = displayName;
@@ -48,6 +56,8 @@ public class OutlookEmail {
   }
 
   /**
+   * Gets the email.
+   *
    * @return the userEmail
    */
   public String getEmail() {
@@ -55,6 +65,8 @@ public class OutlookEmail {
   }
 
   /**
+   * Gets the display name.
+   *
    * @return the displayName
    */
   public String getDisplayName() {
@@ -62,6 +74,8 @@ public class OutlookEmail {
   }
 
   /**
+   * Sets the email.
+   *
    * @param email the email to set
    */
   protected void setEmail(String email) {

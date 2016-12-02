@@ -41,11 +41,10 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageFileFilter.java 00000 Mar 2, 2016 pnedonosko $
- * 
  */
 public class OutlookMessageFileFilter extends org.exoplatform.webui.ext.filter.impl.FileFilter {
 

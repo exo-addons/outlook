@@ -41,12 +41,23 @@ import javax.jcr.RepositoryException;
  */
 public abstract class Folder extends HierarchyNode {
 
+  /** The subfolders. */
   protected final ThreadLocal<Set<Folder>> subfolders = new ThreadLocal<Set<Folder>>();
 
+  /** The files. */
   protected final ThreadLocal<Set<File>>   files      = new ThreadLocal<Set<File>>();
 
+  /** The default subfolder. */
   protected Folder                         defaultSubfolder;
 
+  /**
+   * Instantiates a new folder.
+   *
+   * @param parent the parent
+   * @param node the node
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public Folder(Folder parent, Node node) throws RepositoryException, OutlookException {
     super(parent, node);
     if (!isFolder(node)) {
@@ -54,6 +65,14 @@ public abstract class Folder extends HierarchyNode {
     }
   }
 
+  /**
+   * Instantiates a new folder.
+   *
+   * @param parentPath the parent path
+   * @param node the node
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public Folder(String parentPath, Node node) throws RepositoryException, OutlookException {
     super(parentPath, node);
     if (!isFolder(node)) {
@@ -61,17 +80,31 @@ public abstract class Folder extends HierarchyNode {
     }
   }
 
+  /**
+   * Checks if is root.
+   *
+   * @return true, if is root
+   */
   public boolean isRoot() {
     return parentPath.equals(path);
   }
 
   /**
+   * Gets the default subfolder.
+   *
    * @return the defaultSubfolder
    */
   public Folder getDefaultSubfolder() {
     return defaultSubfolder;
   }
 
+  /**
+   * Checks for subfolders.
+   *
+   * @return true, if successful
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public boolean hasSubfolders() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = this.subfolders.get();
     if (subfolders == null) {
@@ -80,6 +113,13 @@ public abstract class Folder extends HierarchyNode {
     return subfolders.size() > 0;
   }
 
+  /**
+   * Gets the subfolders.
+   *
+   * @return the subfolders
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public Set<Folder> getSubfolders() throws RepositoryException, OutlookException {
     Set<Folder> subfolders = this.subfolders.get();
     if (subfolders == null) {
@@ -88,6 +128,13 @@ public abstract class Folder extends HierarchyNode {
     return Collections.unmodifiableSet(subfolders);
   }
 
+  /**
+   * Checks for files.
+   *
+   * @return true, if successful
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public boolean hasFiles() throws RepositoryException, OutlookException {
     Set<File> files = this.files.get();
     if (files == null) {
@@ -96,6 +143,13 @@ public abstract class Folder extends HierarchyNode {
     return files.size() > 0;
   }
 
+  /**
+   * Gets the files.
+   *
+   * @return the files
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public Set<File> getFiles() throws RepositoryException, OutlookException {
     Set<File> files = this.files.get();
     if (files == null) {
@@ -104,6 +158,13 @@ public abstract class Folder extends HierarchyNode {
     return Collections.unmodifiableSet(files);
   }
 
+  /**
+   * Gets the children.
+   *
+   * @return the children
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public Set<HierarchyNode> getChildren() throws RepositoryException, OutlookException {
     Set<HierarchyNode> children = new LinkedHashSet<HierarchyNode>();
     // folders first
@@ -121,16 +182,36 @@ public abstract class Folder extends HierarchyNode {
     return true;
   }
 
+  /**
+   * Read subnodes.
+   *
+   * @return the sets the
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected Set<Folder> readSubnodes() throws RepositoryException, OutlookException {
     readChildNodes();
     return this.subfolders.get();
   }
 
+  /**
+   * Read files.
+   *
+   * @return the sets the
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected Set<File> readFiles() throws RepositoryException, OutlookException {
     readChildNodes();
     return this.files.get();
   }
 
+  /**
+   * Read child nodes.
+   *
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected void readChildNodes() throws RepositoryException, OutlookException {
     Set<Folder> folders = new LinkedHashSet<Folder>();
     Set<File> files = new LinkedHashSet<File>();
@@ -150,11 +231,46 @@ public abstract class Folder extends HierarchyNode {
     this.files.set(files);
   }
 
+  /**
+   * New folder.
+   *
+   * @param parent the parent
+   * @param node the node
+   * @return the folder
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected abstract Folder newFolder(Folder parent, Node node) throws RepositoryException, OutlookException;
 
+  /**
+   * New folder.
+   *
+   * @param rootPath the root path
+   * @param node the node
+   * @return the folder
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected abstract Folder newFolder(String rootPath, Node node) throws RepositoryException, OutlookException;
 
+  /**
+   * New file.
+   *
+   * @param parent the parent
+   * @param node the node
+   * @return the file
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected abstract File newFile(Folder parent, Node node) throws RepositoryException, OutlookException;
 
+  /**
+   * Adds the subfolder.
+   *
+   * @param name the name
+   * @return the folder
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public abstract Folder addSubfolder(String name) throws RepositoryException, OutlookException;
 }

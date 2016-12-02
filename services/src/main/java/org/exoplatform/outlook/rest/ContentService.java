@@ -45,22 +45,26 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ContentService.java 00000 Aug 14, 2016 pnedonosko $
- * 
  */
 @Path("/outlook")
 public class ContentService implements ResourceContainer {
 
+  /** The Constant LOG. */
   protected static final Log  LOG = ExoLogger.getLogger(ContentService.class);
   
+  /** The Constant DEFAULT_DISPLAY_NAME. */
   public static final String DEFAULT_DISPLAY_NAME = "eXo Platform";
 
+  /** The content link. */
   protected final ContentLink contentLink;
 
   /**
+   * Instantiates a new content service.
+   *
    * @param contentLink {@link ContentLink}
    */
   public ContentService(ContentLink contentLink) {
@@ -196,6 +200,12 @@ public class ContentService implements ResourceContainer {
     return resp.build();
   }
 
+  /**
+   * Gets the client ip addr.
+   *
+   * @param request the request
+   * @return the client ip addr
+   */
   protected String getClientIpAddr(HttpServletRequest request) {
     String ip = request.getHeader("X-Forwarded-For");
     if (isValidName(ip)) {
@@ -246,6 +256,12 @@ public class ContentService implements ResourceContainer {
     return null;
   }
 
+  /**
+   * Gets the client host.
+   *
+   * @param request the request
+   * @return the client host
+   */
   protected String getClientHost(HttpServletRequest request) {
     String host = request.getHeader("X-Forwarded-Host");
     if (isValidName(host)) {
@@ -258,6 +274,12 @@ public class ContentService implements ResourceContainer {
     return null;
   }
 
+  /**
+   * Checks if is valid name.
+   *
+   * @param hostName the host name
+   * @return true, if is valid name
+   */
   protected boolean isValidName(String hostName) {
     if (hostName != null && hostName.length() > 0 && !"unknown".equalsIgnoreCase(hostName)) {
       return true;

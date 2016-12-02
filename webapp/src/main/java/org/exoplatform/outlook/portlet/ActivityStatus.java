@@ -20,22 +20,28 @@
 package org.exoplatform.outlook.portlet;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ActivityStatus.java 00000 Jul 11, 2016 pnedonosko $
- * 
  */
 public class ActivityStatus {
 
+  /** The user name. */
   final String userName;
 
+  /** The space name. */
   final String spaceName;
 
+  /** The link. */
   final String link;
 
   /**
-   * 
+   * Instantiates a new activity status.
+   *
+   * @param userName the user name
+   * @param spaceName the space name
+   * @param link the link
    */
   public ActivityStatus(String userName, String spaceName, String link) {
     this.userName = userName;
@@ -44,6 +50,8 @@ public class ActivityStatus {
   }
 
   /**
+   * Gets the link.
+   *
    * @return the link
    */
   public String getLink() {
@@ -51,12 +59,19 @@ public class ActivityStatus {
   }
 
   /**
+   * Gets the target name.
+   *
    * @return the target name
    */
   public String getTargetName() {
     return isSpace() ? spaceName : userName;
   }
 
+  /**
+   * Checks if is space.
+   *
+   * @return true, if is space
+   */
   public boolean isSpace() {
     return spaceName != null;
   }

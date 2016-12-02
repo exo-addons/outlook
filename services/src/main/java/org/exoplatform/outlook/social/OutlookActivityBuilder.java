@@ -24,13 +24,16 @@ import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookActivityBuilder.java 00000 Jul 26, 2016 pnedonosko $
- * 
  */
 public class OutlookActivityBuilder extends BaseUIActivityBuilder {
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void extendUIActivity(BaseUIActivity uiActivity, ExoSocialActivity activity) {
   }

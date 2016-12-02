@@ -39,6 +39,7 @@ import java.net.URISyntaxException;
  */
 public class TestParamFilter {
 
+  /** The Constant LOG. */
   protected static final Log LOG = ExoLogger.getLogger(TestParamFilter.class);
 
   /**
@@ -89,6 +90,13 @@ public class TestParamFilter {
     // return null;
   }
   
+  /**
+   * Gets the base domain fixed.
+   *
+   * @param url the url
+   * @return the base domain fixed
+   * @throws Exception the exception
+   */
   private String getBaseDomainFixed(String url) throws Exception {
     URI uri;
     int queryStart = url.indexOf('?');

@@ -22,11 +22,10 @@ package org.exoplatform.outlook.jcr;
 import java.io.InputStream;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: NodeContent.java 00000 Aug 14, 2016 pnedonosko $
- * 
  */
 public abstract class NodeContent {
 

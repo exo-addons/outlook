@@ -20,20 +20,29 @@
 package org.exoplatform.outlook.portlet;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: UserWikiPage.java 00000 Aug 16, 2016 pnedonosko $
- * 
  */
 public class WikiPage {
 
+  /** The id. */
   protected final String id;
 
+  /** The title. */
   protected final String title;
   
+  /** The link. */
   protected final String link;
 
+  /**
+   * Instantiates a new wiki page.
+   *
+   * @param id the id
+   * @param title the title
+   * @param link the link
+   */
   public WikiPage(String id, String title, String link) {
     super();
     this.id = id;
@@ -42,6 +51,8 @@ public class WikiPage {
   }
 
   /**
+   * Gets the id.
+   *
    * @return the id
    */
   public String getId() {
@@ -49,6 +60,8 @@ public class WikiPage {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the title
    */
   public String getTitle() {
@@ -56,6 +69,8 @@ public class WikiPage {
   }
 
   /**
+   * Gets the link.
+   *
    * @return the link
    */
   public String getLink() {

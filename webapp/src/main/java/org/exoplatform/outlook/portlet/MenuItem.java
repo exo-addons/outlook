@@ -23,44 +23,86 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: Menu.java 00000 Jun 7, 2016 pnedonosko $
- * 
  */
 public class MenuItem {
 
+  /** The name. */
   protected final String        name;
 
+  /** The title. */
   protected String              title;
 
+  /** The link. */
   @Deprecated
   protected String              link;
 
+  /** The submenu. */
   protected final Set<MenuItem> submenu;
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   */
   public MenuItem(String name) {
     this(name, null, null, new LinkedHashSet<MenuItem>());
   }
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   * @param submenu the submenu
+   */
   public MenuItem(String name, Set<MenuItem> submenu) {
     this(name, null, null, submenu);
   }
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   * @param title the title
+   */
   public MenuItem(String name, String title) {
     this(name, title, null, new LinkedHashSet<MenuItem>());
   }
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   * @param title the title
+   * @param submenu the submenu
+   */
   public MenuItem(String name, String title, Set<MenuItem> submenu) {
     this(name, title, null, submenu);
   }
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   * @param title the title
+   * @param link the link
+   */
   @Deprecated
   protected MenuItem(String name, String title, String link) {
     this(name, title, link, new LinkedHashSet<MenuItem>());
   }
 
+  /**
+   * Instantiates a new menu item.
+   *
+   * @param name the name
+   * @param title the title
+   * @param link the link
+   * @param submenu the submenu
+   */
   protected MenuItem(String name, String title, String link, Set<MenuItem> submenu) {
     super();
     this.name = name;
@@ -81,19 +123,39 @@ public class MenuItem {
     return new MenuItem(name, title, submenu);
   }
 
+  /**
+   * Adds the submenu.
+   *
+   * @param name the name
+   * @param title the title
+   * @param submenu the submenu
+   */
   public void addSubmenu(String name, String title, Set<MenuItem> submenu) {
     this.submenu.add(new MenuItem(name, title, submenu));
   }
 
+  /**
+   * Adds the submenu.
+   *
+   * @param name the name
+   * @param title the title
+   */
   public void addSubmenu(String name, String title) {
     this.submenu.add(new MenuItem(name, title));
   }
 
+  /**
+   * Adds the submenu.
+   *
+   * @param name the name
+   */
   public void addSubmenu(String name) {
     this.submenu.add(new MenuItem(name));
   }
 
   /**
+   * Gets the name.
+   *
    * @return the name
    */
   public String getName() {
@@ -101,6 +163,8 @@ public class MenuItem {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the title
    */
   public String getTitle() {
@@ -108,6 +172,8 @@ public class MenuItem {
   }
 
   /**
+   * Sets the title.
+   *
    * @param title the title to set
    */
   public void setTitle(String title) {
@@ -115,6 +181,8 @@ public class MenuItem {
   }
 
   /**
+   * Gets the link.
+   *
    * @return the link
    */
   @Deprecated
@@ -123,6 +191,8 @@ public class MenuItem {
   }
 
   /**
+   * Sets the link.
+   *
    * @param link the link to set
    */
   @Deprecated
@@ -131,12 +201,19 @@ public class MenuItem {
   }
 
   /**
+   * Gets the submenu.
+   *
    * @return the submenu
    */
   public Set<MenuItem> getSubmenu() {
     return submenu;
   }
 
+  /**
+   * Checks for submenu.
+   *
+   * @return true, if successful
+   */
   public boolean hasSubmenu() {
     return submenu != null && submenu.size() > 0;
   }

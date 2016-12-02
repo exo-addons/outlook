@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 eXo Platform SAS.
+ * Copyright (C) 2003-2016 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -42,19 +42,32 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class OutlookServer {
+  
+  /** The Constant LOG. */
   private static final Logger                    LOG = Logger.getLogger(OutlookServer.class.getSimpleName());
 
+  /** The index. */
   @Inject
   @Path("index.gtmpl")
   org.exoplatform.outlook.server.templates.index index;
 
+  /** The login. */
   @Inject
   @Path("login.gtmpl")
   org.exoplatform.outlook.server.templates.login login;
 
+  /**
+   * Instantiates a new outlook server.
+   */
   public OutlookServer() {
   }
 
+  /**
+   * Index.
+   *
+   * @return the response
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   @View
   @MimeType.HTML
   @Route("/menu")
@@ -62,6 +75,13 @@ public class OutlookServer {
     return index.ok();
   }
 
+  /**
+   * Login.
+   *
+   * @param context the context
+   * @return the response
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   @View
   @MimeType.HTML
   @Route("/")

@@ -57,14 +57,26 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class OutlookRememberMeFilter implements Filter {
 
+  /** The Constant LOG. */
   protected static final Logger LOG                  = LoggerFactory.getLogger(OutlookRememberMeFilter.class);
 
+  /** The Constant INITIAL_COOKIE_VALUE. */
   public static final String    INITIAL_COOKIE_VALUE = "_init_me";
 
+  /**
+   * The Class FixedQueryRequest.
+   */
   public static class FixedQueryRequest extends HttpServletRequestWrapper {
 
+    /** The fixed query. */
     final String fixedQuery;
 
+    /**
+     * Instantiates a new fixed query request.
+     *
+     * @param request the request
+     * @param fixedQuery the fixed query
+     */
     protected FixedQueryRequest(HttpServletRequest request, String fixedQuery) {
       super(request);
       this.fixedQuery = fixedQuery;

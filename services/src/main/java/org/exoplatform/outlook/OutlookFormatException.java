@@ -30,12 +30,12 @@ package org.exoplatform.outlook;
  */
 public class OutlookFormatException extends OutlookException {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -7588755544731933601L;
 
   /**
+   * Instantiates a new outlook format exception.
+   *
    * @param message error message
    */
   public OutlookFormatException(String message) {
@@ -43,6 +43,8 @@ public class OutlookFormatException extends OutlookException {
   }
 
   /**
+   * Instantiates a new outlook format exception.
+   *
    * @param cause error cause
    */
   public OutlookFormatException(Throwable cause) {
@@ -50,6 +52,8 @@ public class OutlookFormatException extends OutlookException {
   }
 
   /**
+   * Instantiates a new outlook format exception.
+   *
    * @param message error message
    * @param cause error cause
    */

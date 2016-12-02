@@ -167,45 +167,85 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class OutlookServiceImpl implements OutlookService, Startable {
 
+  /** The Constant MAILSERVER_URL. */
   public static final String            MAILSERVER_URL         = "mailserver-url";
 
+  /** The Constant EXO_PRIVILEGEABLE. */
   protected static final String         EXO_PRIVILEGEABLE      = "exo:privilegeable";
 
+  /** The Constant OUTLOOK_MESSAGES_TITLE. */
   protected static final String         OUTLOOK_MESSAGES_TITLE = "Outlook Messages";
 
+  /** The Constant OUTLOOK_MESSAGES_NAME. */
   protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
 
+  /** The Constant WIKI_PERMISSION_ANY. */
   protected static final String         WIKI_PERMISSION_ANY    = "any";
 
+  /** The Constant UPLAODS_FOLDER_TITLE. */
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
 
+  /** The Constant SPACES_HOME. */
   protected static final String         SPACES_HOME            = "/Groups/spaces";
 
+  /** The Constant ROOT_USER. */
   protected static final String         ROOT_USER              = "root";
 
+  /** The Constant PERSONAL_DOCUMENTS. */
   protected static final String         PERSONAL_DOCUMENTS     = "Personal Documents";
 
+  /** The Constant READER_PERMISSION. */
   protected static final String[]       READER_PERMISSION      = new String[] { PermissionType.READ };
 
+  /** The Constant MANAGER_PERMISSION. */
   protected static final String[]       MANAGER_PERMISSION     = new String[] { PermissionType.READ, PermissionType.REMOVE };
 
+  /** The Constant LOG. */
   protected static final Log            LOG                    = ExoLogger.getLogger(OutlookServiceImpl.class);
 
+  /** The Constant RANDOM. */
   protected static final Random         RANDOM                 = new Random();
 
+  /** The Constant accentsConverter. */
   protected static final Transliterator accentsConverter       =
                                                          Transliterator.getInstance("Latin; NFD; [:Nonspacing Mark:] Remove; NFC;");
 
+  /**
+   * The Class UserFolder.
+   */
   protected class UserFolder extends Folder {
 
+    /**
+     * Instantiates a new user folder.
+     *
+     * @param parent the parent
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected UserFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
       super(parent, node);
     }
 
+    /**
+     * Instantiates a new user folder.
+     *
+     * @param parentPath the parent path
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected UserFolder(String parentPath, Node node) throws RepositoryException, OutlookException {
       super(parentPath, node);
     }
 
+    /**
+     * Instantiates a new user folder.
+     *
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected UserFolder(Node node) throws RepositoryException, OutlookException {
       super(node.getPath(), node);
     }
@@ -263,8 +303,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   }
 
+  /**
+   * The Class PersonalDocumentsFolder.
+   */
   protected class PersonalDocumentsFolder extends UserFolder implements UserDocuments {
 
+    /**
+     * Instantiates a new personal documents folder.
+     *
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected PersonalDocumentsFolder(Node node) throws RepositoryException, OutlookException {
       super(node);
     }
@@ -391,18 +441,42 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       return res;
     }
 
+    /**
+     * Gets the drive name.
+     *
+     * @return the drive name
+     */
     protected String getDriveName() {
       // XXX we use what pointed in XML config
       return PERSONAL_DOCUMENTS;
     }
   }
 
+  /**
+   * The Class UserFile.
+   */
   protected class UserFile extends File {
 
+    /**
+     * Instantiates a new user file.
+     *
+     * @param parent the parent
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected UserFile(Folder parent, Node node) throws RepositoryException, OutlookException {
       super(parent, node);
     }
 
+    /**
+     * Instantiates a new user file.
+     *
+     * @param parentPath the parent path
+     * @param node the node
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected UserFile(String parentPath, Node node) throws RepositoryException, OutlookException {
       super(parentPath, node);
     }
@@ -416,12 +490,24 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * The Class UserImpl.
+   */
   protected class UserImpl extends OutlookUser {
 
+    /** The social identity manager. */
     protected final IdentityManager socialIdentityManager;
 
+    /** The social activity manager. */
     protected final ActivityManager socialActivityManager;
 
+    /**
+     * Instantiates a new user impl.
+     *
+     * @param email the email
+     * @param displayName the display name
+     * @param userName the user name
+     */
     protected UserImpl(String email, String displayName, String userName) {
       super(email, displayName, userName);
       this.socialIdentityManager = socialIdentityManager();
@@ -543,14 +629,36 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * The Class OutlookSpaceImpl.
+   */
   protected class OutlookSpaceImpl extends OutlookSpace {
 
+    /**
+     * The Class SpaceFolder.
+     */
     class SpaceFolder extends UserFolder {
 
+      /**
+       * Instantiates a new space folder.
+       *
+       * @param parent the parent
+       * @param node the node
+       * @throws RepositoryException the repository exception
+       * @throws OutlookException the outlook exception
+       */
       protected SpaceFolder(Folder parent, Node node) throws RepositoryException, OutlookException {
         super(parent, node);
       }
 
+      /**
+       * Instantiates a new space folder.
+       *
+       * @param rootPath the root path
+       * @param node the node
+       * @throws RepositoryException the repository exception
+       * @throws OutlookException the outlook exception
+       */
       protected SpaceFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
         super(rootPath, node);
       }
@@ -570,8 +678,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
+    /**
+     * The Class RootFolder.
+     */
     class RootFolder extends SpaceFolder {
 
+      /**
+       * Instantiates a new root folder.
+       *
+       * @param rootPath the root path
+       * @param node the node
+       * @throws RepositoryException the repository exception
+       * @throws OutlookException the outlook exception
+       */
       protected RootFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
         super(rootPath, node);
         initDocumentLink(OutlookSpaceImpl.this, this);
@@ -626,14 +745,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
     }
 
+    /** The root path. */
     protected final String                  rootPath;
 
+    /** The root folder. */
     protected final ThreadLocal<RootFolder> rootFolder = new ThreadLocal<RootFolder>();
 
+    /** The social identity manager. */
     protected final IdentityManager         socialIdentityManager;
 
+    /** The social activity manager. */
     protected final ActivityManager         socialActivityManager;
 
+    /**
+     * Instantiates a new outlook space impl.
+     *
+     * @param socialSpace the social space
+     * @throws RepositoryException the repository exception
+     * @throws OutlookException the outlook exception
+     */
     protected OutlookSpaceImpl(Space socialSpace) throws RepositoryException, OutlookException {
       super(socialSpace.getGroupId(), socialSpace.getDisplayName(), socialSpace.getShortName(), socialSpace.getPrettyName());
       this.rootPath = groupDocsPath(groupId);
@@ -860,30 +990,43 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   }
 
+  /** The jcr service. */
   protected final RepositoryService                           jcrService;
 
+  /** The session providers. */
   protected final SessionProviderService                      sessionProviders;
 
+  /** The finder. */
   protected final NodeFinder                                  finder;
 
+  /** The hierarchy creator. */
   protected final NodeHierarchyCreator                        hierarchyCreator;
 
+  /** The organization. */
   protected final OrganizationService                         organization;
 
+  /** The drive service. */
   protected final ManageDriveService                          driveService;
 
+  /** The listener service. */
   protected final ListenerService                             listenerService;
 
+  /** The wiki service. */
   protected final WikiService                                 wikiService;
 
+  /** The forum service. */
   protected final ForumService                                forumService;
 
+  /** The trash service. */
   protected final TrashService                                trashService;
 
+  /** The wiki rendering service. */
   protected final RenderingService                            wikiRenderingService;
 
+  /** The resource bundle service. */
   protected final ResourceBundleService                       resourceBundleService;
 
+  /** The html policy. */
   protected final PolicyFactory                               htmlPolicy        =
                                                                          Sanitizers.BLOCKS.and(Sanitizers.FORMATTING)
                                                                                           .and(Sanitizers.IMAGES)
@@ -922,6 +1065,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                                       .toFactory())
                                                                                           .and(Sanitizers.STYLES);
 
+  /** The text policy. */
   protected final PolicyFactory                               textPolicy        = new HtmlPolicyBuilder().toFactory();
 
   /**
@@ -958,12 +1102,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                          .onElements("img")
                                                                                                          .toFactory();
 
+  /** The link with target. */
   protected final Pattern                                     linkWithTarget    =
                                                                              Pattern.compile("<a(?=\\s|>).*?(target=['\"].*?['\"])[^>]*>.*?<\\/a>",
                                                                                              Pattern.CASE_INSENSITIVE
                                                                                                  | Pattern.MULTILINE
                                                                                                  | Pattern.DOTALL);
 
+  /** The link without target. */
   protected final Pattern                                     linkWithoutTarget =
                                                                                 Pattern.compile("<a(?=\\s)(?:(?!target=).)*?([.\\W\\w\\S\\s[^>]])*?(>)",
                                                                                                 Pattern.CASE_INSENSITIVE
@@ -984,23 +1130,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces            =
                                                                      new ConcurrentHashMap<String, OutlookSpaceImpl>();
 
+  /** The mailserver api. */
   protected MailAPI                                           mailserverApi;
 
+  /** The trash home path. */
   protected String                                            trashHomePath;
 
   /**
    * Outlook service with storage in JCR and with managed features.
-   * 
+   *
    * @param jcrService {@link RepositoryService}
    * @param sessionProviders {@link SessionProviderService}
    * @param hierarchyCreator {@link NodeHierarchyCreator}
    * @param finder {@link NodeFinder}
    * @param organization {@link OrganizationService}
-   * @param driveService {@link ManageDriveService}
    * @param listenerService {@link ListenerService}
+   * @param driveService {@link ManageDriveService}
+   * @param trashService {@link TrashService}
    * @param wikiService {@link WikiService}
    * @param forumService {@link ForumService}
-   * @param trashService {@link TrashService}
    * @param wikiRenderingService {@link RenderingService}
    * @param resourceBundleService {@link ResourceBundleService}
    * @param params {@link InitParams}
@@ -1361,32 +1509,79 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   // *********************** testing level **********************
 
+  /**
+   * Sets the api.
+   *
+   * @param mockedAPI the new api
+   */
   void setAPI(MailAPI mockedAPI) {
     this.mailserverApi = mockedAPI;
   }
 
   // *********************** implementation level ***************
 
+  /**
+   * Node title.
+   *
+   * @param node the node
+   * @return the string
+   * @throws RepositoryException the repository exception
+   */
   protected String nodeTitle(Node node) throws RepositoryException {
     return node.getProperty(NodetypeConstant.EXO_TITLE).getString();
   }
 
+  /**
+   * Node content.
+   *
+   * @param node the node
+   * @return the node
+   * @throws RepositoryException the repository exception
+   */
   protected Node nodeContent(Node node) throws RepositoryException {
     return node.getNode("jcr:content");
   }
 
+  /**
+   * Node created.
+   *
+   * @param node the node
+   * @return the calendar
+   * @throws RepositoryException the repository exception
+   */
   protected Calendar nodeCreated(Node node) throws RepositoryException {
     return node.getProperty("jcr:created").getDate();
   }
 
+  /**
+   * Mime type.
+   *
+   * @param content the content
+   * @return the string
+   * @throws RepositoryException the repository exception
+   */
   protected String mimeType(Node content) throws RepositoryException {
     return content.getProperty("jcr:mimeType").getString();
   }
 
+  /**
+   * Data.
+   *
+   * @param content the content
+   * @return the property
+   * @throws RepositoryException the repository exception
+   */
   protected Property data(Node content) throws RepositoryException {
     return content.getProperty("jcr:data");
   }
 
+  /**
+   * Generate id.
+   *
+   * @param workspace the workspace
+   * @param path the path
+   * @return the uuid
+   */
   protected UUID generateId(String workspace, String path) {
     StringBuilder s = new StringBuilder();
     s.append(workspace);
@@ -1397,6 +1592,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return UUID.nameUUIDFromBytes(s.toString().getBytes());
   }
 
+  /**
+   * Gets the exo user.
+   *
+   * @param userName the user name
+   * @return the exo user
+   * @throws OutlookException the outlook exception
+   */
   protected org.exoplatform.services.organization.User getExoUser(String userName) throws OutlookException {
     try {
       return organization.getUserHandler().findUserByName(userName);
@@ -1405,6 +1607,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Node.
+   *
+   * @param nodePath the node path
+   * @return the node
+   * @throws BadParameterException the bad parameter exception
+   * @throws RepositoryException the repository exception
+   */
   protected Node node(String nodePath) throws BadParameterException, RepositoryException {
     String workspace, path;
     if (nodePath.startsWith("/")) {
@@ -1423,6 +1633,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return node(workspace, path);
   }
 
+  /**
+   * Node.
+   *
+   * @param workspace the workspace
+   * @param path the path
+   * @return the node
+   * @throws BadParameterException the bad parameter exception
+   * @throws RepositoryException the repository exception
+   */
   protected Node node(String workspace, String path) throws BadParameterException, RepositoryException {
     SessionProvider sp = sessionProviders.getSessionProvider(null);
     Session userSession = sp.getSession(workspace, jcrService.getCurrentRepository());
@@ -1435,6 +1654,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * System node.
+   *
+   * @param workspace the workspace
+   * @param path the path
+   * @return the node
+   * @throws BadParameterException the bad parameter exception
+   * @throws RepositoryException the repository exception
+   */
   protected Node systemNode(String workspace, String path) throws BadParameterException, RepositoryException {
     SessionProvider sp = sessionProviders.getSystemSessionProvider(null);
     Session sysSession = sp.getSession(workspace, jcrService.getCurrentRepository());
@@ -1447,6 +1675,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Checkout.
+   *
+   * @param node the node
+   * @return true, if successful
+   * @throws RepositoryException the repository exception
+   */
   protected boolean checkout(Node node) throws RepositoryException {
     if (node.isNodeType("mix:versionable")) {
       if (!node.isCheckedOut()) {
@@ -1458,14 +1693,31 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Checks if is null.
+   *
+   * @param json the json
+   * @return true, if is null
+   */
   protected boolean isNull(JsonValue json) {
     return json == null || json.isNull();
   }
 
+  /**
+   * Checks if is not null.
+   *
+   * @param json the json
+   * @return true, if is not null
+   */
   protected boolean isNotNull(JsonValue json) {
     return json != null && !json.isNull();
   }
 
+  /**
+   * Current user locale.
+   *
+   * @return the locale
+   */
   protected Locale currentUserLocale() {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     return context != null ? context.getLocale() : null;
@@ -1642,6 +1894,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return folder;
   }
 
+  /**
+   * Current user id.
+   *
+   * @return the string
+   */
   protected String currentUserId() {
     ConversationState contextState = ConversationState.getCurrent();
     if (contextState != null) {
@@ -1650,18 +1907,40 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return IdentityConstants.ANONIM;
   }
 
+  /**
+   * Space service.
+   *
+   * @return the space service
+   */
   protected SpaceService spaceService() {
     return (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
   }
 
+  /**
+   * Social identity manager.
+   *
+   * @return the identity manager
+   */
   protected IdentityManager socialIdentityManager() {
     return (IdentityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(IdentityManager.class);
   }
 
+  /**
+   * Social activity manager.
+   *
+   * @return the activity manager
+   */
   protected ActivityManager socialActivityManager() {
     return (ActivityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ActivityManager.class);
   }
 
+  /**
+   * User spaces.
+   *
+   * @param userId the user id
+   * @return the list
+   * @throws OutlookSpaceException the outlook space exception
+   */
   protected List<OutlookSpace> userSpaces(String userId) throws OutlookSpaceException {
     List<OutlookSpace> spaces = new ArrayList<OutlookSpace>();
     ListAccess<Space> list = spaceService().getMemberSpaces(userId);
@@ -1712,6 +1991,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return groupsPath + groupId;
   }
 
+  /**
+   * Inits the web DAV link.
+   *
+   * @param node the node
+   * @throws OutlookException the outlook exception
+   */
   protected void initWebDAVLink(HierarchyNode node) throws OutlookException {
     // WebDAV URL
     try {
@@ -1721,6 +2006,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Inits the document link.
+   *
+   * @param siteType the site type
+   * @param driveName the drive name
+   * @param portalName the portal name
+   * @param nodeURI the node URI
+   * @param node the node
+   * @throws OutlookException the outlook exception
+   */
   protected void initDocumentLink(SiteType siteType,
                                   String driveName,
                                   String portalName,
@@ -1765,6 +2060,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Inits the document link.
+   *
+   * @param space the space
+   * @param file the file
+   * @throws OutlookException the outlook exception
+   */
   protected void initDocumentLink(OutlookSpace space, HierarchyNode file) throws OutlookException {
     // WebDAV URL
     initWebDAVLink(file);
@@ -1779,6 +2081,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                      file);
   }
 
+  /**
+   * Inits the document link.
+   *
+   * @param personalDocuments the personal documents
+   * @param file the file
+   * @throws OutlookException the outlook exception
+   */
   protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode file) throws OutlookException {
     // WebDAV URL
     initWebDAVLink(file);
@@ -1899,6 +2208,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Messages folder.
+   *
+   * @param parent the parent
+   * @param identity the identity
+   * @return the node
+   * @throws RepositoryException the repository exception
+   */
   protected Node messagesFolder(Node parent, String... identity) throws RepositoryException {
     Node messagesFolder;
     if (!parent.hasNode("outlook-messages")) {
@@ -1919,6 +2236,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return messagesFolder;
   }
 
+  /**
+   * Adds the message file.
+   *
+   * @param parent the parent
+   * @param message the message
+   * @return the node
+   * @throws RepositoryException the repository exception
+   * @throws UnsupportedEncodingException the unsupported encoding exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   protected Node addMessageFile(Node parent, OutlookMessage message) throws RepositoryException,
                                                                      UnsupportedEncodingException,
                                                                      IOException {
@@ -1940,6 +2267,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Post attachment activity.
+   *
+   * @param destFolder the dest folder
+   * @param files the files
+   * @param user the user
+   * @param comment the comment
+   * @return the exo social activity
+   * @throws RepositoryException the repository exception
+   */
   protected ExoSocialActivity postAttachmentActivity(Folder destFolder,
                                                      List<File> files,
                                                      OutlookUser user,
@@ -2013,6 +2350,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return activity;
   }
 
+  /**
+   * Read email.
+   *
+   * @param vElem the v elem
+   * @return the outlook email
+   * @throws OutlookException the outlook exception
+   */
   protected OutlookEmail readEmail(JsonValue vElem) throws OutlookException {
     JsonValue vEmailAddress = vElem.getElement("EmailAddress");
     if (isNull(vEmailAddress)) {
@@ -2035,10 +2379,29 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return getAddress(email, name);
   }
 
+  /**
+   * Fetch query.
+   *
+   * @param qr the qr
+   * @param limit the limit
+   * @param res the res
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res) throws RepositoryException, OutlookException {
     fetchQuery(qr, limit, res, n -> true);
   }
 
+  /**
+   * Fetch query.
+   *
+   * @param qr the qr
+   * @param limit the limit
+   * @param res the res
+   * @param acceptNode the accept node
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected void fetchQuery(QueryResult qr, int limit, Set<File> res, Predicate<Node> acceptNode) throws RepositoryException,
                                                                                                   OutlookException {
     SpaceService spaceService = spaceService();
@@ -2362,6 +2725,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return safe;
   }
 
+  /**
+   * Make links open new window.
+   *
+   * @param text the text
+   * @return the string
+   */
   protected String makeLinksOpenNewWindow(String text) {
     // Make all links target a new window
     // Replace in all links with target attribute to its _blank value
@@ -2646,6 +3015,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     }
   }
 
+  /**
+   * Check forum has add topic.
+   *
+   * @param userProfile the user profile
+   * @param categoryId the category id
+   * @param forumId the forum id
+   * @return true, if successful
+   * @throws Exception the exception
+   */
   protected boolean checkForumHasAddTopic(org.exoplatform.forum.service.UserProfile userProfile,
                                           String categoryId,
                                           String forumId) throws Exception {
@@ -2700,11 +3078,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   /**
    * Get the space name of node.
-   * 
+   *
    * @param node {@link Node}
    * @return {@link String} the group name
    * @throws RepositoryException when storage error
-   * @throws Exception when other error
    */
   private static String getSpaceName(Node node) throws RepositoryException {
     NodeHierarchyCreator nodeHierarchyCreator =

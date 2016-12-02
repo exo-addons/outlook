@@ -43,22 +43,29 @@ import javax.portlet.PortletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageViewer.java 00000 Jul 12, 2016 pnedonosko $
- * 
  */
 @ComponentConfig(template = "classpath:groovy/templates/OutlookMessageViewer.gtmpl")
 public class OutlookMessageViewer extends BaseOutlookMessageViewer {
 
+  /** The Constant LOG. */
   protected static final Log                     LOG        = ExoLogger.getLogger(OutlookMessageViewer.class);
 
+  /** The Constant EVENT_NAME. */
   public static final String                     EVENT_NAME = "ShowOutlookMessage";
 
+  /** The Constant FILTERS. */
   protected static final List<UIExtensionFilter> FILTERS    = Arrays.asList(new UIExtensionFilter[] {
       new OutlookMessageFileFilter() });
 
+  /**
+   * Gets the filters.
+   *
+   * @return the filters
+   */
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;

@@ -50,6 +50,14 @@ public abstract class File extends HierarchyNode {
     }
   }
 
+  /**
+   * Instantiates a new file.
+   *
+   * @param parentPath the parent path
+   * @param node the node
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   public File(String parentPath, Node node) throws RepositoryException, OutlookException {
     super(parentPath, node);
     if (!isFile(node)) {
@@ -65,6 +73,12 @@ public abstract class File extends HierarchyNode {
     return false;
   }
 
+  /**
+   * Gets the size.
+   *
+   * @return the size
+   * @throws RepositoryException the repository exception
+   */
   public long getSize() throws RepositoryException {
     Node node = getNode();
     if (node != null) {

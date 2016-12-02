@@ -20,20 +20,29 @@
 package org.exoplatform.outlook.portlet;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ForumTopic.java 00000 Sep 8, 2016 pnedonosko $
- * 
  */
 public class ForumTopic {
 
+  /** The id. */
   protected final String id;
 
+  /** The title. */
   protected final String title;
   
+  /** The link. */
   protected final String link;
 
+  /**
+   * Instantiates a new forum topic.
+   *
+   * @param id the id
+   * @param title the title
+   * @param link the link
+   */
   public ForumTopic(String id, String title, String link) {
     super();
     this.id = id;
@@ -42,6 +51,8 @@ public class ForumTopic {
   }
 
   /**
+   * Gets the id.
+   *
    * @return the id
    */
   public String getId() {
@@ -49,6 +60,8 @@ public class ForumTopic {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the title
    */
   public String getTitle() {
@@ -56,6 +69,8 @@ public class ForumTopic {
   }
 
   /**
+   * Gets the link.
+   *
    * @return the link
    */
   public String getLink() {

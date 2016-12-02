@@ -22,20 +22,19 @@ package org.exoplatform.outlook.mail;
 import org.exoplatform.outlook.OutlookException;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: AnaplanAPIException.java 00000 May 11, 2016 pnedonosko $
- * 
  */
 public class MailServerException extends OutlookException {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -671550264634503015L;
 
   /**
+   * Instantiates a new mail server exception.
+   *
    * @param message {@link String}
    */
   public MailServerException(String message) {
@@ -43,6 +42,8 @@ public class MailServerException extends OutlookException {
   }
 
   /**
+   * Instantiates a new mail server exception.
+   *
    * @param cause {@link Throwable}
    */
   public MailServerException(Throwable cause) {
@@ -50,6 +51,8 @@ public class MailServerException extends OutlookException {
   }
 
   /**
+   * Instantiates a new mail server exception.
+   *
    * @param message {@link String}
    * @param cause {@link Throwable}
    */

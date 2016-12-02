@@ -24,21 +24,26 @@ import juzu.RequestScoped;
 import java.util.ResourceBundle;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ResourceBundleSerializer.java 00000 Jul 8, 2016 pnedonosko $
- * 
  */
 @RequestScoped
 public class ResourceBundleSerializer {
 
   /**
-   * 
+   * Instantiates a new resource bundle serializer.
    */
   public ResourceBundleSerializer() {
   }
 
+  /**
+   * To JSON.
+   *
+   * @param bundle the bundle
+   * @return the string
+   */
   public String toJSON(ResourceBundle bundle) {
     StringBuilder str = new StringBuilder();
     str.append("{\"locale\":\"");

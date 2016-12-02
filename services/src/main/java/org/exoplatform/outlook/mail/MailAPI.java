@@ -68,23 +68,32 @@ import java.util.Arrays;
  */
 public class MailAPI {
 
+  /** The Constant LOG. */
   protected static final Log          LOG                   = ExoLogger.getLogger(MailAPI.class);
 
+  /** The Constant READ_ATTACHMENT_ERROR. */
   protected static final String       READ_ATTACHMENT_ERROR = "Error requesting message attachment";
   
+  /** The Constant READ_MESSAGE_ERROR. */
   protected static final String       READ_MESSAGE_ERROR = "Error requesting message";
 
+  /** The Constant MODELS_ERROR. */
   protected static final String       MODELS_ERROR          = "Error requesting workspace models";
 
+  /** The http client. */
   protected final CloseableHttpClient httpClient;
 
+  /** The http context. */
   protected final HttpClientContext   httpContext;
 
+  /** The accept json header. */
   protected final Header              acceptJsonHeader;
 
   /**
-   * @throws MailServerException
-   * 
+   * Instantiates a new mail API.
+   *
+   * @param httpClient the http client
+   * @throws MailServerException the mail server exception
    */
   MailAPI(CloseableHttpClient httpClient) throws MailServerException {
 
@@ -124,10 +133,20 @@ public class MailAPI {
     this.httpContext = HttpClientContext.create();
   }
 
+  /**
+   * Instantiates a new mail API.
+   *
+   * @throws MailServerException the mail server exception
+   */
   public MailAPI() throws MailServerException {
     this(null);
   }
 
+  /**
+   * Close.
+   *
+   * @throws MailServerException the mail server exception
+   */
   public void close() throws MailServerException {
     try {
       this.httpClient.close();
@@ -136,6 +155,9 @@ public class MailAPI {
     }
   }
 
+  /**
+   * Reset.
+   */
   public void reset() {
     AuthState authState = httpContext.getTargetAuthState();
     if (authState != null) {
@@ -143,6 +165,18 @@ public class MailAPI {
     }
   }
 
+  /**
+   * Gets the attachment.
+   *
+   * @param user the user
+   * @param messageId the message id
+   * @param attachmentToken the attachment token
+   * @param attachmentId the attachment id
+   * @return the attachment
+   * @throws BadCredentialsException the bad credentials exception
+   * @throws ForbiddenException the forbidden exception
+   * @throws MailServerException the mail server exception
+   */
   public JsonValue getAttachment(OutlookUser user,
                                  String messageId,
                                  String attachmentToken,
@@ -179,6 +213,17 @@ public class MailAPI {
     }
   }
 
+  /**
+   * Gets the message.
+   *
+   * @param user the user
+   * @param messageId the message id
+   * @param messageToken the message token
+   * @return the message
+   * @throws BadCredentialsException the bad credentials exception
+   * @throws ForbiddenException the forbidden exception
+   * @throws MailServerException the mail server exception
+   */
   public JsonValue getMessage(OutlookUser user,
                            String messageId,
                            String messageToken) throws BadCredentialsException, ForbiddenException, MailServerException {
@@ -210,6 +255,13 @@ public class MailAPI {
 
   // ******* internals *******
 
+  /**
+   * Read json.
+   *
+   * @param content the content
+   * @return the json value
+   * @throws JsonException the json exception
+   */
   protected JsonValue readJson(InputStream content) throws JsonException {
     JsonParser jsonParser = new JsonParserImpl();
     JsonDefaultHandler handler = new JsonDefaultHandler();
@@ -217,6 +269,12 @@ public class MailAPI {
     return handler.getJsonObject();
   }
 
+  /**
+   * Read text.
+   *
+   * @param entity the entity
+   * @return the string
+   */
   protected String readText(HttpEntity entity) {
     String errorText;
     try {
@@ -247,6 +305,15 @@ public class MailAPI {
     return errorText;
   }
 
+  /**
+   * Check error.
+   *
+   * @param response the response
+   * @param errorBase the error base
+   * @throws BadCredentialsException the bad credentials exception
+   * @throws ForbiddenException the forbidden exception
+   * @throws MailServerException the mail server exception
+   */
   protected void checkError(HttpResponse response, String errorBase) throws BadCredentialsException,
                                                                      ForbiddenException,
                                                                      MailServerException {

@@ -39,6 +39,7 @@ import javax.jcr.Node;
  */
 public class OutlookMessage {
 
+  /** The Constant DATE_FORMAT. */
   public static final DateFormat DATE_FORMAT        = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX");
 
   /**
@@ -47,34 +48,52 @@ public class OutlookMessage {
   @Deprecated
   public static final DateFormat DATE_FORMAT_CLIENT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
+  /** The user. */
   protected final OutlookUser    user;
 
+  /** The from. */
   protected OutlookEmail         from;
 
+  /** The to. */
   protected List<OutlookEmail>   to                 = new ArrayList<OutlookEmail>();
 
+  /** The id. */
   protected String               id;
 
+  /** The title. */
   protected String               title;
 
+  /** The subject. */
   protected String               subject;
 
+  /** The body. */
   protected String               body;
 
+  /** The type. */
   protected String               type;
 
+  /** The created. */
   protected Calendar             created;
 
+  /** The modified. */
   protected Calendar             modified;
 
+  /** The file node. */
   protected Node                 fileNode;
 
+  /**
+   * Instantiates a new outlook message.
+   *
+   * @param user the user
+   */
   protected OutlookMessage(OutlookUser user) {
     this.user = user;
     this.from = user;
   }
 
   /**
+   * Sets the title.
+   *
    * @param title the title to set
    */
   protected void setTitle(String title) {
@@ -91,6 +110,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the body.
+   *
    * @param body message body
    */
   protected void setBody(String body) {
@@ -98,6 +119,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the type.
+   *
    * @param type the type to set
    */
   protected void setType(String type) {
@@ -105,6 +128,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the id.
+   *
    * @param id the id to set
    */
   protected void setId(String id) {
@@ -112,6 +137,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the to.
+   *
    * @param to the to to set
    */
   protected void setTo(List<OutlookEmail> to) {
@@ -119,6 +146,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the from.
+   *
    * @param from the from to set
    */
   protected void setFrom(OutlookEmail from) {
@@ -126,6 +155,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the created.
+   *
    * @param created the created to set
    */
   protected void setCreated(Calendar created) {
@@ -133,6 +164,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the modified.
+   *
    * @param modified the modified to set
    */
   protected void setModified(Calendar modified) {
@@ -140,6 +173,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the file node.
+   *
    * @return the fileNode
    */
   protected Node getFileNode() {
@@ -147,6 +182,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Sets the file node.
+   *
    * @param fileNode the fileNode to set
    */
   protected void setFileNode(Node fileNode) {
@@ -154,6 +191,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the user.
+   *
    * @return the user
    */
   public OutlookUser getUser() {
@@ -161,6 +200,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the from.
+   *
    * @return the from
    */
   public OutlookEmail getFrom() {
@@ -168,6 +209,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the to.
+   *
    * @return the to
    */
   public List<OutlookEmail> getTo() {
@@ -175,6 +218,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the id.
+   *
    * @return the id
    */
   public String getId() {
@@ -182,6 +227,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the title
    */
   public String getTitle() {
@@ -189,6 +236,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the subject.
+   *
    * @return the subject
    */
   public String getSubject() {
@@ -196,6 +245,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the body.
+   *
    * @return the body
    */
   public String getBody() {
@@ -203,6 +254,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the type.
+   *
    * @return the type
    */
   public String getType() {
@@ -210,6 +263,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the created.
+   *
    * @return the created
    */
   public Calendar getCreated() {
@@ -217,6 +272,8 @@ public class OutlookMessage {
   }
 
   /**
+   * Gets the modified.
+   *
    * @return the modified
    */
   public Calendar getModified() {

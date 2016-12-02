@@ -23,16 +23,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: RequestUtils.java 00000 Sep 7, 2016 pnedonosko $
- * 
  */
 public class RequestUtils {
 
   /**
-   * 
+   * Instantiates a new request utils.
    */
   private RequestUtils() {
   }

@@ -30,15 +30,24 @@ package org.exoplatform.outlook;
  */
 public class OutlookSpaceException extends Exception {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 4432449561112505464L;
 
+  /**
+   * Instantiates a new outlook space exception.
+   *
+   * @param message the message
+   * @param cause the cause
+   */
   public OutlookSpaceException(String message, Throwable cause) {
     super(message, cause);
   }
 
+  /**
+   * Instantiates a new outlook space exception.
+   *
+   * @param message the message
+   */
   public OutlookSpaceException(String message) {
     super(message);
   }

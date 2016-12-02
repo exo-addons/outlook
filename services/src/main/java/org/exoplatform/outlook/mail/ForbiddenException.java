@@ -30,12 +30,12 @@ package org.exoplatform.outlook.mail;
  */
 public class ForbiddenException extends MailServerException {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 8282124656996394956L;
 
   /**
+   * Instantiates a new forbidden exception.
+   *
    * @param message {@link String}
    */
   public ForbiddenException(String message) {
@@ -43,6 +43,8 @@ public class ForbiddenException extends MailServerException {
   }
 
   /**
+   * Instantiates a new forbidden exception.
+   *
    * @param message {@link String}
    * @param cause {@link Throwable}
    */

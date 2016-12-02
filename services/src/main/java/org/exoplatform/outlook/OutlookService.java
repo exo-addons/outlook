@@ -28,17 +28,20 @@ import java.util.List;
 import javax.jcr.RepositoryException;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookService.java 00000 Mar 4, 2016 pnedonosko $
  */
 public interface OutlookService {
 
+  /** The personal drive parrten. */
   final String PERSONAL_DRIVE_PARRTEN = "/Users/${userId}/Private";
 
+  /** The group drive parrten. */
   final String GROUP_DRIVE_PARRTEN    = "/Groups${groupId}/Documents";
 
+  /** The message nodetype. */
   final String MESSAGE_NODETYPE       = "mso:message";
 
   /**
@@ -90,19 +93,51 @@ public interface OutlookService {
 
   /**
    * Read Outlook message from server.
-   * 
-   * @param messageId {@link String} email message ID
+   *
    * @param user {@link OutlookUser}
-   * @param messageToken {@link String} secure token to access message on Exchange server 
+   * @param messageId {@link String} email message ID
+   * @param messageToken {@link String} secure token to access message on Exchange server
    * @return {@link OutlookMessage}
    * @throws OutlookException when error
    */
   OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException;
 
+  /**
+   * Gets the folder.
+   *
+   * @param path the path
+   * @return the folder
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   Folder getFolder(String path) throws OutlookException, RepositoryException;
 
+  /**
+   * Gets the folder.
+   *
+   * @param parent the parent
+   * @param path the path
+   * @return the folder
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException;
 
+  /**
+   * Save attachment.
+   *
+   * @param space the space
+   * @param folder the folder
+   * @param user the user
+   * @param comment the comment
+   * @param messageId the message id
+   * @param attachmentToken the attachment token
+   * @param attachmentIds the attachment ids
+   * @return the list
+   * @throws OutlookSpaceException the outlook space exception
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   List<File> saveAttachment(OutlookSpace space,
                             Folder folder,
                             OutlookUser user,
@@ -111,6 +146,19 @@ public interface OutlookService {
                             String attachmentToken,
                             String... attachmentIds) throws OutlookSpaceException, OutlookException, RepositoryException;
 
+  /**
+   * Save attachment.
+   *
+   * @param destFolder the dest folder
+   * @param user the user
+   * @param comment the comment
+   * @param messageId the message id
+   * @param attachmentToken the attachment token
+   * @param attachmentIds the attachment ids
+   * @return the list
+   * @throws OutlookException the outlook exception
+   * @throws RepositoryException the repository exception
+   */
   List<File> saveAttachment(Folder destFolder,
                             OutlookUser user,
                             String comment,
@@ -120,17 +168,32 @@ public interface OutlookService {
 
   /**
    * Return Office space handler.
-   * 
+   *
    * @param groupId {@link String} email message ID
    * @return {@link OutlookSpace}
    * @throws OutlookSpaceException when space access error happen
-   * @throws OutlookException when error
    * @throws RepositoryException when storage error
+   * @throws OutlookException when error
    */
   OutlookSpace getSpace(String groupId) throws OutlookSpaceException, RepositoryException, OutlookException;
 
+  /**
+   * Gets the user spaces.
+   *
+   * @return the user spaces
+   * @throws OutlookSpaceException the outlook space exception
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   List<OutlookSpace> getUserSpaces() throws OutlookSpaceException, RepositoryException, OutlookException;
 
+  /**
+   * Gets the user documents.
+   *
+   * @return the user documents
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   UserDocuments getUserDocuments() throws RepositoryException, OutlookException;
 
 }

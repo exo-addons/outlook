@@ -81,11 +81,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
- * 
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      template = "classpath:groovy/templates/OutlookAttachmentActivity.gtmpl",
@@ -99,30 +98,56 @@ import javax.jcr.Session;
                                          @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
 public class OutlookAttachmentActivity extends BaseUIActivity {
 
+  /** The Constant ACTIVITY_TYPE. */
   public static final String ACTIVITY_TYPE       = "outlook:attachment";
 
+  /** The Constant COMMENT. */
   public static final String COMMENT             = "comment";
 
+  /** The Constant REPOSITORY. */
   public static final String REPOSITORY          = "repository";
 
+  /** The Constant WORKSPACE. */
   public static final String WORKSPACE           = "workspace";
 
+  /** The Constant FILES. */
   public static final String FILES               = "files";
 
+  /** The Constant AUTHOR. */
   public static final String AUTHOR              = "author";
 
+  /** The Constant DATE_CREATED. */
   public static final String DATE_CREATED        = "dateCreated";
 
+  /** The Constant DATE_LAST_MODIFIED. */
   public static final String DATE_LAST_MODIFIED  = "lastModified";
 
+  /** The Constant DEFAULT_DATE_FORMAT. */
   public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
+  /** The Constant DEFAULT_TIME_FORMAT. */
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
 
+  /** The Constant LOG. */
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookAttachmentActivity.class);
 
+  /**
+   * The listener interface for receiving viewDocumentAction events.
+   * The class that is interested in processing a viewDocumentAction
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addViewDocumentActionListener<code> method. When
+   * the viewDocumentAction event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see ViewDocumentActionEvent
+   */
   @Deprecated // TODO not used 
   public static class ViewDocumentActionListener extends EventListener<OutlookAttachmentActivity> {
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute(Event<OutlookAttachmentActivity> event) throws Exception {
       // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
@@ -154,13 +179,26 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
+  /**
+   * The Class Attachment.
+   */
   public class Attachment {
+    
+    /** The file UUID. */
     final String      fileUUID;
 
+    /** The name. */
     String            name;
 
+    /** The node. */
     ThreadLocal<Node> node = new ThreadLocal<Node>();
 
+    /**
+     * Instantiates a new attachment.
+     *
+     * @param fileUUID the file UUID
+     * @param name the name
+     */
     protected Attachment(String fileUUID, String name) {
       super();
       this.fileUUID = fileUUID;
@@ -168,6 +206,8 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
 
     /**
+     * Gets the name.
+     *
      * @return the name
      */
     public String getName() {
@@ -175,6 +215,8 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
 
     /**
+     * Gets the file UUID.
+     *
      * @return the fileUUID
      */
     public String getFileUUID() {
@@ -200,6 +242,8 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
 
     /**
+     * Gets the mime type.
+     *
      * @return the mimeType
      */
     public String getMimeType() {
@@ -220,11 +264,22 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Checks if is image.
+     *
+     * @return true, if is image
+     * @throws Exception the exception
+     */
     public boolean isImage() throws Exception {
       String mimeType = getMimeType();
       return mimeType.startsWith("image") || mimeType.indexOf("icon") >= 0;
     }
 
+    /**
+     * Gets the size.
+     *
+     * @return the size
+     */
     public String getSize() {
       Node node = null;
       try {
@@ -243,6 +298,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Checks if is support preview.
+     *
+     * @return true, if is support preview
+     * @throws Exception the exception
+     */
     public boolean isSupportPreview() throws Exception {
       Node node = null;
       try {
@@ -270,6 +331,11 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return false;
     }
 
+    /**
+     * Gets the download link.
+     *
+     * @return the download link
+     */
     public String getDownloadLink() {
       Node node = null;
       try {
@@ -283,6 +349,13 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the pdf thumbnail image link.
+     *
+     * @return the pdf thumbnail image link
+     * @throws RepositoryException the repository exception
+     * @throws UnsupportedEncodingException the unsupported encoding exception
+     */
     public String getPdfThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
       Node node = null;
       try {
@@ -315,6 +388,13 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the thumbnail image link.
+     *
+     * @return the thumbnail image link
+     * @throws RepositoryException the repository exception
+     * @throws UnsupportedEncodingException the unsupported encoding exception
+     */
     public String getThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
       Node node = null;
       try {
@@ -423,6 +503,11 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the open link.
+     *
+     * @return the open link
+     */
     public String getOpenLink() {
       Node node = null;
       try {
@@ -436,6 +521,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the preview link.
+     *
+     * @param ctx the ctx
+     * @return the preview link
+     */
     public String getPreviewLink(WebuiBindingContext ctx) {
       Node node = null;
       try {
@@ -449,6 +540,11 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the view link.
+     *
+     * @return the view link
+     */
     @Deprecated // TODO NOT used in PLF 4.4
     public String getViewLink() {
       Node node = null;
@@ -468,11 +564,22 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Gets the link.
+     *
+     * @return the link
+     * @throws Exception the exception
+     */
     @Deprecated // TODO NOT used in PLF 4.4
     public String getLink() throws Exception {
       return isSupportPreview() ? getViewLink() : getDownloadLink();
     }
 
+    /**
+     * Gets the css class icon.
+     *
+     * @return the css class icon
+     */
     public String getCssClassIcon() {
       Node node = null;
       try {
@@ -486,11 +593,19 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return StringUtils.EMPTY;
     }
 
+    /**
+     * Checks if is support thumbnail view.
+     *
+     * @return true, if is support thumbnail view
+     * @throws Exception the exception
+     */
     public boolean isSupportThumbnailView() throws Exception {
       return org.exoplatform.services.cms.impl.Utils.isSupportThumbnailView(getMimeType());
     }
 
     /**
+     * Checks if is exists.
+     *
      * @return <code>true</code> when node exists, <code>false</code> otherwise
      * @throws RepositoryException when error
      */
@@ -521,15 +636,21 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
 
     /**
+     * Gets the node.
+     *
      * @return attachment file node or <code>null</code>
      * @throws RepositoryException when strorage error
-     * @throws NoSuchWorkspaceException when default workspace not found
-     * @throws LoginException when login error
      */
     public Node getNode() throws RepositoryException {
       return node();
     }
 
+    /**
+     * Node.
+     *
+     * @return the node
+     * @throws RepositoryException the repository exception
+     */
     protected Node node() throws RepositoryException {
       Node node = this.node.get();
       if (node != null) {
@@ -558,6 +679,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
       return node;
     }
 
+    /**
+     * Gets the full path.
+     *
+     * @return the full path
+     * @throws RepositoryException the repository exception
+     */
     public String getFullPath() throws RepositoryException {
       Node node = node();
       StringBuilder path = new StringBuilder();
@@ -568,14 +695,23 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
+  /** The files. */
   protected List<Attachment>     files;
 
+  /** The repository. */
   protected ManageableRepository repository;
 
+  /** The document service. */
   protected DocumentService      documentService;
   
+  /** The util. */
   protected final OutlookActivitySupport util;
 
+  /**
+   * Instantiates a new outlook attachment activity.
+   *
+   * @throws Exception the exception
+   */
   public OutlookAttachmentActivity() throws Exception {
     RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);
     this.repository = repositoryService.getCurrentRepository();
@@ -583,6 +719,13 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     this.util = new OutlookActivitySupport(documentService, repository);
   }
 
+  /**
+   * Gets the files.
+   *
+   * @return the files
+   * @throws RepositoryException the repository exception
+   * @throws RepositoryConfigurationException the repository configuration exception
+   */
   public List<Attachment> getFiles() throws RepositoryException, RepositoryConfigurationException {
     if (this.files == null) {
       synchronized (this) {
@@ -608,6 +751,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     return Collections.unmodifiableList(files);
   }
 
+  /**
+   * Render attachment presentation.
+   *
+   * @param node the node
+   * @throws Exception the exception
+   */
   public void renderAttachmentPresentation(Node node) throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
     uicontentpresentation.setNode(node);
@@ -618,14 +767,31 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     uicontentpresentation.renderUIComponent(fileComponent);
   }
 
+  /**
+   * Gets the system comment bundle.
+   *
+   * @param activityParams the activity params
+   * @return the system comment bundle
+   */
   public String[] getSystemCommentBundle(Map<String, String> activityParams) {
     return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSystemCommentBundle(activityParams);
   }
 
+  /**
+   * Gets the system comment title.
+   *
+   * @param activityParams the activity params
+   * @return the system comment title
+   */
   public String[] getSystemCommentTitle(Map<String, String> activityParams) {
     return org.exoplatform.wcm.ext.component.activity.listener.Utils.getSystemCommentTitle(activityParams);
   }
 
+  /**
+   * Gets the workspace.
+   *
+   * @return the workspace
+   */
   public String getWorkspace() {
     ExoSocialActivity activity = getActivity();
     if (activity != null) {
@@ -635,6 +801,11 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
+  /**
+   * Gets the comment.
+   *
+   * @return the comment
+   */
   public String getComment() {
     ExoSocialActivity activity = getActivity();
     if (activity != null) {
@@ -644,6 +815,9 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public String toString() {
     ExoSocialActivity activity = getActivity();
     if (activity != null) {
@@ -660,6 +834,12 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     }
   }
 
+  /**
+   * Parses the attachment.
+   *
+   * @param line the line
+   * @return the attachment
+   */
   Attachment parseAttachment(String line) {
     int i = line.indexOf('=');
     String fileUUID, name;
@@ -673,6 +853,13 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
     return new Attachment(fileUUID, name);
   }
 
+  /**
+   * Attachment string.
+   *
+   * @param fileUUID the file UUID
+   * @param name the name
+   * @return the string
+   */
   public static String attachmentString(String fileUUID, String name) {
     StringBuilder line = new StringBuilder();
     line.append(fileUUID);

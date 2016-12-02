@@ -57,37 +57,57 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
- * Created by The eXo Platform SAS
- * 
+ * Created by The eXo Platform SAS.
+ *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ContentLink.java 00000 Aug 14, 2016 pnedonosko $
- * 
  */
 public class ContentLink {
 
+  /** The Constant CONFIG_HOST. */
   public static final String    CONFIG_HOST        = "server-host";
 
+  /** The Constant CONFIG_SCHEMA. */
   public static final String    CONFIG_SCHEMA      = "server-schema";
 
+  /** The Constant LINK_CACHE_NAME. */
   public static final String    LINK_CACHE_NAME    = "OutlookContentLinkCache";
 
+  /** The Constant EXO_BASE_URL. */
   public static final String    EXO_BASE_URL       = "exo.base.url";
 
+  /** The Constant KEY_EXPIRE_SECONDS. */
   public static final int       KEY_EXPIRE_SECONDS = 60;
 
+  /** The Constant LOG. */
   protected static final Log    LOG                = ExoLogger.getLogger(ContentLink.class);
 
+  /** The Constant RANDOM. */
   protected static final Random RANDOM             = new Random();
 
+  /**
+   * The Class KeyPath.
+   */
   class KeyPath {
+    
+    /** The workspace. */
     final String workspace;
 
+    /** The path. */
     final String path;
 
+    /** The user id. */
     final String userId;
 
     // final Calendar expired;
 
+    /**
+     * Instantiates a new key path.
+     *
+     * @param userId the user id
+     * @param workspace the workspace
+     * @param path the path
+     */
     protected KeyPath(String userId, String workspace, String path) {
       super();
       this.workspace = workspace;
@@ -102,20 +122,28 @@ public class ContentLink {
   // @Deprecated
   // protected final ConcurrentHashMap<String, KeyPath> active = new ConcurrentHashMap<String, KeyPath>();
 
+  /** The active links. */
   private final ExoCache<String, KeyPath> activeLinks;
 
+  /** The jcr service. */
   protected final RepositoryService       jcrService;
 
+  /** The session providers. */
   protected final SessionProviderService  sessionProviders;
 
+  /** The finder. */
   protected final NodeFinder              finder;
 
+  /** The organization. */
   protected final OrganizationService     organization;
 
+  /** The identity registry. */
   protected final IdentityRegistry        identityRegistry;
 
+  /** The config. */
   protected final Map<String, String>     config;
 
+  /** The rest url. */
   protected final String                  restUrl;
 
   /**
@@ -215,11 +243,28 @@ public class ContentLink {
     LOG.info("Default service URL for content links is " + this.restUrl);
   }
 
+  /**
+   * Creates the.
+   *
+   * @param userId the user id
+   * @param workspace the workspace
+   * @param nodePath the node path
+   * @return the string
+   * @throws Exception the exception
+   */
   public String create(String userId, String workspace, String nodePath) throws Exception {
     Node node = node(userId, workspace, nodePath);
     return create(userId, node);
   }
 
+  /**
+   * Creates the.
+   *
+   * @param userId the user id
+   * @param node the node
+   * @return the string
+   * @throws RepositoryException the repository exception
+   */
   public String create(String userId, Node node) throws RepositoryException {
     String workspace = node.getSession().getWorkspace().getName();
     String path = node.getPath();
@@ -299,6 +344,14 @@ public class ContentLink {
     return new LinkResource(name, link.append('/').append(userId).append('/').append(key).toString());
   }
 
+  /**
+   * Consume.
+   *
+   * @param userId the user id
+   * @param key the key
+   * @return the node content
+   * @throws Exception the exception
+   */
   public NodeContent consume(String userId, String key) throws Exception {
     // KeyPath keyPath = active.remove(key);
     KeyPath keyPath = activeLinks.remove(key);
@@ -313,6 +366,14 @@ public class ContentLink {
     return null;
   }
 
+  /**
+   * Gets the node.
+   *
+   * @param userId the user id
+   * @param nodePath the node path
+   * @return the node
+   * @throws Exception the exception
+   */
   protected Node getNode(String userId, String nodePath) throws Exception {
     String workspace, path;
     if (nodePath.startsWith("/")) {
@@ -331,6 +392,15 @@ public class ContentLink {
     return node(userId, workspace, path);
   }
 
+  /**
+   * Content.
+   *
+   * @param userId the user id
+   * @param workspace the workspace
+   * @param path the path
+   * @return the node content
+   * @throws Exception the exception
+   */
   protected NodeContent content(String userId, String workspace, String path) throws Exception {
     Node node = node(userId, workspace, path);
     Node content = node.getNode("jcr:content");
@@ -351,6 +421,15 @@ public class ContentLink {
     };
   }
 
+  /**
+   * Node.
+   *
+   * @param userId the user id
+   * @param workspace the workspace
+   * @param path the path
+   * @return the node
+   * @throws Exception the exception
+   */
   protected Node node(String userId, String workspace, String path) throws Exception {
     // validate user exists
     User user = organization.getUserHandler().findUserByName(userId);
@@ -396,6 +475,13 @@ public class ContentLink {
     }
   }
 
+  /**
+   * Generate id.
+   *
+   * @param workspace the workspace
+   * @param path the path
+   * @return the uuid
+   */
   protected UUID generateId(String workspace, String path) {
     StringBuilder s = new StringBuilder();
     s.append(workspace);

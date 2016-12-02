@@ -45,46 +45,77 @@ import javax.jcr.RepositoryException;
  */
 public abstract class HierarchyNode {
 
+  /** The Constant MODIFIED_FORMAT. */
   public static final String    MODIFIED_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
+  /** The Constant PATH_SEPARATOR. */
   public static final String    PATH_SEPARATOR  = "/".intern();
 
+  /** The Constant ROOT_PATH_LABEL. */
   public static final String    ROOT_PATH_LABEL = PATH_SEPARATOR;
 
+  /** The Constant EMPTY. */
   protected static final String EMPTY           = "".intern();
 
+  /** The Constant LOG. */
   protected static final Log    LOG             = ExoLogger.getLogger(Node.class);
 
+  /**
+   * Checks if is folder.
+   *
+   * @param node the node
+   * @return true, if is folder
+   * @throws RepositoryException the repository exception
+   */
   public static boolean isFolder(Node node) throws RepositoryException {
     return node.isNodeType("nt:folder") || node.isNodeType("nt:unstructured");
   }
 
+  /**
+   * Checks if is file.
+   *
+   * @param node the node
+   * @return true, if is file
+   * @throws RepositoryException the repository exception
+   */
   public static boolean isFile(Node node) throws RepositoryException {
     return node.isNodeType("nt:file");
   }
 
+  /** The parent path. */
   protected final String   parentPath;
 
+  /** The path. */
   protected final String   path;
 
+  /** The name. */
   protected final String   name;
   
+  /** The full path. */
   protected final String   fullPath;
 
+  /** The title. */
   protected final String   title;
 
+  /** The path label. */
   protected String         pathLabel;
 
+  /** The last modifier. */
   protected final String   lastModifier;
 
+  /** The last modified. */
   protected final Calendar lastModified;
 
+  /** The node. */
   protected final Node     node;
 
+  /** The hash code. */
   protected final int      hashCode;
 
+  /** The url. */
   protected String         url;
 
+  /** The webdav url. */
   protected String         webdavUrl;
 
   /**
@@ -136,6 +167,14 @@ public abstract class HierarchyNode {
     this.hashCode = hc;
   }
 
+  /**
+   * Instantiates a new hierarchy node.
+   *
+   * @param parent the parent
+   * @param node the node
+   * @throws RepositoryException the repository exception
+   * @throws OutlookException the outlook exception
+   */
   protected HierarchyNode(Folder parent, Node node) throws RepositoryException, OutlookException {
     this(parent != null ? parent.getPath() : null, node);
   }
@@ -170,6 +209,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the url.
+   *
    * @return the url
    */
   public String getUrl() {
@@ -177,6 +218,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Sets the url.
+   *
    * @param url the url to set
    */
   public void setUrl(String url) {
@@ -184,6 +227,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the webdav url.
+   *
    * @return the webdavUrl
    */
   public String getWebdavUrl() {
@@ -191,6 +236,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Sets the webdav url.
+   *
    * @param webdavUrl the webdavUrl to set
    */
   public void setWebdavUrl(String webdavUrl) {
@@ -198,6 +245,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the node.
+   *
    * @return the node
    */
   public Node getNode() {
@@ -205,6 +254,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the full path.
+   *
    * @return the full path
    */
   public String getFullPath() {
@@ -212,6 +263,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the path.
+   *
    * @return the path
    */
   public String getPath() {
@@ -219,6 +272,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the name.
+   *
    * @return the name
    */
   public String getName() {
@@ -226,6 +281,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the title.
+   *
    * @return the name
    */
   public String getTitle() {
@@ -233,6 +290,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the path label.
+   *
    * @return the pathLabel
    */
   public String getPathLabel() {
@@ -240,6 +299,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the last modifier.
+   *
    * @return the lastModifier
    */
   public String getLastModifier() {
@@ -247,6 +308,8 @@ public abstract class HierarchyNode {
   }
 
   /**
+   * Gets the last modified.
+   *
    * @return the lastModified
    */
   public String getLastModified() {
@@ -263,6 +326,13 @@ public abstract class HierarchyNode {
     }
   }
 
+  /**
+   * Node title.
+   *
+   * @param node the node
+   * @return the string
+   * @throws RepositoryException the repository exception
+   */
   protected static String nodeTitle(Node node) throws RepositoryException {
     String title;
     if (node.hasProperty("exo:title")) {
@@ -275,6 +345,14 @@ public abstract class HierarchyNode {
     return title;
   }
 
+  /**
+   * Path label.
+   *
+   * @param rootPath the root path
+   * @param node the node
+   * @return the string
+   * @throws RepositoryException the repository exception
+   */
   protected static String pathLabel(String rootPath, Node node) throws RepositoryException {
     // we assume given root path already reflects the node path
     List<String> reversedSubpath = new ArrayList<String>();
@@ -296,10 +374,24 @@ public abstract class HierarchyNode {
     return pathLabel.toString();
   }
 
+  /**
+   * Full path.
+   *
+   * @param workspace the workspace
+   * @param path the path
+   * @return the string
+   */
   public static String fullPath(String workspace, String path) {
     return new StringBuilder().append(workspace).append(path).toString();
   }
   
+  /**
+   * Gets the path.
+   *
+   * @param fullPath the full path
+   * @return the path
+   * @throws BadParameterException the bad parameter exception
+   */
   public static String getPath(String fullPath) throws BadParameterException {
     if (fullPath.startsWith("/")) {
       return fullPath;
@@ -314,6 +406,13 @@ public abstract class HierarchyNode {
     }
   }
   
+  /**
+   * Gets the workspace.
+   *
+   * @param fullPath the full path
+   * @return the workspace
+   * @throws BadParameterException the bad parameter exception
+   */
   public static String getWorkspace(String fullPath) throws BadParameterException {
     if (fullPath.startsWith("/")) {
       return null;
@@ -327,8 +426,18 @@ public abstract class HierarchyNode {
     }
   }
 
+  /**
+   * Checks if is folder.
+   *
+   * @return true, if is folder
+   */
   public abstract boolean isFolder();
 
+  /**
+   * User locale.
+   *
+   * @return the locale
+   */
   protected abstract Locale userLocale();
 
 }

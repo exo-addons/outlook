@@ -1,18 +1,20 @@
 /*
  * Copyright (C) 2003-2016 eXo Platform SAS.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
 package org.exoplatform.outlook.jcr;
@@ -37,37 +39,37 @@ public interface NodeFinder {
 
   /**
    * Return JCR item by given path.
-   * 
+   *
    * @param userSession {@link Session}
    * @param path {@link String}
    * @param symlinkTarget boolean, if {@code true} and found item is a symlink node, return the symlink target
    *          node, if {@code false} just return the item obtained from the session
    * @return {@link Item}
-   * @throws RepositoryException if repository error eccurs
    * @throws PathNotFoundException if item not found by given path
+   * @throws RepositoryException if repository error eccurs
    */
   Item getItem(Session userSession, String path, boolean symlinkTarget) throws PathNotFoundException, RepositoryException;
 
   /**
    * Find JCR item by given path, if the path points to a symlink this method return a target node of the
    * link.
-   * 
+   *
    * @param userSession {@link Session}
    * @param path {@link String}
    * @return {@link Item}
-   * @throws RepositoryException if repository error eccurs
    * @throws PathNotFoundException if item not found by given path
+   * @throws RepositoryException if repository error eccurs
    */
   Item findItem(Session userSession, String path) throws PathNotFoundException, RepositoryException;
 
   /**
    * Find nodes linked to given node.
-   * 
+   *
    * @param session {@link Session}
    * @param uuid {@link String}
    * @return {@link Collection} of nodes
-   * @throws RepositoryException if repository error eccurs
    * @throws PathNotFoundException if item not found by given path
+   * @throws RepositoryException if repository error eccurs
    */
   Collection<Node> findLinked(Session session, String uuid) throws PathNotFoundException, RepositoryException;
 

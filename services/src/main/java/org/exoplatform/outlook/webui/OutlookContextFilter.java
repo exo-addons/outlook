@@ -46,6 +46,7 @@ import javax.servlet.ServletResponse;
  */
 public class OutlookContextFilter implements Filter {
 
+  /** The Constant LOG. */
   protected static final Logger LOG = LoggerFactory.getLogger(OutlookContextFilter.class);
 
   /**

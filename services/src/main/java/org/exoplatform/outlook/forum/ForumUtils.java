@@ -49,38 +49,57 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ForumUtils {
 
+  /** The Constant CATEGORY. */
   public static final String CATEGORY       = "category".intern();
 
+  /** The Constant FORUM. */
   public static final String FORUM          = "forum".intern();
 
+  /** The Constant TOPIC. */
   public static final String TOPIC          = "topic".intern();
 
+  /** The Constant POST. */
   public static final String POST           = "post".intern();
 
+  /** The Constant TAG. */
   public static final String TAG            = "Tag".intern();
 
+  /** The Constant COMMA. */
   public static final String COMMA          = ",".intern();
 
+  /** The Constant SLASH. */
   public static final String SLASH          = "/".intern();
 
+  /** The Constant EMPTY_STR. */
   public static final String EMPTY_STR      = "".intern();
 
+  /** The Constant SPACE_GROUP_ID. */
   public static final String SPACE_GROUP_ID = SpaceUtils.SPACE_GROUP.replace(SLASH, EMPTY_STR);
 
+  /** The Constant MAXSIGNATURE. */
   public static final int    MAXSIGNATURE   = 300;
 
+  /** The Constant MAXTITLE. */
   public static final int    MAXTITLE       = 100;
 
+  /** The Constant MAXMESSAGE. */
   public static final long   MAXMESSAGE     = 10000;
 
+  /** The Constant LOG. */
   protected static final Log LOG            = ExoLogger.getLogger(ForumUtils.class);
 
   /**
-   * 
+   * Instantiates a new forum utils.
    */
   private ForumUtils() {
   }
 
+  /**
+   * Gets the censored keyword.
+   *
+   * @param stringKey the string key
+   * @return the censored keyword
+   */
   public static String[] getCensoredKeyword(String stringKey) {
     if (!isEmpty(stringKey)) {
       String str = EMPTY_STR;
@@ -100,6 +119,12 @@ public class ForumUtils {
     return new String[] {};
   }
 
+  /**
+   * Checks if is empty.
+   *
+   * @param str the str
+   * @return true, if is empty
+   */
   public static boolean isEmpty(String str) {
     if (str == null || str.trim().length() == 0)
       return true;
@@ -107,6 +132,14 @@ public class ForumUtils {
       return false;
   }
 
+  /**
+   * Builds the forum link.
+   *
+   * @param url the url
+   * @param type the type
+   * @param id the id
+   * @return the string
+   */
   private static String buildForumLink(String url, String type, String id) {
     StringBuilder link = new StringBuilder(url);
     if (!isEmpty(type) && !isEmpty(id)) {
@@ -120,6 +153,14 @@ public class ForumUtils {
     return link.toString();
   }
 
+  /**
+   * Created forum link.
+   *
+   * @param type the type
+   * @param id the id
+   * @param isPrivate the is private
+   * @return the string
+   */
   public static String createdForumLink(String type, String id, boolean isPrivate) {
     try {
       PortalRequestContext portalContext = Util.getPortalRequestContext();
@@ -131,6 +172,14 @@ public class ForumUtils {
     }
   }
 
+  /**
+   * Created sub forum link.
+   *
+   * @param type the type
+   * @param id the id
+   * @param isPrivate the is private
+   * @return the string
+   */
   public static String createdSubForumLink(String type, String id, boolean isPrivate) {
     try {
       String containerName = CommonsUtils.getService(ExoContainerContext.class).getPortalContainerName();
@@ -142,6 +191,17 @@ public class ForumUtils {
     }
   }
 
+  /**
+   * Builds the link.
+   *
+   * @param portalURI the portal URI
+   * @param containerName the container name
+   * @param selectedNode the selected node
+   * @param type the type
+   * @param id the id
+   * @param isPrivate the is private
+   * @return the string
+   */
   public static String buildLink(String portalURI,
                                  String containerName,
                                  String selectedNode,
@@ -165,6 +225,12 @@ public class ForumUtils {
     return sb.toString();
   }
 
+  /**
+   * Split for forum.
+   *
+   * @param str the str
+   * @return the string[]
+   */
   public static String[] splitForForum(String str) {
     if (!isEmpty(str)) {
       str = StringUtils.remove(str, " ");
@@ -179,12 +245,25 @@ public class ForumUtils {
       return new String[] { EMPTY_STR };
   }
 
+  /**
+   * Checks if is array empty.
+   *
+   * @param strs the strs
+   * @return true, if is array empty
+   */
   public static boolean isArrayEmpty(String[] strs) {
     if (strs == null || strs.length == 0 || (strs.length == 1 && strs[0].trim().length() <= 0))
       return true;
     return false;
   }
 
+  /**
+   * Arrays merge.
+   *
+   * @param strs1 the strs 1
+   * @param strs2 the strs 2
+   * @return the string[]
+   */
   public static String[] arraysMerge(String[] strs1, String[] strs2) {
     if (isArrayEmpty(strs1))
       return strs2;
@@ -195,6 +274,11 @@ public class ForumUtils {
     return set.toArray(new String[set.size()]);
   }
 
+  /**
+   * Gets the default mail.
+   *
+   * @return the default mail
+   */
   public static MessageBuilder getDefaultMail() {
     MessageBuilder messageBuilder = new MessageBuilder();
     try {

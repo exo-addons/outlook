@@ -46,6 +46,7 @@ public class OutlookActivitySupport {
   /** The Constant LOG. */
   protected static final Log           LOG = ExoLogger.getLogger(OutlookActivitySupport.class);
   
+  /** The Constant CONTEXT_INITIALIZED. */
   public static final String CONTEXT_INITIALIZED = "outlookView_initialized";
 
   /** The document service. */

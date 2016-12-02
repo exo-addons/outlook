@@ -30,12 +30,12 @@ package org.exoplatform.outlook.mail;
  */
 public class BadCredentialsException extends MailServerException {
 
-  /**
-   * 
-   */
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1431333385461359936L;
 
   /**
+   * Instantiates a new bad credentials exception.
+   *
    * @param message {@link String}
    */
   public BadCredentialsException(String message) {
@@ -43,6 +43,8 @@ public class BadCredentialsException extends MailServerException {
   }
 
   /**
+   * Instantiates a new bad credentials exception.
+   *
    * @param message {@link String}
    * @param cause {@link Throwable}
    */
