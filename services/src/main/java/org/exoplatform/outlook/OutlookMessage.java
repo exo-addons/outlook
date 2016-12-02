@@ -77,8 +77,8 @@ public class OutlookMessage {
   /**
    * @param title the title to set
    */
-  protected void setTitle(String comment) {
-    this.title = comment;
+  protected void setTitle(String title) {
+    this.title = title;
   }
 
   /**

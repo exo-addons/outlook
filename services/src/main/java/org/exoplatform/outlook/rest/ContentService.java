@@ -133,11 +133,12 @@ public class ContentService implements ResourceContainer {
    * Document content download link. <br>
    * WARNING! It is publicly accessible service but access from the Documents Server host can be restricted
    * (by default).
-   * 
+   *
    * @param uriInfo - request info
    * @param request {@link HttpServletRequest}
    * @param guid {@link String} existing add-in GUID or {@code null}
    * @param hostName {@link String} with a host name (and optionally port) or {@code null}
+   * @param displayName the display name
    * @return {@link Response}
    */
   @GET
