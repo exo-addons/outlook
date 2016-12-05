@@ -35,7 +35,7 @@
 					</div>
 					<div class="messageEditorContainer" style="display: none;">
 						<input name="messageSubject" class="ms-TextField-field" type="text">
-						<div class="ms-TextField-field messageText" contenteditable="true" >
+						<div class="ms-TextField-field messageEditor" contenteditable="true" >
 						</div>
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>

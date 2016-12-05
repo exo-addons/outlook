@@ -537,7 +537,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$(this).parent().hide();
 						$editorSubject = $editor.find("input[name='messageSubject']");
 						$editorSubject.val($subject.text());
-						$editorText = $editor.find("div.messageText");
+						$editorText = $editor.find("div.messageEditor");
 						$editorText.append($text.children());
 						$viewer.hide();
 						$editor.show();
