@@ -13,7 +13,7 @@
 					<p class="ms-Dialog-subText">&{Outlook.enterFolderNameAndCreate}</p>
 					<div class="ms-TextField">
 						<label for="newFolderName" class="ms-Label">&{Outlook.folderName}</label>
-						<input name="newFolderName" class="ms-TextField-field" type="text">
+						<input name="newFolderName" class="ms-TextField-field" type="text" autofocus="autofocus">
 					</div>
 				</div>
 				<div class="ms-Dialog-actions">

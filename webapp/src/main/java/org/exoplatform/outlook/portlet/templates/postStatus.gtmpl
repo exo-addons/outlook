@@ -18,7 +18,7 @@
 					<label class="ms-Label">&{Outlook.activityMessage}</label>
 					<div class="ms-TextField ms-TextField--placeholder placeholderField statusField">
 						<label class="ms-Label">&{Outlook.activityMessagePlaceholder}</label>
-						<div class="ms-TextField-field statusText" contenteditable="true">
+						<div class="ms-TextField-field statusText" autofocus="autofocus" contenteditable="true">
 						</div>
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>

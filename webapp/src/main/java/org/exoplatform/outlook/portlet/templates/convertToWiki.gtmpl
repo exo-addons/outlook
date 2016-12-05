@@ -16,7 +16,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="wikiTitle" class="ms-Label">&{Outlook.wikiPageTitle}</label>
-					<input name="wikiTitle" class="ms-TextField-field" type="text">
+					<input name="wikiTitle" class="ms-TextField-field" type="text" autofocus="autofocus">
 					<span class="ms-TextField-description">&{Outlook.wikiPageTitleDescription}</span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

@@ -16,7 +16,7 @@
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<label for="topicName" class="ms-Label">&{Outlook.forumTopicName}</label>
-					<input name="topicName" class="ms-TextField-field" type="text">
+					<input name="topicName" class="ms-TextField-field" type="text" autofocus="autofocus">
 					<span class="ms-TextField-description">&{Outlook.forumTopicNameDescription}</span>
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

@@ -31,24 +31,22 @@ body {
 
 #outlook-brand-bar {
 	position: absolute;
-  bottom: 0px;
-  width: 100%;
+	bottom: 0px;
+	width: 100%;
 }
 
 /* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
-@media (min-width: 280px) {
-  #outlook-pane .ms-Dropdown-items {
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    max-width: 100%;
-  }
-
-  #outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items,
-  #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
-    position: absolute;
-  }
+@media ( min-width : 280px) {
+	#outlook-pane .ms-Dropdown-items {
+		top: auto;
+		right: auto;
+		bottom: auto;
+		left: auto;
+		max-width: 100%;
+	}
+	#outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items, #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
+		position: absolute;
+	}
 }
 
 /* Error banner (common) */
@@ -103,7 +101,7 @@ body {
 }
 
 .showLogout {
-	float: right;	
+	float: right;
 	margin-top: 2px;
 }
 
@@ -275,36 +273,36 @@ div.form-buttons {
 
 .documentExplorer .currentFolder .ms-ListItem-primaryText input {
 	font-size: 12px !important;
-  margin: 0px;
-  border-width: 1px;
-  border-style: solid;
-  padding-left: 5px;
-  padding-right: 40px;
-  border-color: #71afe5;
+	margin: 0px;
+	border-width: 1px;
+	border-style: solid;
+	padding-left: 5px;
+	padding-right: 40px;
+	border-color: #71afe5;
 }
 
 .documentSelectorContent .ms-ListItem {
 	padding-left: 25px;
-  padding-top: 5px;
-  padding-bottom: 0px;
+	padding-top: 5px;
+	padding-bottom: 0px;
 }
 
 /* This style adapted from .ms-ListItem.isFolder.is-selected */
 .documentSelectorContent .ms-ListItem.isFolder:before, .documentSelectorContent .ms-ListItem.isFolder:hover:before {
 	-moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-family: 'Office365Icons';
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  speak: none;
-  content: '\e014';
-  font-size: 15px;
-  color: #767676;
-  position: absolute;
-  top: 6px;
-  left: 6px;
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-family: 'Office365Icons';
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	speak: none;
+	content: '\e014';
+	font-size: 15px;
+	color: #767676;
+	position: absolute;
+	top: 6px;
+	left: 6px;
 }
 
 #attached .documents .ms-ListItem {
@@ -318,10 +316,10 @@ div.form-buttons {
 
 #attached .documents .ms-ListItem-tertiaryText {
 	margin-bottom: -4px;
-  padding-right: initial;
-  top: -5px;
-  margin-bottom: 0px;
-  font-size: 11px;
+	padding-right: initial;
+	top: -5px;
+	margin-bottom: 0px;
+	font-size: 11px;
 }
 
 .messageText {
@@ -340,7 +338,7 @@ div.form-buttons {
 	left: 0;
 	top: 0;
 	background: linear-gradient(transparent 25px, white);
-	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 25px, white);
+	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px, white);
 }
 
 .messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
@@ -365,7 +363,7 @@ div.messageSubject {
 
 .statusText, .topicText {
 	max-height: 75px;
-	padding: 5px;
+	padding: 10px;
 	line-height: 14px;
 }
 
@@ -375,7 +373,7 @@ div.messageSubject {
 
 .placeholderField label.ms-Label {
 	pointer-events: none;
-	padding-top: 5px !important;
+	padding-top: 7px !important;
 }
 
 #outlook-pane .ms-MessageBar {
@@ -388,6 +386,16 @@ div.messageSubject {
 
 #outlook-menu .ms-ContextualMenu {
 	min-width: 200px;
+}
+
+textarea[name='activityTitle'], textarea[name='comment'] {
+	height: 64px;
+	box-shadow: none !important;
+	border-color: initial !important;
+}
+
+#outlook-pane .ms-TextField-field:focus {
+	border-color: #0078d7 !important;
 }
 
 .searchContainer {

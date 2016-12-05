@@ -661,9 +661,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				function postStatusInit() {
 					var $postStatus = $("#outlook-postStatus");
 					var $statusField = $postStatus.find("div.statusField");
-					$statusField.TextField();
 					var $statusPlaceholder = $statusField.find(".ms-Label");
 					var $text = $statusField.find("div.statusText");
+					if ($text.size() > 0) {
+						// XXX http://stackoverflow.com/questions/2388164/set-focus-on-div-contenteditable-element
+						$text.get(0).focus();
+					}
+					$statusField.TextField();
 					var $form = $postStatus.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
 					var $groupId = $groupIdDropdown.find("select[name='groupId']");
@@ -1612,6 +1616,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									process.reject(response, status, jqXHR);
 								} else {
 									clearError();
+									// do autofocus (except of postStatus w/ contenteditbale)
+									$container.find("textarea[autofocus], input[autofocus]").focus();
 									// know last loaded
 									$container.data("menu-name", menuName);
 									// XXX force iOS don't use native style for inputs (shadow on upper border) 

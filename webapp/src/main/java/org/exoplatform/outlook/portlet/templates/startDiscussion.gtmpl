@@ -18,7 +18,7 @@
 					<label for="topicName" class="ms-Label">&{Outlook.forumTopicName}</label>
 					<div class="ms-TextField ms-TextField--placeholder placeholderField topicNameField">
 						<label class="ms-Label">&{Outlook.forumTopicNamePlaceholder}</label>
-						<input name="topicName" class="ms-TextField-field" type="text">
+						<input name="topicName" class="ms-TextField-field" type="text" autofocus="autofocus">
 					</div>
 					<span class="ms-TextField-description">&{Outlook.forumTopicNameDescription}</span>
 				</div>

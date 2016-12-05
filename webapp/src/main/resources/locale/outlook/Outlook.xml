@@ -78,13 +78,13 @@
     <!-- Convert To Status -->
     <convertToStatusDescription>This message can be converted to a new post on your personal activity stream or on the stream of the selected space.</convertToStatusDescription>
     <activityTargetSpaceDescription>If selected, your message will be posted on the space's activity stream.</activityTargetSpaceDescription>
-    <activityTitle>Activity title</activityTitle>
-    <activityTitleDescription>This will be the title of the activity stream post</activityTitleDescription>
+    <activityTitle>Message</activityTitle>
+    <activityTitleDescription>Leave a message upon sharing this email</activityTitleDescription>
     <activityText>Activity content</activityText>
     <activityTextDescription>This will be the body of the activity stream post</activityTextDescription>
     <convertingToStatus>Posting the activity...</convertingToStatus>
     <convertedToStatus>The activity was successfully posted.</convertedToStatus>
-    <convertToStatusError>Error converting the message to an activity stream post</convertToStatusError>
+    <convertToStatusError>Error converting the email to an activity stream post</convertToStatusError>
     <convertedToUserActivity>The activity was successfully posted in your personal stream.</convertedToUserActivity>
     <convertedToSpaceActivity>The activity was successfully posted in {SPACE_NAME}'s stream.</convertedToSpaceActivity>
     <openActivity>View the activity</openActivity>

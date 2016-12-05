@@ -26,7 +26,7 @@
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
 					<div class="ms-TextField--multiline">
 						<label for="comment" class="ms-Label">&{Outlook.commentAttachment}</label>
-						<textarea name="comment" class="ms-TextField-field"></textarea>
+						<textarea name="comment" class="ms-TextField-field" rows="3" autofocus="autofocus"></textarea>
 					</div>
 					<span class="ms-TextField-description">&{Outlook.commentAttachmentDescription}</span>
 				</div>

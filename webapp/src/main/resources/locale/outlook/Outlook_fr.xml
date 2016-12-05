@@ -80,13 +80,13 @@
     <!-- Convert To Status -->
     <convertToStatusDescription>Ce message sera envoyé dans votre flux d'activité personnel ou bien dans celui de l'espace sélectionné.</convertToStatusDescription>
     <activityTargetSpaceDescription>Sélectionnez un espace pour y poster votre message</activityTargetSpaceDescription>
-    <activityTitle>Titre</activityTitle>
-    <activityTitleDescription>Ce sera le titre de votre activité</activityTitleDescription>
+    <activityTitle>Message</activityTitle>
+    <activityTitleDescription>Laissez un message en partageant cet email</activityTitleDescription>
     <activityText>Contenu du message</activityText>
     <activityTextDescription>Ceci s'affichera dans le corps de l'activité</activityTextDescription>
     <convertingToStatus>Conversion du message en cours...</convertingToStatus>
     <convertedToStatus>L'activité a été publiée avec succès.</convertedToStatus>
-    <convertToStatusError>Erreur à la conversion du message en activité</convertToStatusError>
+    <convertToStatusError>Erreur à la conversion du email en activité</convertToStatusError>
     <convertedToUserActivity>L'activité a été publiée avec succès dans votre flux.</convertedToUserActivity>
     <convertedToSpaceActivity>L'activité a été publiée avec succès dans {SPACE_NAME}.</convertedToSpaceActivity>
     <openActivity>Afficher l'activité</openActivity>

@@ -40,7 +40,7 @@
 				<div class="documentSelectorTab documentSearch">
 					<form role="form">
 						<div class="ms-SearchBox">
-							<input class="ms-SearchBox-field">
+							<input class="ms-SearchBox-field" autofocus="autofocus">
 							<label class="ms-SearchBox-label">
 								<i class="ms-SearchBox-icon ms-Icon ms-Icon--search"></i>&{Outlook.searchName}
 							</label>
