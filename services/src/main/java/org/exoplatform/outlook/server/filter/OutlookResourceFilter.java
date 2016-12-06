@@ -26,7 +26,6 @@ import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.FilterChain;
@@ -100,13 +99,13 @@ public class OutlookResourceFilter extends AbstractFilter implements Filter {
       HttpServletRequest httpReq = (HttpServletRequest) request;
       HttpServletResponse httpRes = (HttpServletResponse) response;
 
-      String method = httpReq.getMethod();//URLDecoder.decode(httpReq.getRequestURI(), "UTF-8");
+      String method = httpReq.getMethod();// URLDecoder.decode(httpReq.getRequestURI(), "UTF-8");
       if (method != null && METHOD_GET.equals(method)) {
         // FYI Filter configuration already have a mapping to the path, no need type check
         // String contentType = httpReq.getContentType();
         // if (contentType.startsWith("application/javascript") || contentType.startsWith("text/css")
         // || contentType.startsWith("text/javascript")) {
-        // TODO || contentType.startsWith("image/") ?
+        // || contentType.startsWith("image/") ?
         String ver = version();
         if (!NO_VERSION.equals(ver)) {
           if (ver.indexOf("Beta") > 0 || ver.indexOf("RC") > 0 || ver.indexOf("M") > 0) {
@@ -118,7 +117,6 @@ public class OutlookResourceFilter extends AbstractFilter implements Filter {
             httpRes.setHeader(CACHE_CONTROL, "max-age=1200,s-maxage=1200");
             response = new FixedCacheResponse(httpRes);
           }
-          // }
         }
       }
     }
