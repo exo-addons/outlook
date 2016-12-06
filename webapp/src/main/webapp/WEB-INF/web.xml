@@ -42,9 +42,18 @@
     <filter-name>ResourceRequestFilter</filter-name>
     <filter-class>org.exoplatform.portal.application.ResourceRequestFilter</filter-class>
   </filter>
+  <filter>
+    <filter-name>OutlookResourceFilter</filter-name>
+    <filter-class>org.exoplatform.outlook.server.filter.OutlookResourceFilter</filter-class>
+  </filter>
   <filter-mapping>
     <filter-name>ResourceRequestFilter</filter-name>
     <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>OutlookResourceFilter</filter-name>
+    <url-pattern>/js/*</url-pattern>
+    <url-pattern>/skin/*</url-pattern>
   </filter-mapping>
   
   <listener>
