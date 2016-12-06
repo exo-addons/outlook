@@ -149,6 +149,27 @@
       <type>org.exoplatform.web.filter.FilterDefinitionPlugin</type>
       <init-params>
         <object-param>
+          <name>Outlook Resource Filter</name>
+          <object type="org.exoplatform.web.filter.FilterDefinition">
+            <field name="filter">
+              <object type="org.exoplatform.outlook.server.filter.OutlookResourceFilter" />
+            </field>
+            <field name="patterns">
+              <collection type="java.util.ArrayList" item-type="java.lang.String">
+                <value>
+                  <string>/scripts/.*/outlookViewGRP.*</string>
+                </value>
+                <value>
+                  <string>/scripts/.*/outlookGRP.*</string>
+                </value>
+                <value>
+                  <string>/skins/.*/outlook-view.*</string>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+        <object-param>
           <name>Outlook Login Filter</name>
           <object type="org.exoplatform.web.filter.FilterDefinition">
             <field name="filter">

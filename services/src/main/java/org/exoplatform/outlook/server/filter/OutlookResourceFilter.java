@@ -21,10 +21,13 @@ package org.exoplatform.outlook.server.filter;
 
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.web.AbstractFilter;
+import org.exoplatform.web.filter.Filter;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -32,6 +35,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Filter updates request to outlook resources with proper HTTP headers (for caching etc.).<br>
@@ -42,13 +46,48 @@ import javax.servlet.http.HttpServletResponse;
  * @version $Id: OutlookResourceFilter.java 00000 Dec 6, 2016 pnedonosko $
  * 
  */
-public class OutlookResourceFilter extends AbstractFilter {
+public class OutlookResourceFilter extends AbstractFilter implements Filter {
 
   /** The Constant LOG. */
-  protected static final Logger LOG        = LoggerFactory.getLogger(OutlookResourceFilter.class);
+  protected static final Logger          LOG           = LoggerFactory.getLogger(OutlookResourceFilter.class);
 
   /** The Constant METHOD_GET. */
-  protected static final String METHOD_GET = "GET";
+  protected static final String          METHOD_GET    = "GET";
+
+  /** The Constant CACHE_CONTROL. */
+  protected static final String          CACHE_CONTROL = "Cache-Control";
+
+  /** The Constant NO_VERSION. */
+  private static final String            NO_VERSION    = "".intern();
+
+  private static AtomicReference<String> version       = new AtomicReference<String>();
+
+  class FixedCacheResponse extends HttpServletResponseWrapper {
+
+    protected FixedCacheResponse(HttpServletResponse response) {
+      super(response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setHeader(String name, String value) {
+      if (!CACHE_CONTROL.equals(name)) {
+        super.setHeader(name, value);
+      }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addHeader(String name, String value) {
+      if (!CACHE_CONTROL.equals(name)) {
+        super.addHeader(name, value);
+      }
+    }
+  }
 
   /**
    * {@inheritDoc}
@@ -61,26 +100,25 @@ public class OutlookResourceFilter extends AbstractFilter {
       HttpServletRequest httpReq = (HttpServletRequest) request;
       HttpServletResponse httpRes = (HttpServletResponse) response;
 
-      String method = httpReq.getMethod();
+      String method = httpReq.getMethod();//URLDecoder.decode(httpReq.getRequestURI(), "UTF-8");
       if (method != null && METHOD_GET.equals(method)) {
         // FYI Filter configuration already have a mapping to the path, no need type check
         // String contentType = httpReq.getContentType();
         // if (contentType.startsWith("application/javascript") || contentType.startsWith("text/css")
         // || contentType.startsWith("text/javascript")) {
         // TODO || contentType.startsWith("image/") ?
-        Package myPackage = getClass().getPackage();
-        if (myPackage != null) {
-          String ver = myPackage.getImplementationVersion();
-          if (ver != null) {
-            if (ver.indexOf("Beta") > 0 || ver.indexOf("RC") > 0 || ver.indexOf("M") > 0) {
-              // if it's Beta/RC/Milestone version, use 1 hour cache
-              httpRes.setHeader("Cache-Control", "max-age=3600,s-maxage=3600");
-            } else if (ver.endsWith("SNAPSHOT")) {
-              // 20min cache for development deployments (demo server etc.)
-              httpRes.setHeader("Cache-Control", "max-age=1200,s-maxage=1200");
-            }
-            // }
+        String ver = version();
+        if (!NO_VERSION.equals(ver)) {
+          if (ver.indexOf("Beta") > 0 || ver.indexOf("RC") > 0 || ver.indexOf("M") > 0) {
+            // if it's Beta/RC/Milestone version, use 1 hour cache
+            httpRes.setHeader(CACHE_CONTROL, "max-age=3600,s-maxage=3600");
+            response = new FixedCacheResponse(httpRes);
+          } else if (ver.endsWith("SNAPSHOT")) {
+            // 20min cache for development deployments (demo server etc.)
+            httpRes.setHeader(CACHE_CONTROL, "max-age=1200,s-maxage=1200");
+            response = new FixedCacheResponse(httpRes);
           }
+          // }
         }
       }
     }
@@ -93,6 +131,21 @@ public class OutlookResourceFilter extends AbstractFilter {
   @Override
   public void destroy() {
     // nothing
+  }
+
+  protected String version() {
+    String ver = version.get();
+    if (ver == null) {
+      Package myPackage = getClass().getPackage();
+      if (myPackage != null) {
+        ver = myPackage.getImplementationVersion();
+        if (ver == null) {
+          ver = NO_VERSION;
+        }
+        version.set(ver);
+      }
+    }
+    return ver;
   }
 
 }
