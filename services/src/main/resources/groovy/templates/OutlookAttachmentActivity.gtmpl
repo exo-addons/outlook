@@ -283,14 +283,14 @@
 						 	</div>
 							<%} else if(file.isSupportThumbnailView()){%>
 	            <div id="MediaContent${activity.id}" class="pull-left mediaContent docTypeContent">
-	              <a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}" rel="tooltip" data-placement="bottom" data-original-title="${file.title}">
+	              <a href="javascript:void(0)" onclick="${file.getPreviewLink(_ctx)}" rel="tooltip" style="cursor:pointer" data-placement="bottom" data-original-title="${file.title}">
 	              	<span><img src="${file.thumbnailImageLink}" onerror="var self = this; require(['SHARED/wcm-utils'], function(wcmutil) { wcmutil.WCMUtils.loadFallbackImage(self); });" alt="${file.title}"/></span>
 									<span class="fallbackImage" style="display: none;"><i class="${file.cssClassIcon}"></i></span>
 									<button class="btn btn-large btn-block doc-preview-thumbnail-footer" type="button"><%=_ctx.appRes("SocialIntegration.preview");%></button>
 	              </a>
 	            </div>
 		        	<%} else if (file.isSupportPreview()) { %>
-		          <div id="MediaContent${activity.id}" class="outlookAttachmentActivityContent pull-left PlayerContianer">
+		          <div id="MediaContent${activity.id}" style="cursor:pointer" class="outlookAttachmentActivityContent pull-left PlayerContianer">
 		            <% uicomponent.renderAttachmentPresentation(file) %>
 		          </div>
 		        	<%} else { %>
