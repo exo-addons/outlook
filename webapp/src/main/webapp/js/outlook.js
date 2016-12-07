@@ -149,7 +149,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					}
 					console.log("ERROR: " + message + ". ");
 					$errorText.empty();
-					$("<i class='uiIconError'></i><span>" + message + "</span>").appendTo($errorText);
+					$("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'></i><span>" + message + "</span>").appendTo($errorText);
 					messageBanner.showBanner();
 					$error.show("blind", {
 						"direction" : "down"
@@ -1206,7 +1206,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					
 					var isSelected = function(fpath) {
-						return findByPath($documents.find("li.ms-ListItem"), fpath).size() > 0;
+						return findByPath($documents.find("li.ms-ListItem"), fpath).filter(".is-selected").size() > 0;
 					};
 					
 					var initFiles = function($files, loadChildred) {
@@ -1258,27 +1258,34 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 												$li.remove();
 											}
 										});
+										// if clicked in Explorer tab: uncheck in Search tab also
+										// otherwise it was clicked in Search tab: uncheck in Explorer tab
+										var $shown = (loadChildred ? $documentSearchResults : $folderFiles).children();
+										findByPath($shown, fpath).removeClass("is-selected");
 									} else {
-										var $selected = $child.clone();
-										// clone w/o data/events
-										$selected.data("path", fpath);
-										$selected.ListItem();
-										$selected.click(function() {
-											$selected.toggleClass("is-selected");
-											// here also check/uncheck in $folderFiles
-											if ($selected.hasClass("is-selected")) {
-												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).addClass("is-selected");
-											} else {
-												findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).removeClass("is-selected");
-											}
-										});
-										$selected.find(".pathControls").click(function(event) {
-											event.stopPropagation();
-										});
-										// add preselect it
+										var $selected = findByPath($documents.find("li.ms-ListItem"), fpath).not(".is-selected");
+										if ($selected.size() == 0) {
+											$selected = $child.clone();
+											// clone w/o data/events
+											$selected.data("path", fpath);
+											$selected.ListItem();
+											$selected.click(function() {
+												$selected.toggleClass("is-selected");
+												// here also check/uncheck in $folderFiles
+												if ($selected.hasClass("is-selected")) {
+													findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).addClass("is-selected");
+												} else {
+													findByPath($documentSearchResults.children().add($folderFiles.children()), fpath).removeClass("is-selected");
+												}
+											});
+											$selected.find(".pathControls").click(function(event) {
+												event.stopPropagation();
+											});
+											// add to selected documents
+											$selected.appendTo($documents);
+										}
+										// and preselect it
 										$selected.click();
-										// add to selected documents
-										$selected.appendTo($documents);
 									}
 								} else {
 									showError("Outlook.messages.fileHasNoPath");
@@ -1323,6 +1330,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							searchFiles("");
 							// when source changed - show its search tab
 							$searchTab.click();
+							// also clear what have in Explorer
+							$folderFiles.empty();
 						}
 						$explorerTab.prop("disabled", sourceId == "*");
 					});
@@ -1385,9 +1394,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						clearError();
 						$explorerTab.addClass("ms-Button--primary");
 						$searchTab.removeClass("ms-Button--primary");
+						if ($folderFiles.children().size() == 0) {
+							loadChildred(); 
+						}
 						$documentSearch.hide();
 						$documentExplorer.show();
-						loadChildred(); 
 					});
 					// init Explorer pathInfo
 					$pathUp.click(function() {
@@ -1465,7 +1476,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 													+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											$fileProcess.reject();
 											$attachedDoc.addClass("ms-bgColor-error");
-											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
+											$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'></i>");
 											$docName.after("<div class='ms-ListItem-tertiaryText addedError'>" + asyncResult.error.message + "</div>");
 										}
 									});
@@ -1475,7 +1486,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											+ errorThrown + " response: " + jqXHR.responseText);
 									$fileProcess.reject();
 									$attachedDoc.addClass("ms-bgColor-error");
-									$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'>");
+									$docName.prepend("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'></i>");
 									$docName.after("<div class='ms-ListItem-tertiaryText linkError'>" + jqXHR.responseText + "</div>");
 								});
 								

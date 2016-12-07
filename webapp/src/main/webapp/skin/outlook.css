@@ -173,16 +173,6 @@ span[disabled] {
 	margin-bottom: 0px;
 }
 
-.uiIconError {
-	background: url("/eXoResources/skin/images/Icons/uiIconColor.png") no-repeat scroll left top transparent;
-	margin-left: 20px;
-}
-
-.uiIconWarning {
-	background: url("/eXoResources/skin/images/Icons/uiIconColor.png") no-repeat -20px top transparent;
-	margin-left: 20px;
-}
-
 .error-message>.ms-MessageBanner {
 	background-color: #fde7e9;
 	color: #a80000;

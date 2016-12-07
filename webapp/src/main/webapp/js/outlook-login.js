@@ -65,7 +65,7 @@
 			}
 
 			$errorText.empty();
-			$("<i class='uiIconError'></i><span>" + message + "</span>").appendTo($errorText);
+			$("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'></i><span>" + message + "</span>").appendTo($errorText);
 			$error.scrollTop();
 			messageBanner.showBanner();
 			$error.show("blind", {
