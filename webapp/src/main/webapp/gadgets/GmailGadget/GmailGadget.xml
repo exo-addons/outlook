@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Gmail Gadget"
+      description="eXo for Gmail"
+      height="20"
+      author="Peter Nedonosko"
+      author_email="pnedonosko@exoplatform.com"
+      author_location="Ukraine">
+    <Require feature="opensocial-0.9" />
+    <Require feature="dynamic-height"/>
+    <Require feature="google.contentmatch">
+      <Param name="extractors">
+        google.com:EmailAddressExtractor
+      </Param>
+    </Require>
+  </ModulePrefs>
+  <Content type="html" view="card">
+    <![CDATA[ 
+    
+    <head>
+      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
+      <link type="text/css" rel="stylesheet" href="css/gmail-gadget.css" />    
+      <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script type="text/javascript">
+        function callRestAndUpdate(){
+          $.getJSON("/rest/getting-started/get", function(items){            
+            var rate = 0;            
+            $.each(items, function(i, item){                                 
+              var id = item.name.substring(4);                            
+              if(item.value == "true"){                     
+                $("#"+id).addClass("done");  
+                rate +=20;
+              }
+              else {
+                $("#"+id).removeClass("done");  
+              }                                      
+            });
+            updateProgress(rate); 
+          });   
+        }
+        
+        function updateProgress(rate){
+          if (rate > 100){
+            rate = 100;
+          }
+          var width= Math.round(160/100*rate);
+          $("#progress-rate").attr("style", "width: "+width+"px;");  
+          $("#progress-label").html(rate+"%");       
+        }
+        
+        function init() {
+          $("#gs_mobile").live("click", function(){
+            $.getJSON("/rest/getting-started/set/exo:gs_mobile/true", callRestAndUpdate);
+          });
+          
+          callRestAndUpdate();           
+          gadgets.window.adjustHeight();
+          loadProfile();                  
+        }
+        
+        function loadProfile() {
+          var opts = {};
+          opts[opensocial.DataRequest.PeopleRequestFields.PROFILE_DETAILS] = [opensocial.Person.Field.PROFILE_URL];        
+          var req = opensocial.newDataRequest();
+          req.add(req.newFetchPersonRequest(opensocial.IdSpec.PersonId.VIEWER, opts), 'viewer');
+          req.send(onLoadProfile);
+        }
+        
+        function onLoadProfile(data) {
+          this.viewer = data.get('viewer').getData();
+          var profileTempUrl = this.viewer.getField(opensocial.Person.Field.PROFILE_URL);
+          var eXoUserID = profileTempUrl.substr(profileTempUrl.lastIndexOf('/') + 1); 
+          var profileUrl = '/portal/intranet/profile/' + eXoUserID;
+          var dashboardUrl = '/portal/u/' + eXoUserID;
+          $("#gs_profile a").attr("href",profileUrl);
+          $("#gs_dashboard a").attr("href",dashboardUrl);
+        }
+        
+        //gadgets.util.registerOnLoadHandler(init);
+        
+        <!-- Fetch the array of content matches. -->
+        var matches = google.contentmatch.getContentMatches();
+        
+        var matchList = document.createElement('UL');
+        var listItem;
+        var extractedText;
+
+        <!-- Iterate through the array and display output for each match. -->
+        for (var match in matches) {
+          for (var key in matches[match]) {
+            listItem = document.createElement('LI');
+            extractedText = document.createTextNode(key + ": " + matches[match][key]);
+            listItem.appendChild(extractedText);
+            matchList.appendChild(listItem);
+          }
+        }
+        document.body.appendChild(matchList);
+        gadgets.window.adjustHeight(100);
+      </script>         
+    </head>
+    
+    <body id="GmailGadget">
+      <div class="UIGadgetThemes">
+        <div class="gadgetTitle">eXo for Gmail</div>
+        
+        <div>TODO</div>
+      </div> 
+    </body>
+    
+    
+    ]]>
+  </Content>
+</Module>
