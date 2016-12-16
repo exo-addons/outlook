@@ -10,18 +10,22 @@
     <Require feature="dynamic-height"/>
     <Require feature="google.contentmatch">
       <Param name="extractors">
-        google.com:RawSubjectExtractor
+        google.com:HelloWorld
+        google.com:SubjectExtractor
+        google.com:SenderEmailExtractor
       </Param>
     </Require>
   </ModulePrefs>
   <Content type="html" view="card">
     <![CDATA[ 
-    <!-- google.com:SenderEmailExtractor
+    <!--
+        google.com:RawSubjectExtractor 
+        google.com:SenderEmailExtractor
         google.com:RecipientEmailExtractor
-        google.com:EmailTimeExtractor -->    
+        google.com:EmailTimeExtractor
+    -->    
     <head>
-      <link type="text/css" rel="stylesheet" href="/exo-gadget-resources/skin/exo-gadget/gadget-common.css" />
-      <link type="text/css" rel="stylesheet" href="css/gmail-gadget.css" />    
+      <link type="text/css" rel="stylesheet" href="http://demo-outlook.exoplatform.org/outlook/style/gmail-gadget.css" />    
       <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script type="text/javascript">
         //gadgets.util.registerOnLoadHandler(init);
