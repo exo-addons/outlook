@@ -9,12 +9,10 @@
     <Require feature="opensocial-0.9" />
     <Require feature="dynamic-height"/>
     <Require feature="google.contentmatch">
-      <Param name="extractors">
-        google.com:RawSubjectExtractor
-        google.com:MessageIDExtractor
-        google.com:RecipientEmailExtractor
-        google.com:SenderEmailExtractor
-      </Param>
+      <Param name="extractors">google.com:RawSubjectExtractor</Param>
+      <Param name="extractors">google.com:SenderEmailExtractor</Param>
+      <Param name="extractors">google.com:RecipientEmailExtractor</Param>
+      <Param name="extractors">google.com:MessageIDExtractor</Param>
     </Require>
   </ModulePrefs>
   <Content type="html" view="card">
