@@ -10,8 +10,9 @@
     <Require feature="dynamic-height"/>
     <Require feature="google.contentmatch">
       <Param name="extractors">
-        google.com:HelloWorld
-        google.com:SubjectExtractor
+        google.com:RawSubjectExtractor
+        google.com:MessageIDExtractor
+        google.com:RecipientEmailExtractor
         google.com:SenderEmailExtractor
       </Param>
     </Require>
@@ -25,36 +26,32 @@
         google.com:EmailTimeExtractor
     -->    
     <head>
-      <link type="text/css" rel="stylesheet" href="http://demo-outlook.exoplatform.org/outlook/style/gmail-gadget.css" />    
+      <!-- link type="text/css" rel="stylesheet" href="http://demo-outlook.exoplatform.org/outlook/style/gmail-gadget.css" / -->    
       <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
       <script type="text/javascript">
-        //gadgets.util.registerOnLoadHandler(init);
-        
         <!-- Fetch the array of content matches. -->
-        var matches = google.contentmatch.getContentMatches();
-        
-        var matchList = document.createElement('UL');
-        var listItem;
-        var extractedText;
-
-        <!-- Iterate through the array and display output for each match. -->
-        for (var match in matches) {
-          for (var key in matches[match]) {
-            listItem = document.createElement('LI');
-            extractedText = document.createTextNode(key + ": " + matches[match][key]);
-            listItem.appendChild(extractedText);
-            matchList.appendChild(listItem);
+        function init() {
+          var matches = google.contentmatch.getContentMatches();
+          var matchList = document.createElement('ul');
+          <!-- Iterate through the array and display output for each match. -->
+          for (var match in matches) {
+            for (var key in matches[match]) {
+              var listItem = document.createElement('li');
+              var extractedText = document.createTextNode(key + ": " + matches[match][key]);
+              listItem.appendChild(extractedText);
+              matchList.appendChild(listItem);
+            }
           }
+          document.body.appendChild(matchList);
+          gadgets.window.adjustHeight(100);          
         }
-        document.body.appendChild(matchList);
-        gadgets.window.adjustHeight(100);
+        gadgets.util.registerOnLoadHandler(init);
       </script>         
     </head>
     
     <body id="GmailGadget">
       <div class="UIGadgetThemes">
         <div class="gadgetTitle">eXo for Gmail</div>
-        
         <div>TODO</div>
       </div> 
     </body>
