@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-  <ModulePrefs title="eXo Gadget"
-      description="eXo for Gmail"
+  <ModulePrefs title="eXo Platform"
+      description="Social Intranet for Gmail"
       height="20"
       author="Peter Nedonosko"
       author_email="pnedonosko@exoplatform.com"
@@ -9,7 +9,7 @@
     <Require feature="opensocial-0.9" />
     <Require feature="dynamic-height"/>
     <Require feature="google.contentmatch">
-      <Param name="extractors">google.com:RawSubjectExtractor</Param>
+      <Param name="extractors">google.com:SubjectExtractor</Param>
       <Param name="extractors">google.com:SenderEmailExtractor</Param>
       <Param name="extractors">google.com:RecipientEmailExtractor</Param>
       <Param name="extractors">google.com:MessageIDExtractor</Param>
@@ -26,6 +26,8 @@
     <head>
       <!-- link type="text/css" rel="stylesheet" href="http://demo-outlook.exoplatform.org/outlook/style/gmail-gadget.css" / -->    
       <script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gmail-js/0.6.7/gmail.js"></script>
+      <!-- script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gmail-js/0.6.7/gmail.min.js"></script -->
       <script type="text/javascript">
         <!-- Fetch the array of content matches. -->
         function init() {
@@ -41,17 +43,34 @@
             }
           }
           document.body.appendChild(matchList);
-          gadgets.window.adjustHeight(100);          
+          gadgets.window.adjustHeight(100);
+          
+          //
+          var gmail = Gmail();
+          var userEmail = gmail.get.user_email();
+          var subject = gmail.get.email_subject();
+          var messageId = gmail.get.email_id();
+          var messageIds = gmail.get.email_ids();
+          var composeIds = gmail.get.compose_ids();
+          var data = gmail.get.email_data();
+                  
+          var $info = $("info");
+          $info.append($("<div/>", {"class": "userEmail"}).append(userEmail));
+          $info.append($("<div/>", {"class": "subject"}).append(subject));
+          $info.append($("<div/>", {"class": "messageId"}).append(messageId));
+          $info.append($("<div/>", {"class": "messageIds"}).append(JSON.stringify(messageIds)));
+          $info.append($("<div/>", {"class": "composeIds"}).append(JSON.stringify(composeIds)));
+          $info.append($("<div/>", {"class": "data"}).append(JSON.stringify(data)));
         }
         gadgets.util.registerOnLoadHandler(init);
       </script>         
     </head>
     
-    <body id="GmailGadget">
-      <div class="UIGadgetThemes">
-        <div class="gadgetTitle">eXo for Gmail</div>
-        <div>TODO</div>
-      </div> 
+    <body id="exo-gmail-gadget">
+      <div class="gadgetTitle">eXo for Gmail</div>
+      <div id="info">
+      
+      </div>
     </body>
     
     ]]>
