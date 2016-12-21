@@ -46,7 +46,13 @@
           gadgets.window.adjustHeight(100);
           
           //
-          var gmail = Gmail();
+          var wparent=window.parent;
+          wparent.$ = $;
+          //var gparent=gadgets.util.getUrlParameters().parent;
+          
+          //
+          //var gmail = Gmail();
+          var gmail = new Gmail_(wparent.$);
           var userEmail = gmail.get.user_email();
           var subject = gmail.get.email_subject();
           var messageId = gmail.get.email_id();
