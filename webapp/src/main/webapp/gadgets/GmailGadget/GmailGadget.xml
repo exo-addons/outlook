@@ -46,13 +46,14 @@
           gadgets.window.adjustHeight(100);
           
           //
-          var wparent=window.parent;
-          wparent.$ = $;
+          //var wparent=window.parent;
+          // this doesn't work due to CORS
+          //wparent.$ = $;
           //var gparent=gadgets.util.getUrlParameters().parent;
           
           //
-          //var gmail = Gmail();
-          var gmail = new Gmail_(wparent.$);
+          var gmail = Gmail();
+          //var gmail = new Gmail_(wparent.$);
           var userEmail = gmail.get.user_email();
           var subject = gmail.get.email_subject();
           var messageId = gmail.get.email_id();
