@@ -140,7 +140,7 @@ public class OutlookActivitySupport {
     String[] displayedIdentityLikes = uiActivity.getDisplayedIdentityLikes();
     int identityLikesNum = displayedIdentityLikes != null ? displayedIdentityLikes.length : 0;
     String docPreviewUri =
-                         "javascript:require(['SHARED/social-ui-activity'], function(activity) {activity.previewDoc({doc: {id:'"
+                         "javascript:require(['SHARED/social-ui-activity'], function(activity) {activity.previewDoc(event, {doc: {id:'"
                              + node.getUUID() + "', repository:'" + repository.getConfiguration().getName()
                              + "', workspace:'" + node.getSession().getWorkspace().getName() + "', path:'" + node.getPath()
                              + "', title:'" + node.getName() + "', downloadUrl:'" + docDownloadUrl + "', openUrl:'"

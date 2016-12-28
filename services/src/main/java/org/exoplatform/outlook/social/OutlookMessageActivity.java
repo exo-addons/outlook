@@ -222,8 +222,8 @@ public class OutlookMessageActivity extends FileUIActivity {
             if (lang != null) {
               userLocale = LocaleContextInfo.getLocale(lang);
             }
-          } else {
-            LOG.warn("User profile not found for " + context.getRemoteUser());
+          } else if (LOG.isDebugEnabled()) {
+            LOG.debug("User profile not found for " + context.getRemoteUser());
           }
         } catch (Exception e) {
           LOG.warn("Error getting user profile for " + context.getRemoteUser(), e);
