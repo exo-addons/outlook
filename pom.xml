@@ -24,7 +24,7 @@
   <parent>
     <artifactId>addons-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>7-RC01</version>
+    <version>7</version>
   </parent>
   <groupId>org.exoplatform.addons.outlook</groupId>
   <artifactId>exo-outlook</artifactId>
@@ -49,14 +49,14 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
-    <org.exoplatform.platform.version>4.4.0-RC03</org.exoplatform.platform.version>
+    <org.exoplatform.platform.version>4.4.0</org.exoplatform.platform.version>
     <org.juzu.version>1.1.3</org.juzu.version>
     <!-- Third-parties -->
     <org.jsoup.version>1.9.2</org.jsoup.version>
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <org.mockito.version>2.2.11</org.mockito.version>
-    <org.exoplatform.jcr-services.version>1.17.0-M08</org.exoplatform.jcr-services.version>
+    <org.exoplatform.jcr-services.version>1.17.0</org.exoplatform.jcr-services.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
   <dependencyManagement>
