@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.ecm.webui.utils.Utils;
-import org.exoplatform.outlook.social.OutlookAttachmentActivity.ViewDocumentActionListener;
 import org.exoplatform.services.cms.documents.DocumentService;
 import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -38,16 +37,12 @@ import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
-import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
@@ -80,8 +75,7 @@ import javax.jcr.Session;
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      template = "classpath:groovy/templates/OutlookAttachmentActivity.gtmpl",
-                                     events = { @EventConfig(listeners = ViewDocumentActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
+                                     events = { @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
@@ -122,52 +116,6 @@ public class OutlookAttachmentActivity extends BaseUIActivity {
 
   /** The Constant LOG. */
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookAttachmentActivity.class);
-
-  /**
-   * The listener interface for receiving viewDocumentAction events.
-   * The class that is interested in processing a viewDocumentAction
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addViewDocumentActionListener</code> method. When
-   * the viewDocumentAction event occurs, that object's appropriate
-   * method is invoked.
-   */
-  @Deprecated // TODO not used
-  public static class ViewDocumentActionListener extends EventListener<OutlookAttachmentActivity> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute(Event<OutlookAttachmentActivity> event) throws Exception {
-      // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
-      OutlookAttachmentActivity activity = event.getSource();
-      String fileUUID = event.getRequestContext().getRequestParameter(OBJECTID);
-      if (fileUUID != null && fileUUID.length() > 0) {
-        UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
-        PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
-
-        RepositoryService repositoryService = WCMCoreUtils.getService(RepositoryService.class);
-        ManageableRepository repository = repositoryService.getCurrentRepository();
-        SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
-        Session session = sessionProvider.getSession(activity.getWorkspace(), repository);
-        Node file = session.getNodeByUUID(fileUUID);
-
-        OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
-                                                                                   null,
-                                                                                   "UIDocumentPreview");
-
-        preview.setBaseUIActivity(activity);
-        preview.setContentInfo(file.getPath(), repository.getConfiguration().getName(), activity.getWorkspace(), file);
-
-        uiPopupContainer.activate(preview, 0, 0, true);
-        event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
-      } else {
-        LOG.warn(OBJECTID + " doesn't contain file UUID for ViewDocument event in activity '" + activity + "'");
-        event.getRequestContext().addUIComponentToUpdateByAjax(activity);
-      }
-    }
-  }
 
   /**
    * The Class Attachment.

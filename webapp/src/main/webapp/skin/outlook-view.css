@@ -23,21 +23,9 @@
 	z-index: -10;
 }
 
-.outlookMessagePreview .uiPreviewWebContent {
-	overflow-y: hidden !important;
-}
-
-.outlookMessagePreview .fileContent {
-	margin-right: initial;
-}
-
-.outlookMessagePreview .fileContent, .outlookMessagePreview .outlookMessageViewer, .outlookMessageViewer .textContent, .outlookMessageViewer iframe {
+.outlookMessageViewer .textContent, .outlookMessageViewer iframe {
 	height: 100%;
 	width: 100%;
-}
-
-.outlookMessagePreview .UIUnResizableBlock {
-	height: 100%;
 }
 
 #UIDocumentContainer .outlookMessageViewer {
@@ -45,33 +33,19 @@
 }
 
 #documentPreviewContainer .outlookMessageViewer {
-	height: 90%;
+	height: 97%;
   padding: 12px;
   background-color: white;
+  overflow-y: hidden;
 }
 
 .outlookMessageActivityContent .outlookMessageViewer, .outlookMessageActivityContent .outlookMessageViewer .messageBody {
 	height: 200px !important;
 }
 
-/** NOT USED */
-.outlookMessagePreview .messageFooter {
-	height: 25px;
-  max-height: 3%;
-  width: 100%;
-  background-color: white;
-  position: relative;
-  float: left;
-}
-
-.outlookMessageActivityContent .messageFooter, .UIDocumentWorkspace .messageFooter {
+.outlookMessageActivityContent .c, .UIDocumentWorkspace .messageFooter {
 	height: 0px;
 	display: none;
-}
-
-/** NOT USED */
-.outlookMessagePreview .messageBody {
-	height: 97%;
 }
 
 .messageBody {

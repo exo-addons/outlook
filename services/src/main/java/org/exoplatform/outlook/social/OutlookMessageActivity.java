@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.ecm.webui.utils.Utils;
 import org.exoplatform.outlook.OutlookService;
-import org.exoplatform.outlook.social.OutlookMessageActivity.ViewDocumentActionListener;
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.services.cms.documents.DocumentService;
@@ -34,8 +33,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.LocaleContextInfo;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
-import org.exoplatform.social.webui.activity.UIActivitiesContainer;
-import org.exoplatform.social.webui.composer.PopupContainer;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.application.JavascriptManager;
@@ -48,8 +45,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
-import org.exoplatform.webui.event.Event;
-import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtension;
 import org.exoplatform.webui.ext.UIExtensionManager;
 
@@ -74,8 +69,7 @@ import javax.jcr.RepositoryException;
                                      // FYI original template:
                                      // "classpath:groovy/ecm/social-integration/UISharedFile.gtmpl",
                                      template = "classpath:groovy/templates/OutlookMessageActivity.gtmpl",
-                                     events = { @EventConfig(listeners = ViewDocumentActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
+                                     events = { @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
                                          @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
@@ -86,74 +80,40 @@ import javax.jcr.RepositoryException;
 public class OutlookMessageActivity extends FileUIActivity {
 
   /** The Constant ACTIVITY_TYPE. */
-  public static final String ACTIVITY_TYPE       = "outlook:message";
+  public static final String             ACTIVITY_TYPE       = "outlook:message";
 
   /** The Constant FILE_UUID. */
-  public static final String FILE_UUID           = "fileUUID";
+  public static final String             FILE_UUID           = "fileUUID";
 
   /** The Constant REPOSITORY. */
-  public static final String REPOSITORY          = "repository";
+  public static final String             REPOSITORY          = "repository";
 
   /** The Constant WORKSPACE. */
-  public static final String WORKSPACE           = "workspace";
+  public static final String             WORKSPACE           = "workspace";
 
   /** The Constant AUTHOR. */
-  public static final String AUTHOR              = "author";
+  public static final String             AUTHOR              = "author";
 
   /** The Constant DATE_CREATED. */
-  public static final String DATE_CREATED        = "dateCreated";
+  public static final String             DATE_CREATED        = "dateCreated";
 
   /** The Constant DATE_LAST_MODIFIED. */
-  public static final String DATE_LAST_MODIFIED  = "lastModified";
+  public static final String             DATE_LAST_MODIFIED  = "lastModified";
 
   /** The Constant DEFAULT_DATE_FORMAT. */
-  public static final String DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
+  public static final String             DEFAULT_DATE_FORMAT = "MM/dd/yyyy";
 
   /** The Constant DEFAULT_TIME_FORMAT. */
-  public static final String DEFAULT_TIME_FORMAT = "HH:mm";
+  public static final String             DEFAULT_TIME_FORMAT = "HH:mm";
 
   /** The Constant FAKE_TITLE. */
-  public static final String FAKE_TITLE          = "SocialIntegration.messages.createdBy";
+  public static final String             FAKE_TITLE          = "SocialIntegration.messages.createdBy";
 
   /** The Constant LOG. */
-  protected static final Log LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
-
-  /**
-   * The listener interface for receiving viewDocumentAction events.
-   * The class that is interested in processing a viewDocumentAction
-   * event implements this interface, and the object created
-   * with that class is registered with a component using the
-   * component's <code>addViewDocumentActionListener</code> method. When
-   * the viewDocumentAction event occurs, that object's appropriate
-   * method is invoked.
-   *
-   */
-  @Deprecated // TODO not used
-  public static class ViewDocumentActionListener extends EventListener<OutlookMessageActivity> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute(Event<OutlookMessageActivity> event) throws Exception {
-      // code adapted from FileUIActivity but using OutlookMessageDocumentPreview instead of UIDocumentPreview
-      OutlookMessageActivity activity = event.getSource();
-      UIActivitiesContainer uiActivitiesContainer = activity.getAncestorOfType(UIActivitiesContainer.class);
-      PopupContainer uiPopupContainer = uiActivitiesContainer.getPopupContainer();
-
-      OutlookMessageDocumentPreview preview = uiPopupContainer.createUIComponent(OutlookMessageDocumentPreview.class,
-                                                                                 null,
-                                                                                 "UIDocumentPreview");
-      preview.setBaseUIActivity(activity);
-      preview.setContentInfo(activity.docPath, activity.repository, activity.workspace, activity.getContentNode());
-
-      uiPopupContainer.activate(preview, 0, 0, true);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
-    }
-  }
+  protected static final Log             LOG                 = ExoLogger.getLogger(OutlookMessageActivity.class);
 
   /** The script initialized. */
-  protected static ThreadLocal<Boolean>  scriptInitialized = new ThreadLocal<Boolean>();
+  protected static ThreadLocal<Boolean>  scriptInitialized   = new ThreadLocal<Boolean>();
 
   /** The document service. */
   protected DocumentService              documentService;
