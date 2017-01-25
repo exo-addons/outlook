@@ -31,11 +31,13 @@
 						<div class="ms-TextField-field messageSubject">
 						</div>
 						<div class="ms-TextField-field messageText">
+							<iframe scrolling="no" frameBorder=0 class="messageTextIframe" src="about:blank"></iframe>
 						</div>	
 					</div>
 					<div class="messageEditorContainer" style="display: none;">
 						<input name="messageSubject" class="ms-TextField-field" type="text">
-						<div class="ms-TextField-field messageEditor" contenteditable="true" >
+						<div class="ms-TextField-field messageEditor">
+							<iframe scrolling="auto" frameBorder=0 class="messageEditorIframe" src="about:blank"></iframe>
 						</div>
 					</div>
 					<span class="ms-TextField-description">&{Outlook.activityTextDescription}</span>

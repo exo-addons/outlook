@@ -351,6 +351,11 @@ div.messageSubject {
 	overflow: hidden;
 }
 
+.messageText>iframe, .messageEditor>iframe {
+	width: 100%;
+  height: 100%;
+} 
+
 .statusText, .topicText {
 	max-height: 75px;
 	padding: 10px;

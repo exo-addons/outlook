@@ -516,7 +516,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $title = $convertToStatus.find("textarea[name='activityTitle']");
 					var $viewer = $convertToStatus.find("div.messageViewerContainer");
 					var $subject = $viewer.find("div.messageSubject");
-					var $text = $viewer.find("div.messageText");
+					var $textFrame = $viewer.find("div.messageText>iframe");
+					var $text = $textFrame.contents().find("html");
 					var $editor = $convertToStatus.find("div.messageEditorContainer");
 					var $editorSubject, $editorText;
 					var $form = $convertToStatus.find("form");
@@ -537,8 +538,18 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$(this).parent().hide();
 						$editorSubject = $editor.find("input[name='messageSubject']");
 						$editorSubject.val($subject.text());
-						$editorText = $editor.find("div.messageEditor");
-						$editorText.append($text.children());
+						var $editorFrame = $editor.find("div.messageEditor>iframe");
+						$editorFrame.contents().find("html").html($text.html());
+						var $content = $editorFrame.contents().find("html");
+						var $contentBody = $content.find("body");
+						if ($contentBody.size() > 0) {
+							$content = $contentBody;
+						}
+						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+						$editorText = $("<div contenteditable='true'></div>");
+						$editorText.append($content.children());
+						$content.append($editorText);
+						$text = $editorText;
 						$viewer.hide();
 						$editor.show();
 					});
@@ -580,7 +591,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
 									//console.log(">> ewsUrl: " + ewsUrl);
-									$text.jzLoad("Outlook.getMessage()", {
+									// get the message content to temp div and then move it to iframe
+									var $tempText = $("<div style='display:none'></div>");
+									$textFrame.append($tempText);
+									$tempText.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
 										userName : userName,
@@ -594,6 +608,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											groupId = groupId ? groupId : "";
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
+											$text.html($tempText.html());
+											$tempText.remove();
 											$convertButton.prop("disabled", false);
 											$form.submit(function(event) {
 												event.preventDefault();
@@ -607,15 +623,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 												} else {
 													var created = Office.context.mailbox.item.dateTimeCreated;
 													var modified = Office.context.mailbox.item.dateTimeModified;
-													// from and to (it's array) have following interesting fields: displayName,
-													// emailAddress
 													var from = Office.context.mailbox.item.from;
 													$convertedInfo.jzLoad("Outlook.convertToStatus()", {
 														groupId : groupId,
 														messageId : mid,
 														title : $title.val(),
 														subject : $editorSubject ? $editorSubject.val() : $subject.text(),
-														body : $editorText ? $editorText.html() : $text.html(),
+														body : $text.html(),
 														created : formatISODate(created),
 														modified : formatISODate(modified),
 														userName : userName,
@@ -750,7 +764,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// FYI this method adapted from convertToStatusInit(), consider for code reuse
 					var $convertToWiki = $("#outlook-convertToWiki");
 					var $title = $convertToWiki.find("input[name='wikiTitle']");
-					var $text = $convertToWiki.find("div.messageText");
+					var $viewer = $convertToWiki.find("div.messageText");
+					var $textFrame = $viewer.find("iframe");
+					var $text = $textFrame.contents().find("html");
 					var $editor = $convertToWiki.find("div.messageEditor");
 					var $form = $convertToWiki.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
@@ -767,10 +783,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$convertToWiki.find(".editMessageText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						$editor.append($text.children());
-						$text.hide();
+						var $editorFrame = $editor.find("iframe");
+						$editorFrame.contents().find("html").html($text.html());
+						var $content = $editorFrame.contents().find("html");
+						var $contentBody = $content.find("body");
+						if ($contentBody.size() > 0) {
+							$content = $contentBody;
+						}
+						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+						$editorText = $("<div contenteditable='true'></div>");
+						$editorText.append($content.children());
+						$content.append($editorText);
+						$text = $editorText;
+						$viewer.hide();
 						$editor.show();
-						$text = $editor;
 					});
 
 					// init spaces dropdown
@@ -818,7 +844,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							midProcess.done(function(mid) {
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									$text.jzLoad("Outlook.getMessage()", {
+									var $tempText = $("<div style='display:none'></div>");
+									$textFrame.append($tempText);
+									$tempText.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
 										userName : userName,
@@ -832,6 +860,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											groupId = groupId ? groupId : "";
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
+											$text.html($tempText.html());
+											$tempText.remove();
 											$convertButton.prop("disabled", false);
 											$form.submit(function(event) {
 												event.preventDefault();
@@ -899,7 +929,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// FYI this method adapted from convertToWikiInit(), consider for code reuse
 					var $convertToForum = $("#outlook-convertToForum");
 					var $topicName = $convertToForum.find("input[name='topicName']");
-					var $text = $convertToForum.find("div.messageText");
+					var $viewer = $convertToForum.find("div.messageText");
+					var $textFrame = $viewer.find("iframe");
+					var $text = $textFrame.contents().find("html");
 					var $editor = $convertToForum.find("div.messageEditor");
 					var $form = $convertToForum.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
@@ -916,10 +948,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$convertToForum.find(".editMessageText>a").click(function(event) {
 						event.preventDefault();
 						$(this).parent().hide();
-						$editor.append($text.children());
-						$text.hide();
+						var $editorFrame = $editor.find("iframe");
+						$editorFrame.contents().find("html").html($text.html());
+						var $content = $editorFrame.contents().find("html");
+						var $contentBody = $content.find("body");
+						if ($contentBody.size() > 0) {
+							$content = $contentBody;
+						}
+						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+						$editorText = $("<div contenteditable='true'></div>");
+						$editorText.append($content.children());
+						$content.append($editorText);
+						$text = $editorText;
+						$viewer.hide();
 						$editor.show();
-						$text = $editor;
 					});
 					
 					var groupId = null;
@@ -967,7 +1009,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							midProcess.done(function(mid) {
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									$text.jzLoad("Outlook.getMessage()", {
+									var $tempText = $("<div style='display:none'></div>");
+									$textFrame.append($tempText);
+									$tempText.jzLoad("Outlook.getMessage()", {
 										ewsUrl : ewsUrl,
 										userEmail : userEmail,
 										userName : userName,
@@ -981,6 +1025,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											groupId = groupId ? groupId : "";
 											var textType = jqXHR.getResponseHeader("X-MessageBodyContentType");
 											textType = textType ? textType : "html";
+											$text.html($tempText.html());
+											$tempText.remove();
 											textReady = true;
 											checkCanConvert();
 											$form.submit(function(event) {
