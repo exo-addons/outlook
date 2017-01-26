@@ -712,7 +712,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
         if (uploads == null) {
           try {
-            // TODO Do we need care about permissions? https://github.com/exo-addons/outlook/issues/6
             Node subfolderNode = addFolder(node, UPLAODS_FOLDER_TITLE, false);
             uploads = newFolder(this, subfolderNode);
             node.save();
@@ -720,25 +719,30 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             subfolders.add(uploads);
             defaultSubfolder = uploads;
           } catch (AccessDeniedException e) {
-            // gather some info about the user for the log
-            String currentUserId = currentUserId();
-            StringBuilder userInfo = new StringBuilder();
-            userInfo.append(currentUserId);
-            try {
-              userInfo.append('[');
-              for (Membership m : organization.getMembershipHandler().findMembershipsByUser(currentUserId())) {
-                userInfo.append(m.getMembershipType());
-                userInfo.append(':');
-                userInfo.append(m.getGroupId());
-                userInfo.append(' ');
+            if (LOG.isDebugEnabled()) {
+              // gather some info about the user for the log
+              String currentUserId = currentUserId();
+              StringBuilder userInfo = new StringBuilder();
+              userInfo.append(currentUserId);
+              try {
+                userInfo.append('[');
+                for (Membership m : organization.getMembershipHandler().findMembershipsByUser(currentUserId())) {
+                  userInfo.append(m.getMembershipType());
+                  userInfo.append(':');
+                  userInfo.append(m.getGroupId());
+                  userInfo.append(' ');
+                }
+                userInfo.setCharAt(userInfo.length() - 1, ']');
+              } catch (Exception oe) {
+                LOG.warn("Error getting organization user " + currentUserId, e);
               }
-              userInfo.setCharAt(userInfo.length() - 1, ']');
-            } catch (Exception oe) {
-              LOG.warn("Error getting organization user " + currentUserId, e);
+              LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: "
+                  + userInfo.toString() + ". Parent node: " + node, e);
+              // TODO we don't want throw Access error here, it should be thrown where actually will affect an
+              // user 
+              // throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
             }
-            LOG.error("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: " + userInfo.toString()
-                + ". Parent node: " + node, e);
-            throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
+            defaultSubfolder = null;
           }
         }
         return subfolders;

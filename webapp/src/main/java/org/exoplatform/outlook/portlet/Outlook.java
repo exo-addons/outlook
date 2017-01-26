@@ -25,6 +25,7 @@ import juzu.SessionScoped;
 import juzu.View;
 import juzu.request.HttpContext;
 import juzu.request.RequestContext;
+import juzu.template.TemplateExecutionException;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.forum.service.Topic;
@@ -574,6 +575,13 @@ public class Outlook {
       return saveAttachment.with().spaces(outlook.getUserSpaces()).ok();
     } catch (AccessException e) {
       return errorMessage(e.getMessage(), 403);
+    } catch(TemplateExecutionException e) {
+      if (AccessException.class.isInstance(e.getCause())) {
+        return errorMessage(e.getMessage(), 403);
+      } else {
+        LOG.error("Error rendering save attachments form", e);
+        return errorMessage(e.getMessage(), 500);
+      }
     } catch (Throwable e) {
       LOG.error("Error showing save attachments form", e);
       return errorMessage(e.getMessage(), 500);
@@ -755,6 +763,13 @@ public class Outlook {
       return addAttachment.with().sources(sources).ok();
     } catch (AccessException e) {
       return errorMessage(e.getMessage(), 403);
+    } catch(TemplateExecutionException e) {
+      if (AccessException.class.isInstance(e.getCause())) {
+        return errorMessage(e.getMessage(), 403);
+      } else {
+        LOG.error("Error rendering add attachments form", e);
+        return errorMessage(e.getMessage(), 500);
+      }
     } catch (Throwable e) {
       LOG.error("Error showing add attachments form", e);
       return errorMessage(e.getMessage(), 500);
