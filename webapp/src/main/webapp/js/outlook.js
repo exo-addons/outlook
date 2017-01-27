@@ -487,6 +487,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 													name : newFolderName
 												}, function(response, status, jqXHR) {
 													if (status == "error") {
+														$popup.hide();
 														showError(jqXHR);
 													} else {
 														clearError();

@@ -50,11 +50,14 @@ body {
 }
 
 /* Error banner (common) */
-#outlook-error>div.ms-MessageBanner {
+
+.error-message>.ms-MessageBanner {
 	min-width: 290px;
+	background-color: #fde7e9;
+	color: #a80000;
 }
 
-#outlook-error button.ms-MessageBanner-close {
+.error-message button.ms-MessageBanner-close {
 	margin-left: 25px;
 	width: 25px;
 }
@@ -171,11 +174,6 @@ span[disabled] {
 
 .ms-Grid-row .ms-TextField-field, .ms-Grid-row .ms-Dropdown {
 	margin-bottom: 0px;
-}
-
-.error-message>.ms-MessageBanner {
-	background-color: #fde7e9;
-	color: #a80000;
 }
 
 .savingSpaceTitle, .savedSpaceTitle {

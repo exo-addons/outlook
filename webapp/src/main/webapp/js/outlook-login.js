@@ -124,16 +124,44 @@
 							});
 							$portalLogin.done(function(data, textStatus, jqXHR) {
 								console.log("[" + jqXHR.status + "] " + textStatus);
-								var $data = $(data);
-								var signinFailMessage = $data.find(".signinFail").text();
-								if (signinFailMessage) {
-									// FYI wrong user/pwd will come as 200 with message in the body html
-									showError(signinFailMessage);
-									$welcome.show();
-								} else {
+
+								// check does user session alive actually
+								var $session = $.get("/portal/rest/platform/isusersessionalive");
+								var $sessionProcess = $.Deferred();
+								$session.done(function(data) {
+									if (data && (typeof data === "boolean" ? true : data == "true")) {
+										$sessionProcess.resolve();
+									} else {
+										$sessionProcess.reject();
+									}
+								});
+								$session.fail(function() {
+									$sessionProcess.reject();
+								});
+								$sessionProcess.done(function() {
 									setCookie("remembermeoutlook", "_init_me", 120000, document, "/portal/intranet/outlook");
 									window.location = initialURI;
-								}
+								});
+								$sessionProcess.fail(function() {
+									$password.val("");
+									var $data = $(data);
+									var signinFailMessage = $data.find(".signinFail").text();
+									if (signinFailMessage) {
+										// FYI wrong user/pwd will come as 200 with message in the body html
+										showError(signinFailMessage);
+										$welcome.show();
+									} else {
+										// XXX try approach for Community site
+										signinFailMessage = $data.find(".register-container .alert-error").text();
+										if (signinFailMessage) {
+											showError(signinFailMessage);
+										} else {
+											// TODO i18n here
+											showError("Portal login failed. Contact your administrator.");
+										}
+										$welcome.show();
+									}
+								});
 							});
 							$portalLogin.fail(function(jqXHR, textStatus, errorThrown) {
 								// it's system/net error
