@@ -519,6 +519,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $subject = $viewer.find("div.messageSubject");
 					var $textFrame = $viewer.find("div.messageText>iframe");
 					var $text = $textFrame.contents().find("html");
+					$textFrame.load(function() {
+						// XXX do it again for FF
+						$text = $textFrame.contents().find("html");
+					});
 					var $editor = $convertToStatus.find("div.messageEditorContainer");
 					var $editorSubject, $editorText;
 					var $form = $convertToStatus.find("form");
@@ -547,7 +551,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							$content = $contentBody;
 						}
 						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
-						$editorText = $("<div contenteditable='true'></div>");
+						$editorText = $("<div contenteditable=\"true\"></div>");
 						$editorText.append($content.children());
 						$content.append($editorText);
 						$text = $editorText;
@@ -768,6 +772,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $viewer = $convertToWiki.find("div.messageText");
 					var $textFrame = $viewer.find("iframe");
 					var $text = $textFrame.contents().find("html");
+					$textFrame.load(function() {
+						// XXX do it again for FF
+						$text = $textFrame.contents().find("html");
+					});
 					var $editor = $convertToWiki.find("div.messageEditor");
 					var $form = $convertToWiki.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");
@@ -933,6 +941,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $viewer = $convertToForum.find("div.messageText");
 					var $textFrame = $viewer.find("iframe");
 					var $text = $textFrame.contents().find("html");
+					$textFrame.load(function() {
+						// XXX do it again for FF
+						$text = $textFrame.contents().find("html");
+					});
 					var $editor = $convertToForum.find("div.messageEditor");
 					var $form = $convertToForum.find("form");
 					var $groupIdDropdown = $form.find(".ms-Dropdown");

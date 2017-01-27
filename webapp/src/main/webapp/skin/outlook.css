@@ -331,7 +331,7 @@ div.form-buttons {
 
 .messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
 	height: 200px;
-	overflow: auto;
+	overflow: hidden;
 	padding: 0px;
 }
 
