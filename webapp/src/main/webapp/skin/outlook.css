@@ -354,6 +354,11 @@ div.messageSubject {
   height: 100%;
 } 
 
+.messageEditor>iframe {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: hidden;
+}
+
 .statusText, .topicText {
 	max-height: 75px;
 	padding: 10px;
@@ -370,7 +375,7 @@ div.messageSubject {
 }
 
 #outlook-pane .ms-MessageBar {
-	width: 100%;
+	display: block;
 }
 
 .outlookMenu {
