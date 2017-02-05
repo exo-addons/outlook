@@ -63,6 +63,11 @@
       </values-param>
     </init-params>
   </component>
+  
+  <!-- We need this Platform Commons service for login page -->
+  <component>
+    <type>org.exoplatform.platform.common.rest.PlatformInformationRESTService</type>
+  </component>
 
   <external-component-plugins>
     <target-component>org.exoplatform.services.cache.CacheService</target-component>
