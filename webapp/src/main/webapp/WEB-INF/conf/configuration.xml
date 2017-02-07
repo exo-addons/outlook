@@ -47,6 +47,10 @@
   </component>
 
   <component>
+    <type>org.exoplatform.outlook.rest.InfoService</type>
+  </component>
+
+  <component>
     <type>org.exoplatform.outlook.rest.ContentService</type>
   </component>
 
@@ -62,11 +66,6 @@
         <value>outlooklogin</value>
       </values-param>
     </init-params>
-  </component>
-  
-  <!-- We need this Platform Commons service for login page -->
-  <component>
-    <type>org.exoplatform.platform.common.rest.PlatformInformationRESTService</type>
   </component>
 
   <external-component-plugins>

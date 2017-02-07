@@ -126,10 +126,10 @@
 								console.log("[" + jqXHR.status + "] " + textStatus);
 
 								// check does user session alive actually
-								var $session = $.get("/portal/rest/platform/isusersessionalive");
+								var $user = $.get("/portal/rest/outlook/userinfo");
 								var $sessionProcess = $.Deferred();
-								$session.done(function(data) {
-									if (data && (typeof data === "boolean" ? true : data == "true")) {
+								$user.done(function(info) {
+									if (info && (typeof info == "object") && info.authenticated) {
 										$sessionProcess.resolve();
 									} else {
 										$sessionProcess.reject();

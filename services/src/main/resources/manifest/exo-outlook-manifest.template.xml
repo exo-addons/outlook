@@ -7,7 +7,7 @@
     xsi:type="MailApp">
     
   <Id>$GUID</Id>
-  <Version>1.0.0</Version>
+  <Version>1.0</Version>
   <ProviderName>eXo Platform SAS</ProviderName>
   <DefaultLocale>en-us</DefaultLocale>
   <DisplayName DefaultValue="$DISPLAY_NAME" />

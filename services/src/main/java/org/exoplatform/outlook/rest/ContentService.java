@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2003-2016 eXo Platform SAS.
+ * Copyright (C) 2003-2017 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -25,19 +25,12 @@ import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.jcr.NodeContent;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.rest.resource.ResourceContainer;
-
-import java.net.URI;
-import java.util.Scanner;
-import java.util.UUID;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -50,14 +43,11 @@ import javax.ws.rs.core.UriInfo;
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: ContentService.java 00000 Aug 14, 2016 pnedonosko $
  */
-@Path("/outlook")
-public class ContentService implements ResourceContainer {
+@Path("/outlook/content")
+public class ContentService extends RESTServiceBase {
 
   /** The Constant LOG. */
   protected static final Log  LOG = ExoLogger.getLogger(ContentService.class);
-  
-  /** The Constant DEFAULT_DISPLAY_NAME. */
-  public static final String DEFAULT_DISPLAY_NAME = "eXo Platform";
 
   /** The content link. */
   protected final ContentLink contentLink;
@@ -83,7 +73,7 @@ public class ContentService implements ResourceContainer {
    * @return {@link Response}
    */
   @GET
-  @Path("/content/{userId}/{key}")
+  @Path("/{userId}/{key}")
   public Response content(@Context UriInfo uriInfo,
                           @Context HttpServletRequest request,
                           @PathParam("userId") String userId,
@@ -132,159 +122,4 @@ public class ContentService implements ResourceContainer {
     }
     return resp.build();
   }
-
-  /**
-   * Document content download link. <br>
-   * WARNING! It is publicly accessible service but access from the Documents Server host can be restricted
-   * (by default).
-   *
-   * @param uriInfo - request info
-   * @param request {@link HttpServletRequest}
-   * @param guid {@link String} existing add-in GUID or {@code null}
-   * @param hostName {@link String} with a host name (and optionally port) or {@code null}
-   * @param displayName the display name
-   * @return {@link Response}
-   */
-  @GET
-  @Path("/manifest")
-  @Produces("text/xml")
-  public Response manifest(@Context UriInfo uriInfo,
-                           @Context HttpServletRequest request,
-                           @QueryParam("guid") String guid,
-                           @QueryParam("hostName") String hostName,
-                           @QueryParam("displayName") String displayName) {
-    String clientHost = getClientHost(request);
-
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("> Outlook manifest for " + clientHost + " as host:" + hostName + " with guid:" + guid);
-    }
-
-    URI requestURI = uriInfo.getRequestUri();
-    StringBuilder serverHostBuilder = new StringBuilder();
-    serverHostBuilder.append(requestURI.getScheme());
-    serverHostBuilder.append("://");
-    if (hostName != null && hostName.length() > 0) {
-      serverHostBuilder.append(hostName);
-    } else {
-      serverHostBuilder.append(requestURI.getHost());
-      int serverPort = requestURI.getPort();
-      if (serverPort != 80 || serverPort != 443) {
-        serverHostBuilder.append(':');
-        serverHostBuilder.append(serverPort);
-      }
-    }
-    String serverURL = serverHostBuilder.toString();
-
-    ResponseBuilder resp;
-    try (Scanner mScanner = new Scanner(getClass().getResourceAsStream("/manifest/exo-outlook-manifest.template.xml"),
-                                        "UTF-8").useDelimiter("\\A")) {
-      String mTemplate = mScanner.next();
-      String manifest = mTemplate.replaceAll("\\$BASE_URL", serverURL);
-      
-      if (guid == null || (guid = guid.trim()).length() == 0) {
-        // Generate RFC4122 version 4 UUID (as observed in https://github.com/OfficeDev/generator-office)
-        guid = UUID.randomUUID().toString();
-      }
-      manifest = manifest.replaceAll("\\$GUID", guid);
-      
-      if (displayName == null || (displayName = displayName.trim()).length() == 0) {
-        displayName = DEFAULT_DISPLAY_NAME;
-      }
-      manifest = manifest.replaceAll("\\$DISPLAY_NAME", displayName);
-      
-      resp = Response.ok().entity(manifest);
-    } catch (Throwable e) {
-      LOG.error("Error while generating manifest for " + clientHost, e);
-      resp = Response.status(Status.INTERNAL_SERVER_ERROR).entity("Cannot generate manifest");
-    }
-    return resp.build();
-  }
-
-  /**
-   * Gets the client ip addr.
-   *
-   * @param request the request
-   * @return the client ip addr
-   */
-  protected String getClientIpAddr(HttpServletRequest request) {
-    String ip = request.getHeader("X-Forwarded-For");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("Proxy-Client-IP");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("WL-Proxy-Client-IP");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("HTTP_CLIENT_IP");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("HTTP_X_FORWARDED");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    // http://stackoverflow.com/questions/1634782/what-is-the-most-accurate-way-to-retrieve-a-users-correct-ip-address-in-php
-    ip = request.getHeader("HTTP_FORWARDED_FOR");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("HTTP_FORWARDED");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    ip = request.getHeader("REMOTE_ADDR");
-    if (isValidName(ip)) {
-      return ip;
-    }
-    // last chance to get it from Servlet request
-    ip = request.getRemoteAddr();
-    if (isValidName(ip)) {
-      return ip;
-    }
-    return null;
-  }
-
-  /**
-   * Gets the client host.
-   *
-   * @param request the request
-   * @return the client host
-   */
-  protected String getClientHost(HttpServletRequest request) {
-    String host = request.getHeader("X-Forwarded-Host");
-    if (isValidName(host)) {
-      return host;
-    }
-    host = request.getRemoteHost();
-    if (isValidName(host)) {
-      return host;
-    }
-    return null;
-  }
-
-  /**
-   * Checks if is valid name.
-   *
-   * @param hostName the host name
-   * @return true, if is valid name
-   */
-  protected boolean isValidName(String hostName) {
-    if (hostName != null && hostName.length() > 0 && !"unknown".equalsIgnoreCase(hostName)) {
-      return true;
-    }
-    return false;
-  }
-
 }
