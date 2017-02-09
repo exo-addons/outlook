@@ -32,7 +32,7 @@
     @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),
     @Script(id = "outlook-login", value = "js/outlook-login.js", location = AssetLocation.SERVER,
-            depends = { "jquery", "fabric", "office", "juzu-ajax", "jquery-ui", "jquery-ui.css", "jquery-ui.structure.css",
+            depends = { "jquery", "fabric", "office", "jquery-ui", "jquery-ui.css", "jquery-ui.structure.css",
                 "jquery-ui.theme.css", "fabric.css", "fabric.components.css", "outlook.css" }) })
 
 @Assets("*")
