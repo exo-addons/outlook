@@ -135,7 +135,7 @@
 										$sessionProcess.reject();
 									}
 								});
-								$session.fail(function() {
+								$user.fail(function() {
 									$sessionProcess.reject();
 								});
 								$sessionProcess.done(function() {
