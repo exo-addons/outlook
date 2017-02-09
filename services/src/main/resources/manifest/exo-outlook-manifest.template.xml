@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
-    xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+    xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides"
     xsi:type="MailApp">
     
   <Id>$GUID</Id>
@@ -50,12 +50,12 @@
     <Rule xsi:type="ItemIs" ItemType="Message" FormType="Edit" />
     <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read" />
   </Rule>
-  <!-- DisableEntityHighlighting>false</DisableEntityHighlighting -->
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
 
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
 		<Description resid="appDescription" />
 		<Requirements>
-			<bt:Sets DefaultMinVersion="1.3">
+			<bt:Sets DefaultMinVersion="1.4">
 				<bt:Set Name="Mailbox" />
 			</bt:Sets>
 		</Requirements>
@@ -421,7 +421,7 @@
         <bt:Image id="convert-forum-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-forum.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="functionFile" DefaultValue="$BASE_URL/outlook/login/menu"/>
+        <!-- bt:Url id="functionFile" DefaultValue="$BASE_URL/outlook/login/menu;"/ -->
         
         <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/intranet/outlook"/>
         <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=search"/>
