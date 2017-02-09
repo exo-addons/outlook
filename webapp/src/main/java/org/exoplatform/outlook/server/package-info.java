@@ -29,9 +29,6 @@
 @Scripts({ @Script(id = "jquery", value = "js/jquery.min.js", location = AssetLocation.SERVER),
     @Script(id = "jquery-ui", value = "js/jquery-ui.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
     @Script(id = "fabric", value = "js/jquery.fabric.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
-    // XXX directly referencing CommonsResources to make PLF's Juzu Ajax script work in Servlet
-    @Script(id = "juzu-ajax", value = "/CommonsResources/juzu/ajax/script.js", location = AssetLocation.SERVER,
-            depends = { "jquery" }),
     @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),
     @Script(id = "outlook-login", value = "js/outlook-login.js", location = AssetLocation.SERVER,
