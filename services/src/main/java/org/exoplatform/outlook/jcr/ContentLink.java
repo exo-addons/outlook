@@ -99,8 +99,6 @@ public class ContentLink {
     /** The user id. */
     final String userId;
 
-    // final Calendar expired;
-
     /**
      * Instantiates a new key path.
      *
@@ -113,14 +111,9 @@ public class ContentLink {
       this.workspace = workspace;
       this.path = path;
       this.userId = userId;
-      // this.expired = Calendar.getInstance();
-      // this.expired.add(Calendar.SECOND, KEY_EXPIRE_SECONDS);
     }
 
   }
-
-  // @Deprecated
-  // protected final ConcurrentHashMap<String, KeyPath> active = new ConcurrentHashMap<String, KeyPath>();
 
   /** The active links. */
   private final ExoCache<String, KeyPath> activeLinks;

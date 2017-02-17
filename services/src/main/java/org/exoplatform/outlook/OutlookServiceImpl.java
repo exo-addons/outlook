@@ -739,7 +739,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
               LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: "
                   + userInfo.toString() + ". Parent node: " + node, e);
               // TODO we don't want throw Access error here, it should be thrown where actually will affect an
-              // user 
+              // user
               // throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
             }
             defaultSubfolder = null;
@@ -1106,9 +1106,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                          .onElements("img")
                                                                                                          .toFactory();
 
+  /** The link with href not a hash in local document target. */
+  protected final Pattern                                     linkNotLocal      =
+                                                                           Pattern.compile("href=['\"][^#][.\\w\\W\\S]*?['\"]",
+                                                                                           Pattern.CASE_INSENSITIVE
+                                                                                               | Pattern.MULTILINE
+                                                                                               | Pattern.DOTALL);
+
   /** The link with target. */
   protected final Pattern                                     linkWithTarget    =
-                                                                             Pattern.compile("<a(?=\\s|>).*?(target=['\"].*?['\"])[^>]*>.*?<\\/a>",
+                                                                             Pattern.compile("<a(?=\\s).*?(target=['\"].*?['\"])[^>]*>",
                                                                                              Pattern.CASE_INSENSITIVE
                                                                                                  | Pattern.MULTILINE
                                                                                                  | Pattern.DOTALL);
@@ -1307,11 +1314,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           try {
             URI ewsUri = new URI(ewsUrl);
             String host = ewsUri.getHost();
-            int port = ewsUri.getPort();
             String scheme = ewsUri.getScheme();
-            if (port <= 0) {
-              port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
-            }
+            int port = ewsUri.getPort();
+            // TODO do we need remove obvious things?
+            // if (port >= 0) {
+            // if (port == 443 && "https".equalsIgnoreCase(scheme)) {
+            // port = -1;
+            // } else if (port == 80 && "http".equalsIgnoreCase(scheme)) {
+            // port = -1;
+            // }
+            // }
 
             mailServerUrl = new URI(scheme, null, host, port, null, null, null);
           } catch (URISyntaxException e) {
@@ -2742,16 +2754,17 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     StringBuilder sb = new StringBuilder();
     int pos = 0;
     while (m.find()) {
-      int start = m.start(1);
-      int end = m.end(1);
-      if (start >= 0 && end >= 0) {
-        // sb.replace(m.start(1), m.end(1), "target=\"_blank\"");
-        sb.append(text.substring(pos, start));
-        sb.append("target=\"_blank\"");
-        pos = end;
-      } else {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Cannot find link target group in " + m.group(1));
+      if (linkNotLocal.matcher(m.group()).find()) {
+        int start = m.start(1);
+        int end = m.end(1);
+        if (start >= 0 && end >= 0) {
+          sb.append(text.substring(pos, start));
+          sb.append("target=\"_blank\"");
+          pos = end;
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Cannot find link target group in " + m.group(1));
+          }
         }
       }
     }
@@ -2765,17 +2778,18 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     sb = new StringBuilder();
     pos = 0;
     while (m.find()) {
-      int start = m.start(2);
-      int end = m.end(2);
-      if (start >= 0 && end >= 0) {// sb.toString().substring(start - 5, start + 100);
-        // sb.insert(start, " target=\"_blank\"");
-        sb.append(text.substring(pos, start));
-        sb.append(" target=\"_blank\"");
-        sb.append(text.substring(start, end));
-        pos = end;
-      } else {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Cannot find link end group in " + m.group(2));
+      if (linkNotLocal.matcher(m.group()).find()) {
+        int start = m.start(2);
+        int end = m.end(2);
+        if (start >= 0 && end >= 0) {
+          sb.append(text.substring(pos, start));
+          sb.append(" target=\"_blank\"");
+          sb.append(text.substring(start, end));
+          pos = end;
+        } else {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Cannot find link end group in " + m.group(2));
+          }
         }
       }
     }

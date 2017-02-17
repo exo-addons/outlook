@@ -575,7 +575,7 @@ public class Outlook {
       return saveAttachment.with().spaces(outlook.getUserSpaces()).ok();
     } catch (AccessException e) {
       return errorMessage(e.getMessage(), 403);
-    } catch(TemplateExecutionException e) {
+    } catch (TemplateExecutionException e) {
       if (AccessException.class.isInstance(e.getCause())) {
         return errorMessage(e.getMessage(), 403);
       } else {
@@ -763,7 +763,7 @@ public class Outlook {
       return addAttachment.with().sources(sources).ok();
     } catch (AccessException e) {
       return errorMessage(e.getMessage(), 403);
-    } catch(TemplateExecutionException e) {
+    } catch (TemplateExecutionException e) {
       if (AccessException.class.isInstance(e.getCause())) {
         return errorMessage(e.getMessage(), 403);
       } else {
@@ -871,8 +871,10 @@ public class Outlook {
         prefix.append("://");
         prefix.append(context.getHttpContext().getServerName());
         int port = context.getHttpContext().getServerPort();
-        if (port > 0 && (port != 80 || (port == 80 && !scheme.equalsIgnoreCase("http")))
-            && (port != 443 || (port == 443 && !scheme.equalsIgnoreCase("https")))) {
+        if (port >= 0 && port != 80 && port != 443) {
+          // TODO simpler logic used: cleanup
+          // if (port > 0 && (port != 80 || (port == 80 && !scheme.equalsIgnoreCase("http")))
+          // && (port != 443 || (port == 443 && !scheme.equalsIgnoreCase("https")))) {
           prefix.append(':');
           prefix.append(port);
         }

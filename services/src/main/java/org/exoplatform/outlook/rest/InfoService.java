@@ -98,7 +98,7 @@ public class InfoService extends RESTServiceBase {
     } else {
       serverHostBuilder.append(requestURI.getHost());
       int serverPort = requestURI.getPort();
-      if (serverPort >= 0 && (serverPort != 80 || serverPort != 443)) {
+      if (serverPort >= 0 && serverPort != 80 && serverPort != 443) {
         serverHostBuilder.append(':');
         serverHostBuilder.append(serverPort);
       }
