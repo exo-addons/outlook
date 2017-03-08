@@ -83,6 +83,17 @@ Add-in manifest also can be installed in your Microsoft Exchange instance, via a
 
 To keep manifest up-to-date you can point your Office365/Exchange to the add-on manifest generator [URL](https://your.exoplatform.server/portal/rest/outlook/manifest) (as shown above). But then you'll need also keep the add-in GUID the same throug several requests to the generator - how this can be possible see below in the Manifest Generator paragraph.
 
+### Front-end configuration
+
+Microsoft outlook is forging non standard requests (not compliant with [RFC 7230](https://tools.ietf.org/html/rfc7230) when it will interact with your eXo Platform instance. Tomcat will reject such request with an error code 400. 
+To avoid that, if you are using Apache as front-end, you can add the following transparent rewrite rule :
+
+```
+    RewriteCond %{QUERY_STRING} (.*)_host_Info=(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)
+    RewriteRule ^(.*) "$1?%1_host_Info=%2\%7c%3\%7c%4\%7c%5\%7c%6\%7c%7" [QSD,PT]
+```
+This rule will transparently reencode the ``|`` character to ``%7c`` and allow the request to pass throught the Tomcat parser.
+
 ##Manifest Generator
 
 Outlook add-on offers a service to generate Add-in manifests for Office365/Exchange services using your eXo Platform server host name. A new manifest can be obtained at such URL: [https://your.exoplatform.server/portal/rest/outlook/manifest](https://your.exoplatform.server/portal/rest/outlook/manifest), where you need replace "your.exoplatform.server" with actual host name of your server. The generator returns a manifest with newly generated add-in ID and all links based on the URL host name.
