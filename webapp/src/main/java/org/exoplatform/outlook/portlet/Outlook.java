@@ -395,6 +395,10 @@ public class Outlook {
   @Inject
   @Path("convertedForum.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertedForum    convertedForum;
+  
+  @Inject
+  @Path("spacesDropdown.gtmpl")
+  org.exoplatform.outlook.portlet.templates.spacesDropdown    spaces;
 
   /** The home. */
   @Inject
@@ -872,9 +876,6 @@ public class Outlook {
         prefix.append(context.getHttpContext().getServerName());
         int port = context.getHttpContext().getServerPort();
         if (port >= 0 && port != 80 && port != 443) {
-          // TODO simpler logic used: cleanup
-          // if (port > 0 && (port != 80 || (port == 80 && !scheme.equalsIgnoreCase("http")))
-          // && (port != 443 || (port == 443 && !scheme.equalsIgnoreCase("https")))) {
           prefix.append(':');
           prefix.append(port);
         }
@@ -1440,6 +1441,22 @@ public class Outlook {
         LOG.debug("RememberMe token not found for " + userName);
       }
       return errorMessage("Authentication not complete", 401);
+    }
+  }
+  
+  /**
+   * User spaces.
+   *
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response userSpaces() {
+    try {
+      return spaces.with().set("spaces", outlook.getUserSpaces()).ok();
+    } catch (Throwable e) {
+      LOG.error("Error getting user spaces", e);
+      return errorMessage(e.getMessage(), 500);
     }
   }
 

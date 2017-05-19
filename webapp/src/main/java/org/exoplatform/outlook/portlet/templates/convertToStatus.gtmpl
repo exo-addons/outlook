@@ -24,9 +24,7 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-					<label for="messageSubject" class="ms-Label">
-						&{Outlook.activityText}&nbsp;<span class="editMessageText">(<a class="ms-Link">&{Outlook.clickToEdit}</a>)</span>
-					</label>
+					<label for="messageSubject" class="ms-Label">&{Outlook.activityText}#{include path=editMessageText.gtmpl/}</label>
 					<div class="messageViewerContainer">
 						<div class="ms-TextField-field messageSubject">
 						</div>
@@ -47,30 +45,10 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 				<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-					<label for="groupId" class="ms-Label">&{Outlook.targetSpaceOptional}</label>
-					<!-- input name="targetSpace" class="ms-TextField-field" type="text" -->
-					<div class="ms-Dropdown" tabindex="0">
-						<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
-						<select name="groupId" class="ms-Dropdown-select">
-							<%	for(s in spaces) { %>
-							<option value="${s.groupId}">${s.title ? s.title : s.groupId}</option>
-							<%	} %>
-						</select>
-					</div>
-					<%	if (spaces.size() > 0) {%>
-					<span class="ms-TextField-description">&{Outlook.activityTargetSpaceDescription}</span>
-					<%	} else { %>
-					<div class="ms-MessageBar ms-MessageBar--severeWarning noSpacesMessage">
-						<div class="ms-MessageBar-content">
-							<div class="ms-MessageBar-icon">
-								<i class="ms-Icon ms-Icon--alert"></i>
-							</div>
-							<div class="ms-MessageBar-text">
-								&{Outlook.messages.youDontHaveSpaces}&nbsp;&{Outlook.messages.joinSpaces}&nbsp;<a href="#" target="_blank" class="ms-Link">&{Outlook.messages.atThisPage}</a>
-							</div>
-						</div>
-					</div>
-					<% 	}%>
+					<label for="groupId" class="ms-Label">&{Outlook.targetSpaceOptional}#{include path=refresh.gtmpl/}</label>
+					<div class="spacesDropdown">#{include path=spacesDropdown.gtmpl/}</div>
+					<span class="ms-TextField-description spaceDescription" style="display: none;">&{Outlook.activityTargetSpaceDescription}</span>
+					#{include path=noSpacesMessage.gtmpl/}
 				</div>
 				<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 			</div>

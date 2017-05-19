@@ -85,13 +85,11 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
       if (PortletRequestContext.class.isAssignableFrom(requestContext.getClass())) {
         PortletRequestContext portletRequestContext = PortletRequestContext.class.cast(requestContext);
         PortletRequest portletRequest = portletRequestContext.getRequest();
-        baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
-            + String.format("%s", portletRequest.getServerPort());
+        baseURI = buildURL(portletRequest.getScheme(), portletRequest.getServerName(), portletRequest.getServerPort());
       } else if (PortalRequestContext.class.isAssignableFrom(requestContext.getClass())) {
         PortalRequestContext portalRequestContext = PortalRequestContext.class.cast(requestContext);
         HttpServletRequest httpRequest = portalRequestContext.getRequest();
-        baseURI = httpRequest.getScheme() + "://" + httpRequest.getServerName() + ":"
-            + String.format("%s", httpRequest.getServerPort());
+        baseURI = buildURL(httpRequest.getScheme(), httpRequest.getServerName(), httpRequest.getServerPort());
       } else {
         // should not happen here as this code always will run in portal or portlet request
         baseURI = System.getProperty(ContentLink.EXO_BASE_URL);
@@ -132,21 +130,17 @@ public class OutlookMessageViewer extends BaseOutlookMessageViewer {
     }
   }
 
-  // TODO cleanup
-  // /**
-  // * {@inheritDoc}
-  // */
-  // @Override
-  // public void processRender(WebuiRequestContext context) throws Exception {
-  // // init script for UI support once
-  // Object init = context.getAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED);
-  // if (init == null || Boolean.FALSE.equals(init)) {
-  // context.setAttribute(OutlookActivitySupport.CONTEXT_INITIALIZED, Boolean.TRUE);
-  // JavascriptManager jsManager = context.getJavascriptManager();
-  // jsManager.require("SHARED/outlookView", "outlookView");
-  // }
-  //
-  // super.processRender(context);
-  // }
+  protected String buildURL(String scheme, String hostName, int port) {
+    StringBuilder str = new StringBuilder();
+    if (scheme != null && scheme.length() > 0) {
+      str.append(scheme);
+      str.append("://");
+    }
+    str.append(hostName);
+    if (port >= 0 && port != 80 && port != 443) {
+      str.append(':').append(String.format("%s", port));
+    }
+    return str.toString();
+  }
 
 }

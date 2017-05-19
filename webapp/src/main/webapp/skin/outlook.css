@@ -122,6 +122,16 @@ body {
 	margin-top: 10px;
 }
 
+.menuRefresh, .editMessageText {
+	margin-left: 3px;
+}
+
+.spacesDropdown {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
 #signInProgress {
 	height: 450px;
 	width: 100%;

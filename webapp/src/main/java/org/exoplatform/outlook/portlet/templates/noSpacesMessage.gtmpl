@@ -1,0 +1,10 @@
+<div class="ms-MessageBar ms-MessageBar--severeWarning noSpacesMessage" style="display: none;">
+	<div class="ms-MessageBar-content">
+		<div class="ms-MessageBar-icon">
+			<i class="ms-Icon ms-Icon--alert"></i>
+		</div>
+		<div class="ms-MessageBar-text">
+			&{Outlook.messages.youDontHaveSpaces}&nbsp;&{Outlook.messages.joinSpaces}&nbsp;<a href="#" target="_blank" class="ms-Link joinSpacesLink">&{Outlook.messages.atThisPage}</a>.&nbsp;
+		</div>
+	</div>
+</div>
