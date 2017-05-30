@@ -75,21 +75,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Import versions from Juzu -->
-      <!-- dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-parent</artifactId>
-        <version>${org.juzu.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.juzu</groupId>
-        <artifactId>juzu-plugins-authz</artifactId>
-        <version>${org.juzu.version}</version>
-        <type>jar</type>
-      </dependency -->
-      <!-- Office extension -->
+      <!-- Outlook extension -->
       <dependency>
         <groupId>org.exoplatform.addons.outlook</groupId>
         <artifactId>exo-outlook-services</artifactId>
