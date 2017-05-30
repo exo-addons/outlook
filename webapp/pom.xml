@@ -39,7 +39,7 @@
     </dependency>
     <!-- eXo Portal -->
     <dependency>
-      <groupId>org.gatein.portal</groupId>
+      <groupId>org.exoplatform.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -101,29 +101,12 @@
     </dependency>
     <dependency>
       <groupId>org.juzu</groupId>
-      <artifactId>juzu-core</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-less</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.juzu</groupId>
       <artifactId>juzu-plugins-portlet</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-plugins-servlet</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-plugins-authz</artifactId>
-      <!-- TODO it is not provided by PLF 4.3 -->
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -17,8 +17,6 @@
  *
  */
 @Application(defaultController = OutlookServer.class)
-// FYI servlet plugin doesn't found in default PLF bundle, thus use web.xml
-// @Servlet(value = "/login/*", resourceBundle = "locale.outlook.Outlook")
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.min.css", location = AssetLocation.SERVER),
@@ -46,4 +44,3 @@ import juzu.plugin.asset.Script;
 import juzu.plugin.asset.Scripts;
 import juzu.plugin.asset.Stylesheet;
 import juzu.plugin.asset.Stylesheets;
-import juzu.plugin.servlet.Servlet;
