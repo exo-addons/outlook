@@ -1,0 +1,9 @@
+<div class="ms-Dropdown" tabindex="0" data-spacesnumber="${spaces.size()}">
+	<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>
+	<select name="groupId" class="ms-Dropdown-select">
+		<%	for(s in spaces) { %>
+		<option value="${s.groupId}" data-rootpath="${s.rootFolder.path}"
+			data-path="${s.rootFolder.defaultSubfolder ? s.rootFolder.defaultSubfolder.path : s.rootFolder.path}">${s.title ? s.title : s.groupId}</option>
+		<%	} %>
+	</select>
+</div>

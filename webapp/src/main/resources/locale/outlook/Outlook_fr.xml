@@ -148,6 +148,7 @@
       <youDontHaveSpaces>Vous n'êtes membre d'aucun espace.</youDontHaveSpaces>
       <joinSpaces>You pouvez rejoindre des espaces</joinSpaces>
       <atThisPage>sur cette page</atThisPage>
+      <refresh>Recharger</refresh>
       <messageItemReadError>Erreur à la lecture du message.</messageItemReadError>
       <convertToStatusError>Erreur à la conversion du message en activité.</convertToStatusError>
       <gettingSubjectError>Erreur à la récupération de l'objet du message.</gettingSubjectError>

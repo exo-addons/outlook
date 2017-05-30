@@ -156,6 +156,7 @@
       <youDontHaveSpaces>It looks like you are not a member of any space.</youDontHaveSpaces>
       <joinSpaces>You can try joining spaces</joinSpaces>
       <atThisPage>from this page</atThisPage>
+      <refresh>Refresh</refresh>
       <messageItemReadError>Error reading message item</messageItemReadError>
       <convertToStatusError>Error converting message to an activity stream post</convertToStatusError>
       <gettingSubjectError>Error getting message subject</gettingSubjectError>

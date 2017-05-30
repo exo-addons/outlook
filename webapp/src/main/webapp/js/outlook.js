@@ -204,20 +204,111 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				var $menu = $pane.find("#outlook-menu");
 				var $container = $pane.find("#outlook-menu-container");
 				
-				var initNoSpacesLink = function() {
-					var $noSpacesLink = $container.find(".noSpacesMessage .ms-MessageBar-text a");
-					// should replace /portal/intranet/outlook to /portal/intranet/all-spaces
-					var allSpacesPath = location.pathname.replace(/\/[^\/]*$/, "/all-spaces");
-					$noSpacesLink.attr("href", allSpacesPath);
+				var initRefresh = function($form, refreshFunc) {
+					var $refresh = $form.find(".menuRefresh>a");
+					$refresh.click(function() {
+						var $textFieldLabel = $refresh.parent().parent();
+						var $spaces = $form.find(".spacesDropdown");
+						var cursorCss = $container.css("cursor");
+						$container.css("cursor", "wait");
+						try {
+							// XXX warm up the portal to avoid 302 response and loading the whole page 
+							// if user has used the portal externally (e.g. joined a space)
+							$spaces.jzAjax("Outlook.userSpaces()");
+							// Do actual request waiting a bit for the portal server
+							setTimeout(function() {
+								$spaces.jzLoad("Outlook.userSpaces()", {}, function(response, status, jqXHR) {
+									$container.css("cursor", cursorCss);
+									if (status == "error") {
+										showError(jqXHR);
+									} else {
+										clearError();
+										if (refreshFunc) {
+											refreshFunc();
+										}
+									}
+								});
+							}, 750);
+						} catch(e) {
+							console.log("Error loading user spaces", e);
+						}
+					});					
 				};
 				
-				var setDropdownSize = function() {
-					// set dropdown items height exact to what it contains (not 100% for block element)
-					var $dropdownItems = $container.find(".ms-Dropdown .ms-Dropdown-items");
-					var $dropdownItemsList = $dropdownItems.find(".ms-Dropdown-item");
-					if ($dropdownItemsList.size() > 0) {
-						$dropdownItems.height(1 + $dropdownItemsList.first().height() * $dropdownItemsList.size());
+				var initNoSpacesLink = function($message) {
+					if ($message.length > 0) {
+						var $noSpacesLink = $message.find(".ms-MessageBar-text a.joinSpacesLink");
+						// should replace /portal/intranet/outlook to /portal/intranet/all-spaces
+						var allSpacesPath = location.pathname.replace(/\/[^\/]*$/, "/all-spaces");
+						$noSpacesLink.attr("href", allSpacesPath);
 					}
+				};
+				
+				var setDropdownSize = function($dropdown) {
+					// set dropdown items height exact to what it contains (not 100% for block element)
+					var $items = $dropdown.find(".ms-Dropdown-items");
+					var $itemsList = $items.find(".ms-Dropdown-item");
+					if ($itemsList.size() > 0) {
+						$items.height(1 + $itemsList.first().height() * $itemsList.size());
+					}
+				};
+				
+				var initSpacesDropdown = function($form, value, onChangeFunc) {
+					function createDropdown(value) {
+						var $dropdown = $form.find(".ms-Dropdown");
+						var $select = $dropdown.find("select[name='groupId']");
+						var inOptions = false;
+						$select.find("option").each(function() {
+							if (!inOptions) {
+								inOptions = $(this).val() == value;
+							}
+						});
+						var selected;
+						if (inOptions) {
+							$select.val(value);
+							selected = value;
+						} else {
+							$select.val([]);
+							selected = null;
+						}
+						$dropdown.Dropdown();
+						// $select.combobox(); // TODO jQueryUI combo w/ autocompletion
+						setDropdownSize($dropdown);
+						$select.change(function() {
+							var $space = $select.find("option:selected");
+							selected = $space.val();
+							onChangeFunc($space, $select);
+						});
+						var $description = $form.find(".spaceDescription");
+						var $message = $form.find(".noSpacesMessage");
+						if ($dropdown.data("spacesnumber") > 0) {
+							$message.hide();
+							$description.show();
+						} else {
+							initNoSpacesLink($message);
+							$description.hide();
+							$message.show();
+						}
+						return { 
+							component : function() {
+								return $dropdown;
+							},
+							value : function() {
+								return selected;
+							}
+						};
+					}
+					
+					var dropdown = createDropdown(value);
+					
+					initRefresh($form, function() {
+						var selected = dropdown.value();
+						var newDropdown = createDropdown(selected);
+						dropdown.component = newDropdown.component;
+						dropdown.value = newDropdown.value;
+					});
+					
+					return dropdown;
 				};
 
 				function homeInit() {
@@ -229,12 +320,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $form = $saveAttachment.find("form");
 					var $attachments = $form.find("ul.attachments");
 					var $comment = $form.find("textarea[name='comment']");
-
-					// init spaces dropdown
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupIdSelect = $groupIdDropdown.find("select[name='groupId']");
-					$groupIdSelect.val([]);
-					// initially no spaces selected
 					var $groupPath = $form.find(".groupPath");
 					var $folders = $groupPath.find("ul.folders");
 					var $path = $groupPath.find("input[name='path']");
@@ -299,8 +384,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						return process.promise();
 					}
 
-					$groupIdSelect.change(function() {
-						var $space = $groupIdSelect.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							if (!$groupPath.is(":visible")) {
 								$groupPath.show("blind");
@@ -312,19 +397,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							loadFolder();
 						}
 					});
-					$groupIdDropdown.Dropdown();
-
+					
 					var item = Office.context.mailbox.item;
 					if (item.attachments.length > 0) {
 						for ( i = 0; i < item.attachments.length; i++) {
 							var att = item.attachments[i];
-							// var outputString = "";
-							// outputString += i + ". Name: " + att.name + " ID: " + att.id;
-							// outputString += " contentType: " + att.contentType;
-							// outputString += " size: " + att.size;
-							// outputString += " attachmentType: " + att.attachmentType;
-							// outputString += " isInline: " + att.isInline;
-							// console.log(outputString);
 							var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>" 
 								+ att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" // 
 								+ sizeString(att.size) + "</span>" //
@@ -526,9 +603,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $editor = $convertToStatus.find("div.messageEditorContainer");
 					var $editorSubject, $editorText;
 					var $form = $convertToStatus.find("form");
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupId = $groupIdDropdown.find("select[name='groupId']");
-					// $groupId.combobox(); // TODO jQueryUI combo w/ autocompletion
 					var $convertButton = $form.find("button.convertButton");
 					$convertButton.prop("disabled", true);
 					var $cancelButton = $form.find("button.cancelButton");
@@ -559,18 +633,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editor.show();
 					});
 
-					// init spaces dropdown
-					$groupId.val([]);
-					// initially no spaces selected
 					var groupId;
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							groupId = $space.val();
 						}
 					});
-					$groupIdDropdown.Dropdown();
-
+					
 					var subject = Office.context.mailbox.item.subject;
 					if (internetMessageId) {
 						$subject.text(subject);
@@ -688,8 +758,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					}
 					$statusField.TextField();
 					var $form = $postStatus.find("form");
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupId = $groupIdDropdown.find("select[name='groupId']");
 					var $postButton = $form.find("button.postButton");
 					$postButton.prop("disabled", true);
 					var $cancelButton = $form.find("button.cancelButton");
@@ -700,17 +768,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$cancelButton.data("cancel", true);
 					});
 
-					// init spaces dropdown
-					$groupId.val([]);
-					// initially no spaces selected
 					var groupId;
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							groupId = $space.val();
 						}
 					});
-					$groupIdDropdown.Dropdown();
 					
 					$text.on("blur paste input", null, function() {
 						// if "blur" doesn't work well, also add on ""
@@ -778,8 +842,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					});
 					var $editor = $convertToWiki.find("div.messageEditor");
 					var $form = $convertToWiki.find("form");
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupId = $groupIdDropdown.find("select[name='groupId']");
 					var $convertButton = $form.find("button.convertButton");
 					$convertButton.prop("disabled", true);
 					var $cancelButton = $form.find("button.cancelButton");
@@ -808,17 +870,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editor.show();
 					});
 
-					// init spaces dropdown
-					$groupId.val([]);
-					// initially no spaces selected
 					var groupId;
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							groupId = $space.val();
 						}
 					});
-					$groupIdDropdown.Dropdown();
 
 					var cleanWikiTitle = function(title) {
 						if (title) {
@@ -977,7 +1035,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editor.show();
 					});
 					
-					var groupId = null;
+					var groupId;
 					var textReady = false;
 					var checkCanConvert = function() {
 						if (textReady && groupId) {
@@ -986,18 +1044,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							$convertButton.prop("disabled", true);
 						}
 					};
-
-					// init spaces dropdown
-					$groupId.val([]);
-					// initially no spaces selected
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							groupId = $space.val();
 							checkCanConvert();
 						}
 					});
-					$groupIdDropdown.Dropdown();
 
 					var subject = Office.context.mailbox.item.subject;
 					if (internetMessageId) {
@@ -1119,8 +1172,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $topicText = $topicTextField.find("div.topicText");
 					
 					var $form = $startDiscussion.find("form");
-					var $groupIdDropdown = $form.find(".ms-Dropdown");
-					var $groupId = $groupIdDropdown.find("select[name='groupId']");
 					var $startButton = $form.find("button.startButton");
 					$startButton.prop("disabled", true);
 					var $cancelButton = $form.find("button.cancelButton");
@@ -1131,7 +1182,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$cancelButton.data("cancel", true);
 					});
 					
-					var groupId = null;
+					var groupId;
 					var hasName = false;
 					var hasText = false;
 					var checkCanStart = function() {
@@ -1141,18 +1192,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							$startButton.prop("disabled", true);
 						}
 					};
-
-					// init spaces dropdown
-					$groupId.val([]);
-					// initially no spaces selected
-					$groupId.change(function() {
-						var $space = $groupId.find("option:selected");
+					// init spaces dropdown: initially no spaces selected
+					initSpacesDropdown($form, [], function($space) {
 						if ($space.size() > 0) {
 							groupId = $space.val();
 							checkCanStart();
 						}
 					});
-					$groupIdDropdown.Dropdown();
 					
 					// init text placeholders and start-button enabler
 					$topicName.on("blur paste input", null, function() {
@@ -1395,6 +1441,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$explorerTab.prop("disabled", sourceId == "*");
 					});
 					$sourceDropdown.Dropdown();
+					setDropdownSize($sourceDropdown);
 					
 					// init Search Tab
 					$searchTab.click(function() {
@@ -1702,8 +1749,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											// safe to use the function
 											eval(commandFunc + "()");
 										}
-										initNoSpacesLink();
-										setDropdownSize();
+										// TODO cleanup
+										//initNoSpacesLink();
+										//setDropdownSize();
+										//initRefresh();
 										process.resolve(response, status, jqXHR);
 									} catch(e) {
 										console.log(e);
