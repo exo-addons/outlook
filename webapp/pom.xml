@@ -39,7 +39,7 @@
     </dependency>
     <!-- eXo Portal -->
     <dependency>
-      <groupId>org.exoplatform.gatein.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>provided</scope>
     </dependency>
