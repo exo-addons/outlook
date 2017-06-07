@@ -3150,15 +3150,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // https://github.com/exo-addons/outlook/issues/5
       // https://jira.exoplatform.org/browse/COMMONS-510
       int lastCharIndex = cleanedStr.length() - 1;
-      while(lastCharIndex >= 0) {
-        char c = cleanedStr.charAt(lastCharIndex);
-        if (c == '.') {
-          cleanedStr.deleteCharAt(lastCharIndex);
-          if (cleanedStr.length() > 0) {
-            lastCharIndex = cleanedStr.length() - 1;
-          }
-        } else {
+      char c;
+      while(lastCharIndex >= 0 && (c = cleanedStr.charAt(lastCharIndex)) == '.') {
+        cleanedStr.deleteCharAt(lastCharIndex);
+        if (lastCharIndex == 0) {
+          cleanedStr.append('_');
+          cleanedStr.append(Integer.toHexString(c).toUpperCase());
           break;
+        } else {
+          lastCharIndex--;
         }
       };
     }
