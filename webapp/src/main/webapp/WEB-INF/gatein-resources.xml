@@ -30,6 +30,11 @@
     <skin-module>OutlookView</skin-module>
     <css-path>/skin/outlook-view.css</css-path>
   </portal-skin>
+  <portal-skin>
+    <skin-name>Enterprise</skin-name>
+    <skin-module>OutlookView</skin-module>
+    <css-path>/skin/outlook-view.css</css-path>
+  </portal-skin>
 
   <!-- Javascript for Outlook portlet -->
   <module>
