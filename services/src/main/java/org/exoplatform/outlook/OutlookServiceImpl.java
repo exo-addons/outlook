@@ -3157,6 +3157,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           if (cleanedStr.length() > 0) {
             lastCharIndex = cleanedStr.length() - 1;
           }
+        } else {
+          break;
         }
       };
     }
