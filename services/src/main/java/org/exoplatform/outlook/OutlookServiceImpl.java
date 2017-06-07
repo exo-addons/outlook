@@ -3156,11 +3156,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         if (lastCharIndex == 0) {
           cleanedStr.append('_');
           cleanedStr.append(Integer.toHexString(c).toUpperCase());
-          break;
-        } else {
-          lastCharIndex--;
         }
-      };
+        lastCharIndex--;
+      }
     }
     return cleanedStr.toString().trim(); // finally trim also
   }
