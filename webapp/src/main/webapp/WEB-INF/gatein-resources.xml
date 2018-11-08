@@ -44,7 +44,7 @@
     <script>
       <adapter>
         (function(jQuery) {
-        <include>/js/jquery-ui.min.js</include>
+        <include>/js/jquery-ui.js</include>
         })($);
       </adapter>
     </script>
@@ -58,7 +58,7 @@
     <script>
       <adapter>
         (function(jQuery) {
-        <include>/js/jquery.fabric.min.js</include>
+        <include>/js/jquery.fabric.js</include>
         return fabric;
         })($);
       </adapter>

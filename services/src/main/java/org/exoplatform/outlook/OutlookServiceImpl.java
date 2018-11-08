@@ -18,13 +18,59 @@
  */
 package org.exoplatform.outlook;
 
-import com.ibm.icu.text.Transliterator;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.AccessControlException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.entity.ContentType;
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationException;
 import org.exoplatform.container.xml.InitParams;
@@ -111,52 +157,7 @@ import org.owasp.html.Sanitizers;
 import org.picocontainer.Startable;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.AccessControlException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.InvalidItemStateException;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.servlet.http.HttpServletRequest;
+import com.ibm.icu.text.Transliterator;
 
 /**
  * Service implementing {@link OutlookService} and {@link Startable}.<br>
@@ -390,14 +391,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           }
         });
       } else {
-        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
-            + "' AND jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text
-            + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
+            + getPath() + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
-        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
-            + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%"
+            + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         fetchQuery(qOthers.execute(), 20 - res.size(), res);
       }
 
@@ -434,8 +434,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
             + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
       } else {
-        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text
-            + "%'", Query.SQL);
+        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text + "%'",
+                           Query.SQL);
       }
       fetchQuery(q.execute(), 20, res);
       return res;
@@ -563,9 +563,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public ExoSocialActivity postActivity(String title, String body) throws Exception {
       // post activity to user status stream
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                        currentUserId(),
-                                                                        true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserId(), true);
       String safeTitle = safeText(title);
       String safeBody = safeHtml(body);
       ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), null, safeTitle, safeBody);
@@ -580,14 +578,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     @Override
     public ExoSocialActivity postActivity(String text) throws Exception {
       // post activity to user status stream
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                        currentUserId(),
-                                                                        true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserId(), true);
       String safeText = safeActivityMessage(text);
-      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
-                                                             PeopleService.PEOPLE_APP_ID,
-                                                             safeText,
-                                                             null);
+      ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(), PeopleService.PEOPLE_APP_ID, safeText, null);
       // we do like done UIDefaultActivityComposer
       activity.setType(UIDefaultActivity.ACTIVITY_TYPE);
 
@@ -736,8 +729,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
               } catch (Exception oe) {
                 LOG.warn("Error getting organization user " + currentUserId, e);
               }
-              LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: "
-                  + userInfo.toString() + ". Parent node: " + node, e);
+              LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: " + userInfo.toString()
+                  + ". Parent node: " + node, e);
               // TODO we don't want throw Access error here, it should be thrown where actually will affect an
               // user
               // throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
@@ -825,8 +818,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Set<File> res = new LinkedHashSet<File>();
 
       if (text == null || text.length() == 0) {
-        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
-            + "' AND jcr:path LIKE '" + root.getPath() + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
+            + root.getPath() + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
@@ -834,9 +827,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         fetchQuery(qOthers.execute(), 20 - res.size(), res);
       } else {
-        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
-            + "' AND jcr:path LIKE '" + root.getPath() + "/%' AND exo:title LIKE '%" + text
-            + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
+            + root.getPath() + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                    Query.SQL);
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
@@ -865,13 +858,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
       try {
         org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
-        ExoSocialActivity activity =
-                                   org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                              userMessage,
-                                                                                                              true,
-                                                                                                              false,
-                                                                                                              "",
-                                                                                                              "");
+        ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                userMessage,
+                                                                                                                true,
+                                                                                                                false,
+                                                                                                                "",
+                                                                                                                "");
         // TODO should we care about activity removal with the message file?
         activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
         return activity;
@@ -887,9 +879,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     public ExoSocialActivity postActivity(OutlookUser user, String title, String body) throws Exception {
       // post activity to space status stream under current user
       Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.prettyName, true);
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                        currentUserId(),
-                                                                        true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserId(), true);
       String safeTitle = safeText(title);
       String safeBody = safeHtml(body);
       ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
@@ -908,9 +898,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     public ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception {
       // post activity to space status stream under current user
       Identity spaceIdentity = socialIdentityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, this.prettyName, true);
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                        currentUserId(),
-                                                                        true);
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUserId(), true);
       String safeText = safeActivityMessage(text);
       ExoSocialActivity activity = new ExoSocialActivityImpl(userIdentity.getId(),
                                                              SpaceActivityPublisher.SPACE_APP_ID,
@@ -962,12 +950,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       String forumId = org.exoplatform.forum.service.Utils.FORUM_SPACE_ID_PREFIX + group.getGroupName();
 
       //
-      return createForumTopic(categoryId,
-                              forumId,
-                              creator,
-                              message.getSubject(),
-                              messageSummary(message),
-                              message.getBody());
+      return createForumTopic(categoryId, forumId, creator, message.getSubject(), messageSummary(message), message.getBody());
     }
 
     /**
@@ -1098,8 +1081,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                          .allowAttributes("href")
                                                                                                          .onElements("a")
                                                                                                          .allowAttributes("target")
-                                                                                                         .matching(true,
-                                                                                                                   "_blank")
+                                                                                                         .matching(true, "_blank")
                                                                                                          .onElements("a")
                                                                                                          .allowAttributes("alt",
                                                                                                                           "src")
@@ -1130,8 +1112,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /**
    * Authenticated users.
    */
-  protected final ConcurrentHashMap<String, OutlookUser>      authenticated     =
-                                                                            new ConcurrentHashMap<String, OutlookUser>();
+  protected final ConcurrentHashMap<String, OutlookUser>      authenticated     = new ConcurrentHashMap<String, OutlookUser>();
 
   /**
    * Spaces cache.
@@ -1777,8 +1758,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     } while (true);
 
     Node resource = file.addNode("jcr:content", "nt:resource");
-    resource.setProperty("jcr:mimeType",
-                         contentType != null ? contentType : ContentType.APPLICATION_OCTET_STREAM.getMimeType());
+    resource.setProperty("jcr:mimeType", contentType != null ? contentType : ContentType.APPLICATION_OCTET_STREAM.getMimeType());
     Calendar fileDate = Calendar.getInstance();
     resource.setProperty("jcr:lastModified", fileDate);
     resource.setProperty("jcr:data", content);
@@ -2055,13 +2035,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
       HttpServletRequest request = portalRequest.getRequest();
       try {
-        URI requestUri = new URI(request.getScheme(),
-                                 null,
-                                 request.getServerName(),
-                                 request.getServerPort(),
-                                 null,
-                                 null,
-                                 null);
+        URI requestUri = new URI(request.getScheme(), null, request.getServerName(), request.getServerPort(), null, null, null);
 
         StringBuilder url = new StringBuilder();
         url.append(requestUri.toASCIIString());
@@ -2177,10 +2151,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws AccessControlException when access error
    * @throws RepositoryException when storage error
    */
-  protected void setPermissions(Node node,
-                                boolean deep,
-                                boolean forcePrivilegeable,
-                                String... identities) throws AccessControlException, RepositoryException {
+  protected void setPermissions(Node node, boolean deep, boolean forcePrivilegeable, String... identities)
+                                                                                                           throws AccessControlException,
+                                                                                                           RepositoryException {
     ExtendedNode target = (ExtendedNode) node;
     boolean setPermissions = true;
     if (target.canAddMixin(EXO_PRIVILEGEABLE)) {
@@ -2206,8 +2179,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                 + "Will use any (*) to allow remove shared cloud file link", e);
             managerMembership = "*";
           }
-          target.setPermission(new StringBuilder(managerMembership).append(':').append(ids[1]).toString(),
-                               MANAGER_PERMISSION);
+          target.setPermission(new StringBuilder(managerMembership).append(':').append(ids[1]).toString(), MANAGER_PERMISSION);
           target.setPermission(identity, READER_PERMISSION);
         } else {
           // in other cases, we assume it's user identity and user should be able to remove the node
@@ -2525,8 +2497,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                             "",
                                             IDType.USER,
                                             new Permission[] {
-                                                new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE,
-                                                               true) }));
+                                                new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true) }));
         parentPage.setPermissions(permissions);
         Wiki pwiki = new Wiki();
         pwiki.setOwner(wikiOwner);
@@ -2807,8 +2778,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @param parentPage {@link Page}
    */
   protected void setPermissionForWikiPage(List<String> users, Page page, Page parentPage) {
-    Permission[] allPermissions = new Permission[] {
-        new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true),
+    Permission[] allPermissions = new Permission[] { new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true),
         new Permission(org.exoplatform.wiki.mow.api.PermissionType.EDITPAGE, true), };
     List<PermissionEntry> permissions = parentPage.getPermissions();
     if (permissions != null) {
@@ -2875,16 +2845,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         safeTitle = new StringBuilder(safeTitle.substring(0, ForumUtils.MAXTITLE - 3)).append("...").toString();
       }
 
-      String checksms =
-                      TransformHTML.cleanHtmlCode(message,
-                                                  new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
+      String checksms = TransformHTML.cleanHtmlCode(message,
+                                                    new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
       checksms = checksms.replaceAll("&nbsp;", " ");
       int t = checksms.trim().length();
       if (t > 0 && !checksms.equals("null")) {
         // TODO in else block handle too short or offending texts
       }
       Date currentDate = CommonUtils.getGreenwichMeanTime().getTime();
-      message = CommonUtils.encodeSpecialCharInSearchTerm(message);
+      message = StringCommonUtils.encodeSpecialCharInSearchTerm(message);
       message = TransformHTML.fixAddBBcodeAction(message);
       // TODO do we need this when using safe HTML?
       // message = message.replaceAll("<script", "&lt;script").replaceAll("<link",
@@ -2926,7 +2895,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
       // finally escape the title
-      safeTitle = CommonUtils.encodeSpecialCharInTitle(safeTitle);
+      safeTitle = StringCommonUtils.encodeSpecialCharForSimpleInput(safeTitle);
       topic.setTopicName(safeTitle);
       topic.setModifiedBy(creator);
       topic.setModifiedDate(currentDate);
@@ -3151,7 +3120,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // https://jira.exoplatform.org/browse/COMMONS-510
       int lastCharIndex = cleanedStr.length() - 1;
       char c;
-      while(lastCharIndex >= 0 && (c = cleanedStr.charAt(lastCharIndex)) == '.') {
+      while (lastCharIndex >= 0 && (c = cleanedStr.charAt(lastCharIndex)) == '.') {
         cleanedStr.deleteCharAt(lastCharIndex);
         if (lastCharIndex == 0) {
           cleanedStr.append('_');

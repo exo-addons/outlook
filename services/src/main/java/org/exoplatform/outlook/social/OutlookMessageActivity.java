@@ -249,8 +249,8 @@ public class OutlookMessageActivity extends FileUIActivity {
    */
   public void renderContentPresentation() throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
-    uicontentpresentation.setNode(getContentNode());
-    UIComponent fileComponent = uicontentpresentation.getUIComponent(getMimeType());
+    uicontentpresentation.setNode(getContentNode(0));
+    UIComponent fileComponent = uicontentpresentation.getUIComponent(getMimeType(0));
     uicontentpresentation.renderUIComponent(fileComponent);
 
     // init script for UI support once
@@ -264,27 +264,6 @@ public class OutlookMessageActivity extends FileUIActivity {
   }
 
   /**
-   * Get a link to open the activity in new window.<br>
-   * Method existed in the parent class in PLF 4.3, but removed in 4.4, thus we keep it here.
-   * 
-   * @return {@link String}
-   */
-  @Deprecated
-  public String getViewLink() {
-    try {
-      Node data = getContentNode();
-      if (isFileSupportPreview(data)) {
-        return this.event("ViewDocument", this.getId(), "");
-      } else {
-        return org.exoplatform.wcm.webui.Utils.getEditLink(data, false, false);
-      }
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      return StringUtils.EMPTY;
-    }
-  }
-
-  /**
    * Gets the preview link.
    *
    * @param ctx the ctx
@@ -293,7 +272,7 @@ public class OutlookMessageActivity extends FileUIActivity {
   public String getPreviewLink(WebuiBindingContext ctx) {
     Node node = null;
     try {
-      node = getContentNode();
+      node = getContentNode(0);
       if (node != null) {
         if (isFileSupportPreview(node)) {
           return util.getPreviewLink(ctx, OutlookMessageActivity.this, node);

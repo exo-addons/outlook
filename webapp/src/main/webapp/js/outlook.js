@@ -94,7 +94,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 		if (theDocument.createStyleSheet) {
 			theDocument.createStyleSheet(cssUrl); // IE way
 		} else {
-			if ($("head", theDocument).find("link[href='"+cssUrl+"']").size() == 0) {
+			if ($("head", theDocument).find("link[href='"+cssUrl+"']").length == 0) {
 				var headElems = theDocument.getElementsByTagName("head");
 				var style = theDocument.createElement("link");
 				style.type = "text/css";
@@ -118,12 +118,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 			// init main pane page
 			var $pane = $("#outlook-pane");
-			if ($pane.size() > 0) {
+			if ($pane.length > 0) {
+				// TODO Hide eXo Tribe's Feedback widget
+				//$("#btnFeedback").hide();
+				
 				var $error = $pane.find("#outlook-error");
 				var $messageBanner = $error.find(".ms-MessageBanner");
 				var $popup = $pane.find("#outlook-popup");
 				var messageBanner;
-				if ($messageBanner.size() > 0) {
+				if ($messageBanner.length > 0) {
 					messageBanner = new fabric.MessageBanner($messageBanner.get(0));
 				}
 				var $errorText = $error.find(".ms-MessageBanner-clipper");
@@ -248,8 +251,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// set dropdown items height exact to what it contains (not 100% for block element)
 					var $items = $dropdown.find(".ms-Dropdown-items");
 					var $itemsList = $items.find(".ms-Dropdown-item");
-					if ($itemsList.size() > 0) {
-						$items.height(1 + $itemsList.first().height() * $itemsList.size());
+					if ($itemsList.length > 0) {
+						$items.height(1 + $itemsList.first().height() * $itemsList.length);
 					}
 				};
 				
@@ -386,7 +389,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							if (!$groupPath.is(":visible")) {
 								$groupPath.show("blind");
 							}
@@ -482,7 +485,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 												} else {
 													clearError();
 													var $litems = $savedSpaceInfo.find("li.ms-ListItem");
-													if ($litems.size() > 0) {
+													if ($litems.length > 0) {
 														var $savedSpaceTitle = $savedAttachment.find(".savedSpaceTitle");
 														$savedSpaceTitle.text($savedSpaceTitle.text() + " " + groupTitle);
 														$litems.each(function() {
@@ -596,7 +599,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $subject = $viewer.find("div.messageSubject");
 					var $textFrame = $viewer.find("div.messageText>iframe");
 					var $text = $textFrame.contents().find("html");
-					$textFrame.load(function() {
+					$textFrame.on("load", function() {
 						// XXX do it again for FF
 						$text = $textFrame.contents().find("html");
 					});
@@ -621,7 +624,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editorFrame.contents().find("html").html($text.html());
 						var $content = $editorFrame.contents().find("html");
 						var $contentBody = $content.find("body");
-						if ($contentBody.size() > 0) {
+						if ($contentBody.length > 0) {
 							$content = $contentBody;
 						}
 						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
@@ -636,7 +639,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var groupId;
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							groupId = $space.val();
 						}
 					});
@@ -752,7 +755,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $statusField = $postStatus.find("div.statusField");
 					var $statusPlaceholder = $statusField.find(".ms-Label");
 					var $text = $statusField.find("div.statusText");
-					if ($text.size() > 0) {
+					if ($text.length > 0) {
 						// XXX http://stackoverflow.com/questions/2388164/set-focus-on-div-contenteditable-element
 						$text.get(0).focus();
 					}
@@ -771,7 +774,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var groupId;
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							groupId = $space.val();
 						}
 					});
@@ -836,7 +839,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $viewer = $convertToWiki.find("div.messageText");
 					var $textFrame = $viewer.find("iframe");
 					var $text = $textFrame.contents().find("html");
-					$textFrame.load(function() {
+					$textFrame.on("load", function() {
 						// XXX do it again for FF
 						$text = $textFrame.contents().find("html");
 					});
@@ -858,7 +861,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editorFrame.contents().find("html").html($text.html());
 						var $content = $editorFrame.contents().find("html");
 						var $contentBody = $content.find("body");
-						if ($contentBody.size() > 0) {
+						if ($contentBody.length > 0) {
 							$content = $contentBody;
 						}
 						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
@@ -873,7 +876,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var groupId;
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							groupId = $space.val();
 						}
 					});
@@ -999,7 +1002,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var $viewer = $convertToForum.find("div.messageText");
 					var $textFrame = $viewer.find("iframe");
 					var $text = $textFrame.contents().find("html");
-					$textFrame.load(function() {
+					$textFrame.on("load", function() {
 						// XXX do it again for FF
 						$text = $textFrame.contents().find("html");
 					});
@@ -1023,7 +1026,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$editorFrame.contents().find("html").html($text.html());
 						var $content = $editorFrame.contents().find("html");
 						var $contentBody = $content.find("body");
-						if ($contentBody.size() > 0) {
+						if ($contentBody.length > 0) {
 							$content = $contentBody;
 						}
 						$editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
@@ -1046,7 +1049,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							groupId = $space.val();
 							checkCanConvert();
 						}
@@ -1194,7 +1197,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					// init spaces dropdown: initially no spaces selected
 					initSpacesDropdown($form, [], function($space) {
-						if ($space.size() > 0) {
+						if ($space.length > 0) {
 							groupId = $space.val();
 							checkCanStart();
 						}
@@ -1311,7 +1314,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					};
 					
 					var isSelected = function(fpath) {
-						return findByPath($documents.find("li.ms-ListItem"), fpath).filter(".is-selected").size() > 0;
+						return findByPath($documents.find("li.ms-ListItem"), fpath).filter(".is-selected").length > 0;
 					};
 					
 					var initFiles = function($files, loadChildred) {
@@ -1369,7 +1372,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										findByPath($shown, fpath).removeClass("is-selected");
 									} else {
 										var $selected = findByPath($documents.find("li.ms-ListItem"), fpath).not(".is-selected");
-										if ($selected.size() == 0) {
+										if ($selected.length == 0) {
 											$selected = $child.clone();
 											// clone w/o data/events
 											$selected.data("path", fpath);
@@ -1395,7 +1398,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								} else {
 									showError("Outlook.messages.fileHasNoPath");
 								}
-								$attachButton.prop("disabled", $documents.find("li.ms-ListItem.is-selected").size() === 0);
+								$attachButton.prop("disabled", $documents.find("li.ms-ListItem.is-selected").length === 0);
 							}
 						});
 						$litems.find(".pathControls").click(function(event) {
@@ -1421,7 +1424,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// init sources dropdown
 					$source.change(function() {
 						var $s = $source.find("option:selected");
-						if ($s.size() > 0) {
+						if ($s.length > 0) {
 							clearError();
 							sourceId = $s.val();
 							path = sourceRootPath = $s.data("rootpath");
@@ -1500,7 +1503,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						clearError();
 						$explorerTab.addClass("ms-Button--primary");
 						$searchTab.removeClass("ms-Button--primary");
-						if ($folderFiles.children().size() == 0) {
+						if ($folderFiles.children().length == 0) {
 							loadChildred(); 
 						}
 						$documentSearch.hide();
@@ -1628,7 +1631,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var domEvent = ieVersion > 0 && ieVersion < 9.0 ? "onpropertychange" : "DOMNodeInserted";
 					var searchWindow = $searchFrame.get(0).contentWindow;
 					
-					$searchFrame.load(function() {
+					$searchFrame.on("load", function() {
 						// XXX it is a hack for quicksearch.js's generateAllResultsURL()
 						var outlookSiteName;
 						var portalName = searchWindow.eXo.env.portal.portalName;
@@ -1665,7 +1668,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						
 						// make search results open in new window
 						var $searchPortlet = $searchFrame.contents().find("#ToolBarSearch");
-						if ($searchPortlet.size() > 0) {
+						if ($searchPortlet.length > 0) {
 							// it's Quick Search portlet
 							$searchPortlet.find("i.uiIconPLF24x24Search").parent().remove();
 							var $keyword = $searchPortlet.find("input[name='adminkeyword']");
@@ -1693,7 +1696,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							});
 						} else {
 							$searchPortlet = $searchFrame.contents().find("#searchPortlet");
-							if ($searchPortlet.size() > 0) {
+							if ($searchPortlet.length > 0) {
 								// it's Unified Search portlet
 								$searchPortlet.addClass("ms-font-m");
 								var $resultPage = $searchPortlet.find("#resultPage");
@@ -1772,26 +1775,26 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				// init menu if it found
-				if ($menu.size() > 0) {
+				if ($menu.length > 0) {
 					var $menuItems = $menu.find(".outlookMenu");
 					var $menuGroups = $menu.find(".outlookGroupMenu");
 
 					// special logic for saveAttachment: remove it when no attachment found in the message
 					// or it's compose mode
 					var $saveAttachment = $menuItems.filter(".saveAttachment");
-					if ($saveAttachment.size() > 0 && 
+					if ($saveAttachment.length > 0 && 
 							(!(Office.context.mailbox.item.attachments && Office.context.mailbox.item.attachments.length > 0) || !internetMessageId)) {
 						$saveAttachment.parent().remove();
 					}
 					// special logic for item addAttachment - show it only in compose mode
 					// FYI internetMessageId will be found for sent/received message
 					var $addAttachment = $menuItems.filter(".addAttachment");
-					if ($addAttachment.size() > 0 && internetMessageId) {
+					if ($addAttachment.length > 0 && internetMessageId) {
 						$addAttachment.parent().remove();
 					}
 					// remove convert* menus for compose form (internetMessageId will be null)
 					var $convertTo = $menuGroups.filter(".convertTo");
-					if ($convertTo.size() > 0 && !internetMessageId) {
+					if ($convertTo.length > 0 && !internetMessageId) {
 						$convertTo.parent().remove();
 					}
 
@@ -1815,8 +1818,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				// set menu items height exact to what it contains (not 100% for block element)
 				var $menuItems = $menu.find(".ms-NavBar-items");
 				var $menuItemsList = $menuItems.find(".ms-NavBar-item");
-				if ($menuItemsList.size() > 0 && $menuItems.height() > 0) {
-					$menuItems.height(10 + $menuItemsList.first().height() * $menuItemsList.size());
+				if ($menuItemsList.length > 0 && $menuItems.height() > 0) {
+					$menuItems.height(10 + $menuItemsList.first().height() * $menuItemsList.length);
 				}
 				
 				// load first menu inside container (it is set as data attr of the container)

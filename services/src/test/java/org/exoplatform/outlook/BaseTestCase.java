@@ -19,9 +19,18 @@
 package org.exoplatform.outlook;
 
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.mockito.Mockito.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.jcr.Node;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.PortalContainer;
@@ -45,16 +54,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.xwiki.rendering.syntax.Syntax;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 /**
  * Created by The eXo Platform SAS.
@@ -229,8 +228,8 @@ public abstract class BaseTestCase {
   protected void loginCurrentUser(String exoUsername, String exoPassword) throws Exception {
     // login via Authenticator
     Authenticator authr = (Authenticator) container.getComponentInstanceOfType(Authenticator.class);
-    String user = authr.validateUser(new Credential[] { new UsernameCredential(exoUsername),
-        new PasswordCredential(exoPassword) });
+    String user =
+                authr.validateUser(new Credential[] { new UsernameCredential(exoUsername), new PasswordCredential(exoPassword) });
     Identity identity = authr.createIdentity(user);
     ConversationState.setCurrent(new ConversationState(identity));
 

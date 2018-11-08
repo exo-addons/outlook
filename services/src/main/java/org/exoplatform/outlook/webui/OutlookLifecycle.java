@@ -137,18 +137,23 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
           if (navContainer == null) {
             navContainer = viewContainer;
           }
+          // Since Platform 5.0.0 toolbar lies inside UIPinToolbarContainer.gtmpl container (in HTML #PlatformAdminToolbarContainer)
+          // and all this managed by sharedlayout.xml of PLF extension. Thus we need return a parent of found toolbar.
           for (UIComponent child : navContainer.getChildren()) {
             if (UIContainer.class.isAssignableFrom(child.getClass())) {
               UIContainer childContainer = UIContainer.class.cast(child);
               UIComponent toolbar = childContainer.getChildById("UIToolbarContainer");
               if (toolbar != null) {
                 // attempt #1
-                return toolbar;
+                return childContainer;
               }
             }
           }
           // attempt #2
-          return navContainer.findComponentById("UIToolbarContainer");
+          UIComponent toolbar = navContainer.findComponentById("UIToolbarContainer");
+          if (toolbar != null) {
+            return toolbar.getParent();
+          }
         }
       }
     }

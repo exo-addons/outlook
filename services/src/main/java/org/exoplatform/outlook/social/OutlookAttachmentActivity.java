@@ -71,7 +71,7 @@ import javax.jcr.Session;
  * Created by The eXo Platform SAS.
  *
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: OutlookMessageActivity.java 00000 Jul 12, 2016 pnedonosko $
+ * @version $Id: OutlookAttachmentActivity.java 00000 Jul 12, 2016 pnedonosko $
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      template = "classpath:groovy/templates/OutlookAttachmentActivity.gtmpl",

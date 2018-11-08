@@ -25,7 +25,7 @@
     @Stylesheet(id = "jquery-ui.structure.css", value = "skin/jquery-ui.structure.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "jquery-ui.theme.css", value = "skin/jquery-ui.theme.min.css", location = AssetLocation.SERVER) })
 @Scripts({ @Script(id = "jquery", value = "js/jquery.min.js", location = AssetLocation.SERVER),
-    @Script(id = "jquery-ui", value = "js/jquery-ui.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
+    @Script(id = "jquery-ui", value = "js/jquery-ui.js", location = AssetLocation.SERVER, depends = { "jquery" }),
     @Script(id = "fabric", value = "js/jquery.fabric.min.js", location = AssetLocation.SERVER, depends = { "jquery" }),
     @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
             location = AssetLocation.URL),

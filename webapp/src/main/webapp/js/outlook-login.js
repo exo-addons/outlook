@@ -51,7 +51,7 @@
 
 		var $messageBanner = $error.find(".ms-MessageBanner");
 		var messageBanner;
-		if ($messageBanner.size() > 0) {
+		if ($messageBanner.length > 0) {
 			messageBanner = new fabric.MessageBanner($messageBanner.get(0));
 		}
 		var $errorText = $error.find(".ms-MessageBanner-clipper");
@@ -79,10 +79,10 @@
 		}
 
 		// handle SignIn
-		if ($welcome.size() > 0) {
+		if ($welcome.length > 0) {
 			var $signInDialog = $("#signInDialog");
 			var $signInExoButton = $welcome.find("button.signInExo");
-			if ($signInDialog.size() > 0) {
+			if ($signInDialog.length > 0) {
 				$signInDialog.Dialog();
 				var $signInButton = $signInDialog.find("button.signIn");
 				var $userName = $signInDialog.find("input[name='userName']");

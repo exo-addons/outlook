@@ -202,7 +202,7 @@
             </field>
           </object>
         </object-param>
-        <object-param profiles="cluster">
+        <!-- object-param profiles="cluster">
           <name>OutlookContentLinkCache</name>
           <description>The JBoss Cache configuration for the IdentityCache</description>
           <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
@@ -222,13 +222,21 @@
               <boolean>true</boolean>
             </field>
           </object>
-        </object-param>
+        </object-param -->
       </init-params>
     </component-plugin>
   </external-component-plugins>
 
   <import>classpath:/conf/portal/test-jcr-configuration.xml</import>
   <import>classpath:/conf/portal/test-organization-configuration.xml</import>
+
+  <!-- May 2018 -->
+  <remove-configuration>org.exoplatform.commons.cluster.StartableClusterService</remove-configuration>
+  <remove-configuration>org.exoplatform.commons.search.index.IndexingOperationProcessor</remove-configuration>
+  <remove-configuration>org.exoplatform.commons.file.services.NameSpaceService</remove-configuration>
+  <remove-configuration>org.exoplatform.social.ckeditor.rest.ComposerImageControllerRest</remove-configuration>
+  <remove-configuration>org.exoplatform.commons.search.rest.IndexingManagementRestServiceV1</remove-configuration>
+  
 
   <remove-configuration>org.exoplatform.commons.api.persistence.DataInitializer</remove-configuration>
   <remove-configuration>org.exoplatform.wcm.ext.component.document.service.ContentViewerRESTService</remove-configuration>
