@@ -49,12 +49,12 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
-    <org.exoplatform.depmgt.version>14</org.exoplatform.depmgt.version>
-    <org.exoplatform.platform.version>5.1.0</org.exoplatform.platform.version>
+    <org.exoplatform.depmgt.version>16-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.platform.version>5.2.0</org.exoplatform.platform.version>
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <org.mockito.version>2.2.11</org.mockito.version>
-    <org.exoplatform.jcr-services.version>5.1.0</org.exoplatform.jcr-services.version>
+    <org.exoplatform.jcr-services.version>5.2.0</org.exoplatform.jcr-services.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
   <dependencyManagement>

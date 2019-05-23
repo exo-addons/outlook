@@ -37,6 +37,7 @@ import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -75,13 +76,20 @@ import javax.jcr.Session;
  */
 @ComponentConfigs({ @ComponentConfig(lifecycle = UIFormLifecycle.class,
                                      template = "classpath:groovy/templates/OutlookAttachmentActivity.gtmpl",
-                                     events = { @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
+                                     events = { @EventConfig(listeners = FileUIActivity.ViewDocumentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
+                                             @EventConfig(listeners = FileUIActivity.OpenFileActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LikeCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.EditActivityActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class)}) })
+
+
 public class OutlookAttachmentActivity extends BaseUIActivity {
 
   /** The Constant ACTIVITY_TYPE. */

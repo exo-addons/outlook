@@ -69,14 +69,21 @@ import javax.jcr.RepositoryException;
                                      // FYI original template:
                                      // "classpath:groovy/ecm/social-integration/UISharedFile.gtmpl",
                                      template = "classpath:groovy/templates/OutlookMessageActivity.gtmpl",
-                                     events = { @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
-                                         @EventConfig(listeners = FileUIActivity.OpenFileActionListener.class),
-                                         @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class) }) })
+                                     events = { @EventConfig(listeners = FileUIActivity.ViewDocumentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LikeActivityActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.SetCommentListStatusActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.PostCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.DeleteActivityActionListener.class),
+                                             @EventConfig(listeners = FileUIActivity.OpenFileActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.DeleteCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.LikeCommentActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.EditActivityActionListener.class),
+                                             @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class)}) })
+
+
+
 public class OutlookMessageActivity extends FileUIActivity {
 
   /** The Constant ACTIVITY_TYPE. */
