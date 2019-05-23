@@ -28,22 +28,7 @@ import java.security.AccessControlException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -115,19 +100,18 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.Membership;
-import org.exoplatform.services.organization.MembershipType;
-import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.wcm.core.NodetypeConstant;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -620,6 +604,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                               messageSummary(message),
                               message.getBody());
     }
+
+    @Override
+    public RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception {
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
+	  RealtimeListAccess<ExoSocialActivity> activity =socialActivityManager.getActivitiesWithListAccess(userIdentity);
+      return activity;
+    }
   }
 
   /**
@@ -974,7 +965,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       //
       return createForumTopic(categoryId, forumId, creator, name, null, text);
     }
-
+	
   }
 
   /** The jcr service. */
@@ -1503,6 +1494,49 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       throw new OutlookException("Error reading user's Personal Documents node for " + userName, e);
     }
   }
+
+  /**
+   * Gets the Map exo users by name   *
+   *
+   * @return the Map exo users that contains the user information
+   *
+   */
+
+  @Override
+  public Map<String, String> getUserInfoMap(String name)  {
+      Map<String, String> userInfoMap = new HashMap();
+    try {
+      Collection<UserProfile> userProfiles = new LinkedList<>();
+      userProfiles = organization.getUserProfileHandler().findUserProfiles();
+      for (UserProfile userProfile : userProfiles ){
+        if (userProfile.getUserName().equals( name) ) {
+          userInfoMap = userProfile.getUserInfoMap();
+        }
+      }
+    } catch ( Exception e){
+      LOG.error("Error showing getUserInfoMap ", e);
+    }
+    return userInfoMap ;
+  }
+
+
+   /**
+   * Gets the All exo users.   *
+   *
+   * @return the List exo users
+   * @throws OutlookException the outlook exception
+   */
+  @Override
+  public ListAccess<User> getAllExoUsers() throws OutlookException {
+    try {
+      return organization.getUserHandler().findAllUsers();
+    } catch (Exception e) {
+      throw new OutlookException("Error searching all user " , e);
+    }
+  }
+  
+  
+  
 
   // *********************** testing level **********************
 

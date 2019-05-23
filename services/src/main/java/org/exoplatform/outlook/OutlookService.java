@@ -18,12 +18,15 @@
  */
 package org.exoplatform.outlook;
 
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.UserDocuments;
+import org.exoplatform.services.organization.User;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
@@ -196,4 +199,9 @@ public interface OutlookService {
    */
   UserDocuments getUserDocuments() throws RepositoryException, OutlookException;
 
+  Map<String, String> getUserInfoMap(String name) throws Exception;
+
+
+
+    ListAccess<User> getAllExoUsers() throws OutlookException;
 }

@@ -43,7 +43,7 @@
                         <% if (activity.id.equals(idActivity )) { %>
                                <div class="text-activity  ${activity.getType()}">
                                 <% if(activity.title != null) { %>
-                               	<span class="ms-ListActivity-primaryText-title">${activity.title}</span>
+                               	<a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link" target="_blank">${activity.title}</a>
                                		<% } %>
                                	<% if(activity.getBody() != null) { %>
                                	<p> <span class="ms-ListActivity-primaryText-body">${activity.getBody()}</span> </p>
@@ -63,9 +63,10 @@
                                 <% if(activity.getActivityStream().getPermaLink() != null) { %>
                                 <span class="ms-ListActivity-primaryText-StreamUrl">${activity.getActivityStream().getPermaLink()}</span>
                                 <% } %>
-                                <p>
-                                </p>
-                               	 <a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link" target="_blank">&{Outlook.ClickToOpen}</a>
+                                <p> </p>
+                                 <% if(activity.getPostedTime() != null) { %>
+                                 <time class="ms-ListActivity-primaryText-getPostedTime">${new Date(activity.getPostedTime ()) }</time>
+                                  <% } %>
                                	   </div>
                                	     <br>
                               <% } %>

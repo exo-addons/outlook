@@ -20,6 +20,7 @@
 package org.exoplatform.outlook;
 
 import org.exoplatform.forum.service.Topic;
+import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.wiki.mow.api.Page;
 
@@ -130,4 +131,6 @@ public abstract class OutlookUser extends OutlookEmail {
    * @throws Exception the exception
    */
   public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
+
+    public abstract RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception;
 }

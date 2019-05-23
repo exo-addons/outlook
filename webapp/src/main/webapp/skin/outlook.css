@@ -410,6 +410,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	min-height: 350px;
 }
 
+
 .text-profileInfo {
 	 text-align: left;
 }
@@ -427,11 +428,17 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .text-activity {
-   margin: 0 0 1px;
-   display: table;
+    margin: 0 0 1px;
+    display: table;
+    text-align: left;
 }
 
 .ms-ListActivity-primaryText-body{
     padding: 2px;
     font-style: oblique;
+}
+.ms-ListActivity-primaryText-getPostedTime{
+    background: #d4d3d3;
+    font-size: 12px;
+
 }
