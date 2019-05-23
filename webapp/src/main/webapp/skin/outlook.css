@@ -409,3 +409,29 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .searchContainer {
 	min-height: 350px;
 }
+
+.text-profileInfo {
+	 text-align: left;
+}
+
+.ms-TextField-organization {
+	margin: 0 0 1px;
+}
+
+.ms-TextField-businessInfo {
+	margin: 0 0 1px;
+}
+
+.ms-TextField-homeInfo {
+	margin: 0 0 1px;
+}
+
+.text-activity {
+   margin: 0 0 1px;
+   display: table;
+}
+
+.ms-ListActivity-primaryText-body{
+    padding: 2px;
+    font-style: oblique;
+}

@@ -114,14 +114,16 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 			var serverUrl = pageBaseUrl(location);
 			var userEmail = Office.context.mailbox.userProfile.emailAddress;
 			var userName = Office.context.mailbox.userProfile.displayName;
-			console.log("> user: " + userName + "<" + userEmail + ">");
-
+			console.log( "Url - " +serverUrl + " user: " + userName + " < " + userEmail + " > ");
+			var from = Office.context.mailbox.item.from;
+			var internetMessageId = Office.context.mailbox.item.internetMessageId;
+            var correspondenceEmail = "";
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.length > 0) {
 				// TODO Hide eXo Tribe's Feedback widget
 				//$("#btnFeedback").hide();
-				
+
 				var $error = $pane.find("#outlook-error");
 				var $messageBanner = $error.find(".ms-MessageBanner");
 				var $popup = $pane.find("#outlook-popup");
@@ -206,7 +208,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				var $menu = $pane.find("#outlook-menu");
 				var $container = $pane.find("#outlook-menu-container");
-				
 				var initRefresh = function($form, refreshFunc) {
 					var $refresh = $form.find(".menuRefresh>a");
 					$refresh.click(function() {
@@ -215,7 +216,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						var cursorCss = $container.css("cursor");
 						$container.css("cursor", "wait");
 						try {
-							// XXX warm up the portal to avoid 302 response and loading the whole page 
+							// XXX warm up the portal to avoid 302 response and loading the whole page
 							// if user has used the portal externally (e.g. joined a space)
 							$spaces.jzAjax("Outlook.userSpaces()");
 							// Do actual request waiting a bit for the portal server
@@ -235,9 +236,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						} catch(e) {
 							console.log("Error loading user spaces", e);
 						}
-					});					
+					});
 				};
-				
+
 				var initNoSpacesLink = function($message) {
 					if ($message.length > 0) {
 						var $noSpacesLink = $message.find(".ms-MessageBar-text a.joinSpacesLink");
@@ -246,7 +247,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$noSpacesLink.attr("href", allSpacesPath);
 					}
 				};
-				
+
 				var setDropdownSize = function($dropdown) {
 					// set dropdown items height exact to what it contains (not 100% for block element)
 					var $items = $dropdown.find(".ms-Dropdown-items");
@@ -255,7 +256,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						$items.height(1 + $itemsList.first().height() * $itemsList.length);
 					}
 				};
-				
+
 				var initSpacesDropdown = function($form, value, onChangeFunc) {
 					function createDropdown(value) {
 						var $dropdown = $form.find(".ms-Dropdown");
@@ -292,7 +293,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							$description.hide();
 							$message.show();
 						}
-						return { 
+						return {
 							component : function() {
 								return $dropdown;
 							},
@@ -301,22 +302,61 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							}
 						};
 					}
-					
+
 					var dropdown = createDropdown(value);
-					
+
 					initRefresh($form, function() {
 						var selected = dropdown.value();
 						var newDropdown = createDropdown(selected);
 						dropdown.component = newDropdown.component;
 						dropdown.value = newDropdown.value;
 					});
-					
+
 					return dropdown;
 				};
 
 				function homeInit() {
 					// TODO something?
 				}
+
+				function userInfoInit() {
+				if (internetMessageId) {
+				    if (from.emailAddress != null){
+				        correspondenceEmail =from.emailAddress ;
+				        console.log("From Email : " + correspondenceEmail);
+				    } sendEmails(correspondenceEmail);
+				    } else {
+				        Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
+				            if (asyncResult.status === "succeeded") {
+				            var jsonObj = JSON.parse(JSON.stringify(asyncResult.value));
+				                for(var i = 0; i < jsonObj.length; i++){
+				                correspondenceEmail += jsonObj[i]['emailAddress'] + ",";
+				                }
+				                console.log("Email to  " + correspondenceEmail);
+				                sendEmails(correspondenceEmail)
+				                } else {
+				                    console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+				                     + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+				                     showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+				                }
+				            });
+				     }
+				}
+
+				function sendEmails(correspondenceEmail) {
+				var $userInfo = $("#outlook-userInfo");
+				var $document = $userInfo.find("#outlook-userInfo-text");
+				$document.jzLoad("Outlook.userInfo()", {
+				     correspondenceEmail : correspondenceEmail
+                     }, function(response, status, jqXHR) {
+                     if (status == "error") {
+                        showError(jqXHR);
+                     } else {
+                         clearError();
+						 }
+                     });
+                }
+
 
 				function saveAttachmentInit() {
 					var $saveAttachment = $("#outlook-saveAttachment");
@@ -400,13 +440,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							loadFolder();
 						}
 					});
-					
+
 					var item = Office.context.mailbox.item;
 					if (item.attachments.length > 0) {
 						for ( i = 0; i < item.attachments.length; i++) {
 							var att = item.attachments[i];
-							var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>" 
-								+ att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" // 
+							var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>"
+								+ att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" //
 								+ sizeString(att.size) + "</span>" //
 								+ "<div class='ms-ListItem-selectionTarget js-toggleSelection'></div><input name='attachmentIds' type='hidden'></li>");
 							$li.data("attachmentId", Office.context.mailbox.convertToRestId(att.id, Office.MailboxEnums.RestVersion.v2_0));
@@ -502,7 +542,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 												}
 											});
 										} else {
-											console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " // 
+											console.log("Office.context.mailbox.getCallbackTokenAsync() [" + asyncResult.status + "] error: " //
 												+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
 											showError("Outlook.messages.gettingTokenError", asyncResult.error.message);
 											cancelSave();
@@ -643,7 +683,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							groupId = $space.val();
 						}
 					});
-					
+
 					var subject = Office.context.mailbox.item.subject;
 					if (internetMessageId) {
 						$subject.text(subject);
@@ -669,6 +709,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
 									//console.log(">> ewsUrl: " + ewsUrl);
+
+
+
+
 									// get the message content to temp div and then move it to iframe
 									var $tempText = $("<div style='display:none'></div>");
 									$textFrame.append($tempText);

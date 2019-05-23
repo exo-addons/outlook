@@ -13,7 +13,8 @@
       <create>Create</create>
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
-      <userInfo>Users</userInfo>
+      <users>Users</users>
+      <userInfo>User</userInfo>
       <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
       <convertToStatus>Convert to Activity</convertToStatus>
@@ -143,6 +144,16 @@
     <search>Search</search>
     <searching>Searching...</searching>
     <searchResultFor>Search results for: </searchResultFor>
+
+    <!-- userInfo -->
+    <username>Username:  </username>
+    <organizationInfo>Information on the position and department: </organizationInfo>
+    <businessInfo>Business profile: </businessInfo>
+    <homeInfo>Personal profile: </homeInfo>
+    <activityInfo>Latest activity on the link you can see the details : </activityInfo>
+    <notUser>Sorry, no users found for this email.</notUser>
+    <ClickToOpen>Open on eXoplatform</ClickToOpen>
+
 
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>

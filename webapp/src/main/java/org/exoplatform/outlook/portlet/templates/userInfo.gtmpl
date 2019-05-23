@@ -1,13 +1,17 @@
+
 <div class="container-fluid">
 	<div id="outlook-userInfo" class="row-fluid">
 		<div class="span8 offset2">
 			<div>
 				<br>
 			</div>
-			<div class="text-centered">
+			<div id="outlook-userInfo-text" class="text-centered">
 				<h4>&{Outlook.command.userInfo}</h4>
 			</div>
-			TODO
+	<div class="ms-MessageBar-text">
+            			<span class="savedSpaceTitle"></span><br>
+            		</div>
+
 		</div>
 	</div>
 </div>

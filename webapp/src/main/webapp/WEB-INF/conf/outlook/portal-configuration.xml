@@ -52,7 +52,9 @@
             <field name="templateLocation">
               <string>war:/conf/outlook/</string>
             </field>
-            <field name="importMode"><string>merge</string></field>
+            <field name="importMode">
+              <string>${intranet.portalConfig.metadata.importmode:merge}</string>
+            </field>
           </object>
         </object-param>
       </init-params>

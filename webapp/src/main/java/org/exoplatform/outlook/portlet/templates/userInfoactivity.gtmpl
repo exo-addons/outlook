@@ -1,0 +1,84 @@
+#{param name=listActivity/}
+#{param name=usersToDisplay/}
+#{param name=userInfoMap/}
+#{param name=userInfo/}
+<div class="ms-Grid">
+	<div id="outlook-userInfo" class="row-fluid">
+			<div>
+				<br>
+			</div>
+			<div class="text-centered">
+			 <% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.command.userInfo}</h4>
+					<% } else { %><h4>&{Outlook.command.users}</h4> 	<% } %>
+			</div>
+            <div class="ms-Grid-row">
+                <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
+            	 <% if ( usersToDisplay.isEmpty() ) { %> <h5  style="font-weight: bolder">&{Outlook.notUser}</h5> 	<% } %>
+			     <% for (user in usersToDisplay) { %>
+			     <div class="text-user">
+			     <h4>&{Outlook.username} <a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}</a> </h4>
+			     <img title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
+			   	 <div class="text-profileInfo">
+			   	 <ul>
+			   	     <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty() ) { %> <h5 style="font-weight: bolder">&{Outlook.organizationInfo}</h5> 	<% } %>
+			         <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
+			              <li class="ms-TextField-organization">${profileInfo}</li>
+                         <% } %>
+                          <% if ( !userInfo.get(user.userName+"business").isEmpty() ) { %> <h5 style="font-weight: bolder">&{Outlook.businessInfo}</h5>	<% } %>
+                      <% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
+                         	<li class="ms-TextField-businessInfo">${businessInfo}</li>
+                          <% } %>
+                           <% if ( !userInfo.get(user.userName+"home").isEmpty() ) { %>  <h5 style="font-weight: bolder">&{Outlook.homeInfo}</h5> 	<% } %>
+                      <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
+                               <li class="ms-TextField-homeInfo">${homeInfo}</li>
+                           <% } %>
+                           </ul>
+                  </div>
+                   <br>
+                 <div class="text-userInfoActivity">
+                  <% if ( !userInfo.get(user.userName+"idActivity").isEmpty() ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4> 	<% } %>
+                   <div class="ms-List Activity">
+                  <% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
+                    <% for (activity in listActivity) { %>
+                        <% if (activity.id.equals(idActivity )) { %>
+                               <div class="text-activity  ${activity.getType()}">
+                                <% if(activity.title != null) { %>
+                               	<span class="ms-ListActivity-primaryText-title">${activity.title}</span>
+                               		<% } %>
+                               	<% if(activity.getBody() != null) { %>
+                               	<p> <span class="ms-ListActivity-primaryText-body">${activity.getBody()}</span> </p>
+                               	<% } %>
+                               	<% if(activity.name != null) { %>
+                               	<span class="ms-ListActivity-primaryText-name">${activity.name}</span>
+                               	<% } %>
+                               	<% if(activity.getSummary() != null) { %>
+                               	<span class="ms-ListActivity-primaryText-Summary">${activity.getSummary()}</span>
+                               	<% } %>
+                               	<% if(activity.getStreamSourceUrl() != null) { %>
+                                <span class="ms-ListActivity-primaryText-Summary">${activity.getSummary()}</span>
+                                <% } %>
+                                <% if(activity.getStreamUrl() != null) { %>
+                                <span class="ms-ListActivity-primaryText-StreamUrl">${activity.getStreamUrl()}</span>
+                                <% } %>
+                                <% if(activity.getActivityStream().getPermaLink() != null) { %>
+                                <span class="ms-ListActivity-primaryText-StreamUrl">${activity.getActivityStream().getPermaLink()}</span>
+                                <% } %>
+                                <p>
+                                </p>
+                               	 <a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link" target="_blank">&{Outlook.ClickToOpen}</a>
+                               	   </div>
+                               	     <br>
+                              <% } %>
+                        <% } %>
+                      <% } %>
+                     </div>
+                 </div>
+                <br>
+             <% } %>
+          </div>
+		</div>
+	</div>
+</div>
+
+
+
