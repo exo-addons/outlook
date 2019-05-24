@@ -442,3 +442,6 @@ textarea[name='activityTitle'], textarea[name='comment'] {
     font-size: 12px;
 
 }
+.avatar{
+text-align: center;
+}

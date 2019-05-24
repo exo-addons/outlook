@@ -1091,7 +1091,7 @@ public class Outlook {
                 ListAccess<User> allExoUser = outlook.getAllExoUsers();
                 for (int y = 0; y < allemails.length; y++) {
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {
-                        if (user.getEmail().equals(allemails[y])) {
+                        if (user.getEmail().equals( allemails[y].toLowerCase() )) {
                             idActivity = new LinkedList<>();
                             profileInfo = new LinkedList<>();
                             profileInfoBusiness = new LinkedList<>();

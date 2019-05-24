@@ -16,8 +16,8 @@
             	 <% if ( usersToDisplay.isEmpty() ) { %> <h5  style="font-weight: bolder">&{Outlook.notUser}</h5> 	<% } %>
 			     <% for (user in usersToDisplay) { %>
 			     <div class="text-user">
-			     <h4>&{Outlook.username} <a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}</a> </h4>
-			     <img title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
+			     <h4>&{Outlook.username} <a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName} <${user.getEmail()}> </a> </h4>
+			     <img class="avatar" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
 			   	 <div class="text-profileInfo">
 			   	 <ul>
 			   	     <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty() ) { %> <h5 style="font-weight: bolder">&{Outlook.organizationInfo}</h5> 	<% } %>
@@ -36,9 +36,10 @@
                   </div>
                    <br>
                  <div class="text-userInfoActivity">
-                  <% if ( !userInfo.get(user.userName+"idActivity").isEmpty() ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4> 	<% } %>
+                  <% if ( !userInfo.get(user.userName+"idActivity").isEmpty() ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4>
                    <div class="ms-List Activity">
                   <% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
+                  <% if ( !listActivity.isEmpty() ) { %>
                     <% for (activity in listActivity) { %>
                         <% if (activity.id.equals(idActivity )) { %>
                                <div class="text-activity  ${activity.getType()}">
@@ -63,18 +64,18 @@
                                 <% if(activity.getActivityStream().getPermaLink() != null) { %>
                                 <span class="ms-ListActivity-primaryText-StreamUrl">${activity.getActivityStream().getPermaLink()}</span>
                                 <% } %>
-                                <p> </p>
                                  <% if(activity.getPostedTime() != null) { %>
                                  <time class="ms-ListActivity-primaryText-getPostedTime">${new Date(activity.getPostedTime ()) }</time>
                                   <% } %>
                                	   </div>
                                	     <br>
                               <% } %>
+                         <% } %>
                         <% } %>
                       <% } %>
                      </div>
+                    <% } %>
                  </div>
-                <br>
              <% } %>
           </div>
 		</div>
