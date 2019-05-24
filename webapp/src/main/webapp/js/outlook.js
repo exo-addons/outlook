@@ -115,9 +115,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 			var userEmail = Office.context.mailbox.userProfile.emailAddress;
 			var userName = Office.context.mailbox.userProfile.displayName;
 			console.log( "Url - " +serverUrl + " user: " + userName + " < " + userEmail + " > ");
+
 			var from = Office.context.mailbox.item.from;
 			var internetMessageId = Office.context.mailbox.item.internetMessageId;
-            var correspondenceEmail = "";
+			var correspondenceEmail = "";
+
+
+
+
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.length > 0) {
@@ -208,6 +213,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				var $menu = $pane.find("#outlook-menu");
 				var $container = $pane.find("#outlook-menu-container");
+
 				var initRefresh = function($form, refreshFunc) {
 					var $refresh = $form.find(".menuRefresh>a");
 					$refresh.click(function() {
@@ -320,42 +326,42 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				function userInfoInit() {
-				if (internetMessageId) {
-				    if (from.emailAddress != null){
-				        correspondenceEmail =from.emailAddress ;
-				        console.log("From Email : " + correspondenceEmail);
-				    } sendEmails(correspondenceEmail);
-				    } else {
-				        Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
-				            if (asyncResult.status === "succeeded") {
-				            var jsonObj = JSON.parse(JSON.stringify(asyncResult.value));
-				                for(var i = 0; i < jsonObj.length; i++){
-				                correspondenceEmail += jsonObj[i]['emailAddress'] + ",";
-				                }
-				                console.log("Email to  " + correspondenceEmail);
-				                sendEmails(correspondenceEmail)
-				                } else {
-				                    console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-				                     + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-				                     showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-				                }
-				            });
-				     }
+					if (internetMessageId) {
+						if (from.emailAddress != null){
+							correspondenceEmail =from.emailAddress ;
+							console.log("From Email : " + correspondenceEmail);
+						} sendEmails(correspondenceEmail);
+					} else {
+						Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
+							if (asyncResult.status === "succeeded") {
+								var jsonObj = asyncResult.value;
+								for(var i = 0; i < jsonObj.length; i++){
+									correspondenceEmail += jsonObj[i].emailAddress + ",";
+								}
+								console.log("Email to  " + correspondenceEmail);
+								sendEmails(correspondenceEmail)
+							} else {
+								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+										+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+							}
+						});
+					}
 				}
 
 				function sendEmails(correspondenceEmail) {
-				var $userInfo = $("#outlook-userInfo");
-				var $document = $userInfo.find("#outlook-userInfo-text");
-				$document.jzLoad("Outlook.userInfo()", {
-				     correspondenceEmail : correspondenceEmail
-                     }, function(response, status, jqXHR) {
-                     if (status == "error") {
-                        showError(jqXHR);
-                     } else {
-                         clearError();
-						 }
-                     });
-                }
+					var $userInfo = $("#outlook-userInfo");
+					var $document = $userInfo.find("#outlook-userInfo-text");
+					$document.jzLoad("Outlook.userInfo()", {
+						correspondenceEmail : correspondenceEmail
+					}, function(response, status, jqXHR) {
+						if (status == "error") {
+							showError(jqXHR);
+						} else {
+							clearError();
+						}
+					});
+				}
 
 
 				function saveAttachmentInit() {

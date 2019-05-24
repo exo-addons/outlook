@@ -417,31 +417,41 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 
 .ms-TextField-organization {
 	margin: 0 0 1px;
+	padding-left: 10px;
 }
 
 .ms-TextField-businessInfo {
 	margin: 0 0 1px;
+	padding-left: 10px;
 }
 
 .ms-TextField-homeInfo {
 	margin: 0 0 1px;
+	padding-left: 10px;
 }
 
 .text-activity {
     margin: 0 0 1px;
-    display: table;
-    text-align: left;
+    padding-left: 8px;
+    text-align: justify;
+    margin-bottom: -2px;
 }
 
 .ms-ListActivity-primaryText-body{
     padding: 2px;
     font-style: oblique;
+    margin-left: 5px;
 }
-.ms-ListActivity-primaryText-getPostedTime{
+.ms-ListActivity-primaryText-PostedTime{
     background: #d4d3d3;
     font-size: 12px;
+    padding-left: 16px;
 
 }
 .avatar{
-text-align: center;
+  border-radius: 10%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
 }

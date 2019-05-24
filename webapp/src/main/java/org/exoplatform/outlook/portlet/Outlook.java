@@ -1070,8 +1070,8 @@ public class Outlook {
 
     /**
      * User info response.
-     * @param correspondenceEmail Array of emails to search in eXoplatform
      *
+     * @param correspondenceEmail Array of emails to search in eXoplatform
      * @return the response
      */
     @Ajax
@@ -1091,7 +1091,7 @@ public class Outlook {
                 ListAccess<User> allExoUser = outlook.getAllExoUsers();
                 for (int y = 0; y < allemails.length; y++) {
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {
-                        if (user.getEmail().equals( allemails[y].toLowerCase() )) {
+                        if (user.getEmail().equals(allemails[y].toLowerCase())) {
                             idActivity = new LinkedList<>();
                             profileInfo = new LinkedList<>();
                             profileInfoBusiness = new LinkedList<>();
@@ -1141,13 +1141,15 @@ public class Outlook {
                             userInfo.put(foundUserName + "home", profileInfoHome);
 
                             RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
-                            List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
-                            listActivity.addAll(exoSocialActivityList);
-                            for (ExoSocialActivity exoSocialActivity : listActivity) {
-                                if (exoSocialActivity.getId() != null) {
-                                    idActivity.add(exoSocialActivity.getId());
+                            if (activity.getSize() > 0) {
+                                List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
+                                listActivity.addAll(exoSocialActivityList);
+                                for (ExoSocialActivity exoSocialActivity : listActivity) {
+                                    if (exoSocialActivity.getId() != null) {
+                                            idActivity.add(exoSocialActivity.getId());
+                                    }
                                 }
-                                userInfo.put(foundUserName + "idActivity", idActivity);
+                                userInfo.put(foundUserName + "idActivity", idActivity);                                
                             }
                         }
                     }

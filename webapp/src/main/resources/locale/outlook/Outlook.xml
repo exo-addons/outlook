@@ -145,16 +145,13 @@
     <searching>Searching...</searching>
     <searchResultFor>Search results for: </searchResultFor>
 
-    <!-- userInfo -->
-    <username>Username:  </username>
+    <!-- userInfo -->    
     <organizationInfo>Information on the position and department: </organizationInfo>
     <businessInfo>Business profile: </businessInfo>
     <homeInfo>Personal profile: </homeInfo>
     <activityInfo>Latest activity : </activityInfo>
     <notUser>Sorry, no users found for this email.</notUser>
-    <ClickToOpen>Open on eXoplatform</ClickToOpen>
-
-
+    
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>
       <fileHasNoPath>Error selecting the file: path not found.</fileHasNoPath>
