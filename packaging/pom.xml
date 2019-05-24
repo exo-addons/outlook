@@ -68,7 +68,8 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <!-- appendAssemblyId>false</appendAssemblyId -->
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
                 <descriptor>src/main/assembly/packaging-archive.xml</descriptor>
               </descriptors>
