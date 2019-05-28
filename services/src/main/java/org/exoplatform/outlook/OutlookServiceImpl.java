@@ -28,7 +28,24 @@ import java.security.AccessControlException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -53,6 +70,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.entity.ContentType;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
+import org.picocontainer.Startable;
+import org.xwiki.rendering.syntax.Syntax;
+
+import com.ibm.icu.text.Transliterator;
+
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.StringCommonUtils;
@@ -100,7 +125,12 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.*;
+import org.exoplatform.services.organization.Group;
+import org.exoplatform.services.organization.Membership;
+import org.exoplatform.services.organization.MembershipType;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
@@ -111,7 +141,6 @@ import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
 import org.exoplatform.social.core.application.SpaceActivityPublisher;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
@@ -135,13 +164,6 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
-import org.owasp.html.HtmlPolicyBuilder;
-import org.owasp.html.PolicyFactory;
-import org.owasp.html.Sanitizers;
-import org.picocontainer.Startable;
-import org.xwiki.rendering.syntax.Syntax;
-
-import com.ibm.icu.text.Transliterator;
 
 /**
  * Service implementing {@link OutlookService} and {@link Startable}.<br>
@@ -507,11 +529,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       try {
         Node userDocs = userDocumentsNode(localUser);
         if (userDocs != null) {
-          Node userPublicFolder = userDocs.getParent().getNode("Public");
-          Node messagesFolder = messagesFolder(userPublicFolder, localUser, "member:/platform/users");
-          Node messageFile = addMessageFile(messagesFolder, message);
-          setPermissions(messageFile, localUser, "member:/platform/users");
-          messagesFolder.save();
+          // Since upgrade to Platform 5.2 root of user folder has no user
+          // permissions even for read.
+          // Node userPublicFolder = userDocs.getParent().getNode("Public");
+          Node sysPublicFolder = systemNode(userDocs.getSession().getWorkspace().getName(), userDocs.getPath()).getNode("Public");
+          Node sysMessagesFolder = messagesFolder(sysPublicFolder, localUser, "member:/platform/users");
+          Node sysMessageFile = addMessageFile(sysMessagesFolder, message);
+          setPermissions(sysMessageFile, localUser, "member:/platform/users");
+          sysMessagesFolder.save();
+          // Take node under user session to use in the message and activity
+          Node messageFile = node(sysMessageFile.getSession().getWorkspace().getName(), sysMessageFile.getPath());
           message.setFileNode(messageFile);
 
           String userMessage = message.getTitle();
@@ -2240,7 +2267,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected Node messagesFolder(Node parent, String... identity) throws RepositoryException {
     Node messagesFolder;
-    if (!parent.hasNode("outlook-messages")) {
+    if (!parent.hasNode(OUTLOOK_MESSAGES_NAME)) {
       messagesFolder = parent.addNode(OUTLOOK_MESSAGES_NAME, "nt:folder");
       messagesFolder.setProperty("exo:title", OUTLOOK_MESSAGES_TITLE);
       try {
