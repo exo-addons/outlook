@@ -4,22 +4,19 @@
 #{param name=userInfo/}
 <div class="ms-Grid">
 	<div id="outlook-userInfo" class="row-fluid">
-			<div>
-				<br>
+	 <div class="ms-Grid-col out-box ms-u-md8 ms-u-lg8 ms-TextField">
+		<div class="text-centered">
+			 <% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.user}</h4>
+					<% } else { %><h4>&{Outlook.users}</h4> 	<% } %>
 			</div>
-			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField">
-			<div class="text-centered">
-			 <% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.command.userInfo}</h4>
-					<% } else { %><h4>&{Outlook.command.users}</h4> 	<% } %>
-			</div>
-            <div class="ms-Grid-row">
+            <div class="ms-PersonaCard-userInfo">
             	 <% if ( usersToDisplay.isEmpty() ) { %> <h5  style="font-weight: bolder">&{Outlook.notUser}</h5> 	<% } %>
 			     <% for (user in usersToDisplay) { %>
-			     <div class="text-user">
+			     <div class="ms-PersonaCard-persona-userInfo">
 			     <h4><a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}      &lt;${ user.getEmail()}&gt;</a></h4>
-			     <img class="avatar" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
+			     <img class="ms-Persona-image-userInfo" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
 			      </div>
-			   	 <div class="text-profileInfo">
+			   	 <div class="text profileInfo">
 			   	 <ul>
 			   	     <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %> <h5 style="font-weight: bolder">&{Outlook.organizationInfo}</h5> 	<% } %>
 			         <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
@@ -38,35 +35,37 @@
                   <br>
                  <div class="text-userInfoActivity">
                   <% if ( userInfo.get(user.userName+"idActivity")!= null ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4>
-                   <div class="ms-List Activity">
+                   <div class="flexauto">
                   <% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
                   <% if ( listActivity!= null ) { %>
                     <% for (activity in listActivity) { %>
                         <% if (activity.id.equals(idActivity )) { %>
-                               <div class="text-activity  ${activity.getType()}">
+                               <div class=" activity  ${activity.getType()}">
+                                 <ul>
                                 <% if(activity.title != null) { %>
-                               	<a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link" target="_blank">${activity.title}</a>
+                               	 <li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np " target="_blank">${activity.title}</a></li>
                                		<% } %>
                                	<% if(activity.getBody() != null) { %>
-                               	<p> <span class="ms-ListActivity-primaryText-body">${activity.getBody()}</span> </p>
+                               	<li class="ms-ListActivity-primaryText body">${activity.getBody()}</li>
                                	<% } %>
                                	<% if(activity.name != null) { %>
-                               	<span class="ms-ListActivity-primaryText-name">${activity.name}</span>
+                               	<li class="ms-ListActivity-primaryText name">${activity.name}</li>
                                	<% } %>
                                	<% if(activity.getSummary() != null) { %>
-                               	<span class="ms-ListActivity-primaryText-Summary">${activity.getSummary()}</span>
+                               	<li class="ms-ListActivity-primaryText Summary">${activity.getSummary()}</li>
                                	<% } %>
                                	<% if(activity.getStreamSourceUrl() != null) { %>
-                                <span class="ms-ListActivity-primaryText-StreamSourceUrl">${activity.getStreamSourceUrl()}</span>
+                                <li class="ms-ListActivity-primaryText StreamSourceUrl">${activity.getStreamSourceUrl()}</li>
                                 <% } %>
                                 <% if(activity.getStreamUrl() != null) { %>
-                                <span class="ms-ListActivity-primaryText-StreamUrl">${activity.getStreamUrl()}</span>
+                                <li class="ms-ListActivity-primaryText StreamUrl">${activity.getStreamUrl()}</li>
                                 <% } %>
                                 <% if(activity.getActivityStream().getPermaLink() != null) { %>
-                                <span class="ms-ListActivity-primaryText-PermaLink">${activity.getActivityStream().getPermaLink()}</span>
+                                <li class="ms-ListActivity-primaryText PermaLink">${activity.getActivityStream().getPermaLink()}</li>
                                 <% } %>
+                                </ul>
                                  <% if(activity.getPostedTime() != null) { %>
-                                 <p> <time class="ms-ListActivity-primaryText-PostedTime">${new Date(activity.getPostedTime ()) }</time> </p>
+                                  <time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(activity.getPostedTime ()) }</time>
                                   <% } %>
                                	   </div>
                               <% } %>

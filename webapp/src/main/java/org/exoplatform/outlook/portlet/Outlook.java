@@ -1143,13 +1143,15 @@ public class Outlook {
                             RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
                             if (activity.getSize() > 0) {
                                 List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
-                                listActivity.addAll(exoSocialActivityList);
-                                for (ExoSocialActivity exoSocialActivity : listActivity) {
-                                    if (exoSocialActivity.getId() != null) {
+                                if (exoSocialActivityList != null  ) {
+                                    listActivity.addAll(exoSocialActivityList);
+                                    for (ExoSocialActivity exoSocialActivity : listActivity) {
+                                        if (exoSocialActivity.getId() != null) {
                                             idActivity.add(exoSocialActivity.getId());
+                                        }
                                     }
+                                    userInfo.put(foundUserName + "idActivity", idActivity);
                                 }
-                                userInfo.put(foundUserName + "idActivity", idActivity);                                
                             }
                         }
                     }

@@ -410,48 +410,68 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	min-height: 350px;
 }
 
-
-.text-profileInfo {
-	 text-align: left;
+.ms-Persona-image-userInfo {
+	background: #eaeaea;
+	border: 3px solid #ffffff;
+	border-radius: 50%;
+	text-align: center;
+	width: 150px;
 }
 
 .ms-TextField-organization {
 	margin: 0 0 1px;
 	padding-left: 10px;
+	text-align: left;
 }
 
 .ms-TextField-businessInfo {
 	margin: 0 0 1px;
+	text-align: left;
 	padding-left: 10px;
 }
 
 .ms-TextField-homeInfo {
 	margin: 0 0 1px;
+	text-align: left;
 	padding-left: 10px;
 }
 
-.text-activity {
-    margin: 0 0 1px;
-    padding-left: 8px;
-    text-align: justify;
-    margin-bottom: -2px;
+.body {
+	padding: 2px;
+	font-style: oblique;
+	margin-left: 5px;
 }
 
-.ms-ListActivity-primaryText-body{
-    padding: 2px;
-    font-style: oblique;
-    margin-left: 5px;
+.postedTime {
+	text-align: right;
+	overflow: hidden;
+	position: absolute;
+	right: 8px;
+	font-size: 11px;
+	height: 15px;
+	width: 80px;
+	bottom: 2px;
 }
-.ms-ListActivity-primaryText-PostedTime{
-    background: #d4d3d3;
-    font-size: 12px;
-    padding-left: 16px;
 
+.activity-title {
+	width: 75%;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 5px;
+	text-overflow: ellipsis;
+	font-family: "wf_segoe-ui_semilight", "Segoe UI Semilight",
+		"Segoe WP Semilight", "Segoe UI", "Segoe WP", Tahoma, Arial,
+		sans-serif;
 }
-.avatar{
-  border-radius: 10%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 
+.activity {
+	background: #f4f4f4;
+	border: 1px double white;
+	text-align: left;
+	height: 50px;
+	position: relative;
+}
+
+.out-box {
+	width: 95%;
 }
