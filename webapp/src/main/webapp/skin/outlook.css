@@ -447,8 +447,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	overflow: hidden;
 	position: absolute;
 	right: 8px;
-	font-size: 11px;
-	height: 15px;
+	font-size: 11px;	
 	width: 80px;
 	bottom: 25px;
 	z-index: 1;
@@ -471,20 +470,20 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	text-align: left;
 	height: 50px;
 	position: relative;
-    padding: 5px;
+        padding: 5px;
 }
 .activity:hover {
-   background: #0078d7;
+       background: #0078d7;
 }
 
 .out-box {
 	width: 95%;
 }
 .infobox{
-    width: 90%;
-    background: #e1e2e8;
+        width: 90%;
+        background: #e1e2e8;
 }
 
 .link:hover{
-   color: white;
+       color: white;
 }
