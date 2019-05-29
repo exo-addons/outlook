@@ -436,8 +436,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	padding-left: 10px;
 }
 
-.body {
-	padding: 2px;
+.activity-body {
+
 	font-style: oblique;
 	margin-left: 5px;
 }
@@ -450,7 +450,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	font-size: 11px;
 	height: 15px;
 	width: 80px;
-	bottom: 2px;
+	bottom: 25px;
+	z-index: 1;
 }
 
 .activity-title {
@@ -470,8 +471,20 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	text-align: left;
 	height: 50px;
 	position: relative;
+    padding: 5px;
+}
+.activity:hover {
+   background: #0078d7;
 }
 
 .out-box {
 	width: 95%;
+}
+.infobox{
+    width: 90%;
+    background: #e1e2e8;
+}
+
+.link:hover{
+   color: white;
 }

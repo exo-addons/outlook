@@ -13,24 +13,35 @@
             	 <% if ( usersToDisplay.isEmpty() ) { %> <h5  style="font-weight: bolder">&{Outlook.notUser}</h5> 	<% } %>
 			     <% for (user in usersToDisplay) { %>
 			     <div class="ms-PersonaCard-persona-userInfo">
-			     <h4><a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}      &lt;${ user.getEmail()}&gt;</a></h4>
-			     <img class="ms-Persona-image-userInfo" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
+			       <h4><a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}      &lt;${ user.getEmail()}&gt;</a></h4>
+			       <img class="ms-Persona-image-userInfo" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
 			      </div>
-			   	 <div class="text profileInfo">
-			   	 <ul>
-			   	     <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %> <h5 style="font-weight: bolder">&{Outlook.organizationInfo}</h5> 	<% } %>
-			         <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
-			              <li class="ms-TextField-organization">${profileInfo}</li>
-                         <% } %>
-                          <% if (!userInfo.get(user.userName+"business").isEmpty()  ) { %> <h5 style="font-weight: bolder">&{Outlook.businessInfo}</h5>	<% } %>
-                      <% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
-                         	<li class="ms-TextField-businessInfo">${businessInfo}</li>
+			   	  <div class="text profileInfo">
+			    	 <ul>
+			   	      <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %>
+			   	           <div class="ms-Persona-secondaryText infobox">
+			                <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
+			                  <li class="ms-TextField-organization">${profileInfo}</li>
+                            <% } %>
+                           </div>
+                      <% } %>
+                      <% if (!userInfo.get(user.userName+"business").isEmpty()  ) { %>
+                         <h5 style="font-weight: bolder">&{Outlook.businessInfo}</h5>
+                            <div class="ms-Persona-secondaryText infobox">
+                              <% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
+                         	   <li class="ms-TextField-businessInfo ">${businessInfo}</li>
+                              <% } %>
+                             </div>
                           <% } %>
-                           <% if ( !userInfo.get(user.userName+"home").isEmpty()  ) { %>  <h5 style="font-weight: bolder">&{Outlook.homeInfo}</h5> 	<% } %>
-                      <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
-                               <li class="ms-TextField-homeInfo">${homeInfo}</li>
-                           <% } %>
-                           </ul>
+                      <% if ( !userInfo.get(user.userName+"home").isEmpty()  ) { %>
+                            <h5 style="font-weight: bolder">&{Outlook.homeInfo}</h5>
+                             <div class="ms-Persona-secondaryText infobox">
+                              <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
+                                <li class="ms-TextField-homeInfo">${homeInfo}</li>
+                              <% } %>
+                              </div>
+                      <% } %>
+                      </ul>
                    </div>
                   <br>
                  <div class="text-userInfoActivity">
@@ -43,10 +54,10 @@
                                <div class=" activity  ${activity.getType()}">
                                  <ul>
                                 <% if(activity.title != null) { %>
-                               	 <li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np " target="_blank">${activity.title}</a></li>
+                               	 <li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np link " target="_blank">${activity.title}</a></li>
                                		<% } %>
                                	<% if(activity.getBody() != null) { %>
-                               	<li class="ms-ListActivity-primaryText body">${activity.getBody()}</li>
+                               	<li class="ms-ListActivity-primaryText activity-body">${activity.getBody()}</li>
                                	<% } %>
                                	<% if(activity.name != null) { %>
                                	<li class="ms-ListActivity-primaryText name">${activity.name}</li>
