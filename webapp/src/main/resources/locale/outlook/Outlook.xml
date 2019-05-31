@@ -146,13 +146,21 @@
 
     <!-- userInfo -->
     <users>Users</users>
-    <user>User</user>
-    <organizationInfo>Information on the position and department </organizationInfo>
-    <businessInfo>Business profile </businessInfo>
-    <homeInfo>Personal profile </homeInfo>
-    <activityInfo>Latest activity  </activityInfo>
-    <notUser>Sorry, no users found for this email.</notUser>
-    
+   <user>User</user>
+   <organizationInfo>Information on the position and department </organizationInfo>
+   <businessInfo>Business profile </businessInfo>
+   <homeInfo>Personal profile </homeInfo>
+   <activityInfo>Latest activity  </activityInfo>
+   <notUser>Sorry, no intranet users found in this email.</notUser>
+   <employer>Works - </employer>
+   <in> in </in>
+   <of> in the </of>
+   <location>Country/City - </location>
+   <country>Country - </country>
+   <telephone>Telephone number - </telephone>
+   <mail>Email - </mail>
+   <url>Url - </url>
+
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>
       <fileHasNoPath>Error selecting the file: path not found.</fileHasNoPath>

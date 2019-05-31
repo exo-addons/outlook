@@ -5,7 +5,7 @@
     xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
     xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides"
     xsi:type="MailApp">
-    
+
   <Id>$GUID</Id>
   <Version>1.0</Version>
   <ProviderName>eXo Platform SAS</ProviderName>
@@ -64,14 +64,14 @@
 				<DesktopFormFactor>
           <!-- Custom pane in add-ins bar, only applies to read form -->
           <ExtensionPoint xsi:type="CustomPane">
-            <RequestedHeight>450</RequestedHeight> 
+            <RequestedHeight>450</RequestedHeight>
             <SourceLocation resid="readUrl"/>
             <Rule xsi:type="RuleCollection" Mode="Or">
               <Rule xsi:type="ItemIs" ItemType="Message"/>
               <Rule xsi:type="ItemIs" ItemType="AppointmentAttendee"/>
             </Rule>
           </ExtensionPoint>
-          
+
           <!-- Message compose form -->
           <ExtensionPoint xsi:type="MessageComposeCommandSurface">
             <OfficeTab id="TabDefault">
@@ -165,7 +165,7 @@
                   </Items>
                 </Control>
                 <!-- User Info: task pane button -->
-                <!-- Control xsi:type="Button" id="composeUserInfoButton">
+                <Control xsi:type="Button" id="composeUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -181,11 +181,11 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
                   </Action>
-                </Control -->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
-          
+
           <!-- Message read form -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
             <OfficeTab id="TabDefault">
@@ -329,7 +329,7 @@
                   </Items>
                 </Control>
                 <!-- User Info: task pane button -->
-                <!-- Control xsi:type="Button" id="readUserInfoButton">
+                <Control xsi:type="Button" id="readUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -345,7 +345,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoUrl" />
                   </Action>
-                </Control -->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -359,13 +359,13 @@
         <bt:Image id="exo-icon-16" DefaultValue="$BASE_URL/outlook/images/exo-icon-16.png"/>
         <bt:Image id="exo-icon-32" DefaultValue="$BASE_URL/outlook/images/exo-icon-32.png"/>
         <bt:Image id="exo-icon-80" DefaultValue="$BASE_URL/outlook/images/exo-icon-80.png"/>
-        
+
         <bt:Image id="attachment-16" DefaultValue="$BASE_URL/outlook/images/16x16/attachment.png"/>
         <bt:Image id="attachment-24" DefaultValue="$BASE_URL/outlook/images/24x24/attachment.png"/>
         <bt:Image id="attachment-32" DefaultValue="$BASE_URL/outlook/images/32x32/attachment.png"/>
         <bt:Image id="attachment-64" DefaultValue="$BASE_URL/outlook/images/64x64/attachment.png"/>
         <bt:Image id="attachment-80" DefaultValue="$BASE_URL/outlook/images/80x80/attachment.png"/>
-        
+
         <bt:Image id="search-16" DefaultValue="$BASE_URL/outlook/images/16x16/search.png"/>
         <bt:Image id="search-24" DefaultValue="$BASE_URL/outlook/images/24x24/search.png"/>
         <bt:Image id="search-32" DefaultValue="$BASE_URL/outlook/images/32x32/search.png"/>
@@ -389,31 +389,31 @@
         <bt:Image id="create-discussion-32" DefaultValue="$BASE_URL/outlook/images/32x32/create-discussion.png"/>
         <bt:Image id="create-discussion-64" DefaultValue="$BASE_URL/outlook/images/64x64/create-discussion.png"/>
         <bt:Image id="create-discussion-80" DefaultValue="$BASE_URL/outlook/images/80x80/create-discussion.png"/>
-        
+
         <bt:Image id="users-16" DefaultValue="$BASE_URL/outlook/images/16x16/users.png"/>
         <bt:Image id="users-24" DefaultValue="$BASE_URL/outlook/images/24x24/users.png"/>
         <bt:Image id="users-32" DefaultValue="$BASE_URL/outlook/images/32x32/users.png"/>
         <bt:Image id="users-64" DefaultValue="$BASE_URL/outlook/images/64x64/users.png"/>
         <bt:Image id="users-80" DefaultValue="$BASE_URL/outlook/images/80x80/users.png"/>
-        
+
         <bt:Image id="convert-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert.png"/>
         <bt:Image id="convert-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert.png"/>
         <bt:Image id="convert-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert.png"/>
         <bt:Image id="convert-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert.png"/>
         <bt:Image id="convert-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert.png"/>
-        
+
         <bt:Image id="convert-activity-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-activity.png"/>
         <bt:Image id="convert-activity-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-activity.png"/>
         <bt:Image id="convert-activity-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-activity.png"/>
         <bt:Image id="convert-activity-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert-activity.png"/>
         <bt:Image id="convert-activity-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-activity.png"/>
-        
+
         <bt:Image id="convert-wiki-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-wiki.png"/>
         <bt:Image id="convert-wiki-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-wiki.png"/>
         <bt:Image id="convert-wiki-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-wiki.png"/>
         <bt:Image id="convert-wiki-64" DefaultValue="$BASE_URL/outlook/images/64x64/convert-wiki.png"/>
         <bt:Image id="convert-wiki-80" DefaultValue="$BASE_URL/outlook/images/80x80/convert-wiki.png"/>
-        
+
         <bt:Image id="convert-forum-16" DefaultValue="$BASE_URL/outlook/images/16x16/convert-forum.png"/>
         <bt:Image id="convert-forum-24" DefaultValue="$BASE_URL/outlook/images/24x24/convert-forum.png"/>
         <bt:Image id="convert-forum-32" DefaultValue="$BASE_URL/outlook/images/32x32/convert-forum.png"/>
@@ -422,7 +422,7 @@
       </bt:Images>
       <bt:Urls>
         <!-- bt:Url id="functionFile" DefaultValue="$BASE_URL/outlook/login/menu;"/ -->
-        
+
         <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/intranet/outlook"/>
         <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=search"/>
         <bt:Url id="userInfoUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfo"/>
@@ -438,12 +438,12 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="appDescription" DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">
-          <bt:Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook" /> 
+          <bt:Override Locale="fr-fr" Value="Interagissez avec votre intranet collaboratif eXo directement depuis Outlook" />
         </bt:String>
         <bt:String id="groupLabel" DefaultValue="$DISPLAY_NAME">
           <bt:Override Locale="fr-fr" Value="$DISPLAY_NAME" />
         </bt:String>
-        
+
         <!-- Common -->
         <bt:String id="searchLabel" DefaultValue="Search">
           <bt:Override Locale="fr-fr" Value="Rechercher" />
@@ -467,7 +467,7 @@
           <bt:Override Locale="fr-fr" Value="Démarrer une Conversation" />
         </bt:String>
         <bt:String id="startDiscussionTipTitle" DefaultValue="Start a discussion in the forums">
-          <bt:Override Locale="fr-fr" Value="Démarrer une discussion dans les forums" />	
+          <bt:Override Locale="fr-fr" Value="Démarrer une discussion dans les forums" />
         </bt:String>
         <bt:String id="userInfoLabel" DefaultValue="People">
           <bt:Override Locale="fr-fr" Value="Personnes" />
@@ -475,7 +475,7 @@
         <bt:String id="userInfoTipTitle" DefaultValue="Find participants among Intranet members">
           <bt:Override Locale="fr-fr" Value="Trouvez vos contacts parmis les membre de l'intranet" />
         </bt:String>
-        
+
         <!-- Compose mode -->
         <bt:String id="addAttachmentLabel" DefaultValue="Attach a Document">
           <bt:Override Locale="fr-fr" Value="Attacher un document" />
@@ -483,7 +483,7 @@
         <bt:String id="addAttachmentTipTitle" DefaultValue="Attach a document from eXo">
           <bt:Override Locale="fr-fr" Value="Attachez un document depuis eXo" />
         </bt:String>
-        
+
         <!-- Read mode -->
         <bt:String id="saveAttachmentLabel" DefaultValue="Save Attachments">
           <bt:Override Locale="fr-fr" Value="Enregistrer pièces jointes" />
@@ -533,12 +533,12 @@
         <bt:String id="userInfoTipDescription" DefaultValue="Open the pane to show intranet people">
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour voir les personnes de l'intranet" />
         </bt:String>
-        
+
         <!-- Compose mode -->
         <bt:String id="addAttachmentTipDescription" DefaultValue="Open the pane to attach eXo documents to the message">
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour sélectionner les documents eXo à attacher en pièce jointe" />
         </bt:String>
-        
+
         <!-- Read mode -->
         <bt:String id="saveAttachmentTipDescription" DefaultValue="Open the pane to save attachments in eXo documents.">
           <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour enregistrer les pièces jointes dans eXo" />

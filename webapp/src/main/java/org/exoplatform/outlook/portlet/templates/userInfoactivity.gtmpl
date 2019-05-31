@@ -20,16 +20,23 @@
 			    	 <ul>
 			   	      <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %>
 			   	           <div class="ms-Persona-secondaryText infobox">
+			   	            <li class="ms-TextField-organization">&{Outlook.employer}
 			                <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
-			                  <li class="ms-TextField-organization">${profileInfo}</li>
+			                 <% if ( profileInfo.startsWith("Job" )) { %> ${ profileInfo.substring(3)} <% } %>
+			                  <% if ( profileInfo.startsWith("Employer" )) { %> &{Outlook.in} ${ profileInfo.substring(8)} <% } %>
+			                  <% if ( profileInfo.startsWith("Department" )) { %> &{Outlook.of} ${ profileInfo.substring(10)} <% } %>
                             <% } %>
+                            </li>
                            </div>
                       <% } %>
                       <% if (!userInfo.get(user.userName+"business").isEmpty()  ) { %>
                          <h5 style="font-weight: bolder">&{Outlook.businessInfo}</h5>
                             <div class="ms-Persona-secondaryText infobox">
                               <% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
-                         	   <li class="ms-TextField-businessInfo ">${businessInfo}</li>
+                              <% if ( businessInfo.startsWith("Country" )) { %>  <li class="ms-TextField-businessInfo ">&{Outlook.country} ${ businessInfo.substring(7)}</li>  <% } %>
+                              <% if ( businessInfo.startsWith("location" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.location} ${ businessInfo.substring(8)}</li>  <% } %>
+                               <% if ( businessInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.telephone} ${ businessInfo.substring(9)}</li>  <% } %>
+                                <% if ( businessInfo.startsWith("Email" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.mail} ${ businessInfo.substring(5)}</li>  <% } %>
                               <% } %>
                              </div>
                           <% } %>
@@ -37,7 +44,9 @@
                             <h5 style="font-weight: bolder">&{Outlook.homeInfo}</h5>
                              <div class="ms-Persona-secondaryText infobox">
                               <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
-                                <li class="ms-TextField-homeInfo">${homeInfo}</li>
+                                   <% if ( homeInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.telephone} ${ homeInfo.substring(9)}</li>  <% } %>
+                                   <% if ( homeInfo.startsWith("Email" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.mail} ${ homeInfo.substring(5)}</li>  <% } %>
+                                   <% if ( homeInfo.startsWith("Url" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.url} ${ homeInfo.substring(3)}</li>  <% } %>
                               <% } %>
                               </div>
                       <% } %>
@@ -91,6 +100,3 @@
 		</div>
 	</div>
 </div>
-
-
-

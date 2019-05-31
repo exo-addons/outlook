@@ -1101,45 +1101,46 @@ public class Outlook {
                             String foundUserName = user.getUserName();
                             OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
                             userInfoMap = outlook.getUserInfoMap(foundUserName);
-                            if (userInfoMap.get("user.employer") != null) {
-                                profileInfo.add("Employer - " + userInfoMap.get("user.employer") + ";");
-                            }
                             if (userInfoMap.get("user.jobtitle") != null) {
-                                profileInfo.add("Job title - " + userInfoMap.get("user.jobtitle") + ";");
-                            }
-                            if (userInfoMap.get("user.department") != null) {
-                                profileInfo.add("Department - " + userInfoMap.get("user.department") + ";");
-                            }
-                            userInfo.put(foundUserName + "profileInfo", profileInfo);
+                                  profileInfo.add("Job" + userInfoMap.get("user.jobtitle"));
+                              }
+                              if (userInfoMap.get("user.employer") != null) {
+                                  profileInfo.add("Employer" + userInfoMap.get("user.employer"));
+                              }
+                              if (userInfoMap.get("user.department") != null) {
+                                  profileInfo.add("Department" + userInfoMap.get("user.department"));
+                              }
+                              userInfo.put(foundUserName + "profileInfo", profileInfo);
 
-                            if (userInfoMap.get("user.business-info.postal.country") != null) {
-                                profileInfoBusiness.add("Country - " + userInfoMap.get("user.business-info.postal.country") + ";");
-                            }
-                            if (userInfoMap.get("user.business-info.postal.city") != null) {
-                                profileInfoBusiness.add("City - " + userInfoMap.get("user.business-info.postal.city") + ";");
-                            }
-                            if (userInfoMap.get("user.business-info.telecom.mobile.number") != null) {
-                                profileInfoBusiness.add("Telephone number - " + userInfoMap.get("user.business-info.telecom.mobile.number") + ";");
-                            }
-                            if (userInfoMap.get("user.business-info.online.email") != null) {
-                                profileInfoBusiness.add("Email - " + userInfoMap.get("user.business-info.online.email") + ";");
-                            }
-                            userInfo.put(foundUserName + "business", profileInfoBusiness);
+                              if (userInfoMap.get("user.business-info.postal.country") != null) {
+                                   if (userInfoMap.get("user.business-info.postal.city") != null) {
+                                          profileInfoBusiness.add("location" + userInfoMap.get("user.business-info.postal.country") +" - "+ userInfoMap.get("user.business-info.postal.city"));
+                                   }  else {
+                                       profileInfoBusiness.add("Country" + userInfoMap.get("user.business-info.postal.country"));
+                                   }
+                              }
+                              if (userInfoMap.get("user.business-info.telecom.mobile.number") != null) {
+                                  profileInfoBusiness.add("Telephone" + userInfoMap.get("user.business-info.telecom.mobile.number"));
+                              }
+                              if (userInfoMap.get("user.business-info.online.email") != null) {
+                                  profileInfoBusiness.add("Email" + userInfoMap.get("user.business-info.online.email"));
+                              }
+                              userInfo.put(foundUserName + "business", profileInfoBusiness);
 
-                            if (userInfoMap.get("user.home-info.online.email") != null) {
-                                profileInfoHome.add("Email - " + userInfoMap.get("user.home-info.online.email") + ";");
-                            }
-                            if (userInfoMap.get("user.home-info.telecom.telephone.number") != null) {
-                                profileInfoHome.add("Telephone number - " + userInfoMap.get("user.home-info.telecom.telephone.number") + ";");
-                            }
-                            if (userInfoMap.get("user.home-info.telecom.mobile.number") != null) {
-                                profileInfoHome.add("Mobile number - " + userInfoMap.get("user.home-info.telecom.mobile.number") + ";");
-                            }
-                            if (userInfoMap.get("user.home-info.online.uri") != null) {
-                                profileInfoHome.add("Url - " + userInfoMap.get("user.home-info.online.uri") + ";");
-                            }
-                            userInfo.put(foundUserName + "home", profileInfoHome);
-
+                              if (userInfoMap.get("user.home-info.online.email") != null) {
+                                  profileInfoHome.add("Email" + userInfoMap.get("user.home-info.online.email"));
+                              }
+                              if (userInfoMap.get("user.home-info.telecom.telephone.number") != null) {
+                                  profileInfoHome.add("Telephone" + userInfoMap.get("user.home-info.telecom.telephone.number"));
+                              }
+                              if (userInfoMap.get("user.home-info.telecom.mobile.number") != null) {
+                                  profileInfoHome.add("Telephone" + userInfoMap.get("user.home-info.telecom.mobile.number"));
+                              }
+                              if (userInfoMap.get("user.home-info.online.uri") != null) {
+                                  profileInfoHome.add("Url" + userInfoMap.get("user.home-info.online.uri"));
+                              }
+                              userInfo.put(foundUserName + "home", profileInfoHome);
+                              
                             RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
                             if (activity.getSize() > 0) {
                                 List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
