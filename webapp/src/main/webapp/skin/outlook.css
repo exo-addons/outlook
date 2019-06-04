@@ -485,9 +485,5 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .link:hover{
-    color: white;
-}
-
-.user-info-persona{
-    position: relative;
+       color: white;
 }
