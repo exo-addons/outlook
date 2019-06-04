@@ -3,100 +3,94 @@
 #{param name=userInfoMap/}
 #{param name=userInfo/}
 <div class="ms-Grid">
-	<div id="outlook-userInfo" class="row-fluid">
-	 <div class="ms-Grid-col out-box ms-u-md8 ms-u-lg8 ms-TextField">
-		<div class="text-centered">
-			 <% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.user}</h4>
-					<% } else { %><h4>&{Outlook.users}</h4> 	<% } %>
-			</div>
-            <div class="ms-PersonaCard-userInfo">
-            	 <% if ( usersToDisplay.isEmpty() ) { %> <h5  style="font-weight: bolder">&{Outlook.notUser}</h5> 	<% } %>
-			     <% for (user in usersToDisplay) { %>
-			     <div class="ms-PersonaCard-persona-userInfo">
-			       <h4><a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">${user.displayName}      &lt;${ user.getEmail()}&gt;</a></h4>
-			       <img class="ms-Persona-image-userInfo" title="${user.userName}" alt="${user.displayName}" src="/rest/v1/social/users/${user.userName}/avatar">
-			      </div>
-			   	  <div class="text profileInfo">
-			    	 <ul>
-			   	      <% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %>
-			   	           <div class="ms-Persona-secondaryText infobox">
-			   	            <li class="ms-TextField-organization">&{Outlook.employer}
-			                <% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
-			                 <% if ( profileInfo.startsWith("Job" )) { %> ${ profileInfo.substring(3)} <% } %>
-			                  <% if ( profileInfo.startsWith("Employer" )) { %> &{Outlook.in} ${ profileInfo.substring(8)} <% } %>
-			                  <% if ( profileInfo.startsWith("Department" )) { %> &{Outlook.of} ${ profileInfo.substring(10)} <% } %>
-                            <% } %>
-                            </li>
-                           </div>
-                      <% } %>
-                      <% if (!userInfo.get(user.userName+"business").isEmpty()  ) { %>
-                         <h5 style="font-weight: bolder">&{Outlook.businessInfo}</h5>
-                            <div class="ms-Persona-secondaryText infobox">
-                              <% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
-                              <% if ( businessInfo.startsWith("Country" )) { %>  <li class="ms-TextField-businessInfo ">&{Outlook.country} ${ businessInfo.substring(7)}</li>  <% } %>
-                              <% if ( businessInfo.startsWith("location" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.location} ${ businessInfo.substring(8)}</li>  <% } %>
-                               <% if ( businessInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.telephone} ${ businessInfo.substring(9)}</li>  <% } %>
-                                <% if ( businessInfo.startsWith("Email" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.mail} ${ businessInfo.substring(5)}</li>  <% } %>
-                              <% } %>
-                             </div>
-                          <% } %>
-                      <% if ( !userInfo.get(user.userName+"home").isEmpty()  ) { %>
-                            <h5 style="font-weight: bolder">&{Outlook.homeInfo}</h5>
-                             <div class="ms-Persona-secondaryText infobox">
-                              <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
-                                   <% if ( homeInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.telephone} ${ homeInfo.substring(9)}</li>  <% } %>
-                                   <% if ( homeInfo.startsWith("Email" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.mail} ${ homeInfo.substring(5)}</li>  <% } %>
-                                   <% if ( homeInfo.startsWith("Url" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.url} ${ homeInfo.substring(3)}</li>  <% } %>
-                              <% } %>
-                              </div>
-                      <% } %>
-                      </ul>
-                   </div>
-                  <br>
-                 <div class="text-userInfoActivity">
-                  <% if ( userInfo.get(user.userName+"idActivity")!= null ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4>
-                   <div class="flexauto">
-                  <% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
-                  <% if ( listActivity!= null ) { %>
-                    <% for (activity in listActivity) { %>
-                        <% if (activity.id.equals(idActivity )) { %>
-                               <div class=" activity  ${activity.getType()}">
-                                 <ul>
-                                <% if(activity.title != null) { %>
-                               	 <li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np link " target="_blank">${activity.title}</a></li>
-                               		<% } %>
-                               	<% if(activity.getBody() != null) { %>
-                               	<li class="ms-ListActivity-primaryText activity-body">${activity.getBody()}</li>
-                               	<% } %>
-                               	<% if(activity.name != null) { %>
-                               	<li class="ms-ListActivity-primaryText name">${activity.name}</li>
-                               	<% } %>
-                               	<% if(activity.getSummary() != null) { %>
-                               	<li class="ms-ListActivity-primaryText Summary">${activity.getSummary()}</li>
-                               	<% } %>
-                               	<% if(activity.getStreamSourceUrl() != null) { %>
-                                <li class="ms-ListActivity-primaryText StreamSourceUrl">${activity.getStreamSourceUrl()}</li>
-                                <% } %>
-                                <% if(activity.getStreamUrl() != null) { %>
-                                <li class="ms-ListActivity-primaryText StreamUrl">${activity.getStreamUrl()}</li>
-                                <% } %>
-                                <% if(activity.getActivityStream().getPermaLink() != null) { %>
-                                <li class="ms-ListActivity-primaryText PermaLink">${activity.getActivityStream().getPermaLink()}</li>
-                                <% } %>
-                                </ul>
-                                 <% if(activity.getPostedTime() != null) { %>
-                                  <time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(activity.getPostedTime ()) }</time>
-                                  <% } %>
-                               	   </div>
-                              <% } %>
-                         <% } %>
-                        <% } %>
-                      <% } %>
-                     </div>
-                    <% } %>
-                 </div>
-             <% } %>
-          </div>
-		</div>
+<div id="outlook-userInfo" class="row-fluid">
+<div class="ms-Grid-col out-box ms-u-md8 ms-u-lg8 ms-TextField">
+	<div class="text-centered">
+	<% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.user}</h4>
+		<% } else { %><h4>&{Outlook.users}</h4> 	<% } %>
 	</div>
+	<% for (user in usersToDisplay) { %>
+	  <div class="ms-PersonaCard user-info-persona">
+		<div class="ms-PersonaCard-persona ">
+			<div class="ms-Persona ms-Persona--xl">
+			  <div class="ms-Persona-imageArea">
+				<div class="ms-Persona-initials ms-Persona-initials--purple"> <% user.getFirstName().substring(1,2)%> <% user.getLastName().substring(1,2)%></div>
+				 <img class="ms-Persona-image" src="/rest/v1/social/users/${user.userName}/avatar">
+			  </div>
+			  <div class="ms-Persona-details">
+			   <div class="ms-Persona-primaryText"> ${user.displayName} </div>
+				<% if ( !userInfo.get(user.userName+"profileInfo").isEmpty()  ) { %>
+					<div class="ms-Persona-secondaryText">
+						<% for (String profileInfo in userInfo.get(user.userName+"profileInfo")) { %>
+						 <% if ( profileInfo.startsWith("Job" )) { %> ${ profileInfo.substring(3)} <% } %>
+						 <% if ( profileInfo.startsWith("Employer" )) { %> &{Outlook.in} ${ profileInfo.substring(8)} <% } %>
+						 <% if ( profileInfo.startsWith("Department" )) { %> &{Outlook.of} ${ profileInfo.substring(10)} <% } %>
+						<% } %>
+					 </div>
+				<% } %>
+			  </div>
+			</div>
+		  </div>
+		  <ul class="ms-PersonaCard-actions">
+			<li id="chat" class="ms-PersonaCard-action">
+			  <i class="icon-users"></i>
+			</li>
+			<li id="phone" class="ms-PersonaCard-action is-active">
+			  <i class="ms-Icon ms-Icon--Phone"></i>
+			</li>
+			<li id="video" class="ms-PersonaCard-action">
+			  <i class="ms-Icon ms-Icon--Video"></i>
+			</li>
+			<li id="mail" class="ms-PersonaCard-action">
+			  <i class="ms-Icon ms-Icon--Mail"></i>
+			</li>
+			<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="View profile in eXo"> <a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank"> View in eXo </a> </li>
+			<li id="org" class="ms-PersonaCard-action ms-PersonaCard-orgChart">
+			  <i class="ms-Icon ms-Icon--Org"></i>
+			</li>
+		  </ul>
+			<div class="ms-PersonaCard-actionDetailBox">
+			 <ul id="detailList" class="ms-PersonaCard-detailChat">
+			  <li id="chat" class="ms-PersonaCard-actionDetails detail-1">
+				  <div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">Lync:</span>
+				  <a class="ms-Link" href="/webrtc/call/p/root@${user.userName}" target="_blank">Start Exo call</a>
+					   <a class="ms-Link" href="/portal/intranet/chat" target="_blank">Start chat</a>
+				   <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="chat-button btn" href="/portal/intranet/chat" target="_blank"> Start Exo chat  </a>
+				 </div></li>
+				  <li id="phone" class="ms-PersonaCard-actionDetails detail-2">
+						<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">Personal:</span> 555.206.2443</div>
+													<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">Work:</span> 555.929.8240</div>
+												</li>
+								<li id="video" class="ms-PersonaCard-actionDetails detail-3">
+							<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">Skype:</span> <a class="ms-Link" href="#">Start Skype call</a></div>
+						</li>
+									<li id="mail" class="ms-PersonaCard-actionDetails detail-4">
+									 <% if (!userInfo.get(user.userName+"business").isEmpty()  ) { %>
+				<div class="ms-PersonaCard-detailLine">
+				<span class="ms-PersonaCard-detailLabel">&{Outlook.businessInfo}</span>
+					<% for (String businessInfo in userInfo.get(user.userName+"business")) { %>
+						<% if ( businessInfo.startsWith("Country" )) { %>  <li class="ms-TextField-businessInfo ">&{Outlook.country} ${ businessInfo.substring(7)}</li>  <% } %>
+						<% if ( businessInfo.startsWith("location" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.location} ${ businessInfo.substring(8)}</li>  <% } %>
+						<% if ( businessInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-businessInfo "> &{Outlook.telephone} ${ businessInfo.substring(9)}</li>  <% } %>
+						 <% if ( businessInfo.startsWith("Email" )) { %>    <a class="ms-Link" href="mailto:${ businessInfo.substring(5)}" >${ businessInfo.substring(5)} </a>     <% } %>
+					  <% } %>
+				  </div>
+			  <% } %>
+					<% if ( !userInfo.get(user.userName+"home").isEmpty()  ) { %>
+				 <div class="ms-PersonaCard-detailLine">
+				  <span class="ms-PersonaCard-detailLabel">&{Outlook.homeInfo}</span>
+				  <% for (String homeInfo in userInfo.get(user.userName+"home")) { %>
+					   <% if ( homeInfo.startsWith("Telephone" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.telephone} ${ homeInfo.substring(9)}</li>  <% } %>
+					   <% if ( homeInfo.startsWith("Email" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.mail} ${ homeInfo.substring(5)}</li>  <% } %>
+					   <% if ( homeInfo.startsWith("Url" )) { %>  <li class="ms-TextField-homeInfo "> &{Outlook.url} ${ homeInfo.substring(3)}</li>  <% } %>
+				  <% } %>
+				  </div>
+				<% } %>
+				</li>
+			</ul>
+			</div>
+			</div>
+		<% } %>
+</div>
+</div>
 </div>
