@@ -70,6 +70,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.entity.ContentType;
+import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.relationship.model.Relationship;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
@@ -145,6 +147,7 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
@@ -164,6 +167,8 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
+
+import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
 
 /**
  * Service implementing {@link OutlookService} and {@link Startable}.<br>
@@ -507,6 +512,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     /** The social activity manager. */
     protected final ActivityManager socialActivityManager;
 
+    /** The social activity manager. */
+    protected final RelationshipManager socialRelationshipManager;
+
+
     /**
      * Instantiates a new user impl.
      *
@@ -518,6 +527,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       super(email, displayName, userName);
       this.socialIdentityManager = socialIdentityManager();
       this.socialActivityManager = socialActivityManager();
+      this.socialRelationshipManager = socialRelationshipManager();
     }
 
     /**
@@ -638,7 +648,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 	  RealtimeListAccess<ExoSocialActivity> activity =socialActivityManager.getActivitiesWithListAccess(userIdentity);
       return activity;
     }
+
+    @Override
+    public Profile getProfileForName(String name) throws Exception {
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
+
+      return userIdentity.getProfile();
+    }
+
+    @Override
+    public  List<Relationship>  getRelationships(String name) throws Exception {
+      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
+      List<Relationship> relationships =socialRelationshipManager.getRelationshipsByStatus(userIdentity,CONFIRMED, 0, 0  );
+      return relationships;
+    }
+
   }
+
+
+
 
   /**
    * The Class OutlookSpaceImpl.
@@ -1535,6 +1563,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     try {
       Collection<UserProfile> userProfiles = new LinkedList<>();
       userProfiles = organization.getUserProfileHandler().findUserProfiles();
+
       for (UserProfile userProfile : userProfiles ){
         if (userProfile.getUserName().equals( name) ) {
           userInfoMap = userProfile.getUserInfoMap();
@@ -1989,6 +2018,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   protected ActivityManager socialActivityManager() {
     return (ActivityManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ActivityManager.class);
+  }
+
+  /**
+   * Social activity manager.
+   *
+   * @return the activity manager
+   */
+  protected RelationshipManager socialRelationshipManager() {
+    return (RelationshipManager) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RelationshipManager.class);
   }
 
   /**

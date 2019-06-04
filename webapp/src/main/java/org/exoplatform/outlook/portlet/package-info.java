@@ -21,8 +21,8 @@
 @Bindings({ @Binding(value = OutlookService.class), @Binding(value = OutlookTokenService.class),
     @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class) })
 
-@Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.min.css", location = AssetLocation.SERVER),
-    @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.min.css", location = AssetLocation.SERVER),
+@Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.css", location = AssetLocation.SERVER),
+    @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "outlook.css", value = "skin/outlook.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "jquery-ui.css", value = "skin/jquery-ui.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "jquery-ui.structure.css", value = "skin/jquery-ui.structure.min.css", location = AssetLocation.SERVER),
