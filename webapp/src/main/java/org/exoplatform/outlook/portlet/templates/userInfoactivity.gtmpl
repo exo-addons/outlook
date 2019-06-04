@@ -3,7 +3,7 @@
 #{param name=userInfoMap/}
 #{param name=userInfo/}
 <div class="ms-Grid">
-<div id="outlook-userInfo" class="row-fluid">
+<div id="outlook-usersInfo" class="row-fluid">
 <div class="ms-Grid-col out-box ms-u-md8 ms-u-lg8 ms-TextField">
 	<div class="text-centered">
 	<% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.user}</h4>
