@@ -22,12 +22,9 @@ package org.exoplatform.outlook;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.wiki.mow.api.Page;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * Office user API.
@@ -135,9 +132,5 @@ public abstract class OutlookUser extends OutlookEmail {
    */
   public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
 
-  public abstract RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception;
-
-  public abstract Profile getProfileForName(String name) throws Exception;
-
-    public abstract List<Relationship> getRelationships(String name) throws Exception;
+    public abstract RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception;
 }

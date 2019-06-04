@@ -40,8 +40,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.relationship.model.Relationship;
 import org.exoplatform.web.login.LoginServlet;
 import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
@@ -1080,7 +1078,6 @@ public class Outlook {
     @Resource
     public Response userInfo(String correspondenceEmail) {
         Map<String, LinkedList<String>> userInfo = new HashMap<String, LinkedList<String>>();
-        Map<String, HashMap<String,String>> allUsersInfo = new HashMap<String, HashMap<String, String>>();
         LinkedList<String> idActivity = null;
         LinkedList<String> profileInfo = null;
         LinkedList<String> profileInfoBusiness = null;
@@ -1103,12 +1100,6 @@ public class Outlook {
                             usersToDisplay.add(user);
                             String foundUserName = user.getUserName();
                             OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
-                            Profile exoUserProfile = exoUser.getProfileForName( foundUserName);
-                            Map<String, Object> profileProperties = exoUserProfile.getProperties();
-                            System.out.println(  profileProperties.keySet());
-                            System.out.println(  profileProperties.values()   );
-                            List<Relationship> usergetRelationships = exoUser.getRelationships(foundUserName);
-                            System.out.println(  usergetRelationships   );
                             userInfoMap = outlook.getUserInfoMap(foundUserName);
                             if (userInfoMap.get("user.jobtitle") != null) {
                                   profileInfo.add("Job" + userInfoMap.get("user.jobtitle"));

@@ -351,18 +351,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				function sendEmails(correspondenceEmail) {
 					var $userInfo = $("#outlook-userInfo");
-					$userInfo.jzLoad("Outlook.userInfo()", {
+					var $document = $userInfo.find("#outlook-userInfo-text");
+					$document.jzLoad("Outlook.userInfo()", {
 						correspondenceEmail : correspondenceEmail
 					}, function(response, status, jqXHR) {
 						if (status == "error") {
 							showError(jqXHR);
 						} else {
 							clearError();
-							  $(document).ready(function() {
-                                     if ($.fn.PersonaCard) {
-                                         $('.ms-PersonaCard').PersonaCard();
-                                     }
-                                 });
 						}
 					});
 				}
