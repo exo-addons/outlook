@@ -44,13 +44,13 @@ body {
 		left: auto;
 		max-width: 100%;
 	}
-	#outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items,
-		#outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
+	#outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items, #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
 		position: absolute;
 	}
 }
 
 /* Error banner (common) */
+
 .error-message>.ms-MessageBanner {
 	min-width: 290px;
 	background-color: #fde7e9;
@@ -256,8 +256,7 @@ div.form-buttons {
 	right: 5px !important;
 }
 
-#documentSelector .ms-ListItem-primaryText, #attach .documents .ms-ListItem-primaryText,
-	#attached .documents .ms-ListItem-primaryText {
+#documentSelector .ms-ListItem-primaryText, #attach .documents .ms-ListItem-primaryText, #attached .documents .ms-ListItem-primaryText {
 	padding-right: 0px;
 }
 
@@ -287,8 +286,7 @@ div.form-buttons {
 }
 
 /* This style adapted from .ms-ListItem.isFolder.is-selected */
-.documentSelectorContent .ms-ListItem.isFolder:before,
-	.documentSelectorContent .ms-ListItem.isFolder:hover:before {
+.documentSelectorContent .ms-ListItem.isFolder:before, .documentSelectorContent .ms-ListItem.isFolder:hover:before {
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 	display: inline-block;
@@ -338,12 +336,10 @@ div.form-buttons {
 	left: 0;
 	top: 0;
 	background: linear-gradient(transparent 25px, white);
-	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px,
-		white);
+	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px, white);
 }
 
-.messageEditor, .messageEditorContainer>.messageText, .statusText,
-	.topicText {
+.messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
 	height: 200px;
 	overflow: hidden;
 	padding: 0px;
@@ -365,12 +361,12 @@ div.messageSubject {
 
 .messageText>iframe, .messageEditor>iframe {
 	width: 100%;
-	height: 100%;
-}
+  height: 100%;
+} 
 
 .messageEditor>iframe {
-	-ms-overflow-style: -ms-autohiding-scrollbar;
-	overflow: hidden;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: hidden;
 }
 
 .statusText, .topicText {
@@ -441,6 +437,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .activity-body {
+
 	font-style: oblique;
 	margin-left: 5px;
 }
@@ -450,7 +447,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	overflow: hidden;
 	position: absolute;
 	right: 8px;
-	font-size: 11px;
+	font-size: 11px;	
 	width: 80px;
 	bottom: 25px;
 	z-index: 1;
@@ -468,27 +465,28 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .activity {
-	background: #ffffff;
+	background: #f4f4f4;
 	border: 1px double white;
 	text-align: left;
 	height: 50px;
 	position: relative;
-	padding: 5px;
+        padding: 5px;
 }
-
 .activity:hover {
-	background: #edebe9;
+       background: #0078d7;
 }
 
 .out-box {
 	width: 95%;
 }
-
-.infobox {
-	width: 90%;
-	background: #e1e2e8;
+.infobox{
+        width: 90%;
+        background: #e1e2e8;
 }
 
-.a-link:hover {
-	color: #0078d7;
+.link:hover{
+       color: white;
+}
+.user-info-persona{
+	position: relative;
 }
