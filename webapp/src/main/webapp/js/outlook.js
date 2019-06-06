@@ -330,7 +330,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						if (from.emailAddress != null){
 							correspondenceEmail =from.emailAddress ;
 							console.log("From Email : " + correspondenceEmail);
-						} sendEmails(correspondenceEmail);
+						}
+						getUserInfo(correspondenceEmail);
 					} else {
 						Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
 							if (asyncResult.status === "succeeded") {
@@ -339,7 +340,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									correspondenceEmail += jsonObj[i].emailAddress + ",";
 								}
 								console.log("Email to  " + correspondenceEmail);
-								sendEmails(correspondenceEmail)
+								getUserInfo(correspondenceEmail)
 							} else {
 								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
 										+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
@@ -349,7 +350,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					}
 				}
 
-				function sendEmails(correspondenceEmail) {
+				function getUserInfo(correspondenceEmail) {
 					var $userInfo = $("#outlook-userInfo");
 					$userInfo.jzLoad("Outlook.userInfo()", {
 						correspondenceEmail : correspondenceEmail

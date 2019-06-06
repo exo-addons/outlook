@@ -1078,16 +1078,16 @@ public class Outlook {
      */
     @Ajax
     @Resource
-    public Response userInfo(String correspondenceEmail) {
-        Map<String, LinkedList<String>> userInfo = new HashMap<String, LinkedList<String>>();
-        Map<String, HashMap<String,String>> allUsersInfo = new HashMap<String, HashMap<String, String>>();
-        LinkedList<String> idActivity = null;
-        LinkedList<String> profileInfo = null;
-        LinkedList<String> profileInfoBusiness = null;
-        LinkedList<String> profileInfoHome = null;
-        List<ExoSocialActivity> listActivity = null;
-        LinkedList<User> usersToDisplay = new LinkedList<>();
-        Map<String, String> userInfoMap = new HashMap<String, String>();
+    public Response userInfo(String correspondenceEmail,RequestContext context) {
+        String nameOwner = context.getSecurityContext().getRemoteUser();
+        Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
+        Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
+        List<ExoSocialActivity> listActivity = new LinkedList<>();
+        List<User> usersToDisplay = new LinkedList<>();
+        List<Profile> profileToDisplay = new LinkedList<>();
+        List<Profile> profileToRelationship = new LinkedList<>();
+        List<String> idActivity = null;
+        List<String> profileRelationshipName = null;
         try {
             if (correspondenceEmail != null) {
                 String[] allemails = correspondenceEmail.split(",");
@@ -1096,62 +1096,32 @@ public class Outlook {
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {
                         if (user.getEmail().equals(allemails[y].toLowerCase())) {
                             idActivity = new LinkedList<>();
-                            profileInfo = new LinkedList<>();
-                            profileInfoBusiness = new LinkedList<>();
-                            profileInfoHome = new LinkedList<>();
-                            listActivity = new LinkedList<>();
-                            usersToDisplay.add(user);
+                            profileRelationshipName = new LinkedList<>();
                             String foundUserName = user.getUserName();
                             OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
-                            Profile exoUserProfile = exoUser.getProfileForName( foundUserName);
-                            Map<String, Object> profileProperties = exoUserProfile.getProperties();
+                            Profile exoUserProfile = exoUser.getProfileForName(foundUserName);
                             List<Relationship> usergetRelationships = exoUser.getRelationships(foundUserName);
-
-                            userInfoMap = outlook.getUserInfoMap(foundUserName);
-                            if (userInfoMap.get("user.jobtitle") != null) {
-                                  profileInfo.add("Job" + userInfoMap.get("user.jobtitle"));
-                              }
-                              if (userInfoMap.get("user.employer") != null) {
-                                  profileInfo.add("Employer" + userInfoMap.get("user.employer"));
-                              }
-                              if (userInfoMap.get("user.department") != null) {
-                                  profileInfo.add("Department" + userInfoMap.get("user.department"));
-                              }
-                              userInfo.put(foundUserName + "profileInfo", profileInfo);
-
-                              if (userInfoMap.get("user.business-info.postal.country") != null) {
-                                   if (userInfoMap.get("user.business-info.postal.city") != null) {
-                                          profileInfoBusiness.add("location" + userInfoMap.get("user.business-info.postal.country") +" - "+ userInfoMap.get("user.business-info.postal.city"));
-                                   }  else {
-                                       profileInfoBusiness.add("Country" + userInfoMap.get("user.business-info.postal.country"));
-                                   }
-                              }
-                              if (userInfoMap.get("user.business-info.telecom.mobile.number") != null) {
-                                  profileInfoBusiness.add("Telephone" + userInfoMap.get("user.business-info.telecom.mobile.number"));
-                              }
-                              if (userInfoMap.get("user.business-info.online.email") != null) {
-                                  profileInfoBusiness.add("Email" + userInfoMap.get("user.business-info.online.email"));
-                              }
-                              userInfo.put(foundUserName + "business", profileInfoBusiness);
-
-                              if (userInfoMap.get("user.home-info.online.email") != null) {
-                                  profileInfoHome.add("Email" + userInfoMap.get("user.home-info.online.email"));
-                              }
-                              if (userInfoMap.get("user.home-info.telecom.telephone.number") != null) {
-                                  profileInfoHome.add("Telephone" + userInfoMap.get("user.home-info.telecom.telephone.number"));
-                              }
-                              if (userInfoMap.get("user.home-info.telecom.mobile.number") != null) {
-                                  profileInfoHome.add("Telephone" + userInfoMap.get("user.home-info.telecom.mobile.number"));
-                              }
-                              if (userInfoMap.get("user.home-info.online.uri") != null) {
-                                  profileInfoHome.add("Url" + userInfoMap.get("user.home-info.online.uri"));
-                              }
-                              userInfo.put(foundUserName + "home", profileInfoHome);
-                              
+                                profileToDisplay.add(exoUserProfile);
+                                usersToDisplay.add(user);
+                                usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
+                            for (Relationship relationship : usergetRelationships) {
+                                if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
+                                    if( !profileToRelationship.contains(relationship.getSender().getProfile()) ) {
+                                        profileToRelationship.add(relationship.getSender().getProfile());
+                                    }
+                                    profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
+                                } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(foundUserName)) {
+                                    if( !profileToRelationship.contains(relationship.getReceiver().getProfile()) ) {
+                                        profileToRelationship.add(relationship.getReceiver().getProfile());
+                                    }
+                                    profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
+                                }
+                            }
+                            userInfo.put(foundUserName + "relationship", profileRelationshipName);
                             RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
                             if (activity.getSize() > 0) {
                                 List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
-                                if (exoSocialActivityList != null  ) {
+                                if (exoSocialActivityList != null) {
                                     listActivity.addAll(exoSocialActivityList);
                                     for (ExoSocialActivity exoSocialActivity : listActivity) {
                                         if (exoSocialActivity.getId() != null) {
@@ -1165,9 +1135,17 @@ public class Outlook {
                     }
                 }
             }
-            return userInfoactivity.with().listActivity(listActivity).usersToDisplay(usersToDisplay).userInfoMap(userInfoMap).userInfo(userInfo).ok();
-        } catch (Throwable e) {
-            LOG.error("Error showing User Activity ", e);
+            return userInfoactivity.with()
+                         .listActivity(listActivity)
+                         .usersToDisplay(usersToDisplay)
+                         .usersInfoMap(usersInfoMap)
+                         .userInfo(userInfo)
+                         .profileToDisplay(profileToDisplay)
+                         .profileToRelationship(profileToRelationship)
+                         .nameOwner(nameOwner)
+                         .ok();
+            } catch (Throwable e) {
+                LOG.error("Error showing User Activity ", e);
             return errorMessage(e.getMessage(), 500);
         }
     }
