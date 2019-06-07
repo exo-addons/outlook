@@ -465,7 +465,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .activity {
-	background: #f4f4f4;
+	background: #ffffff;
 	border: 1px double white;
 	text-align: left;
 	height: 50px;
@@ -473,7 +473,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
         padding: 5px;
 }
 .activity:hover {
-       background: #0078d7;
+       background: #edebe9;
 }
 
 .out-box {
@@ -484,9 +484,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
         background: #e1e2e8;
 }
 
-.link:hover{
-       color: white;
+.a-link:hover{
+       color: #0078d7;
 }
-.user-info-persona{
-	position: relative;
-}
+

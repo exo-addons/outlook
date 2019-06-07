@@ -3426,10 +3426,12 @@
 
 .ms-OrgChart-listItem {
   height: 50px;
-  width: 100%;
+  width: 95%;
   position: relative;
   list-style: none;
-  margin-bottom: 8px;
+  margin: 8px;
+  border-bottom: 1px solid #c8c8c8;
+  padding: 8px
 }
 
 .ms-OrgChart-listItemBtn {
@@ -4629,6 +4631,7 @@
   height: 48px;
   border-radius: 50%;
   z-index: 0;
+  padding: 5px;
 }
 
 @media screen and (-ms-high-contrast: active) {
@@ -5116,7 +5119,7 @@
   animation-fill-mode: both;
   bottom: 0;
   left: 0;
-  position: fixed;
+  position: relative;
   right: 0;
   outline: 1px solid transparent;
 }
@@ -5175,7 +5178,7 @@
   font-size: 17px;
   height: 48px;
   line-height: 48px;
-  padding: 0 10px;
+  padding: 0 5px;
   color: #666666;
   position: relative;
   box-sizing: border-box;
@@ -5300,8 +5303,15 @@
   transition: max-height 0.25s ease;
 }
 
-.ms-PersonaCard-detailOrg .detail-5 {
-  max-height: 300px;
+.ms-PersonaCard-detailPhone .detail-6,
+.ms-PersonaCard-detailVideo .detail-6,
+.ms-PersonaCard-detailMail .detail-6 {
+  max-height: 150px;
+  transition: max-height 0.25s ease;
+}
+.ms-PersonaCard-detailOrg .detail-6 {
+  min-height: 150px;
+  max-height: 350px;
   transition: max-height 0.25s ease;
 }
 
@@ -5381,8 +5391,10 @@
 @media (min-width: 480px) {
   .ms-PersonaCard {
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
-    max-width: 360px;
+    max-width: 90%;
     position: relative;
+    width: 80%;
+    margin: 0 auto;
   }
 }
 
