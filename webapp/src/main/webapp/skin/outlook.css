@@ -446,10 +446,10 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	text-align: right;
 	overflow: hidden;
 	position: absolute;
-	right: 8px;
+	right: 5px;
 	font-size: 11px;	
 	width: 80px;
-	bottom: 25px;
+	bottom: 5px;
 	z-index: 1;
 }
 
@@ -468,9 +468,9 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	background: #ffffff;
 	border: 1px double white;
 	text-align: left;
-	height: 50px;
+	height: 30px;
 	position: relative;
-        padding: 5px;
+    padding: 5px;
 }
 .activity:hover {
        background: #edebe9;

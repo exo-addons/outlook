@@ -61,32 +61,14 @@
 										<% for (activity in listActivity) { %>
 										<% if (activity.id.equals(idActivity )) { %>
 											<div class=" activity  ${activity.getType()}">
-												<ul>
-													<% if(activity.title != null) { %>
-														<li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title}</a></li>
-													<% } %>
-													<% if(activity.getBody() != null) { %>
-														<li class="ms-ListActivity-primaryText activity-body">${activity.getBody()}</li>
-													<% } %>
-													<% if(activity.name != null) { %>
-														<li class="ms-ListActivity-primaryText name">${activity.name}</li>
-													<% } %>
-													<% if(activity.getSummary() != null) { %>
-														<li class="ms-ListActivity-primaryText Summary">${activity.getSummary()}</li>
-													<% } %>
-													<% if(activity.getStreamSourceUrl() != null) { %>
-														<li class="ms-ListActivity-primaryText StreamSourceUrl">${activity.getStreamSourceUrl()}</li>
-													<% } %>
-													<% if(activity.getStreamUrl() != null) { %>
-														<li class="ms-ListActivity-primaryText StreamUrl">${activity.getStreamUrl()}</li>
-													<% } %>
-													<% if(activity.getActivityStream().getPermaLink() != null) { %>
-														<li class="ms-ListActivity-primaryText PermaLink">${activity.getActivityStream().getPermaLink()}</li>
-													<% } %>
-												</ul>
-											<% if(activity.getPostedTime() != null) { %>
-												<time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(activity.getPostedTime ()) }</time>
-											<% } %>
+											    <ul>
+                                                    <% if(activity.title != null) { %>
+                                                        <li class="activity-title"><a href="/portal/intranet/activity?id=${activity.id}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title}</a></li>
+                                                    <% } %>
+                                                    <% if(activity.getPostedTime() != null) { %>
+                                                        <time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(activity.getPostedTime ()) }</time>
+                                                    <% } %>
+											    </ul>
 											</div>
 										<% } %>
 										<% } %>
