@@ -150,13 +150,13 @@
    <inexo> View in eXo  </inexo>
    <activityInfo>Latest activity  </activityInfo>
    <notUser>Sorry, no intranet users found in this email.</notUser>
-   <employer>Works - </employer>
+   <employer>Works  </employer>
    <in> in </in>
    <of> in the </of>
-   <telephone>Telephone numbers - </telephone>
-   <mail>Email - </mail>
-   <chat>Start Exo chat </chat>
-   <vchat>Start Exo video chat </vchat>
+   <telephone>Telephone numbers  </telephone>
+   <mail>Email </mail>
+   <chat>Chat </chat>
+   <vchat>Video chat </vchat>
 
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>

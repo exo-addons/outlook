@@ -1082,10 +1082,10 @@ public class Outlook {
         String nameOwner = context.getSecurityContext().getRemoteUser();
         Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
         Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
-        List<ExoSocialActivity> listActivity = new LinkedList<>();
+        Map<String,ExoSocialActivity> listActivity = new HashMap<>();
         List<User> usersToDisplay = new LinkedList<>();
         List<Profile> profileToDisplay = new LinkedList<>();
-        List<Profile> profileToRelationship = new LinkedList<>();
+        Map<String,Profile> profileToRelationship = new HashMap();
         List<String> idActivity = null;
         List<String> profileRelationshipName = null;
         try {
@@ -1094,9 +1094,9 @@ public class Outlook {
                 ListAccess<User> allExoUser = outlook.getAllExoUsers();
                 for (int y = 0; y < allemails.length; y++) {
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {
-                        if (user.getEmail().equals(allemails[y].toLowerCase())) {
                             idActivity = new LinkedList<>();
                             profileRelationshipName = new LinkedList<>();
+                        if (user.getEmail().equals(allemails[y].toLowerCase())) {
                             String foundUserName = user.getUserName();
                             OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
                             Profile exoUserProfile = exoUser.getProfileForName(foundUserName);
@@ -1104,33 +1104,27 @@ public class Outlook {
                                 profileToDisplay.add(exoUserProfile);
                                 usersToDisplay.add(user);
                                 usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
-                            for (Relationship relationship : usergetRelationships) {
+                            for (Relationship relationship : usergetRelationships.subList(0, Math.min( usergetRelationships.size(),20) ) ) {
                                 if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                    if( !profileToRelationship.contains(relationship.getSender().getProfile()) ) {
-                                        profileToRelationship.add(relationship.getSender().getProfile());
-                                    }
+                                    profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(),relationship.getSender().getProfile());
                                     profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
                                 } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                    if( !profileToRelationship.contains(relationship.getReceiver().getProfile()) ) {
-                                        profileToRelationship.add(relationship.getReceiver().getProfile());
-                                    }
+                                    profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(),relationship.getReceiver().getProfile());
                                     profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
                                 }
                             }
                             userInfo.put(foundUserName + "relationship", profileRelationshipName);
                             RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
                             if (activity.getSize() > 0) {
-                                List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 10);
+                                List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
                                 if (exoSocialActivityList != null) {
-                                    listActivity.addAll(exoSocialActivityList);
-                                    for (ExoSocialActivity exoSocialActivity : listActivity) {
-                                        if (exoSocialActivity.getId() != null) {
+                                    for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
                                             idActivity.add(exoSocialActivity.getId());
-                                        }
+                                            listActivity.put(exoSocialActivity.getId(),exoSocialActivity);
                                     }
-                                    userInfo.put(foundUserName + "idActivity", idActivity);
                                 }
                             }
+                            userInfo.put(foundUserName + "idActivity", idActivity);
                         }
                     }
                 }
