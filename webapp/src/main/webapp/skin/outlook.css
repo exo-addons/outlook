@@ -16,7 +16,7 @@ body {
 }
 
 #outlook-pane {
-	min-height: 460px;
+	min-height: 450px;
 	position: relative;
 }
 
@@ -480,11 +480,109 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	width: 95%;
 }
 .infobox{
-        width: 90%;
-        background: #e1e2e8;
+  width: 90%;
+   background: #e1e2e8;
 }
 
 .a-link:hover{
-       color: #0078d7;
+  color: #0078d7;
 }
 
+.outlook-usersInfo .ms-OrgChart-listItem{
+  height: 50px;
+  width: 95%;
+  position: relative;
+  list-style: none;
+  margin: 8px;
+  border-bottom: 1px solid #c8c8c8;
+  padding: 8px;
+  top: 1px;
+}
+.outlook-usersInfo .ms-PersonaCard {
+  position: relative;
+}
+
+.outlook-usersInfo .ms-PersonaCard-action,
+.ms-PersonaCard-overflow{
+   padding: 0 5px;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailOrg .detail-5 {
+  max-height: 200px;
+}
+
+.ms-PersonaCard-detailOrg,
+.ms-PersonaCard-detailChat {
+  overflow-y: auto;
+}
+
+.ms-PersonaCard-detailPhone .detail-6,
+.ms-PersonaCard-detailVideo .detail-6,
+.ms-PersonaCard-detailMail .detail-6 {
+  min-height: 100px;
+  max-height: 210px;
+  transition: max-height 0.25s ease;
+}
+
+.ms-PersonaCard-detailChat .detail-6,
+.ms-PersonaCard-detailOrg .detail-6 {
+  max-height: 320px;
+  transition: max-height 0.25s ease;
+}
+
+.ms-PersonaCard-actionDetailBox{
+  height: max-content;
+}
+
+
+@media (min-width: 480px) {
+  .outlook-usersInfo .ms-PersonaCard {
+  max-width: 90%;
+  width: 80%;
+  margin: 0 auto;
+  }
+}
+@media (max-width: 479px) {
+  .outlook-usersInfo .ms-Persona-imageArea,
+  .outlook-usersInfo .ms-Persona-image,
+  .outlook-usersInfo .ms-Persona-imageArea,
+  .outlook-usersInfo .ms-Persona-image {
+    min-height: 48px;
+    min-width: 48px;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.outlook-usersInfo .ms-Persona-image{
+  width: 100%;
+  height: auto;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.outlook-usersInfo .ms-PersonaCard-persona .ms-Persona .ms-Persona-image {
+  min-height: 80px;
+  min-width: 80px;
+  width: 100%;
+  height: auto;
+}
+
+.ms-PersonaCard-actionDetailBox-Border{
+  height: 15px;
+  background-image: linear-gradient(to bottom, transparent 30%, #ffffff);
+  position: relative;
+  top: -15px;
+}
+
+.chat-button:hover { 
+  opacity: 0.1;
+}	
+
+.chat-exo-img:hover {
+  width: max-content;
+  background-size: auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(/eXoSkin/skin/images/themes/default/platform/skin/ToolbarContainer/HomeIcon.png);
+}
