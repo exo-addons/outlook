@@ -131,20 +131,16 @@
 									<% } %>
 								<% } %>
 								<p>
-								    <div class="chat-exo-img">
-                                        <a  class="chat-button btn" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
-                                            <span class "callTitle">
-                                            <i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
-                                        </a>
-                                    </div>
+                                    <a  class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
+                                        <span class "callTitle">
+                                        <i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
+                                    </a>
                                 </p>
                                 <p>
-                                    <div class="chat-exo-img">
-                                        <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="chat-button btn" href="/portal/intranet/chat" target="_blank">
-                                             <span class "chat-label-status">
-                                             <i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-                                        </a>
-                                    </div>
+                                    <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
+                                         <span class "chat-label-status">
+                                         <i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
+                                    </a>
 								</p>
 							</div>
 						</li>
