@@ -1106,11 +1106,15 @@ public class Outlook {
                                 usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
                             for (Relationship relationship : usergetRelationships.subList(0, Math.min( usergetRelationships.size(),20) ) ) {
                                 if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                    profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(),relationship.getSender().getProfile());
-                                    profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
+                                    if (!relationship.getSender().getProfile().getProperty("username").toString().equals(nameOwner) ) {
+                                        profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(), relationship.getSender().getProfile());
+                                        profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
+                                    }
                                 } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                    profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(),relationship.getReceiver().getProfile());
-                                    profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
+                                    if (!relationship.getReceiver().getProfile().getProperty("username").toString().equals(nameOwner) ) {
+                                        profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(), relationship.getReceiver().getProfile());
+                                        profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
+                                    }
                                 }
                             }
                             userInfo.put(foundUserName + "relationship", profileRelationshipName);

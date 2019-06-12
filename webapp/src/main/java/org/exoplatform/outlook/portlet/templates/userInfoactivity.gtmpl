@@ -172,7 +172,7 @@
                                                 </div>
                                                 <div class="ms-Persona-details">
                                                     <div class="ms-Persona-primaryText"><font style="vertical-align: inherit;">
-                                                    <a href="/portal/intranet/profile/${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}</a></font></div>
+                                                    <a href="/portal/intranet/profile/${profileToRelationship.get(profileRelationshipName).getProperty("username")}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}</a></font></div>
                                                     <%if ( profileToRelationship.get(profileRelationshipName).getProperty("aboutMe") != null ) { %>
                                                         <div class="ms-Persona-secondaryText"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">${profileToRelationship.get(profileRelationshipName).getProperty("aboutMe")}</font></font></div>
                                                     <% } %>
