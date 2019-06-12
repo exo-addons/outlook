@@ -21,6 +21,9 @@
 */
 %>
 <%
+
+/* Adapted from integration FileUIActivity.gtmpl of PLF 5.2.0 */
+
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
@@ -74,6 +77,8 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
                 <img alt="$ownerName" src="$ownerAvatar"/>
             </a>
         </div>
+        <% /* ============= Added to original method for Outlook origin indication (but it is not visible) ============= */ %>
+        <div class="activityType"><span><i class="uiIconOutlookMail uiIconSocWhite"></i></span></div>
     <%
 }
 
