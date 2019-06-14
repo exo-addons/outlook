@@ -541,7 +541,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           // Since upgrade to Platform 5.2 root of user folder has no user
           // permissions even for read.
           // Node userPublicFolder = userDocs.getParent().getNode("Public");
-          Node sysPublicFolder = systemNode(userDocs.getSession().getWorkspace().getName(), userDocs.getPath()).getNode("Public");
+          Node sysPublicFolder = systemNode(userDocs.getSession().getWorkspace().getName(), userDocs.getPath() + "/Public");
           Node sysMessagesFolder = messagesFolder(sysPublicFolder, localUser, "member:/platform/users");
           Node sysMessageFile = addMessageFile(sysMessagesFolder, message);
           setPermissions(sysMessageFile, localUser, "member:/platform/users");
