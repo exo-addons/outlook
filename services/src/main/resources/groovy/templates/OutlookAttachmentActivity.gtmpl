@@ -81,7 +81,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
 }
 
     def viewActivityTip = _ctx.appRes("UIActivity.msg.ViewActivity");
-    def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");  //new 5.2
+    def deleteActivityTip = _ctx.appRes("UIActivity.msg.DeleteActivity");
     def labelComment = _ctx.appRes("UIActivity.label.Comment");
     def labelCancel = _ctx.appRes("UIActivity.label.Cancel");
     def labelViewAllReplies = _ctx.appRes("UIActivity.label.ViewAllReplies");
@@ -100,16 +100,16 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     def labelClosebutton=StringEscapeUtils.escapeHtml(_ctx.appRes("UIActivity.label.Cancel_Delete_Activity-Button"));
     def labelToDeleteThisComment=StringEscapeUtils.escapeHtml(_ctx.appRes("UIActivity.msg.Are_You_Sure_To_Delete_This_Comment"));
     def labelToDeleteThisActivity=StringEscapeUtils.escapeHtml(_ctx.appRes("UIActivity.msg.Are_You_Sure_To_Delete_This_Activity"));
-    def labelUpdate = _ctx.appRes("UIActivity.label.Update"); //new 5.2
-    def labelEdit = _ctx.appRes("UIActivity.label.Edit"); //new 5.2
-    def labelDelete = _ctx.appRes("UIActivity.label.Delete"); //new 5.2
+    def labelUpdate = _ctx.appRes("UIActivity.label.Update");
+    def labelEdit = _ctx.appRes("UIActivity.label.Edit");
+    def labelDelete = _ctx.appRes("UIActivity.label.Delete");
     def activity = uicomponent.getActivity();
     def streamOwner = activity.getStreamOwner();
     def activityContentTitle = Text.unescapeIllegalJcrChars(activity.title);
 
     def activityStatus = uicomponent.getActivityStatus();
     def activityDeletable = uicomponent.isActivityDeletable();
-    def activityEditable = uicomponent.isActivityEditable(activity); //new 5.2
+    def activityEditable = uicomponent.isActivityEditable(activity);
     def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
     def downloadAllUrl = uicomponent.getDownloadAllLink();
 
@@ -223,8 +223,8 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     }
 
     activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
-    activityUpdatedTime = uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());   //new 5.2
-    activityUpdatedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}", activityUpdatedTime);   //new 5.2
+    activityUpdatedTime = uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
+    activityUpdatedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}", activityUpdatedTime);
     def ownerIdentity = uicomponent.ownerIdentity;
     if (uicomponent.isUserActivity()) {
         ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
@@ -258,7 +258,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     }
 
     uiform.begin();
-    def viewerId = Utils.getViewerIdentity().getId();  //new 5.2
+    def viewerId = Utils.getViewerIdentity().getId();
 %>
     <div class="activityStream uiContentActivity fileActivity multiFilesActivity" id="activityContainer${activity.id}">
         <%addActivityTimeLine(ownerName, ownerUri, ownerAvatar);%>
@@ -327,7 +327,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     <% if (activityStatus != null) { %>
         <div class="description">$activityStatus</div><!--end description-->
     <% } %>
-        <div class="desktop-input clearfix">   //new 5.2
+        <div class="desktop-input clearfix">
             <div class="blastInputPeople hideEffect">
                 <div>
                     <% uicomponent.renderChild(uicomponent.COMPOSER_TEXT_AREA_EDIT_INPUT + activity.id); %>
@@ -394,7 +394,7 @@ for(def index = 0; index < uicomponent.getFilesCount(); index++) {
     def docOpenUri = uicomponent.getCurrentDocOpenUri(index);
     def _documentInfos = openInOfficeConnector.getDocumentInfos(currentNode.getName());
     def remoteEditClass=_documentInfos[1];
-    def remoteEditTitle=_ctx.appRes(_documentInfos[0]).replace("'", "\\'");;    //new 5.2
+    def remoteEditTitle=_ctx.appRes(_documentInfos[0]).replace("'", "\\'");;
     def fileType = org.exoplatform.services.cms.impl.Utils.getFileType(currentNode).replace("uiIcon", "uiBgd");
     def escapedOwnerName = ownerName.replace("'", "\\'").replace("&#39;", "\\&#39;");
     def escapedActivityPostedTime = activityPostedTime.replace("'", "\\'").replace("&#39;", "\\&#39;");
@@ -686,10 +686,10 @@ for(def index = 0; index < uicomponent.getFilesCount(); index++) {
             def subCommentClass = "";
             def hideSubComments = true;
             def updatedCommentId = uicomponent.getAndSetUpdatedCommentId(null);
-            def showSubComments = false;        //new 5.2
+            def showSubComments = false;
             def updatedComment;
             if (updatedCommentId) {
-              updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);       //new 5.2
+              updatedComment = Utils.getActivityManager().getActivity(updatedCommentId);
             }
             commentList.each({
               commentCounter++;
@@ -705,7 +705,7 @@ for(def index = 0; index < uicomponent.getFilesCount(); index++) {
               commenterProfileUri = LinkProvider.getUserProfileUri(commentId.getRemoteId());
               def commentParentClass = it.parentCommentId == null ? "CommentBlock" : (subCommentClass + " subCommentBlock");
               if(it.parentCommentId == null) {
-                subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);       //new 5.2
+                subCommentSize = uicomponent.getSubCommentsSize(commentList, it.id);
                 subCommentIndex = 0;
                 if (updatedCommentId) {
                   if(updatedComment.parentCommentId == it.id || updatedComment.id == it.id){

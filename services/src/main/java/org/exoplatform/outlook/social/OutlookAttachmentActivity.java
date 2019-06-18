@@ -90,7 +90,7 @@ import javax.jcr.Session;
                                              @EventConfig(listeners = BaseUIActivity.EditCommentActionListener.class)}) })
 
 
-public class OutlookAttachmentActivity extends BaseUIActivity {
+public class OutlookAttachmentActivity extends FileUIActivity {
 
   /** The Constant ACTIVITY_TYPE. */
   public static final String ACTIVITY_TYPE       = "outlook:attachment";
