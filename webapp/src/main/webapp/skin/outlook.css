@@ -472,6 +472,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	position: relative;
     padding: 5px;
 }
+
 .activity:hover {
        background: #edebe9;
 }
@@ -500,6 +501,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 .outlook-usersInfo .ms-PersonaCard {
   position: relative;
+  z-index: 1;
 }
 
 .outlook-usersInfo .ms-PersonaCard-action,
@@ -514,6 +516,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .ms-PersonaCard-detailOrg,
 .ms-PersonaCard-detailChat {
   overflow-y: auto;
+  z-index: 9;
 }
 
 .ms-PersonaCard-detailPhone .detail-6,
@@ -568,21 +571,15 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   height: auto;
 }
 
-.ms-PersonaCard-actionDetailBox-Border{
-  height: 15px;
-  background-image: linear-gradient(to bottom, transparent 30%, #ffffff);
-  position: relative;
-  top: -15px;
+.ms-PersonaCard-actionDetailBox:before {
+  content: "";
+  z-index: 999;
+  width: 100%;
+  height: 40px;
+  position: absolute;  
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 30%, white); 
 }
+	
 
-.chat-button:hover { 
-  opacity: 0.1;
-}	
 
-.chat-exo-img:hover {
-  width: max-content;
-  background-size: auto;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: url(/eXoSkin/skin/images/themes/default/platform/skin/ToolbarContainer/HomeIcon.png);
-}

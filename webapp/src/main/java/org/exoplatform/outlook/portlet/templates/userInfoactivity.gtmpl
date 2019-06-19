@@ -198,8 +198,7 @@
 								</div>
 							</div>
 						</li>
-					</ul>
-					<div class="ms-PersonaCard-actionDetailBox-Border" > </div>
+					</ul>				
 				</div>
 			</div>
 			<% } %>
