@@ -145,7 +145,7 @@
     <searchResultFor>Search results for: </searchResultFor>
 
     <!-- userInfo -->
-    <users>Users</users>
+   <users>Users</users>
    <user>User</user>
    <inexo> View in eXo  </inexo>
    <activityInfo>Latest activity  </activityInfo>
@@ -157,6 +157,7 @@
    <mail>Email </mail>
    <chat>Chat </chat>
    <vchat>Video chat </vchat>
+   <linkConnexions>Self searching people </linkConnexions>
 
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>

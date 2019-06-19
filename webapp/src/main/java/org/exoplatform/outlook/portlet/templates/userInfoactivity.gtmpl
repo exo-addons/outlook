@@ -1,8 +1,8 @@
-#{param name=listActivity/}
+#{param name=exoSocialActivityMap/}
 #{param name=usersToDisplay/}
 #{param name=userInfo/}
 #{param name=usersInfoMap/}
-#{param name=profileToDisplay/}
+#{param name=profilesToDisplay/}
 #{param name=profileToRelationship/}
 #{param name=nameOwner/}
 	<div id="outlook-usersInfo" class="outlook-usersInfo">
@@ -10,10 +10,23 @@
 		<% if (  usersToDisplay.size() == 1 ) { %> <h4>&{Outlook.user}</h4>
 		<% } else { %><h4>&{Outlook.users}</h4> 	<% } %>
 		</div>
-		<% if ( usersToDisplay.isEmpty() ) { %> <h5>&{Outlook.notUser}</h5> 	<% } %>
-		<div class="">
+		<% if ( usersToDisplay.isEmpty() ) { %>
+        <div class="ms-MessageBar ms-MessageBar--severeWarning">
+            <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                    <i class="ms-Icon ms-Icon--person"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                    &{Outlook.notUser}
+                    <br />
+                    <a href="/portal/intranet/connexions" class="ms-Link" target="_blank">&{Outlook.linkConnexions}</a>
+                </div>
+            </div>
+        </div>
+		<% } %>
+		<div class="outlook-usersInfo-person">
 			<% for (user in usersToDisplay) { %>
-			<% for ( profile in profileToDisplay) { %>
+			<% for ( profile in profilesToDisplay) { %>
 			<% if (profile.getProperty("username").equals(user.userName) ){ %>
 			<div class="ms-PersonaCard">
 				<div class="ms-PersonaCard-persona ">
@@ -53,17 +66,18 @@
 				<div class="ms-PersonaCard-actionDetailBox">
 					<ul id="detailList" class="ms-PersonaCard-detailChat">
 						<li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
-                            <% if ( userInfo.get(user.userName+"idActivity")!= null ) { %> <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4>
+                            <% if ( userInfo.get(user.userName+"idActivity")!= null ) { %>
+                            <h4 style="font-weight: bolder">&{Outlook.activityInfo}</h4>
                                 <div class="text-userInfoActivity">
                                     <% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
-                                    <% if (  listActivity.size() > 0 ) { %>
-                                        <div class=" activity  ${listActivity.get(idActivity).getType()}">
+                                    <% if (  exoSocialActivityMap.size() > 0 ) { %>
+                                        <div class=" activity  ${exoSocialActivityMap.get(idActivity).getType()}">
                                             <ul class="ms--list">
-                                                <% if(listActivity.get(idActivity).title != null) { %>
-                                                    <li class="activity-title"><a href="/portal/intranet/activity?id=${idActivity}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np a-link " target="_blank">${listActivity.get(idActivity).title}</a></li>
+                                                <% if(exoSocialActivityMap.get(idActivity).title != null) { %>
+                                                    <li class="activity-title"><a href="/portal/intranet/activity?id=${idActivity}" class="ms-Link ms-font-l ms-fwt-sl ms-fcl-np a-link " target="_blank">${exoSocialActivityMap.get(idActivity).title}</a></li>
                                                 <% } %>
-                                                <% if(listActivity.get(idActivity).getPostedTime() != null) { %>
-                                                    <time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(listActivity.get(idActivity).getPostedTime ()) }</time>
+                                                <% if(exoSocialActivityMap.get(idActivity).getPostedTime() != null) { %>
+                                                    <time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(exoSocialActivityMap.get(idActivity).getPostedTime ()) }</time>
                                                 <% } %>
                                             </ul>
                                         </div>
