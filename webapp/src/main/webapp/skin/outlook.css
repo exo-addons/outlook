@@ -449,7 +449,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 	right: 5px;
 	font-size: 11px;	
 	width: 80px;
-	bottom: 5px;
+	bottom: 50%;
 	z-index: 1;
 }
 
@@ -499,6 +499,11 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   padding: 8px;
   top: 1px;
 }
+
+.outlook-usersInfo .ms-OrgChart {
+  margin-bottom: 40px;
+}
+	
 .outlook-usersInfo .ms-PersonaCard {
   position: relative;
   z-index: 1;
@@ -579,6 +584,10 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   position: absolute;  
   bottom: 0;
   background: linear-gradient(to bottom, transparent 30%, white); 
+}
+
+.text-userInfoActivity{
+  margin-bottom: 40px;
 }
 	
 
