@@ -328,24 +328,6 @@
                     </Item>
                   </Items>
                 </Control>
-                <!-- Save attachments: task pane button -->
-                <Control xsi:type="Button" id="saveAttachmentButton">
-                  <Label resid="saveAttachmentLabel" />
-                  <Supertip>
-                    <Title resid="saveAttachmentTipTitle" />
-                    <Description resid="saveAttachmentTipDescription" />
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="attachment-16" />
-                    <bt:Image size="24" resid="attachment-24" />
-                    <bt:Image size="32" resid="attachment-32" />
-                    <bt:Image size="64" resid="attachment-64" />
-                    <bt:Image size="80" resid="attachment-80" />
-                  </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="saveAttachmentUrl" />
-                  </Action>
-                </Control>
                 <!-- User Info: task pane button -->
                 <Control xsi:type="Button" id="readUserInfoButton">
                   <Label resid="userInfoLabel" />

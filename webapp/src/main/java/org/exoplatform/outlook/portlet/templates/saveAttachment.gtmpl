@@ -100,17 +100,6 @@
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 	</div>
 </div>
-<div id="notAttachment" class="ms-Grid-row" style="display: none;">
-	<div class="ms-MessageBar ms-MessageBar--warning">
-		<div class="ms-MessageBar-content">
-			<div class="ms-MessageBar-icon">
-				<i class="ms-Icon ms-Icon--info"></i>
-			</div>
-			<div class="ms-MessageBar-text">
-				&{Outlook.notAttachment}
-			</div>
-		</div>
-	</div>
-</div>
+
 
 
