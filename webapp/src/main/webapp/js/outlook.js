@@ -654,7 +654,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 								}
 							});
 						});
-					}
+					} else {
+                        var $notAttachment = $("#notAttachment");
+                        $saveAttachment.hide();
+                        $notAttachment.show();
+                    }
 				}
 
 				function convertToStatusInit() {
