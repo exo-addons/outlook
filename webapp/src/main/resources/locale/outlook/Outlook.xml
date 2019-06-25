@@ -60,6 +60,7 @@
     <enterFolderNameAndCreate>Provide a name for this new folder and then click "Add".</enterFolderNameAndCreate>
     <folderName>Folder name</folderName>
     <add>Add</add>
+    <notAttachment>Sorry, but this letter has no attachments available to save. Please choose another letter or other add-ins option.</notAttachment>
 
     <!-- Add Attachment -->
     <addAttachmentDescription>Attach documents from the intranet to this message.</addAttachmentDescription>
