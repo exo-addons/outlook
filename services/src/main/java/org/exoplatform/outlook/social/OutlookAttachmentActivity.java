@@ -37,6 +37,7 @@ import org.exoplatform.services.wcm.friendly.FriendlyService;
 import org.exoplatform.services.wcm.utils.WCMCoreUtils;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.wcm.ext.component.activity.ActivityFileAttachment;
 import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -107,11 +108,26 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   /** The Constant FILES. */
   public static final String FILES               = "files";
 
+  /** The Constant FILES. */
+  public static final String DOCTITLE               = "docTitle";
+
   /** The Constant AUTHOR. */
   public static final String AUTHOR              = "author";
 
   /** The Constant DATE_CREATED. */
   public static final String DATE_CREATED        = "dateCreated";
+
+  /** The Constant Link to document. */
+  public static final String DOCLINK        = "DOCLINK";
+
+  /** The Constant DOCPATH. */
+  public static final String DOCPATH        = "DOCPATH";
+
+  /** The Constant DOCPATH. */
+  public static final String PATH        = "path";
+
+  /** The Constant DOCNAME. */
+  public static final String DOCNAME        = "DOCNAME";
 
   /** The Constant DATE_LAST_MODIFIED. */
   public static final String DATE_LAST_MODIFIED  = "lastModified";
@@ -122,13 +138,15 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   /** The Constant DEFAULT_TIME_FORMAT. */
   public static final String DEFAULT_TIME_FORMAT = "HH:mm";
 
+
+
   /** The Constant LOG. */
   protected static final Log LOG                 = ExoLogger.getLogger(OutlookAttachmentActivity.class);
 
   /**
    * The Class Attachment.
    */
-  public class Attachment {
+  public class Attachment extends ActivityFileAttachment {
 
     /** The file UUID. */
     final String      fileUUID;
@@ -309,7 +327,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
         if (node != null) {
           String portalName = PortalContainer.getCurrentPortalContainerName();
           String restContextName = PortalContainer.getCurrentRestContextName();
-          String repositoryName = repository.getConfiguration().getName();
+          String repositoryName = ((ManageableRepository) getNode().getSession().getRepository()).getConfiguration().getName();
           String workspaceName = getWorkspace();
 
           String encodedPath = URLEncoder.encode(node.getPath(), "utf-8");
@@ -348,7 +366,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
         if (node != null) {
           String portalName = PortalContainer.getCurrentPortalContainerName();
           String restContextName = PortalContainer.getCurrentRestContextName();
-          String repositoryName = repository.getConfiguration().getName();
+          String repositoryName = ((ManageableRepository) getNode().getSession().getRepository()).getConfiguration().getName();
           String workspaceName = getWorkspace();
 
           String mimeType = getMimeType();
@@ -609,7 +627,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
       }
       if (node == null) {
         SessionProvider sessionProvider = WCMCoreUtils.getUserSessionProvider();
-        Session session = sessionProvider.getSession(getWorkspace(), repository);
+        Session session = sessionProvider.getSession(getWorkspace(), (ManageableRepository) getNode().getSession().getRepository());
         try {
           node = session.getNodeByUUID(fileUUID);
           TrashService trashService = WCMCoreUtils.getService(TrashService.class);
@@ -642,13 +660,14 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   }
 
   /** The files. */
-  protected List<Attachment>             files;
+  protected List<ActivityFileAttachment>             files;
 
   /** The repository. */
   protected ManageableRepository         repository;
 
   /** The document service. */
-  protected DocumentService              documentService;
+  protected  DocumentService              documentService;
+
 
   /** The util. */
   protected final OutlookActivitySupport util;
@@ -659,10 +678,15 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @throws Exception the exception
    */
   public OutlookAttachmentActivity() throws Exception {
+    super();
     RepositoryService repositoryService = CommonsUtils.getService(RepositoryService.class);
     this.repository = repositoryService.getCurrentRepository();
     this.documentService = CommonsUtils.getService(DocumentService.class);
     this.util = new OutlookActivitySupport(documentService, repository);
+
+  }
+  public void setUIActivityData(Map<String, String> activityParams) {
+    super.setUIActivityData(activityParams);
   }
 
   /**
@@ -672,7 +696,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @throws RepositoryException the repository exception
    * @throws RepositoryConfigurationException the repository configuration exception
    */
-  public List<Attachment> getFiles() throws RepositoryException, RepositoryConfigurationException {
+  public List<ActivityFileAttachment> getFiles() throws RepositoryException, RepositoryConfigurationException {
     if (this.files == null) {
       synchronized (this) {
         if (this.files == null) {
@@ -680,7 +704,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
           if (activity != null) {
             String filesLine = activity.getTemplateParams().get(FILES);
             if (filesLine != null && filesLine.length() > 0) {
-              List<Attachment> files = new ArrayList<Attachment>();
+              List<ActivityFileAttachment> files = new ArrayList<ActivityFileAttachment>();
               for (String fline : filesLine.split(",")) {
                 files.add(parseAttachment(fline));
               }
