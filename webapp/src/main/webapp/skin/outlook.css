@@ -549,16 +549,16 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   transition: max-height 0.25s ease;
 }
 
-.ms-PersonaCard-actionDetailBox{
+.ms-PersonaCard-actionDetailBox {
   height: max-content;
 }
 
 
 @media (min-width: 480px) {
   .outlook-usersInfo .ms-PersonaCard {
-  max-width: 90%;
-  width: 80%;
-  margin: 0 auto;
+    max-width: 90%;
+    width: 80%;
+    margin: 0 auto;
   }
 }
 @media (max-width: 479px) {
