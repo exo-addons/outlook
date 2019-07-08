@@ -64,8 +64,6 @@
 
 .attachmentFiles {
 	margin-left: 15px;
-	text-align: left;
-	padding: 10px;
 }
 
 .uiIconOutlookMail:before {
@@ -75,22 +73,6 @@
 #OutlookUnifiedSearch .resultLoading {
 	top: 40% !important;
 	left: 40% !important;
-}
-
-.multiFilesActivity .fileShare{
-	height:max-content !important;
-}
-
-.text{
-	text-align: left;	
-	padding: 5px;
-}
-
-.fileTypeContent{
-	padding: 15px;
-}
-.clearfix {
-	padding: 10px;
 }
 
 @media (max-width: 767px) {
