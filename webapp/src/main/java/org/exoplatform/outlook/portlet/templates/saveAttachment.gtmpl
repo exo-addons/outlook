@@ -107,7 +107,7 @@
 				<i class="ms-Icon ms-Icon--info"></i>
 			</div>
 			<div class="ms-MessageBar-text">
-				&{Outlook.notAttachment}
+				&{Outlook.noAttachment}
 			</div>
 		</div>
 	</div>
