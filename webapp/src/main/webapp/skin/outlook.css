@@ -1,379 +1,380 @@
 body {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .logoIcon* {
-	display: inline-block;
+  display: inline-block;
 }
 
 .logoIcon80 {
-	background-image: url("../images/exo-icon-80.png");
+  background-image: url("../images/exo-icon-80.png");
 }
 
 .logoIcon32 {
-	background-image: url("../images/exo-icon-32.png");
+  background-image: url("../images/exo-icon-32.png");
 }
 
 #outlook-pane {
-	min-height: 450px;
-	position: relative;
+  min-height: 450px;
+  position: relative;
 }
 
 #outlook-pane input {
-	border-radius: 0px !important;
-	box-shadow: none !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 
 #outlook-pane .ms-NavBar-items {
-	z-index: 10;
+  z-index: 10;
 }
 
 #outlook-brand-bar {
-	position: absolute;
-	bottom: 0px;
-	width: 100%;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
 
 /* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
 @media ( min-width : 280px) {
-	#outlook-pane .ms-Dropdown-items {
-		top: auto;
-		right: auto;
-		bottom: auto;
-		left: auto;
-		max-width: 100%;
-	}
-	#outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items, #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
-		position: absolute;
-	}
+  #outlook-pane .ms-Dropdown-items {
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    max-width: 100%;
+  }
+  #outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items, #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
+    position: absolute;
+  }
 }
 
 /* Error banner (common) */
-
 .error-message>.ms-MessageBanner {
-	min-width: 290px;
-	background-color: #fde7e9;
-	color: #a80000;
+  min-width: 290px;
+  background-color: #fde7e9;
+  color: #a80000;
 }
 
 .error-message button.ms-MessageBanner-close {
-	margin-left: 25px;
-	width: 25px;
+  margin-left: 25px;
+  width: 25px;
 }
 
 .openPortalLink {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
 /* Login/Welcome page */
 .featureCheck {
-	max-width: 25px;
+  max-width: 25px;
 }
 
 .welcomeHeader {
-	padding-left: 2px;
-	padding-right: 2px;
-	padding-top: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 0px;
 }
 
 .welcomeIcon {
-	margin-top: 15px;
+  margin-top: 15px;
 }
 
 .brandBar {
-	margin: 6px 15px;
-	padding: 0px;
-	list-style: none;
+  margin: 6px 15px;
+  padding: 0px;
+  list-style: none;
 }
 
 .brandBar a, .brandBar a:visited {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 .brand, .showLogout {
-	display: inline-block;
+  display: inline-block;
 }
 
 .brandTitle {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 .showLogoutTitle, .brandTitle {
-	color: #ffb900;
+  color: #ffb900;
 }
 
 .showLogout {
-	float: right;
-	margin-top: 2px;
+  float: right;
+  margin-top: 2px;
 }
 
 .showLogoutTitle {
-	vertical-align: text-bottom;
+  vertical-align: text-bottom;
 }
 
 .showLogoutIcon {
-	float: right;
-	margin-left: 3px;
-	margin-top: 3px;
+  float: right;
+  margin-left: 3px;
+  margin-top: 3px;
 }
 
 .firstFeatureRow {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .menuRefresh, .editMessageText {
-	margin-left: 3px;
+  margin-left: 3px;
 }
 
 .spacesDropdown {
-	margin: 0px;
-	padding: 0px;
-	border: 0px;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
 }
 
 #signInProgress {
-	height: 450px;
-	width: 100%;
+  height: 450px;
+  width: 100%;
 }
 
 .signingIn {
-	width: 100%;
-	position: relative;
-	margin: auto;
-	top: 25%;
+  width: 100%;
+  position: relative;
+  margin: auto;
+  top: 25%;
 }
 
 .progressSpinner {
-	width: 28px;
+  width: 28px;
 }
 
 .progressSpinner>.ms-Spinner-circle {
-	background-color: #ffb900;
+  background-color: #ffb900;
 }
 
 /* Portlet */
 #outlook-menu-container {
-	padding-bottom: 50px;
+  padding-bottom: 50px;
 }
 
 span[disabled] {
-	pointer-events: none;
+  pointer-events: none;
 }
 
 .attachments .attachmentSize, .folders .lastModified {
-	top: 5px !important;
+  top: 5px !important;
 }
 
 .attachments .ms-ListItem, .folders .ms-ListItem {
-	padding-top: 6px !important;
+  padding-top: 6px !important;
 }
 
 .ms-ListItem-primaryText {
-	font-size: 14px !important;
-	top: -2px !important;
+  font-size: 14px !important;
+  top: -2px !important;
 }
 
 .ms-ListItem.is-selected:before, .ms-ListItem.is-selected:hover:before {
-	top: auto !important;
+  top: auto !important;
 }
 
 .ms-ListItem.is-selectable:hover:before {
-	top: auto !important;
+  top: auto !important;
 }
 
 .ms-Grid-row .ms-TextField-field, .ms-Grid-row .ms-Dropdown {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .savingSpaceTitle, .savedSpaceTitle {
-	padding-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 #savedAttachment .ms-Icon {
-	padding-right: 10px;
+  padding-right: 10px;
 }
 
 #outlook-saveAttachment fieldset {
-  min-inline-size: 95%;  
+  min-inline-size: 95%;
 }
 
-#outlook-saveAttachment .ms-Grid-col{
+#outlook-saveAttachment .ms-Grid-col {
   padding: 0px;
 }
-#outlook-saveAttachment{
+
+#outlook-saveAttachment {
   padding: 0px;
 }
 
 .selectableItem:hover {
-	cursor: pointer;
-	background-color: #eaeaea;
-	outline: 1px solid transparent;
+  cursor: pointer;
+  background-color: #eaeaea;
+  outline: 1px solid transparent;
 }
 
 .pathInfo {
-	font-size: 14px !important;
-	display: block !important;
+  font-size: 14px !important;
+  display: block !important;
 }
 
 #path-info>.ms-ListItem {
-	padding-left: 0px;
-	padding-right: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 .currentFolder .pathControls {
-	top: 25px !important;
-	right: 5px !important;
+  top: 25px !important;
+  right: 5px !important;
 }
 
 .text-centered {
-	text-align: center;
+  text-align: center;
 }
 
 .centered {
-	min-width: 150px;
-	max-width: 450px;
-	margin: 0 auto;
+  min-width: 150px;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 div.form-buttons {
-	marging-top: 10px;
+  marging-top: 10px;
 }
 
 .documentSelectorTab {
-	padding-top: 0px;
+  padding-top: 0px;
 }
 
 .documentSelectorContent {
-	min-height: 75px;
-	max-height: 175px;
-	border-width: 1px;
-	border-style: solid;
-	min-height: 125px;
-	border-top-style: none;
-	overflow: scroll;
+  min-height: 75px;
+  max-height: 175px;
+  border-width: 1px;
+  border-style: solid;
+  min-height: 125px;
+  border-top-style: none;
+  overflow: scroll;
 }
 
 .documentSearch .ms-SearchBox, .documentSearch .ms-SearchBox-field {
-	width: 100%;
+  width: 100%;
 }
 
 .documentSearch .ms-SearchBox {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 #documentSelector .pathControls, #attach .documents .pathControls {
-	top: 5px !important;
-	right: 5px !important;
+  top: 5px !important;
+  right: 5px !important;
 }
 
-#documentSelector .ms-ListItem-primaryText, #attach .documents .ms-ListItem-primaryText, #attached .documents .ms-ListItem-primaryText {
-	padding-right: 0px;
+#documentSelector .ms-ListItem-primaryText, #attach .documents .ms-ListItem-primaryText, #attached .documents .ms-ListItem-primaryText
+  {
+  padding-right: 0px;
 }
 
 .groupPath .currentFolder li, .documentExplorer .currentFolder li {
-	padding: 0px !important;
+  padding: 0px !important;
 }
 
 .documentExplorer .currentFolder .ms-ListItem-primaryText {
-	margin: 0px;
-	top: 0px !important;
+  margin: 0px;
+  top: 0px !important;
 }
 
 .documentExplorer .currentFolder .ms-ListItem-primaryText input {
-	font-size: 12px !important;
-	margin: 0px;
-	border-width: 1px;
-	border-style: solid;
-	padding-left: 5px;
-	padding-right: 40px;
-	border-color: #71afe5;
+  font-size: 12px !important;
+  margin: 0px;
+  border-width: 1px;
+  border-style: solid;
+  padding-left: 5px;
+  padding-right: 40px;
+  border-color: #71afe5;
 }
 
 .documentSelectorContent .ms-ListItem {
-	padding-left: 25px;
-	padding-top: 5px;
-	padding-bottom: 0px;
+  padding-left: 25px;
+  padding-top: 5px;
+  padding-bottom: 0px;
 }
 
 /* This style adapted from .ms-ListItem.isFolder.is-selected */
 .documentSelectorContent .ms-ListItem.isFolder:before, .documentSelectorContent .ms-ListItem.isFolder:hover:before {
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-	display: inline-block;
-	font-family: 'Office365Icons';
-	font-style: normal;
-	font-weight: normal;
-	line-height: 1;
-	speak: none;
-	content: '\e014';
-	font-size: 15px;
-	color: #767676;
-	position: absolute;
-	top: 6px;
-	left: 6px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-family: 'Office365Icons';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  speak: none;
+  content: '\e014';
+  font-size: 15px;
+  color: #767676;
+  position: absolute;
+  top: 6px;
+  left: 6px;
 }
 
 #attached .documents .ms-ListItem {
-	padding-left: 7px;
-	padding-right: 7px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 #attached .documents .ms-ListItem-primaryText i {
-	margin-right: 5px;
+  margin-right: 5px;
 }
 
 #attached .documents .ms-ListItem-tertiaryText {
-	margin-bottom: -4px;
-	padding-right: initial;
-	top: -5px;
-	margin-bottom: 0px;
-	font-size: 11px;
+  margin-bottom: -4px;
+  padding-right: initial;
+  top: -5px;
+  margin-bottom: 0px;
+  font-size: 11px;
 }
 
 .messageText {
-	height: 125px;
-	overflow: hidden;
-	padding: 0px;
-	position: relative;
-	z-index: 0;
+  height: 125px;
+  overflow: hidden;
+  padding: 0px;
+  position: relative;
+  z-index: 0;
 }
 
 .messageText:before {
-	content: "";
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	left: 0;
-	top: 0;
-	background: linear-gradient(transparent 25px, white);
-	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px, white);
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: linear-gradient(transparent 25px, white);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px, white);
 }
 
 .messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
-	height: 200px;
-	overflow: hidden;
-	padding: 0px;
+  height: 200px;
+  overflow: hidden;
+  padding: 0px;
 }
 
 .messageEditor, .messageEditorContainer>.messageText {
-	max-height: 250px;
+  max-height: 250px;
 }
 
 .messageSubject, .messageEditorContainer>input[name='messageSubject'] {
-	margin-bottom: -1px !important;
+  margin-bottom: -1px !important;
 }
 
 div.messageSubject {
-	font-size: 1.0em;
-	height: 2.4em;
-	overflow: hidden;
+  font-size: 1.0em;
+  height: 2.4em;
+  overflow: hidden;
 }
 
 .messageText>iframe, .messageEditor>iframe {
-	width: 100%;
+  width: 100%;
   height: 100%;
-} 
+}
 
 .messageEditor>iframe {
   -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -381,126 +382,125 @@ div.messageSubject {
 }
 
 .statusText, .topicText {
-	max-height: 75px;
-	padding: 10px;
-	line-height: 14px;
+  max-height: 75px;
+  padding: 10px;
+  line-height: 14px;
 }
 
 .placeholderField {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .placeholderField label.ms-Label {
-	pointer-events: none;
-	padding-top: 7px !important;
+  pointer-events: none;
+  padding-top: 7px !important;
 }
 
 #outlook-pane .ms-MessageBar {
-	display: block;
+  display: block;
 }
 
 .outlookMenu {
-	padding-right: 5px;
+  padding-right: 5px;
 }
 
 #outlook-menu .ms-ContextualMenu {
-	min-width: 200px;
+  min-width: 200px;
 }
 
 textarea[name='activityTitle'], textarea[name='comment'] {
-	height: 64px;
-	box-shadow: none !important;
-	border-color: initial !important;
+  height: 64px;
+  box-shadow: none !important;
+  border-color: initial !important;
 }
 
 #outlook-pane .ms-TextField-field:focus {
-	border-color: #0078d7 !important;
+  border-color: #0078d7 !important;
 }
 
 .searchContainer {
-	min-height: 350px;
+  min-height: 350px;
 }
 
 .ms-Persona-image-userInfo {
-	background: #eaeaea;
-	border: 3px solid #ffffff;
-	border-radius: 50%;
-	text-align: center;
-	width: 150px;
+  background: #eaeaea;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  text-align: center;
+  width: 150px;
 }
 
 .ms-TextField-organization {
-	margin: 0 0 1px;
-	padding-left: 10px;
-	text-align: left;
+  margin: 0 0 1px;
+  padding-left: 10px;
+  text-align: left;
 }
 
 .ms-TextField-businessInfo {
-	margin: 0 0 1px;
-	text-align: left;
-	padding-left: 10px;
+  margin: 0 0 1px;
+  text-align: left;
+  padding-left: 10px;
 }
 
 .ms-TextField-homeInfo {
-	margin: 0 0 1px;
-	text-align: left;
-	padding-left: 10px;
+  margin: 0 0 1px;
+  text-align: left;
+  padding-left: 10px;
 }
 
 .activity-body {
-
-	font-style: oblique;
-	margin-left: 5px;
+  font-style: oblique;
+  margin-left: 5px;
 }
 
 .postedTime {
-	text-align: right;
-	overflow: hidden;
-	position: absolute;
-	right: 5px;
-	font-size: 11px;	
-	width: 80px;
-	bottom: 50%;
-	z-index: 1;
+  text-align: right;
+  overflow: hidden;
+  position: absolute;
+  right: 5px;
+  font-size: 11px;
+  width: 80px;
+  bottom: 50%;
+  z-index: 1;
 }
 
 .activity-title {
-	width: 75%;
-	white-space: nowrap;
-	overflow: hidden;
-	padding: 5px;
-	text-overflow: ellipsis;
-	font-family: "wf_segoe-ui_semilight", "Segoe UI Semilight",
-		"Segoe WP Semilight", "Segoe UI", "Segoe WP", Tahoma, Arial,
-		sans-serif;
+  width: 75%;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 5px;
+  text-overflow: ellipsis;
+  font-family: "wf_segoe-ui_semilight", "Segoe UI Semilight", "Segoe WP Semilight", "Segoe UI", "Segoe WP", Tahoma, Arial,
+    sans-serif;
 }
 
 .activity {
-	background: #ffffff;
-	border: 1px double white;
-	text-align: left;
-	height: 30px;
-	position: relative;
-    padding: 5px;
+  background: #ffffff;
+  border: 1px double white;
+  text-align: left;
+  height: 30px;
+  position: relative;
+  padding: 5px;
 }
 
 .activity:hover {
-       background: #edebe9;
+  background: #edebe9;
 }
 
 .out-box {
-	width: 95%;
-}
-.infobox{
-  width: 90%;
-   background: #e1e2e8;
+  width: 95%;
 }
 
-.a-link:hover{
+.infobox {
+  width: 90%;
+  background: #e1e2e8;
+}
+
+.a-link:hover {
   color: #0078d7;
 }
 
-.outlook-usersInfo .ms-OrgChart-listItem{
+.outlook-usersInfo .ms-OrgChart-listItem {
   height: 50px;
   width: 95%;
   position: relative;
@@ -514,37 +514,32 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .outlook-usersInfo .ms-OrgChart {
   margin-bottom: 40px;
 }
-	
+
 .outlook-usersInfo .ms-PersonaCard {
   position: relative;
   z-index: 1;
 }
 
-.outlook-usersInfo .ms-PersonaCard-action,
-.ms-PersonaCard-overflow{
-   padding: 0 5px;
+.outlook-usersInfo .ms-PersonaCard-action, .ms-PersonaCard-overflow {
+  padding: 0 5px;
 }
 
 .outlook-usersInfo .ms-PersonaCard-detailOrg .detail-5 {
   max-height: 200px;
 }
 
-.ms-PersonaCard-detailOrg,
-.ms-PersonaCard-detailChat {
+.ms-PersonaCard-detailOrg, .ms-PersonaCard-detailChat {
   overflow-y: auto;
   z-index: 9;
 }
 
-.ms-PersonaCard-detailPhone .detail-6,
-.ms-PersonaCard-detailVideo .detail-6,
-.ms-PersonaCard-detailMail .detail-6 {
+.ms-PersonaCard-detailPhone .detail-6, .ms-PersonaCard-detailVideo .detail-6, .ms-PersonaCard-detailMail .detail-6 {
   min-height: 100px;
   max-height: 210px;
   transition: max-height 0.25s ease;
 }
 
-.ms-PersonaCard-detailChat .detail-6,
-.ms-PersonaCard-detailOrg .detail-6 {
+.ms-PersonaCard-detailChat .detail-6, .ms-PersonaCard-detailOrg .detail-6 {
   max-height: 320px;
   transition: max-height 0.25s ease;
 }
@@ -553,19 +548,17 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   height: max-content;
 }
 
-
-@media (min-width: 480px) {
+@media ( min-width : 480px) {
   .outlook-usersInfo .ms-PersonaCard {
     max-width: 90%;
     width: 80%;
     margin: 0 auto;
   }
 }
-@media (max-width: 479px) {
-  .outlook-usersInfo .ms-Persona-imageArea,
-  .outlook-usersInfo .ms-Persona-image,
-  .outlook-usersInfo .ms-Persona-imageArea,
-  .outlook-usersInfo .ms-Persona-image {
+
+@media ( max-width : 479px) {
+  .outlook-usersInfo .ms-Persona-imageArea, .outlook-usersInfo .ms-Persona-image, .outlook-usersInfo .ms-Persona-imageArea,
+    .outlook-usersInfo .ms-Persona-image {
     min-height: 48px;
     min-width: 48px;
     width: 100%;
@@ -573,7 +566,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   }
 }
 
-.outlook-usersInfo .ms-Persona-image{
+.outlook-usersInfo .ms-Persona-image {
   width: 100%;
   height: auto;
   min-width: 48px;
@@ -592,14 +585,11 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   z-index: 999;
   width: 100%;
   height: 40px;
-  position: absolute;  
+  position: absolute;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 30%, white); 
+  background: linear-gradient(to bottom, transparent 30%, white);
 }
 
-.text-userInfoActivity{
+.text-userInfoActivity {
   margin-bottom: 40px;
 }
-	
-
-
