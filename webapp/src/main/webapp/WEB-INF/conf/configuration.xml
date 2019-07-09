@@ -259,7 +259,7 @@
               <string>org.exoplatform.outlook.social.OutlookAttachmentActivity</string>
             </field>
             <field name="activityBuiderClass">
-              <string>org.exoplatform.outlook.social.OutlookActivityBuilder</string>
+              <string>org.exoplatform.wcm.ext.component.activity.FileUIActivityBuilder</string>
             </field>
           </object>
         </object-param>

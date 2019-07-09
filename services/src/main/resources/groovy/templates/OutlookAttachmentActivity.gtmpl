@@ -106,8 +106,9 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     def activity = uicomponent.getActivity();
     def streamOwner = activity.getStreamOwner();
     def activityContentTitle = Text.unescapeIllegalJcrChars(activity.title);
-
-    def activityStatus = uicomponent.getActivityStatus();
+     /* ============== Adaptation for Outlook attachment   ============== */
+    def activityStatus = uicomponent.getComment();
+     /* ============================ */
     def activityDeletable = uicomponent.isActivityDeletable();
     def activityEditable = uicomponent.isActivityEditable(activity);
     def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
@@ -337,12 +338,6 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
                 </div>
             </div>
         </div>
-        <% /* ============== Adaptation for Outlook attachment   ============== */ %>
-
-        <% if(uicomponent.getFiles().size() > 0) {
-           uicomponent.setUIActivityData(activity.templateParams);  %>
-        <%  } %>
-        	<% /* ============================ */ %>
 
 <% if(uicomponent.getFilesCount() > 0) { %>
 

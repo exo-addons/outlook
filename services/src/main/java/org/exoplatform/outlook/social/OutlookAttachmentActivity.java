@@ -124,7 +124,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   public static final String DOCPATH        = "DOCPATH";
 
   /** The Constant DOCPATH. */
-  public static final String PATH        = "path";
+  public static final String PATH        = "docPath";
 
   /** The Constant DOCNAME. */
   public static final String DOCNAME        = "DOCNAME";
@@ -163,10 +163,12 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @param fileUUID the file UUID
      * @param name the name
      */
-    protected Attachment(String fileUUID, String name) {
+    protected Attachment(String fileUUID, String name, String docPath) {
       super();
       this.fileUUID = fileUUID;
       this.name = name;
+      this.setNodeUUID(fileUUID);
+      this.setDocPath(docPath);
     }
 
     /**
@@ -174,6 +176,8 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the name
      */
+
+
     public String getName() {
       return name;
     }
@@ -702,11 +706,18 @@ public class OutlookAttachmentActivity extends FileUIActivity {
         if (this.files == null) {
           ExoSocialActivity activity = getActivity();
           if (activity != null) {
-            String filesLine = activity.getTemplateParams().get(FILES);
-            if (filesLine != null && filesLine.length() > 0) {
+            String filesName = activity.getTemplateParams().get(FILES);
+            //String filesDocPath =;
+            //String fileId =
+            String [] filePath = activity.getTemplateParams().get(DOCPATH).split(SEPARATOR_REGEX);
+            String [] fileUUID = activity.getTemplateParams().get(FileUIActivity.ID).split(SEPARATOR_REGEX);
+            if (filesName != null && filesName.length() > 0) {
               List<ActivityFileAttachment> files = new ArrayList<ActivityFileAttachment>();
-              for (String fline : filesLine.split(",")) {
-                files.add(parseAttachment(fline));
+              int i = 0;
+              for (String fline : filesName.split(SEPARATOR_REGEX)) {
+               // files.add(parseAttachment(fline));
+                files.add (new Attachment(parseAttachment(fileUUID[i]), parseAttachment(fline),parseAttachment(filePath[i])));
+                i++;
               }
               this.files = files;
             } else {
@@ -810,7 +821,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @param line the line
    * @return the attachment
    */
-  Attachment parseAttachment(String line) {
+  String parseAttachment(String line) {
     int i = line.indexOf('=');
     String fileUUID, name;
     if (i > 0) {
@@ -818,9 +829,9 @@ public class OutlookAttachmentActivity extends FileUIActivity {
       name = line.substring(++i);
     } else {
       fileUUID = line;
-      name = null;
+      name = line;
     }
-    return new Attachment(fileUUID, name);
+    return name ;
   }
 
   /**
