@@ -118,8 +118,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 			var from = Office.context.mailbox.item.from;
 			var internetMessageId = Office.context.mailbox.item.internetMessageId;
-			var correspondenceEmail = "";
-
+ 
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.length > 0) {
@@ -323,35 +322,36 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				function userInfoInit() {
-          function addEmailsIfNotUser(userEmail, obj ){
-            if (obj != null){
-              for(var i = 0; i < obj.length; i++){
-                if (obj[i].emailAddress != userEmail){
-                  correspondenceEmail += obj[i].emailAddress + ",";
+				  var recipientEmails = "";
+          function addEmailsIfNotUser(recipients){
+            if (recipients != null){
+              for(var i = 0; i < recipients.length; i++){
+                if (recipients[i].emailAddress != userEmail){
+                  recipientEmails += recipients[i].emailAddress + ",";
                 }
               }
             }
           }
 					if (internetMessageId) {
 						if (from.emailAddress != userEmail){
-							correspondenceEmail += from.emailAddress + "," ;
+						  recipientEmails += from.emailAddress + "," ;
 						}
-						addEmailsIfNotUser(userEmail,from);
+						addEmailsIfNotUser(from);
             var toCopy = Office.context.mailbox.item.to;
             var carbonCopy = Office.context.mailbox.item.cc;
-            addEmailsIfNotUser(userEmail,toCopy);
-            addEmailsIfNotUser(userEmail,carbonCopy);
-						console.log("From Email : " + correspondenceEmail);
-						getUserInfo(correspondenceEmail);
+            addEmailsIfNotUser(toCopy);
+            addEmailsIfNotUser(carbonCopy);
+						console.log("From Email: " + recipientEmails);
+						loadUserInfo(recipientEmails);
 					} else {
+					  // When this should happen? In a new message compose?
+					  // TODO need CC to get asycn also?
 						Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
 							if (asyncResult.status === "succeeded") {
-								var jsonObj = asyncResult.value;
-								for(var i = 0; i < jsonObj.length; i++){
-									correspondenceEmail += jsonObj[i].emailAddress + ",";
-								}
-								console.log("Email to  " + correspondenceEmail);
-								getUserInfo(correspondenceEmail)
+								var toCopy = asyncResult.value;
+								addEmailsIfNotUser(toCopy);
+								console.log("Email to: " + recipientEmails);
+								loadUserInfo(recipientEmails)
 							} else {
 								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
 										+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
@@ -361,7 +361,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					}
 				}
 
-				function getUserInfo(byEmail) {
+				function loadUserInfo(byEmail) {
 					var $userInfo = $("#outlook-userInfo>div");
 					$userInfo.jzLoad("Outlook.userInfo()", {
 						byEmail : byEmail
