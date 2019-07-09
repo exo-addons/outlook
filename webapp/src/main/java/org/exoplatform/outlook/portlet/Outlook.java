@@ -1073,24 +1073,24 @@ public class Outlook {
     /**
      * User info response.
      *
-     * @param correspondenceEmail Array of emails to search in eXoplatform
+     * @param byEmail Array of emails to search in eXoplatform
      * @return the response
      */
     @Ajax
     @Resource
-    public Response userInfo(String correspondenceEmail,RequestContext context) {
+    public Response userInfo(String byEmail,RequestContext context) {
         String nameOwner = context.getSecurityContext().getRemoteUser();
         Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
         Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
         Map<String,ExoSocialActivity> exoSocialActivityMap = new HashMap<>();
         List<User> usersToDisplay = new LinkedList<>();
         List<Profile> profilesToDisplay = new LinkedList<>();
-        Map<String,Profile> profileToRelationship = new HashMap();
+        Map<String,Profile> profileToRelationship = new HashMap<>();
         List<String> idActivity = null;
         List<String> profileRelationshipName = null;
         try {
-            if (correspondenceEmail != null) {
-                String[] allEmails = correspondenceEmail.split(",");
+            if (byEmail != null) {
+                String[] allEmails = byEmail.split(",");
                 ListAccess<User> allExoUser = outlook.getAllExoUsers();
                 for (String email : allEmails) {
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {

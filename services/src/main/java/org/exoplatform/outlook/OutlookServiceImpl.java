@@ -1565,8 +1565,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
 
   @Override
+  @Deprecated
   public Map<String, String> getUserInfoMap(String name)  {
-      Map<String, String> userInfoMap = new HashMap();
+      Map<String, String> userInfoMap = new HashMap<>();
     try {
       Collection<UserProfile> userProfiles = new LinkedList<>();
       userProfiles = organization.getUserProfileHandler().findUserProfiles();
@@ -1581,7 +1582,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return userInfoMap ;
   }
 
-
    /**
    * Gets the All exo users.   *
    *
@@ -1589,6 +1589,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws OutlookException the outlook exception
    */
   @Override
+  @Deprecated
   public ListAccess<User> getAllExoUsers() throws OutlookException {
     try {
       return organization.getUserHandler().findAllUsers();
@@ -1596,9 +1597,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       throw new OutlookException("Error searching all user " , e);
     }
   }
-  
-  
-  
 
   // *********************** testing level **********************
 

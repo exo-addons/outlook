@@ -120,9 +120,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 			var internetMessageId = Office.context.mailbox.item.internetMessageId;
 			var correspondenceEmail = "";
 
-
-
-
 			// init main pane page
 			var $pane = $("#outlook-pane");
 			if ($pane.length > 0) {
@@ -326,24 +323,24 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				function userInfoInit() {
-                    function addEmailsIfNotUser(userEmail, obj ){
-                        if(obj != null){
-                            for(var i = 0; i < obj.length; i++){
-                                if (obj[i].emailAddress != userEmail){
-                                    correspondenceEmail += obj[i].emailAddress + ",";
-                                }
-                            }
-                        }
-                    }
+          function addEmailsIfNotUser(userEmail, obj ){
+            if (obj != null){
+              for(var i = 0; i < obj.length; i++){
+                if (obj[i].emailAddress != userEmail){
+                  correspondenceEmail += obj[i].emailAddress + ",";
+                }
+              }
+            }
+          }
 					if (internetMessageId) {
 						if (from.emailAddress != userEmail){
 							correspondenceEmail += from.emailAddress + "," ;
 						}
 						addEmailsIfNotUser(userEmail,from);
-                        var toCopy = Office.context.mailbox.item.to;
-                        var carbonCopy = Office.context.mailbox.item.cc;
-                            addEmailsIfNotUser(userEmail,toCopy);
-                            addEmailsIfNotUser(userEmail,carbonCopy);
+            var toCopy = Office.context.mailbox.item.to;
+            var carbonCopy = Office.context.mailbox.item.cc;
+            addEmailsIfNotUser(userEmail,toCopy);
+            addEmailsIfNotUser(userEmail,carbonCopy);
 						console.log("From Email : " + correspondenceEmail);
 						getUserInfo(correspondenceEmail);
 					} else {
@@ -364,24 +361,23 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					}
 				}
 
-				function getUserInfo(correspondenceEmail) {
-					var $userInfo = $("#outlook-userInfo");
+				function getUserInfo(byEmail) {
+					var $userInfo = $("#outlook-userInfo>div");
 					$userInfo.jzLoad("Outlook.userInfo()", {
-						correspondenceEmail : correspondenceEmail
+						byEmail : byEmail
 					}, function(response, status, jqXHR) {
 						if (status == "error") {
 							showError(jqXHR);
 						} else {
 							clearError();
 							$(document).ready(function() {
-							    if ($.fn.PersonaCard) {
-							        $('.ms-PersonaCard').PersonaCard();
-							    }
-						    });
+							  if ($.fn.PersonaCard) {
+							    $(".ms-PersonaCard").PersonaCard();
+							  }
+						  });
 						}
 					});
 				}
-
 
 				function saveAttachmentInit() {
 					var $saveAttachment = $("#outlook-saveAttachment");
