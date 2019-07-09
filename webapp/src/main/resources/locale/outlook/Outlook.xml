@@ -143,22 +143,22 @@
     <searchTargetSpaceDescription>If selected, the search will be limited to the content of a space (space documents, wiki pages, discussions, etc.).</searchTargetSpaceDescription>
     <search>Search</search>
     <searching>Searching...</searching>
-    <searchResultFor>Search results for: </searchResultFor>
+    <searchResultFor>Search results for:</searchResultFor>
 
     <!-- userInfo -->
-   <users>Users</users>
-   <user>User</user>
-   <inexo> View in eXo  </inexo>
-   <activityInfo>Latest activity  </activityInfo>
-   <notUser>Sorry, no intranet users found in this email.</notUser>
-   <employer>Works  </employer>
-   <in> in </in>
-   <of> in the </of>
-   <telephone>Telephone numbers  </telephone>
-   <mail>Email </mail>
-   <chat>Chat </chat>
-   <vchat>Video chat </vchat>
-   <linkConnexions>Self searching people </linkConnexions>
+    <users>Users</users>
+    <user>User</user>
+    <inexo>View in eXo</inexo>
+    <activityInfo>Latest activity</activityInfo>
+    <notUser>Sorry, no intranet users found in this email.</notUser>
+    <employer>Works  </employer>
+    <in>in</in>
+    <of>in the</of>
+    <telephone>Telephone numbers</telephone>
+    <mail>Email</mail>
+    <chat>Chat</chat>
+    <vchat>Video chat</vchat>
+    <linkConnexions>Self searching people</linkConnexions>
 
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>
