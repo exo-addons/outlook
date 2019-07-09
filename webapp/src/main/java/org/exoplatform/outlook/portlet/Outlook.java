@@ -1082,31 +1082,31 @@ public class Outlook {
         String nameOwner = context.getSecurityContext().getRemoteUser();
         Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
         Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
-        Map<String,ExoSocialActivity> exoSocialActivityMap = new HashMap<>();
+        Map<String, ExoSocialActivity> exoSocialActivityMap = new HashMap<>();
         List<User> usersToDisplay = new LinkedList<>();
         List<Profile> profilesToDisplay = new LinkedList<>();
-        Map<String,Profile> profileToRelationship = new HashMap<>();
+        Map<String, Profile> profileToRelationship = new HashMap<>();
         List<String> idActivity = null;
         List<String> profileRelationshipName = null;
         try {
             if (byEmail != null) {
                 String[] allEmails = byEmail.split(",");
-                ListAccess<User> allExoUser = outlook.getAllExoUsers();
                 for (String email : allEmails) {
+                    ListAccess<User> allExoUser = outlook.getUserByEmail(email);
                     for (User user : allExoUser.load(0, allExoUser.getSize())) {
                         idActivity = new LinkedList<>();
                         profileRelationshipName = new LinkedList<>();
-                        if ( user.getEmail().equals( email.toLowerCase() ) ) {
+                        if (user.getEmail().equals(email.toLowerCase())) {
                             String foundUserName = user.getUserName();
                             OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
                             Profile exoOwnerProfile = exoUser.getProfileForName(nameOwner);
                             if (!user.getEmail().equals(exoOwnerProfile.getProperty("email"))) {
                                 Profile exoUserProfile = exoUser.getProfileForName(foundUserName);
-                                List<Relationship> usergetRelationships = exoUser.getRelationships(foundUserName);
+                                List<Relationship> userGetRelationships = exoUser.getRelationships(foundUserName);
                                 profilesToDisplay.add(exoUserProfile);
                                 usersToDisplay.add(user);
                                 usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
-                                for (Relationship relationship : usergetRelationships.subList(0, Math.min(usergetRelationships.size(), 20))) {
+                                for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
                                     if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
                                         profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(), relationship.getSender().getProfile());
                                         profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
@@ -1133,21 +1133,22 @@ public class Outlook {
                 }
             }
             return userInfoactivity.with()
-                         .exoSocialActivityMap(exoSocialActivityMap)
-                         .usersToDisplay(usersToDisplay)
-                         .usersInfoMap(usersInfoMap)
-                         .userInfo(userInfo)
-                         .profilesToDisplay(profilesToDisplay)
-                         .profileToRelationship(profileToRelationship)
-                         .nameOwner(nameOwner)
-                         .ok();
-            } catch (Throwable e) {
-                LOG.error("Error showing User Activity ", e);
+                    .exoSocialActivityMap(exoSocialActivityMap)
+                    .usersToDisplay(usersToDisplay)
+                    .usersInfoMap(usersInfoMap)
+                    .userInfo(userInfo)
+                    .profilesToDisplay(profilesToDisplay)
+                    .profileToRelationship(profileToRelationship)
+                    .nameOwner(nameOwner)
+                    .ok();
+        } catch (Exception e) {
+            LOG.error("Error showing User Info by email " +byEmail , e);
             return errorMessage(e.getMessage(), 500);
         }
     }
 
-    /**
+
+        /**
      * Convert to status.
      *
      * @param groupId   the group id

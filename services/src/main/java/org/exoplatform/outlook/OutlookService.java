@@ -199,9 +199,9 @@ public interface OutlookService {
    */
   UserDocuments getUserDocuments() throws RepositoryException, OutlookException;
 
-  @Deprecated
+
   Map<String, String> getUserInfoMap(String name) throws Exception;
 
-  @Deprecated
-  ListAccess<User> getAllExoUsers() throws OutlookException;
+
+  ListAccess<User> getUserByEmail(String email) throws OutlookException;
 }

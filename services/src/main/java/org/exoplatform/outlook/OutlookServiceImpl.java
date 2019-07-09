@@ -1060,7 +1060,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected final ResourceBundleService                       resourceBundleService;
 
   /** The resource document service. */
-  protected final DocumentService                       documentService;
+  protected final DocumentService                             documentService;
 
 
   /** The html policy. */
@@ -1565,21 +1565,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
 
   @Override
-  @Deprecated
   public Map<String, String> getUserInfoMap(String name)  {
-      Map<String, String> userInfoMap = new HashMap<>();
-    try {
-      Collection<UserProfile> userProfiles = new LinkedList<>();
-      userProfiles = organization.getUserProfileHandler().findUserProfiles();
-      for (UserProfile userProfile : userProfiles ){
-        if (userProfile.getUserName().equals( name) ) {
-          userInfoMap = userProfile.getUserInfoMap();
-        }
+      try {
+          UserProfile userProfile = organization.getUserProfileHandler().findUserProfileByName(name);
+          return userProfile.getUserInfoMap();
+      } catch ( Exception e){
+          LOG.error("Error searching User Info Map ", e);
       }
-    } catch ( Exception e){
-      LOG.error("Error showing getUserInfoMap ", e);
-    }
-    return userInfoMap ;
+      return null;
   }
 
    /**
@@ -1589,12 +1582,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws OutlookException the outlook exception
    */
   @Override
-  @Deprecated
-  public ListAccess<User> getAllExoUsers() throws OutlookException {
+  public ListAccess<User> getUserByEmail(String email ) throws OutlookException {
     try {
-      return organization.getUserHandler().findAllUsers();
+        org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
+        query.setEmail(email);
+      return organization.getUserHandler().findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ANY);
     } catch (Exception e) {
-      throw new OutlookException("Error searching all user " , e);
+      throw new OutlookException("Error searching user by email  " + email, e);
     }
   }
 
