@@ -39,8 +39,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				+ '-' + pad2(date.getMonth() + 1) //
 				+ '-' + pad2(date.getDate()) //
 				+ 'T' + pad2(date.getHours()) + ':' + pad2(date.getMinutes()) + ':' + pad2(date.getSeconds())
-				// +  '.' + pad3(date.getMilliseconds())
-				+ dif + pad2(tzo / 60)// +  ':'
+				// + '.' + pad3(date.getMilliseconds())
+				+ dif + pad2(tzo / 60)// + ':'
 				+ pad2(tzo % 60);
 		} else {
 			return null;
@@ -48,8 +48,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 	}
 
 	/**
-	 * Method adapted from org.exoplatform.services.cms.impl.Utils.fileSize().
-	 */
+   * Method adapted from org.exoplatform.services.cms.impl.Utils.fileSize().
+   */
 	function sizeString(size) {
 		var byteSize = size % 1024;
 		var kbSize = (size % 1048576) / 1024;
@@ -71,10 +71,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 		}
 	}
 
-	/** 
-	 * Returns the version of Windows Internet Explorer or a -1
-	 * (indicating the use of another browser).
-	 */
+	/**
+   * Returns the version of Windows Internet Explorer or a -1 (indicating the use of another browser).
+   */
 	function getIEVersion() {
 		var rv = -1;
 		// Return value assumes failure.
@@ -88,8 +87,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 	}
 	
 	/**
-		 * Add style to the given document (to the end of head).
-		 */
+   * Add style to the given document (to the end of head).
+   */
 	function loadStyle(cssUrl, theDocument) {
 		if (theDocument.createStyleSheet) {
 			theDocument.createStyleSheet(cssUrl); // IE way
@@ -123,7 +122,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 			var $pane = $("#outlook-pane");
 			if ($pane.length > 0) {
 				// TODO Hide eXo Tribe's Feedback widget
-				//$("#btnFeedback").hide();
+				// $("#btnFeedback").hide();
 
 				var $error = $pane.find("#outlook-error");
 				var $messageBanner = $error.find(".ms-MessageBanner");
@@ -427,7 +426,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					function loadFolder() {
 						var process = $.Deferred();
 						if (groupId && path) {
-							//console.log(">> loadFolder: " + groupId + " >> " + path);
+							// console.log(">> loadFolder: " + groupId + " >> " + path);
 							$folders.jzLoad("Outlook.folders()", {
 								groupId : groupId,
 								path : path
@@ -526,8 +525,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										if (asyncResult.status === "succeeded") {
 											var attachmentToken = asyncResult.value;
 											var ewsUrl = Office.context.mailbox.ewsUrl;
-											//console.log(">> attachmentToken: " + attachmentToken + ", ewsUrl: " + ewsUrl);
-											//console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
+											// console.log(">> attachmentToken: " + attachmentToken + ", ewsUrl: " + ewsUrl);
+											// console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
 											var $savedSpaceInfo = $savedAttachment.find(".savedSpaceInfo");
 											$savedSpaceInfo.jzLoad("Outlook.saveAttachment()", {
 												groupId : groupId,
@@ -651,10 +650,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							});
 						});
 					} else {
-                        var $notAttachment = $("#notAttachment");
-                        $saveAttachment.hide();
-                        $notAttachment.show();
-                    }
+              var $notAttachment = $("#notAttachment");
+              $saveAttachment.hide();
+              $notAttachment.show();
+          }
 				}
 
 				function convertToStatusInit() {
@@ -730,14 +729,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var messageToken = asyncResult.value;
 							var midProcess = readMessageId();
 							midProcess.done(function(mid) {
-								//console.log("getMessage(): " + mid + " token:" + messageToken);
+								// console.log("getMessage(): " + mid + " token:" + messageToken);
 								if (mid) {
 									var ewsUrl = Office.context.mailbox.ewsUrl;
-									//console.log(">> ewsUrl: " + ewsUrl);
-
-
-
-
+									// console.log(">> ewsUrl: " + ewsUrl);
 									// get the message content to temp div and then move it to iframe
 									var $tempText = $("<div style='display:none'></div>");
 									$textFrame.append($tempText);
@@ -867,7 +862,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$form.submit(function(event) {
 						event.preventDefault();
 						clearError();
-						//console.log(">> postStatus groupId: " + groupId + " message: " + $text.html());
+						// console.log(">> postStatus groupId: " + groupId + " message: " + $text.html());
 						$form.hide("blind");
 						$posting.show("blind");
 						var spinner = new fabric.Spinner($posting.find(".ms-Spinner").get(0));
@@ -1309,7 +1304,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					$form.submit(function(event) {
 						event.preventDefault();
 						clearError();
-						//console.log(">> startDiscussionInit groupId: " + groupId + " name: " + $topicName.val() + " text: " + $topicText.html());
+						// console.log(">> startDiscussionInit groupId: " + groupId + " name: " + $topicName.val() + " text: " +
+            // $topicText.html());
 						$form.hide("blind");
 						$starting.show("blind");
 						var spinner = new fabric.Spinner($starting.find(".ms-Spinner").get(0));
@@ -1536,7 +1532,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					var loadChildred = function() {
 						var process = $.Deferred();
 						if (sourceId && path) {
-							//console.log(">> loadChildred: " + sourceId + " >> " + path);
+							// console.log(">> loadChildred: " + sourceId + " >> " + path);
 							$folderFiles.jzLoad("Outlook.exploreFiles()", {
 								sourceId : sourceId,
 								path : path
@@ -1619,9 +1615,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							var $attachedDocuments = $attached.find(".documents");
 							$documents.find("li.ms-ListItem.is-selected").each(function(i, li) {
 								var $selected = $(li);
-								//var title = $selected.find(".ms-ListItem-primaryText").text();
+								// var title = $selected.find(".ms-ListItem-primaryText").text();
 								// XXX we cannot use WebDAV link as it requires authentication in eXo
-								//var downloadUrl = $selected.data("downloadurl");
+								// var downloadUrl = $selected.data("downloadurl");
 								var fpath = $selected.data("path");
 								var $fileLink = $selected.jzAjax("Outlook.fileLink()", {
 									type : 'POST',
@@ -1753,14 +1749,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									$a.attr("href", fixPortalName($a.attr("href")));
 								});
 								// TODO do we want show unified (full) search in the add-in?
-								//$table.find("td.message>a").each(function() {
-								//	var $a = $(this);
+								// $table.find("td.message>a").each(function() {
+								// var $a = $(this);
 									// //$a.attr("href", outlookSiteUrl($a.attr("href")));
 									// $(searchWindow.document).on("click", $a.attr("id"), function() {
 							      // window.location.href = generateAllResultsURL(); //open the main search page
 							      // //$(quickSearchResult_id).hide();
 							    // });
-								//});
+								// });
 								return true;
 							});
 						} else {
@@ -1809,7 +1805,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									$container.find("textarea[autofocus], input[autofocus]").focus();
 									// know last loaded
 									$container.data("menu-name", menuName);
-									// XXX force iOS don't use native style for inputs (shadow on upper border) 
+									// XXX force iOS don't use native style for inputs (shadow on upper border)
 									if (isIOS) {
 										$container.find("input[type='text'], textarea").css({
 										  "-webkit-appearance" : "none"
@@ -1822,9 +1818,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											eval(commandFunc + "()");
 										}
 										// TODO cleanup
-										//initNoSpacesLink();
-										//setDropdownSize();
-										//initRefresh();
+										// initNoSpacesLink();
+										// setDropdownSize();
+										// initRefresh();
 										process.resolve(response, status, jqXHR);
 									} catch(e) {
 										console.log(e);
