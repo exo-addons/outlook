@@ -321,45 +321,53 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// TODO something?
 				}
 
-				function userInfoInit() {
-				  var recipientEmails = "";
-          function addEmailsIfNotUser(recipients){
-            if (recipients != null){
-              for(var i = 0; i < recipients.length; i++){
-                if (recipients[i].emailAddress != userEmail){
-                  recipientEmails += recipients[i].emailAddress + ",";
+                function userInfoInit() {
+                    var recipientEmails = "";
+                    var flag = false;
+                    function addEmailsIfNotUser(recipients){
+                        if (recipients != null){
+                            for(var i = 0; i < recipients.length; i++){
+                                if (recipients[i].emailAddress != userEmail){
+                                    recipientEmails += recipients[i].emailAddress + ",";
+                                }
+                            }
+                        }
+                    }
+                    if (internetMessageId) {
+                        if (from.emailAddress != userEmail){
+                            recipientEmails += from.emailAddress + "," ;
+                        }
+                        addEmailsIfNotUser(from);
+                        var toCopy = Office.context.mailbox.item.to;
+                        var carbonCopy = Office.context.mailbox.item.cc;
+                        addEmailsIfNotUser(toCopy);
+                        addEmailsIfNotUser(carbonCopy);
+                        loadUserInfo(recipientEmails);
+                    } else {
+                        // This will happen when writing a new message or editing a draft.
+                        Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
+                            if (asyncResult.status === "succeeded") {
+                                var toCopy = asyncResult.value;
+                                addEmailsIfNotUser(toCopy);
+                            } else {
+                                console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+                                + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+                                showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+                            }
+                        });
+                        Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
+                            if (asyncResult.status === "succeeded") {
+                                var ccCopy = asyncResult.value;
+                                addEmailsIfNotUser(ccCopy);
+                                 loadUserInfo(recipientEmails);
+                            } else {
+                                console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+                                + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+                                showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+                            }
+                        });
+                    }
                 }
-              }
-            }
-          }
-					if (internetMessageId) {
-						if (from.emailAddress != userEmail){
-						  recipientEmails += from.emailAddress + "," ;
-						}
-						addEmailsIfNotUser(from);
-            var toCopy = Office.context.mailbox.item.to;
-            var carbonCopy = Office.context.mailbox.item.cc;
-            addEmailsIfNotUser(toCopy);
-            addEmailsIfNotUser(carbonCopy);
-						console.log("From Email: " + recipientEmails);
-						loadUserInfo(recipientEmails);
-					} else {
-					  // When this should happen? In a new message compose?
-					  // TODO need CC to get asycn also?
-						Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
-							if (asyncResult.status === "succeeded") {
-								var toCopy = asyncResult.value;
-								addEmailsIfNotUser(toCopy);
-								console.log("Email to: " + recipientEmails);
-								loadUserInfo(recipientEmails)
-							} else {
-								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-										+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-							}
-						});
-					}
-				}
 
 				function loadUserInfo(byEmail) {
 					var $userInfo = $("#outlook-userInfo>div");
