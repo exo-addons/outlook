@@ -37,7 +37,7 @@
       					<div class="ms-Persona ms-Persona--xl">
       						<div class="ms-Persona-imageArea">
       							<div class="ms-Persona-initials ms-Persona-initials--purple"> ${ user.getFirstName().substring(0,1)}${user.getLastName().substring(0,1)}</div>
-      							<img class="ms-Persona-image" src="/rest/v1/social/users/${user.userName}/avatar">
+      							<img class="ms-Persona-image" src="${profile.getAvatarUrl()}">
       						</div>
                 </div>
       					<div class="ms-Persona-details">
@@ -69,7 +69,7 @@
       					<li id="mail" class="ms-PersonaCard-action">	  <i class="ms-Icon ms-Icon--mail"></i>	</li>
       					<li id="org" class="ms-PersonaCard-action">	   <i class="ms-Icon ms-Icon--people"></i>	</li>
       					<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="View profile in eXo">
-      						<a href="/portal/intranet/profile/${user.userName}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
+      						<a href="${profile.getUrl()}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
       					</li>
       				</ul>
       				<div class="ms-PersonaCard-actionDetailBox">
@@ -135,7 +135,6 @@
                           <% if (urls.toString().matches("(.*)url(.*)") ) { %>
                             <% for (String url in urls.toString().split(",",0)) { %>
                               <% if (url.startsWith("[value")){%>
-                              <p><!-- TODO URL startsWith why we need this??? -->
                                 <% if (url.substring(7).startsWith("http")) {%>
                                   <a class="ms-Link" href="${url.substring(7)}" target="_blank"> 
                                 <% } else { %>
@@ -181,41 +180,35 @@
       									<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.business-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.business-info.online.email")} </a></p>
       								<% } %>
       								<% if ( profile.getProperty("email") != null) { %>
-      									<p><a class="ms-Link" href="mailto:${ profile.getProperty("email")}" >${ profile.getProperty("email") } </a></p>
+      									<p><a class="ms-Link" href="mailto:${ profile.getProperty("email")}">${profile.getProperty("email")}</a></p>
       								<% } %>
       							</div>
       						</li>
-      						<li id="org" class="ms-PersonaCard-actionDetails detail-6 ">
+      						<li id="org" class="ms-PersonaCard-actionDetails detail-6">
       							<div class="ms-OrgChart">
       								<div class="ms-OrgChart-group">
       									<ul class="ms-OrgChart-list">
-      									<% for (String profileRelationshipName in userInfo.get(user.userName+"relationship" ) ) { %>
+      									<% for (String profileRelationshipName in userInfo.get(user.userName+"relationship")) {%>
                           <li class="ms-OrgChart-listItem">
                             <div class="ms-Persona">
                               <div class="ms-Persona-imageArea">
                                 <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
-                                  <!-- TODO font??? use CSS instead -->
-                                  <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">${profileToRelationship.get(profileRelationshipName).getProperty("firstName").substring(0,1)}${profileToRelationship.get(profileRelationshipName).getProperty("lastName").substring(0,1)}
-                                    </font>
-                                  </font>
+                                  <font class="ms-Persona-initials">${profileToRelationship.get(profileRelationshipName).getProperty("firstName").substring(0,1)}
+                                  ${profileToRelationship.get(profileRelationshipName).getProperty("lastName").substring(0,1)}</font>
                                 </div>
-                                <!-- TODO get user avatar image from Social API fully and use here-->
                                 <img class="ms-Persona-image"
-                                  src="/rest/v1/social/users/${profileToRelationship.get(profileRelationshipName).getProperty("username")}/avatar">
+                                  src="${profileToRelationship.get(profileRelationshipName).getAvatarUrl()}">
                               </div>
                               <div class="ms-Persona-details">
                                 <div class="ms-Persona-primaryText">
-                                  <!-- TODO font??? use CSS instead -->
-                                  <font style="vertical-align: inherit;">
-                                  <!-- TODO get user profile from Social API fully and use here-->
-                                  <a href="/portal/intranet/profile/${profileToRelationship.get(profileRelationshipName).getProperty("username")}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}
+                                  <font class="ms-Persona-initials">
+                                  <a href="${profileToRelationship.get(profileRelationshipName).getUrl()}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}
                                   </a>
                                   </font>
                                 </div>
                                 <%if ( profileToRelationship.get(profileRelationshipName).getProperty("aboutMe") != null ) { %>
                                 <div class="ms-Persona-secondaryText">
-                                  <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">${profileToRelationship.get(profileRelationshipName).getProperty("aboutMe")}</font></font>
+                                  <font class="ms-Persona-initials">${profileToRelationship.get(profileRelationshipName).getProperty("aboutMe")}</font>
                                 </div>
                                 <% } %>
                               </div>

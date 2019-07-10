@@ -322,7 +322,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                 function userInfoInit() {
                     var recipientEmails = "";
-                    var flag = false;
                     function addEmailsIfNotUser(recipients){
                         if (recipients != null){
                             for(var i = 0; i < recipients.length; i++){
@@ -353,17 +352,17 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                                 + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
                                 showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
                             }
-                        });
-                        Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
-                            if (asyncResult.status === "succeeded") {
-                                var ccCopy = asyncResult.value;
-                                addEmailsIfNotUser(ccCopy);
-                                 loadUserInfo(recipientEmails);
-                            } else {
-                                console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-                                + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-                                showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-                            }
+                            Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
+                                if (asyncResult.status === "succeeded") {
+                                    var ccCopy = asyncResult.value;
+                                    addEmailsIfNotUser(ccCopy);
+                                    loadUserInfo(recipientEmails);
+                                } else {
+                                    console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+                                    + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+                                    showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+                                }
+                            });
                         });
                     }
                 }
