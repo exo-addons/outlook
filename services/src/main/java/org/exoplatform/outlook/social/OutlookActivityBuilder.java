@@ -29,6 +29,7 @@ import org.exoplatform.social.webui.activity.BaseUIActivityBuilder;
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookActivityBuilder.java 00000 Jul 26, 2016 pnedonosko $
  */
+ @Deprecated // TODO NOT used in PLF 5.2
 public class OutlookActivityBuilder extends BaseUIActivityBuilder {
   
   /**

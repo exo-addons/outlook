@@ -146,6 +146,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   /**
    * The Class Attachment.
    */
+  @Deprecated // TODO NOT used in PLF 5.2
   public class Attachment extends ActivityFileAttachment {
 
     /** The file UUID. */
@@ -187,6 +188,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the fileUUID
      */
+
     public String getFileUUID() {
       return fileUUID;
     }
@@ -196,6 +198,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * 
      * @return the title of Node.
      */
+
     public String getTitle() {
       Node node = null;
       try {
@@ -238,6 +241,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @return true, if is image
      * @throws Exception the exception
      */
+
     public boolean isImage() throws Exception {
       String mimeType = getMimeType();
       return mimeType.startsWith("image") || mimeType.indexOf("icon") >= 0;
@@ -248,6 +252,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the size
      */
+
     public String getSize() {
       Node node = null;
       try {
@@ -272,6 +277,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @return true, if is support preview
      * @throws Exception the exception
      */
+
     public boolean isSupportPreview() throws Exception {
       Node node = null;
       try {
@@ -304,6 +310,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the download link
      */
+
     public String getDownloadLink() {
       Node node = null;
       try {
@@ -324,6 +331,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @throws RepositoryException the repository exception
      * @throws UnsupportedEncodingException the unsupported encoding exception
      */
+
     public String getPdfThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
       Node node = null;
       try {
@@ -363,6 +371,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @throws RepositoryException the repository exception
      * @throws UnsupportedEncodingException the unsupported encoding exception
      */
+
     public String getThumbnailImageLink() throws RepositoryException, UnsupportedEncodingException {
       Node node = null;
       try {
@@ -476,6 +485,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the open link
      */
+
     public String getOpenLink() {
       Node node = null;
       try {
@@ -495,6 +505,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @param ctx the ctx
      * @return the preview link
      */
+
     public String getPreviewLink(WebuiBindingContext ctx) {
       Node node = null;
       try {
@@ -548,6 +559,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      *
      * @return the css class icon
      */
+     @Deprecated // TODO NOT used in PLF 5.2
     public String getCssClassIcon() {
       Node node = null;
       try {
@@ -567,6 +579,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @return true, if is support thumbnail view
      * @throws Exception the exception
      */
+     @Deprecated // TODO NOT used in PLF 5.2
     public boolean isSupportThumbnailView() throws Exception {
       return org.exoplatform.services.cms.impl.Utils.isSupportThumbnailView(getMimeType());
     }
@@ -577,6 +590,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @return <code>true</code> when node exists, <code>false</code> otherwise
      * @throws RepositoryException when error
      */
+     @Deprecated // TODO NOT used in PLF 5.2
     public boolean isExists() throws RepositoryException {
       try {
         return node() != null;
@@ -590,6 +604,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * 
      * @return the summary of Node. Return empty string if catch an exception.
      */
+     @Deprecated // TODO NOT used in PLF 5.2
     public String getSummary() {
       Node node = null;
       try {
@@ -653,6 +668,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
      * @return the full path
      * @throws RepositoryException the repository exception
      */
+     @Deprecated // TODO NOT used in PLF 5.2
     public String getFullPath() throws RepositoryException {
       Node node = node();
       StringBuilder path = new StringBuilder();
@@ -700,6 +716,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @throws RepositoryException the repository exception
    * @throws RepositoryConfigurationException the repository configuration exception
    */
+   @Deprecated // TODO NOT used in PLF 5.2
   public List<ActivityFileAttachment> getFiles() throws RepositoryException, RepositoryConfigurationException {
     if (this.files == null) {
       synchronized (this) {
@@ -707,15 +724,13 @@ public class OutlookAttachmentActivity extends FileUIActivity {
           ExoSocialActivity activity = getActivity();
           if (activity != null) {
             String filesName = activity.getTemplateParams().get(FILES);
-            //String filesDocPath =;
-            //String fileId =
+
             String [] filePath = activity.getTemplateParams().get(DOCPATH).split(SEPARATOR_REGEX);
             String [] fileUUID = activity.getTemplateParams().get(FileUIActivity.ID).split(SEPARATOR_REGEX);
             if (filesName != null && filesName.length() > 0) {
               List<ActivityFileAttachment> files = new ArrayList<ActivityFileAttachment>();
               int i = 0;
               for (String fline : filesName.split(SEPARATOR_REGEX)) {
-               // files.add(parseAttachment(fline));
                 files.add (new Attachment(parseAttachment(fileUUID[i]), parseAttachment(fline),parseAttachment(filePath[i])));
                 i++;
               }
@@ -738,6 +753,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @param node the node
    * @throws Exception the exception
    */
+
   public void renderAttachmentPresentation(Node node) throws Exception {
     OutlookMessagePresentation uicontentpresentation = addChild(OutlookMessagePresentation.class, null, null);
     uicontentpresentation.setNode(node);
@@ -821,6 +837,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @param line the line
    * @return the attachment
    */
+   @Deprecated // TODO NOT used in PLF 5.2
   String parseAttachment(String line) {
     int i = line.indexOf('=');
     String fileUUID, name;
@@ -841,6 +858,7 @@ public class OutlookAttachmentActivity extends FileUIActivity {
    * @param name the name
    * @return the string
    */
+   @Deprecated // TODO NOT used in PLF 5.2
   public static String attachmentString(String fileUUID, String name) {
     StringBuilder line = new StringBuilder();
     line.append(fileUUID);
