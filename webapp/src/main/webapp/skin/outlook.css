@@ -533,6 +533,30 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   z-index: 9;
 }
 
+.outlook-usersInfo .ms-PersonaCard-detailOrg {
+  overflow-y: auto;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailChat {
+  margin-left: 0;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailPhone {
+  margin-left: -200%;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailVideo {
+  margin-left: -300%;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailMail {
+  margin-left: -400%;
+}
+
+.outlook-usersInfo .ms-PersonaCard-detailOrg {
+  margin-left: -100%;
+}
+
 .ms-PersonaCard-detailPhone .detail-6, .ms-PersonaCard-detailVideo .detail-6, .ms-PersonaCard-detailMail .detail-6 {
   min-height: 100px;
   max-height: 210px;
