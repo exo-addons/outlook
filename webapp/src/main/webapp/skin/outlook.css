@@ -460,7 +460,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   right: 5px;
   font-size: 11px;
   width: 80px;
-  bottom: 50%;
+  bottom: 10px;
   z-index: 1;
 }
 
