@@ -26,202 +26,204 @@
 	<div class="outlook-usersInfo-person">
 		<% for (user in usersToDisplay) { %>
 			<% for (profile in profilesToDisplay) { %>
-			<% if (profile.getProperty("username").equals(user.userName) ) { %>
-			<div class="ms-PersonaCard">
-				<div class="ms-PersonaCard-persona ">
-					<div class="ms-Persona ms-Persona--xl">
-						<div class="ms-Persona-imageArea">
-							<div class="ms-Persona-initials ms-Persona-initials--purple"> ${ user.getFirstName().substring(0,1)}${user.getLastName().substring(0,1)}</div>
-							<img class="ms-Persona-image" src="${profile.getAvatarUrl()}">
-						</div>
-						<div class="ms-Persona-details">
-							<div class="ms-Persona-primaryText"> ${user.displayName} </div>
-							<div class="ms-Persona-secondaryText">
-								<% if ( usersInfoMap.size() > 0  ) { %>
-									<% if (usersInfoMap.get(user.userName).get("user.jobtitle") != null) { %>
-									${usersInfoMap.get(user.userName).get("user.jobtitle")}
-								  <% } %>
-									<% if (usersInfoMap.get(user.userName).get("user.employer") != null) { %>
-									&{Outlook.in} ${usersInfoMap.get(user.userName).get("user.employer")}
-								  <% } %>
-									<% if (usersInfoMap.get(user.userName).get("user.department") != null) { %>
-									&{Outlook.of} ${usersInfoMap.get(user.userName).get("user.department")}
-								  <% } %>
-								<% } %>
-								<% if (usersInfoMap.get(user.userName).get("user.jobtitle") == null) {   %>
-									<% if ( profile.getProperty("position") != null) {   %>
-										${ profile.getProperty("position")}
-									<% } %>
-								<% } %>
-							</div>
-						</div>
-					</div>
-				</div>
-				<ul class="ms-PersonaCard-actions">
-					<li id="chat" class="ms-PersonaCard-action is-active">	  <i class="ms-Icon ms-Icon--panel"></i></li>
-					<li id="org" class="ms-PersonaCard-action">	   <i class="ms-Icon ms-Icon--people"></i>	</li>
-					<li id="phone" class="ms-PersonaCard-action">	 <i class="ms-Icon ms-Icon--phone"></i> </li>
-					<li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
-					<li id="mail" class="ms-PersonaCard-action">	  <i class="ms-Icon ms-Icon--mail"></i>	</li>
-					<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="View profile in eXo">
-						<a href="${profile.getUrl()}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
-					</li>
-				</ul>
-				<div class="ms-PersonaCard-actionDetailBox">
-					<ul id="detailList" class="ms-PersonaCard-detailChat">
-						<li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
-                            <% if ( userInfo.get(user.userName+"idActivity")!= null ) { %>
-                            <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
-                            <div class="text-userInfoActivity">
-								<% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
-								<% if (  exoSocialActivityMap.size() > 0 ) { %>
-								<div class="ms-depth-8 activity  ${exoSocialActivityMap.get(idActivity).getType()}">
-									<ul class="ms--list">
-									<% if(exoSocialActivityMap.get(idActivity).title != null) { %>
-										<li class="activity-title">
-											<a href="/portal/intranet/activity?id=${idActivity}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">
-											${exoSocialActivityMap.get(idActivity).title}</a>
-										</li>
-									<% } %>
-									<% if(exoSocialActivityMap.get(idActivity).getPostedTime() != null) { %>
-										<time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(exoSocialActivityMap.get(idActivity).getPostedTime ()) }</time>
-									<% } %>
-									</ul>
-								</div>
-								<% } %>
-								<% } %>
-                            </div> <% } %>
-						</li>
-						<li id="org" class="ms-PersonaCard-actionDetails detail-6">
-                            <div class="ms-OrgChart">
-                                <div class="ms-OrgChart-group">
-                                    <ul class="ms-OrgChart-list">
-                                        <% for (String profileRelationshipName in userInfo.get(user.userName+"relationship")) {%>
-                                        <li class="ms-OrgChart-listItem">
-                                        <div class="ms-Persona">
-                                            <div class="ms-Persona-imageArea">
-                                                <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
-                                                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                                     ${(profileToRelationship.get(profileRelationshipName).getProperty("firstName")).substring(0,1)}
-                                                     ${profileToRelationship.get(profileRelationshipName).getProperty("lastName").substring(0,1)}</font></font>
-                                                </div>
-                                                <img class="ms-Persona-image" src="${profileToRelationship.get(profileRelationshipName).getAvatarUrl()}">
-                                            </div>
-                                            <div class="ms-Persona-details">
-                                                <div class="ms-Persona-primaryText">
-                                                    <font style="vertical-align: inherit;">
-                                                        <a href="${profileToRelationship.get(profileRelationshipName).getUrl()}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}
-                                                        </a>
-                                                    </font>
-                                                </div>
-                                                <%if ( profileToRelationship.get(profileRelationshipName).getProperty("aboutMe") != null ) { %>
-                                                <div class="ms-Persona-secondaryText">
-                                                    <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                                    ${profileToRelationship.get(profileRelationshipName).getProperty("aboutMe")}</font></font>
-                                                </div>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                        </li>
-                                        <% } %>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-						<li id="phone" class="ms-PersonaCard-actionDetails detail-6">
-							<span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-							<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number") != null) {   %>
-								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-								<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number")}</span>
-							  </div>
-							<% } %>
-							<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number") != null) {   %>
-								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-								<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number")}</span>
-							  </div>
-							<% } %>
-							<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number") != null) {   %>
-								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-								<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number")} </span>
-							  </div>
-							<% } %>
-							<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number") != null) {   %>
-								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-								<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number")}</span>
-							  </div>
-							<% } %>
-							<% if ( profile.getPhones() != null) {   %>
-								<% for ( Map<String, String> phones in profile.getPhones()) { %>
-									<% for (String phone in phones.toString().split(",",0)){ %>
-										<% if ( phone.startsWith("[val")){%>
-											<div class="ms-PersonaCard-detailLine"><span class="ms-phone">
-											<i class="ms-Icon ms-Icon--phone"></i>${phone.substring(7)} </span>  </div>
-										<% } %>
-									<% } %>
-								<% } %>
-							<% } %>
-						</li>
-						<li id="video" class="ms-PersonaCard-actionDetails detail-6">
-							<div class="ms-PersonaCard-detailLine">
-							  <% if (profile.getProperty("urls") != null) { %>
-								<% for (urls in profile.getProperty("urls")) { %>
-								  <% if (urls.toString().matches("(.*)url(.*)") ) { %>
-									<% for (String url in urls.toString().split(",",0)) { %>
-									  <% if (url.startsWith("[value")){%>
-										<% if (url.substring(7).startsWith("http")) {%>
-										  <a class="ms-Link" href="${url.substring(7)}" target="_blank">
-										<% } else { %>
-										  <a class="ms-Link" href="http://${url.substring(7)}" target="_blank">
-										<% } %><spanclass "ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i> ${url.substring(7)}</span>
-										</a>
-									  </p>
-									  <% } %>
-									<% } %>
-								  <% } %>
-								<% } %>
-							  <% } %>
-								<% if (profile.getProperty("ims") != null) { %>
-								<% for (ims in profile.getProperty("ims")) { %>
-									<% if (ims.toString().matches("(.*)skype(.*)") ) {%>
-										<% for (String skypeName in ims.toString().split(",",0)) { %>
-											<% if (skypeName.startsWith("[value")) {%>
-												<p><i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:${skypeName.substring(7)}">${skypeName.substring(7)}</a></p>
-											<% } %>
-										<% } %>
-									<% } %>
-								<% } %>
-								<% } %>
-								<p>
-									<a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
-										<span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
-									</a>
-								</p>
-								<p>
-									<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
-										<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-									</a>
-								</p>
-							</div>
-						</li>
-						<li id="mail" class="ms-PersonaCard-actionDetails detail-6">
-							<div class="ms-PersonaCard-detailLine">
-							<span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
-							<% if (usersInfoMap.get(user.userName).get("user.home-info.online.email") != null) { %>
-								<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.home-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.home-info.online.email")} </a></p>
-							<% } %>
-							<% if (usersInfoMap.get(user.userName).get("user.business-info.online.email") != null) { %>
-								<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.business-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.business-info.online.email")} </a></p>
-							<% } %>
-							<% if ( profile.getProperty("email") != null) { %>
-								<p><a class="ms-Link" href="mailto:${ profile.getProperty("email")}">${profile.getProperty("email")}</a></p>
-							<% } %>
-							</div>
-						</li>
-
-					</ul>
-				</div>
-			</div>
-			<% } %>
+  			<% if (profile.getProperty("username").equals(user.userName) ) { %>
+  			<div class="ms-PersonaCard">
+  				<div class="ms-PersonaCard-persona ">
+  					<div class="ms-Persona ms-Persona--xl">
+  						<div class="ms-Persona-imageArea">
+  							<div class="ms-Persona-initials ms-Persona-initials--purple"> ${ user.getFirstName().substring(0,1)}${user.getLastName().substring(0,1)}</div>
+  							<img class="ms-Persona-image" src="${profile.getAvatarUrl()}">
+  						</div>
+  						<div class="ms-Persona-details">
+  							<div class="ms-Persona-primaryText"> ${user.displayName} </div>
+  							<div class="ms-Persona-secondaryText">
+  								<% if ( usersInfoMap.size() > 0  ) { %>
+  									<% if (usersInfoMap.get(user.userName).get("user.jobtitle") != null) { %>
+  									${usersInfoMap.get(user.userName).get("user.jobtitle")}
+  								  <% } %>
+  									<% if (usersInfoMap.get(user.userName).get("user.employer") != null) { %>
+  									&{Outlook.in} ${usersInfoMap.get(user.userName).get("user.employer")}
+  								  <% } %>
+  									<% if (usersInfoMap.get(user.userName).get("user.department") != null) { %>
+  									&{Outlook.of} ${usersInfoMap.get(user.userName).get("user.department")}
+  								  <% } %>
+  								<% } %>
+  								<% if (usersInfoMap.get(user.userName).get("user.jobtitle") == null) {   %>
+  									<% if ( profile.getProperty("position") != null) {   %>
+  										${ profile.getProperty("position")}
+  									<% } %>
+  								<% } %>
+  							</div>
+  						</div>
+  					</div>
+  				</div>
+  				<ul class="ms-PersonaCard-actions">
+  					<li id="chat" class="ms-PersonaCard-action is-active">	  <i class="ms-Icon ms-Icon--panel"></i></li>
+  					<li id="org" class="ms-PersonaCard-action">	   <i class="ms-Icon ms-Icon--people"></i>	</li>
+  					<li id="phone" class="ms-PersonaCard-action">	 <i class="ms-Icon ms-Icon--phone"></i> </li>
+  					<li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
+  					<li id="mail" class="ms-PersonaCard-action">	  <i class="ms-Icon ms-Icon--mail"></i>	</li>
+  					<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="View profile in eXo">
+  						<a href="${profile.getUrl()}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
+  					</li>
+  				</ul>
+  				<div class="ms-PersonaCard-actionDetailBox">
+  					<ul id="detailList" class="ms-PersonaCard-detailChat">
+  						<li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
+                <% if ( userInfo.get(user.userName+"idActivity") != null ) { %>
+                <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
+                <div class="text-userInfoActivity">
+  								<% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
+  								<% if (exoSocialActivityMap.size() > 0 ) { %>
+  								<div class="ms-depth-8 activity  ${exoSocialActivityMap.get(idActivity).getType()}">
+  									<ul class="ms--list">
+  									<% if(exoSocialActivityMap.get(idActivity).title != null) { %>
+  										<li class="activity-title">
+                        <!-- TODO Can we get activity URL from Social? -->
+  											<a href="/portal/intranet/activity?id=${idActivity}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">
+  											${exoSocialActivityMap.get(idActivity).title}</a>
+  										</li>
+  									<% } %>
+  									<% if (exoSocialActivityMap.get(idActivity).getPostedTime() != null) { %>
+                      <!-- TODO We need formatted Date in user locale (do this higher in Java, send here) -->
+  										<time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(exoSocialActivityMap.get(idActivity).getPostedTime())}</time>
+  									<% } %>
+  									</ul>
+  								</div>
+  								<% } %>
+  								<% } %>
+                </div> 
+                <% } %>
+  						</li>
+  						<li id="org" class="ms-PersonaCard-actionDetails detail-6">
+              <div class="ms-OrgChart">
+                <div class="ms-OrgChart-group">
+                  <ul class="ms-OrgChart-list">
+                    <% for (String profileRelationshipName in userInfo.get(user.userName+"relationship")) {%>
+                    <li class="ms-OrgChart-listItem">
+                      <div class="ms-Persona">
+                        <div class="ms-Persona-imageArea">
+                          <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                ${(profileToRelationship.get(profileRelationshipName).getProperty("firstName")).substring(0,1)}
+                                ${profileToRelationship.get(profileRelationshipName).getProperty("lastName").substring(0,1)}</font></font>
+                          </div>
+                          <img class="ms-Persona-image" src="${profileToRelationship.get(profileRelationshipName).getAvatarUrl()}">
+                        </div>
+                        <div class="ms-Persona-details">
+                          <div class="ms-Persona-primaryText">
+                            <font style="vertical-align: inherit;"> <a
+                              href="${profileToRelationship.get(profileRelationshipName).getUrl()}" class="ms-Link" target="_blank">${profileToRelationship.get(profileRelationshipName).getProperty("fullName")}
+                            </a>
+                            </font>
+                          </div>
+                          <%if ( profileToRelationship.get(profileRelationshipName).getProperty("aboutMe") != null ) { %>
+                          <div class="ms-Persona-secondaryText">
+                            <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                ${profileToRelationship.get(profileRelationshipName).getProperty("aboutMe")}</font></font>
+                          </div>
+                          <% } %>
+                        </div>
+                      </div>
+                    </li>
+                    <% } %>
+                  </ul>
+                </div>
+              </div>
+            </li>
+  						<li id="phone" class="ms-PersonaCard-actionDetails detail-6">
+  							<span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
+  							<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number") != null) {   %>
+  								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
+  								<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number")}</span>
+  							  </div>
+  							<% } %>
+  							<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number") != null) {   %>
+  								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
+  								<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number")}</span>
+  							  </div>
+  							<% } %>
+  							<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number") != null) {   %>
+  								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
+  								<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number")} </span>
+  							  </div>
+  							<% } %>
+  							<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number") != null) {   %>
+  								<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
+  								<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number")}</span>
+  							  </div>
+  							<% } %>
+  							<% if ( profile.getPhones() != null) {   %>
+  								<% for ( Map<String, String> phones in profile.getPhones()) { %>
+  									<% for (String phone in phones.toString().split(",",0)){ %>
+  										<% if ( phone.startsWith("[val")){%>
+  											<div class="ms-PersonaCard-detailLine"><span class="ms-phone">
+  											<i class="ms-Icon ms-Icon--phone"></i>${phone.substring(7)} </span>  </div>
+  										<% } %>
+  									<% } %>
+  								<% } %>
+  							<% } %>
+  						</li>
+  						<li id="video" class="ms-PersonaCard-actionDetails detail-6">
+  							<div class="ms-PersonaCard-detailLine">
+  							  <% if (profile.getProperty("urls") != null) { %>
+  								<% for (urls in profile.getProperty("urls")) { %>
+  								  <% if (urls.toString().matches("(.*)url(.*)") ) { %>
+  									<% for (String url in urls.toString().split(",",0)) { %>
+  									  <% if (url.startsWith("[value")){%>
+  										<% if (url.substring(7).startsWith("http")) {%>
+  										  <a class="ms-Link" href="${url.substring(7)}" target="_blank">
+  										<% } else { %>
+  										  <a class="ms-Link" href="http://${url.substring(7)}" target="_blank">
+  										<% } %><spanclass "ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i> ${url.substring(7)}</span>
+  										</a>
+  									  </p>
+  									  <% } %>
+  									<% } %>
+  								  <% } %>
+  								<% } %>
+  							  <% } %>
+  								<% if (profile.getProperty("ims") != null) { %>
+  								<% for (ims in profile.getProperty("ims")) { %>
+  									<% if (ims.toString().matches("(.*)skype(.*)") ) {%>
+  										<% for (String skypeName in ims.toString().split(",",0)) { %>
+  											<% if (skypeName.startsWith("[value")) {%>
+  												<p><i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:${skypeName.substring(7)}">${skypeName.substring(7)}</a></p>
+  											<% } %>
+  										<% } %>
+  									<% } %>
+  								<% } %>
+  								<% } %>
+  								<p>
+  									<a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
+  										<span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
+  									</a>
+  								</p>
+  								<p>
+  									<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
+  										<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
+  									</a>
+  								</p>
+  							</div>
+  						</li>
+  						<li id="mail" class="ms-PersonaCard-actionDetails detail-6">
+  							<div class="ms-PersonaCard-detailLine">
+  							<span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
+  							<% if (usersInfoMap.get(user.userName).get("user.home-info.online.email") != null) { %>
+  								<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.home-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.home-info.online.email")} </a></p>
+  							<% } %>
+  							<% if (usersInfoMap.get(user.userName).get("user.business-info.online.email") != null) { %>
+  								<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.business-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.business-info.online.email")} </a></p>
+  							<% } %>
+  							<% if ( profile.getProperty("email") != null) { %>
+  								<p><a class="ms-Link" href="mailto:${ profile.getProperty("email")}">${profile.getProperty("email")}</a></p>
+  							<% } %>
+  							</div>
+  						</li>
+  					</ul>
+  				</div>
+  			</div>
+  			<% } %>
 			<% } %>
 		<% } %>
 	</div>
