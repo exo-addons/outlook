@@ -1083,6 +1083,7 @@ public class Outlook {
         Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
         Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
         Map<String, ExoSocialActivity> exoSocialActivityMap = new HashMap<>();
+        /* TODO Check it is possible to use only the Profile do not use User when rendering the markup */
         List<User> usersToDisplay = new LinkedList<>();
         List<Profile> profilesToDisplay = new LinkedList<>();
         Map<String, Profile> profileToRelationship = new HashMap<>();
@@ -1090,45 +1091,44 @@ public class Outlook {
         List<String> profileRelationshipName = null;
         try {
             if (byEmail != null) {
-                String[] allEmails = byEmail.split(",");
-                for (String email : allEmails) {
-                    ListAccess<User> allExoUser = outlook.getUserByEmail(email);
-                    for (User user : allExoUser.load(0, allExoUser.getSize())) {
+                for (String email : byEmail.split(",")) {
+                    ListAccess<User> userByEmail = outlook.getUserByEmail(email.toLowerCase());
+                    for (User user : userByEmail.load(0, userByEmail.getSize())) {
                         idActivity = new LinkedList<>();
                         profileRelationshipName = new LinkedList<>();
-                        if (user.getEmail().equals(email.toLowerCase())) {
-                            String foundUserName = user.getUserName();
-                            OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
-                            Profile exoOwnerProfile = exoUser.getProfileForName(nameOwner);
-                            if (!user.getEmail().equals(exoOwnerProfile.getProperty("email"))) {
-                                Profile exoUserProfile = exoUser.getProfileForName(foundUserName);
-                                List<Relationship> userGetRelationships = exoUser.getRelationships(foundUserName);
-                                profilesToDisplay.add(exoUserProfile);
-                                usersToDisplay.add(user);
-                                usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
-                                for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
-                                    if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                        profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(), relationship.getSender().getProfile());
-                                        profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
-                                    } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(foundUserName)) {
-                                        profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(), relationship.getReceiver().getProfile());
-                                        profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
-                                    }
+                        String foundUserName = user.getUserName();
+                        OutlookUser exoUser = outlook.getUser(user.getEmail(), foundUserName, null);
+                        Profile exoOwnerProfile = exoUser.getProfileForName(nameOwner);
+                        if (!user.getEmail().equals(exoOwnerProfile.getProperty("email"))) {
+                            Profile exoUserProfile = exoUser.getProfileForName(foundUserName);
+                            profilesToDisplay.add(exoUserProfile);
+                            usersToDisplay.add(user);
+                            usersInfoMap.put(foundUserName, outlook.getUserInfoMap(foundUserName));
+                            List<Relationship> userGetRelationships = exoUser.getRelationships(foundUserName);
+                            /*  TODO Check whether it is worth giving 20 connections or maybe less  */
+                            for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
+                                if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(foundUserName)) {
+                                    profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(), relationship.getSender().getProfile());
+                                    profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
+                                } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(foundUserName)) {
+                                    profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(), relationship.getReceiver().getProfile());
+                                    profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
                                 }
-                                userInfo.put(foundUserName + "relationship", profileRelationshipName);
-                                RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
-                                if (activity.getSize() > 0) {
-                                    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
-                                    if (exoSocialActivityList != null) {
-                                        for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
-                                            idActivity.add(exoSocialActivity.getId());
-                                            exoSocialActivityMap.put(exoSocialActivity.getId(), exoSocialActivity);
-                                        }
-                                    }
-                                }
-                                userInfo.put(foundUserName + "idActivity", idActivity);
                             }
+                            userInfo.put(foundUserName + "relationship", profileRelationshipName);
+                            RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(foundUserName);
+                            if (activity.getSize() > 0) {
+                                List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
+                                if (exoSocialActivityList != null) {
+                                    for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
+                                        idActivity.add(exoSocialActivity.getId());
+                                        exoSocialActivityMap.put(exoSocialActivity.getId(), exoSocialActivity);
+                                    }
+                                }
+                            }
+                            userInfo.put(foundUserName + "idActivity", idActivity);
                         }
+
                     }
                 }
             }

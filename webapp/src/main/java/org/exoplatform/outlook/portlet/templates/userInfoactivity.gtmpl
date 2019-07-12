@@ -200,6 +200,7 @@
   									</a>
   								</p>
   								<p>
+  								<!-- TODO Check the chat function is enabled in the platform-->
   									<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
   										<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
   									</a>
