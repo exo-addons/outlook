@@ -346,7 +346,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     /**
      * {@inheritDoc}
-     * 
      */
     @Override
     public Folder getFolder(String path) throws OutlookException, RepositoryException {
@@ -375,8 +374,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Set<File> res = new LinkedHashSet<File>();
 
       if (text == null || text.length() == 0) {
-        Query q = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
-            + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query q = qm.createQuery(
+                                 "SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId()
+                                     + "' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                 Query.SQL);
         final String currentUser = currentUserId();
         // fetch and filter nodes: not trashed and not system
         fetchQuery(q.execute(), 20, res, node -> {
@@ -390,7 +391,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
             if (org.exoplatform.ecm.webui.utils.Utils.isInTrash(node)) {
               return false;
             }
-            // access all nodes except of owned by root, but only if it is not his session
+            // access all nodes except of owned by root, but only if it is not
+            // his session
             AccessControlList acl = ((ExtendedNode) node).getACL();
             String owner = acl.getOwner();
             if (currentUser.equals(owner)) {
@@ -412,8 +414,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
-        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%"
-            + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOthers = qm.createQuery(
+                                       "SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%"
+                                           + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                       Query.SQL);
         fetchQuery(qOthers.execute(), 20 - res.size(), res);
       }
 
@@ -447,8 +451,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       // TODO this search will not include files from user's Public folder
       Query q;
       if (text == null || text.length() == 0) {
-        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
-            + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        q = qm.createQuery(
+                           "SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
+                               + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                           Query.SQL);
       } else {
         q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text + "%'",
                            Query.SQL);
@@ -512,26 +518,41 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected class UserImpl extends OutlookUser {
 
     /** The social identity manager. */
-    protected final IdentityManager socialIdentityManager;
+    protected final IdentityManager     socialIdentityManager;
 
     /** The social activity manager. */
-    protected final ActivityManager socialActivityManager;
+    protected final ActivityManager     socialActivityManager;
 
     /** The social relationship manager. */
     protected final RelationshipManager socialRelationshipManager;
+    
+    /** The exo user. */
+    private User exoUser;
 
     /**
-     * Instantiates a new user impl.
+     * Instantiates a new user by given email, display name and username.
      *
-     * @param email the email
-     * @param displayName the display name
-     * @param userName the user name
+     * @param email the email, can be <code>null</code>
+     * @param displayName the display name, can be <code>null</code>
+     * @param userName the user name in eXo organization
+     * @throws OutlookException if userName is not valid
      */
-    protected UserImpl(String email, String displayName, String userName) {
+    protected UserImpl(String email, String displayName, String userName) throws OutlookException {
       super(email, displayName, userName);
       this.socialIdentityManager = socialIdentityManager();
       this.socialActivityManager = socialActivityManager();
       this.socialRelationshipManager = socialRelationshipManager();
+    }
+    
+    /**
+     * Instantiates a new user from eXo organization user.
+     *
+     * @param exoUser the eXo user instance
+     * @throws OutlookException if userName is not valid
+     */
+    protected UserImpl(User exoUser) throws OutlookException {
+      this(exoUser.getEmail(), exoUser.getDisplayName(), exoUser.getUserName());
+      this.exoUser = exoUser;
     }
 
     /**
@@ -561,13 +582,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           final String origType = org.exoplatform.wcm.ext.component.activity.listener.Utils.getActivityType();
           try {
             org.exoplatform.wcm.ext.component.activity.listener.Utils.setActivityType(OutlookMessageActivity.ACTIVITY_TYPE);
-            ExoSocialActivity activity =
-                                       org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
-                                                                                                                  userMessage,
-                                                                                                                  true,
-                                                                                                                  false,
-                                                                                                                  "",
-                                                                                                                  "");
+            ExoSocialActivity activity = org.exoplatform.wcm.ext.component.activity.listener.Utils.postFileActivity(messageFile,
+                                                                                                                    userMessage,
+                                                                                                                    true,
+                                                                                                                    false,
+                                                                                                                    "",
+                                                                                                                    "");
             // TODO should we care about activity removal with the message file?
             activity.setPermanLink(LinkProvider.getSingleActivityUrl(activity.getId()));
             return activity;
@@ -646,26 +666,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                               message.getBody());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception {
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-	  RealtimeListAccess<ExoSocialActivity> activity =socialActivityManager.getActivitiesWithListAccess(userIdentity);
-      return activity;
+    public Identity getSocialIdentity() throws Exception {
+      return socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getLocalUser(), true);
     }
-    @Override
-    public Profile getProfileForName(String name) throws Exception {
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-
-      return userIdentity.getProfile();
-    }
-
-    @Override
-    public  List<Relationship>  getRelationships(String name) throws Exception {
-      Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-      List<Relationship> relationships =socialRelationshipManager.getRelationshipsByStatus(userIdentity,CONFIRMED, 0, 0  );
-      return relationships;
-    }
-
   }
 
   /**
@@ -733,7 +740,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       protected RootFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
         super(rootPath, node);
         initDocumentLink(OutlookSpaceImpl.this, this);
-        hasSubfolders(); // force child reading to init default folder in readSubnodes()
+        hasSubfolders(); // force child reading to init default folder in
+                         // readSubnodes()
       }
 
       /**
@@ -777,9 +785,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
               }
               LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: " + userInfo.toString()
                   + ". Parent node: " + node, e);
-              // TODO we don't want throw Access error here, it should be thrown where actually will affect an
+              // TODO we don't want throw Access error here, it should be thrown
+              // where actually will affect an
               // user
-              // throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
+              // throw new AccessException("Access denied to " +
+              // OutlookSpaceImpl.this.getTitle(), e);
             }
             defaultSubfolder = null;
           }
@@ -864,13 +874,17 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Set<File> res = new LinkedHashSet<File>();
 
       if (text == null || text.length() == 0) {
-        Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
-            + root.getPath() + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOwn = qm.createQuery(
+                                    "SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
+                                        + root.getPath() + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                    Query.SQL);
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
-        Query qOthers = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
-            + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+        Query qOthers = qm.createQuery(
+                                       "SELECT * FROM nt:file WHERE jcr:path LIKE '" + root.getPath()
+                                           + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
+                                       Query.SQL);
         fetchQuery(qOthers.execute(), 20 - res.size(), res);
       } else {
         Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
@@ -1020,7 +1034,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       //
       return createForumTopic(categoryId, forumId, creator, name, null, text);
     }
-	
+
   }
 
   /** The jcr service. */
@@ -1062,7 +1076,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /** The resource document service. */
   protected final DocumentService                             documentService;
 
-
   /** The html policy. */
   protected final PolicyFactory                               htmlPolicy        =
                                                                          Sanitizers.BLOCKS.and(Sanitizers.FORMATTING)
@@ -1076,9 +1089,11 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                           // tables
                                                                                           // (MS
                                                                                           // loves
-                                                                                          // to use
+                                                                                          // to
+                                                                                          // use
                                                                                           // them
-                                                                                          // for HTML
+                                                                                          // for
+                                                                                          // HTML
                                                                                           // re-formating)
                                                                                           .and(new HtmlPolicyBuilder().allowStandardUrlProtocols()
                                                                                                                       .allowElements("table",
@@ -1111,32 +1126,31 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * "https://www.exoplatform.com/docs/PLF43/PLFUserGuide.GettingStarted.ActivitiesInActivityStream.HTMLTags.html">
    * Platform User Guide</a>
    */
-  protected final PolicyFactory                               activityPolicy    = new HtmlPolicyBuilder()
-                                                                                                         .allowUrlProtocols("http",
-                                                                                                                            "https")
-                                                                                                         .allowElements("b",
-                                                                                                                        "i",
-                                                                                                                        "a",
-                                                                                                                        "span",
-                                                                                                                        "em",
-                                                                                                                        "strong",
-                                                                                                                        "p",
-                                                                                                                        "ol",
-                                                                                                                        "ul",
-                                                                                                                        "li",
-                                                                                                                        "br",
-                                                                                                                        "img",
-                                                                                                                        "blockquote",
-                                                                                                                        "q")
-                                                                                                         .allowAttributes("href")
-                                                                                                         .onElements("a")
-                                                                                                         .allowAttributes("target")
-                                                                                                         .matching(true, "_blank")
-                                                                                                         .onElements("a")
-                                                                                                         .allowAttributes("alt",
-                                                                                                                          "src")
-                                                                                                         .onElements("img")
-                                                                                                         .toFactory();
+  protected final PolicyFactory                               activityPolicy    =
+                                                                             new HtmlPolicyBuilder().allowUrlProtocols("http",
+                                                                                                                       "https")
+                                                                                                    .allowElements("b",
+                                                                                                                   "i",
+                                                                                                                   "a",
+                                                                                                                   "span",
+                                                                                                                   "em",
+                                                                                                                   "strong",
+                                                                                                                   "p",
+                                                                                                                   "ol",
+                                                                                                                   "ul",
+                                                                                                                   "li",
+                                                                                                                   "br",
+                                                                                                                   "img",
+                                                                                                                   "blockquote",
+                                                                                                                   "q")
+                                                                                                    .allowAttributes("href")
+                                                                                                    .onElements("a")
+                                                                                                    .allowAttributes("target")
+                                                                                                    .matching(true, "_blank")
+                                                                                                    .onElements("a")
+                                                                                                    .allowAttributes("alt", "src")
+                                                                                                    .onElements("img")
+                                                                                                    .toFactory();
 
   /** The link with href not a hash in local document target. */
   protected final Pattern                                     linkNotLocal      =
@@ -1160,14 +1174,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                                                                                                     | Pattern.DOTALL);
 
   /**
-   * Authenticated users.
-   */
-  protected final ConcurrentHashMap<String, OutlookUser>      authenticated     = new ConcurrentHashMap<String, OutlookUser>();
-
-  /**
-   * Spaces cache.
-   * TODO There is an issue with threads when different requests reuse them. Space's root node may be already
-   * invalid. See also in getRootFolder().
+   * Spaces cache. TODO There is an issue with threads when different requests
+   * reuse them. Space's root node may be already invalid. See also in
+   * getRootFolder().
    */
   protected final ConcurrentHashMap<String, OutlookSpaceImpl> spaces            =
                                                                      new ConcurrentHashMap<String, OutlookSpaceImpl>();
@@ -1211,7 +1220,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             ResourceBundleService resourceBundleService,
                             InitParams params,
                             DocumentService documentService)
-      throws ConfigurationException, MailServerException {
+      throws ConfigurationException,
+      MailServerException {
 
     this.jcrService = jcrService;
     this.sessionProviders = sessionProviders;
@@ -1226,7 +1236,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.wikiRenderingService = wikiRenderingService;
     this.resourceBundleService = resourceBundleService;
     this.documentService = documentService;
-
 
     // API for user requests (uses credentials from eXo user profile)
     MailAPI api = new MailAPI();
@@ -1367,21 +1376,25 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           mailServerUrl = null;
         }
 
-        OutlookUser user = authenticated.get(exoUsername);
-        if (user == null) {
-          // new user instance
-          user = new UserImpl(email, displayName, exoUsername);
-          // save user in map of authenticated for later use (multi-thread)
-          authenticated.put(exoUsername, user);
-        }
-        if (email != null) {
-          user.setEmail(email);
-        }
+        // new user instance
+        UserImpl user = new UserImpl(email, displayName, exoUsername);
         if (mailServerUrl != null) {
           user.setMailServerUrl(mailServerUrl);
         }
         return user;
       }
+    }
+    return null;
+  }
+  
+  public OutlookUser findUserByEmail(String email) throws Exception {
+    org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
+    query.setEmail(email);
+    ListAccess<User> res = organization.getUserHandler()
+                                       .findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ENABLED);
+    if (res.getSize() > 0) {
+      User exoUser = res.load(0, 1)[0];
+      return new UserImpl(exoUser);
     }
     return null;
   }
@@ -1507,7 +1520,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   @Override
   public void stop() {
-    authenticated.clear();
     try {
       mailserverApi.close();
       LOG.info("Outlook service successfuly stopped");
@@ -1558,38 +1570,19 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Gets the Map exo users by name   *
+   * Gets the Map exo users by name *
    *
    * @return the Map exo users that contains the user information
-   *
    */
-
-  @Override
-  public Map<String, String> getUserInfoMap(String name)  {
-      try {
-          UserProfile userProfile = organization.getUserProfileHandler().findUserProfileByName(name);
-          return userProfile.getUserInfoMap();
-      } catch ( Exception e){
-          LOG.error("Error searching User Info Map ", e);
-      }
-      return null;
-  }
-
-   /**
-   * Gets the All exo users.   *
-   *
-   * @return the List exo users
-   * @throws OutlookException the outlook exception
-   */
-  @Override
-  public ListAccess<User> getUserByEmail(String email ) throws OutlookException {
+  @Deprecated
+  public Map<String, String> getUserInfoMap(String name) {
     try {
-        org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
-        query.setEmail(email);
-      return organization.getUserHandler().findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ANY);
+      UserProfile userProfile = organization.getUserProfileHandler().findUserProfileByName(name);
+      return userProfile.getUserInfoMap();
     } catch (Exception e) {
-      throw new OutlookException("Error searching user by email  " + email, e);
+      LOG.error("Error searching User Info Map ", e);
     }
+    return null;
   }
 
   // *********************** testing level **********************
@@ -1809,8 +1802,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Add nt:file node for given content stream and title. If a node with such name exists a new name will be
-   * generated by adding a numerical index to the end.
+   * Add nt:file node for given content stream and title. If a node with such
+   * name exists a new name will be generated by adding a numerical index to the
+   * end.
    * 
    * @param parent {@link Node}
    * @param title {@link String}
@@ -1828,7 +1822,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     do {
       try {
         file = parent.getNode(name);
-        // such node already exists - find new name for the file (by adding sibling index to the end)
+        // such node already exists - find new name for the file (by adding
+        // sibling index to the end)
         siblingNumber++;
         int extIndex = baseName.lastIndexOf(".");
         if (extIndex > 0 && extIndex != baseName.length() - 1) {
@@ -1839,7 +1834,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           name = new StringBuilder(baseName).append('-').append(siblingNumber).toString();
         }
       } catch (PathNotFoundException e) {
-        // no such node exists, add it using internalName created by CD's cleanName()
+        // no such node exists, add it using internalName created by CD's
+        // cleanName()
         file = parent.addNode(name, "nt:file");
         break;
       }
@@ -1904,14 +1900,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Add nt:folder node with given title. If a node with such name exists and <code>forceNew</code> is
-   * <code>true</code> a new name will be generated by adding a numerical index to the end, otherwise existing
-   * node will be returned.
+   * Add nt:folder node with given title. If a node with such name exists and
+   * <code>forceNew</code> is <code>true</code> a new name will be generated by
+   * adding a numerical index to the end, otherwise existing node will be
+   * returned.
    * 
    * @param parent {@link Node}
    * @param title {@link String}
-   * @param forceNew if <code>true</code> then a new folder will be created with index in suffix, if
-   *          <code>false</code> then existing folder will be returned
+   * @param forceNew if <code>true</code> then a new folder will be created with
+   *          index in suffix, if <code>false</code> then existing folder will
+   *          be returned
    * @return {@link Node}
    * @throws RepositoryException when storage error
    */
@@ -1925,7 +1923,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       try {
         folder = parent.getNode(name);
         if (forceNew) {
-          // such node already exists - find new name for the file (by adding sibling index to the end)
+          // such node already exists - find new name for the file (by adding
+          // sibling index to the end)
           siblingNumber++;
           int extIndex = baseName.lastIndexOf(".");
           if (extIndex > 0 && extIndex < title.length()) {
@@ -1939,7 +1938,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           break;
         }
       } catch (PathNotFoundException e) {
-        // no such node exists, add it using internalName created by CD's cleanName()
+        // no such node exists, add it using internalName created by CD's
+        // cleanName()
         folder = parent.addNode(name, "nt:folder");
         break;
       }
@@ -2051,7 +2051,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Generate the group documents (as /Groups/spaces/$SPACE_GROUP_ID/Documents).<br>
+   * Generate the group documents (as
+   * /Groups/spaces/$SPACE_GROUP_ID/Documents).<br>
    * 
    * @param groupId {@link String}
    * @return {@link String}
@@ -2220,12 +2221,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Set read permissions on the target node to all given identities (e.g. space group members). If node not
-   * yet <code>exo:privilegeable</code> it will add such mixin to allow set the permissions first. Requested
-   * permissions will not be set to the children nodes.<br>
+   * Set read permissions on the target node to all given identities (e.g. space
+   * group members). If node not yet <code>exo:privilegeable</code> it will add
+   * such mixin to allow set the permissions first. Requested permissions will
+   * not be set to the children nodes.<br>
    * 
    * @param node {@link Node} link target node
-   * @param identities array of {@link String} with user identifiers (names or memberships)
+   * @param identities array of {@link String} with user identifiers (names or
+   *          memberships)
    * @throws AccessControlException when access error
    * @throws RepositoryException when storage error
    */
@@ -2234,23 +2237,28 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Set read permissions on the target node to all given identities (e.g. space group members). Permissions
-   * will not be set if target not <code>exo:privilegeable</code> and <code>forcePrivilegeable</code> is
-   * <code>false</code>. If <code>deep</code> is <code>true</code> the target children nodes will be checked
-   * also for a need to set the requested permissions. <br>
+   * Set read permissions on the target node to all given identities (e.g. space
+   * group members). Permissions will not be set if target not
+   * <code>exo:privilegeable</code> and <code>forcePrivilegeable</code> is
+   * <code>false</code>. If <code>deep</code> is <code>true</code> the target
+   * children nodes will be checked also for a need to set the requested
+   * permissions. <br>
    * 
    * @param node {@link Node} link target node
-   * @param deep {@link Boolean} if <code>true</code> then also children nodes will be set to the requested
-   *          permissions
-   * @param forcePrivilegeable {@link Boolean} if <code>true</code> and node not yet
-   *          <code>exo:privilegeable</code> it will add such mixin to allow set the permissions.
-   * @param identities array of {@link String} with user identifiers (names or memberships)
+   * @param deep {@link Boolean} if <code>true</code> then also children nodes
+   *          will be set to the requested permissions
+   * @param forcePrivilegeable {@link Boolean} if <code>true</code> and node not
+   *          yet <code>exo:privilegeable</code> it will add such mixin to allow
+   *          set the permissions.
+   * @param identities array of {@link String} with user identifiers (names or
+   *          memberships)
    * @throws AccessControlException when access error
    * @throws RepositoryException when storage error
    */
-  protected void setPermissions(Node node, boolean deep, boolean forcePrivilegeable, String... identities)
-                                                                                                           throws AccessControlException,
-                                                                                                           RepositoryException {
+  protected void setPermissions(Node node,
+                                boolean deep,
+                                boolean forcePrivilegeable,
+                                String... identities) throws AccessControlException, RepositoryException {
     ExtendedNode target = (ExtendedNode) node;
     boolean setPermissions = true;
     if (target.canAddMixin(EXO_PRIVILEGEABLE)) {
@@ -2265,7 +2273,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       for (String identity : identities) {
         String[] ids = identity.split(":");
         if (ids.length == 2) {
-          // it's group and we want allow given identity read only and additionally let managers remove the
+          // it's group and we want allow given identity read only and
+          // additionally let managers remove the
           // link
           String managerMembership;
           try {
@@ -2279,7 +2288,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           target.setPermission(new StringBuilder(managerMembership).append(':').append(ids[1]).toString(), MANAGER_PERMISSION);
           target.setPermission(identity, READER_PERMISSION);
         } else {
-          // in other cases, we assume it's user identity and user should be able to remove the node
+          // in other cases, we assume it's user identity and user should be
+          // able to remove the node
           target.setPermission(identity, MANAGER_PERMISSION);
         }
       }
@@ -2331,13 +2341,13 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @throws UnsupportedEncodingException the unsupported encoding exception
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  protected Node addMessageFile(Node parent, OutlookMessage message) throws RepositoryException,
-                                                                     UnsupportedEncodingException,
-                                                                     IOException {
+  protected Node addMessageFile(Node parent,
+                                OutlookMessage message) throws RepositoryException, UnsupportedEncodingException, IOException {
     String safeTitle = safeText(message.getSubject());
     String safeContent = safeHtml(message.getBody());
     try (InputStream content = new ByteArrayInputStream(safeContent.getBytes("UTF-8"))) {
-      // message file goes w/o summary, it will be generated in UI (OutlookMessageActivity)
+      // message file goes w/o summary, it will be generated in UI
+      // (OutlookMessageActivity)
       Node messageFile = addFile(parent, safeTitle, "text/html", content);
       messageFile.addMixin(MESSAGE_NODETYPE);
       messageFile.setProperty("mso:userEmail", message.getUser().getEmail());
@@ -2374,73 +2384,77 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Identity authorIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, author, true);
 
       // FYI Code inspired by UIDocActivityComposer
-        Map<String, String> activityParams = new LinkedHashMap<String, String>();
-        Calendar activityDate = Calendar.getInstance();
-        DateFormat dateFormatter = new SimpleDateFormat(ISO8601.SIMPLE_DATETIME_FORMAT);
-        String fileName = "",id = "",doclink = "",docpath = "",mimeType = "",contenLink = "",workspace = "",repository = "",dateString = "",owner = "",isSymlink = "";
-        String REGEX ="|@|";
-        int i =0;
-        for (File f : files) {
-          if(files.size()-1 == i){
-            REGEX ="";
-          }
-          fileName += f.getName() + REGEX;
-          id += f.getNode().getUUID() + REGEX;
-          mimeType += f.getNode().getNode("jcr:content").getProperty("jcr:mimeType").getString() + REGEX;
-          docpath += f.getNode().getPath() + REGEX;
-          owner += author + REGEX;
-          isSymlink += false + REGEX;
-          try {
-              contenLink += documentService.getLinkInDocumentsApp(NodeLocation.getNodeLocationByNode(f.getNode()).getPath()) + REGEX;
-              doclink += org.exoplatform.wcm.webui.Utils.getWebdavURL(f.getNode()) + REGEX;
-          } catch (Exception e) {
-            LOG.error("Error getting node download link " + f.getNode(), e);
-          }
-          dateString += dateFormatter.format(activityDate.getTime()) + REGEX;
-          workspace += destFolder.getNode().getSession().getWorkspace().getName() + REGEX;
-          repository += ((ManageableRepository) destFolder.getNode().getSession().getRepository()).getConfiguration().getName() + REGEX;
-          i++;
+      Map<String, String> activityParams = new LinkedHashMap<String, String>();
+      Calendar activityDate = Calendar.getInstance();
+      DateFormat dateFormatter = new SimpleDateFormat(ISO8601.SIMPLE_DATETIME_FORMAT);
+      String fileName = "", id = "", doclink = "", docpath = "", mimeType = "", contenLink = "", workspace = "", repository = "",
+          dateString = "", owner = "", isSymlink = "";
+      String REGEX = "|@|";
+      int i = 0;
+      for (File f : files) {
+        if (files.size() - 1 == i) {
+          REGEX = "";
         }
-        activityParams.put(OutlookAttachmentActivity.FILES, fileName);
-        activityParams.put(OutlookAttachmentActivity.DOCTITLE, fileName);
-        activityParams.put(OutlookAttachmentActivity.WORKSPACE, workspace);
-        activityParams.put(OutlookAttachmentActivity.REPOSITORY, repository);
-        activityParams.put(OutlookAttachmentActivity.COMMENT, comment);
-        activityParams.put(OutlookAttachmentActivity.DOCLINK, doclink);
-        activityParams.put(OutlookAttachmentActivity.DOCNAME, fileName);
-        activityParams.put(OutlookAttachmentActivity.DOCPATH, docpath);
-        activityParams.put(OutlookAttachmentActivity.PATH, docpath);
-        activityParams.put(OutlookAttachmentActivity.AUTHOR, owner);
-        activityParams.put(OutlookAttachmentActivity.DATE_CREATED, dateString);
-        activityParams.put(OutlookAttachmentActivity.DATE_LAST_MODIFIED, dateString);
-        activityParams.put(FileUIActivity.ID, id);
-        activityParams.put(FileUIActivity.CONTENT_NAME, fileName);
-        activityParams.put(FileUIActivity.ACTIVITY_STATUS, comment);
-        activityParams.put(FileUIActivity.MIME_TYPE, mimeType);
-        activityParams.put(FileUIActivity.CONTENT_LINK, contenLink);
-        activityParams.put(FileUIActivity.DOCUMENT_TITLE, fileName);
-        activityParams.put(UIDocActivity.IS_SYMLINK, isSymlink);
+        fileName += f.getName() + REGEX;
+        id += f.getNode().getUUID() + REGEX;
+        mimeType += f.getNode().getNode("jcr:content").getProperty("jcr:mimeType").getString() + REGEX;
+        docpath += f.getNode().getPath() + REGEX;
+        owner += author + REGEX;
+        isSymlink += false + REGEX;
+        try {
+          contenLink += documentService.getLinkInDocumentsApp(NodeLocation.getNodeLocationByNode(f.getNode()).getPath()) + REGEX;
+          doclink += org.exoplatform.wcm.webui.Utils.getWebdavURL(f.getNode()) + REGEX;
+        } catch (Exception e) {
+          LOG.error("Error getting node download link " + f.getNode(), e);
+        }
+        dateString += dateFormatter.format(activityDate.getTime()) + REGEX;
+        workspace += destFolder.getNode().getSession().getWorkspace().getName() + REGEX;
+        repository += ((ManageableRepository) destFolder.getNode().getSession().getRepository()).getConfiguration().getName()
+            + REGEX;
+        i++;
+      }
+      activityParams.put(OutlookAttachmentActivity.FILES, fileName);
+      activityParams.put(OutlookAttachmentActivity.DOCTITLE, fileName);
+      activityParams.put(OutlookAttachmentActivity.WORKSPACE, workspace);
+      activityParams.put(OutlookAttachmentActivity.REPOSITORY, repository);
+      activityParams.put(OutlookAttachmentActivity.COMMENT, comment);
+      activityParams.put(OutlookAttachmentActivity.DOCLINK, doclink);
+      activityParams.put(OutlookAttachmentActivity.DOCNAME, fileName);
+      activityParams.put(OutlookAttachmentActivity.DOCPATH, docpath);
+      activityParams.put(OutlookAttachmentActivity.PATH, docpath);
+      activityParams.put(OutlookAttachmentActivity.AUTHOR, owner);
+      activityParams.put(OutlookAttachmentActivity.DATE_CREATED, dateString);
+      activityParams.put(OutlookAttachmentActivity.DATE_LAST_MODIFIED, dateString);
+      activityParams.put(FileUIActivity.ID, id);
+      activityParams.put(FileUIActivity.CONTENT_NAME, fileName);
+      activityParams.put(FileUIActivity.ACTIVITY_STATUS, comment);
+      activityParams.put(FileUIActivity.MIME_TYPE, mimeType);
+      activityParams.put(FileUIActivity.CONTENT_LINK, contenLink);
+      activityParams.put(FileUIActivity.DOCUMENT_TITLE, fileName);
+      activityParams.put(UIDocActivity.IS_SYMLINK, isSymlink);
 
-        // if NT_FILE
-        // activityParams.put(UIDocActivity.ID, node.isNodeType(NodetypeConstant.MIX_REFERENCEABLE) ?
-        // node.getUUID() : "");
-        // activityParams.put(UIDocActivity.CONTENT_NAME, node.getName());
-        // activityParams.put(UIDocActivity.AUTHOR, activityOwnerId);
-        // activityParams.put(UIDocActivity.DATE_CREATED, strDateCreated);
-        // activityParams.put(UIDocActivity.LAST_MODIFIED, strLastModified);
-        // activityParams.put(UIDocActivity.CONTENT_LINK, UIDocActivity.getContentLink(node));
+      // if NT_FILE
+      // activityParams.put(UIDocActivity.ID,
+      // node.isNodeType(NodetypeConstant.MIX_REFERENCEABLE) ?
+      // node.getUUID() : "");
+      // activityParams.put(UIDocActivity.CONTENT_NAME, node.getName());
+      // activityParams.put(UIDocActivity.AUTHOR, activityOwnerId);
+      // activityParams.put(UIDocActivity.DATE_CREATED, strDateCreated);
+      // activityParams.put(UIDocActivity.LAST_MODIFIED, strLastModified);
+      // activityParams.put(UIDocActivity.CONTENT_LINK,
+      // UIDocActivity.getContentLink(node));
 
-        String title = comment != null
-                && comment.length() > 0 ? comment
-                : new StringBuilder("User ").append(author)
-                .append(" has saved ")
-                .append(files.size())
-                                                            .append(files.size() > 1 ? " files" : " file")
-                .toString();
-    ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
-                OutlookAttachmentActivity.ACTIVITY_TYPE,
-                title,
-                null);
+      String title = comment != null && comment.length() > 0 ? comment
+                                                             : new StringBuilder("User ").append(author)
+                                                                                         .append(" has saved ")
+                                                                                         .append(files.size())
+                                                                                         .append(files.size() > 1 ? " files"
+                                                                                                                  : " file")
+                                                                                         .toString();
+      ExoSocialActivity activity = new ExoSocialActivityImpl(authorIdentity.getId(),
+                                                             OutlookAttachmentActivity.ACTIVITY_TYPE,
+                                                             title,
+                                                             null);
       activity.setTemplateParams(activityParams);
 
       // activity destination (user or space)
@@ -2537,13 +2551,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                   allMemembers.add(s);
                 }
                 if (!allMemembers.contains(currentUserId())) {
-                  // when not a space member - skip this file (but user still may be an owner of it!)
+                  // when not a space member - skip this file (but user still
+                  // may be an owner of it!)
                   limit++;
                   continue;
                 }
               }
             } catch (IndexOutOfBoundsException e) {
-              // XXX something not clear with space path, will use portal page path as for Personal
+              // XXX something not clear with space path, will use portal page
+              // path as for Personal
               // Documents (it works well in PLF 4.3)
               space = null;
             }
@@ -2636,7 +2652,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       Page page = new Page();
 
       if (isHTML(content) && !defaultSyntax.equals(xhtmlSyntax)) {
-        // we use xWiki syntax for a page and convert incoming HTML to xWiki format
+        // we use xWiki syntax for a page and convert incoming HTML to xWiki
+        // format
         page.setSyntax(defaultSyntax);
         StringBuilder quotedContent = new StringBuilder();
         if (summary != null) {
@@ -2646,7 +2663,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           quotedContent.append(xwikiMarkup);
           quotedContent.append("\r)))\r");
         }
-        // message content should look like a quoted in email client (vertical gray bar on the left)
+        // message content should look like a quoted in email client (vertical
+        // gray bar on the left)
         // in xWiki syntax it's a table with customized style
         // table header:
         quotedContent.append("|=(% style='background-color: #999999; border-style: hidden;' %)");
@@ -2703,7 +2721,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           }
         }
 
-        // such page already exists - find new name for it (by adding sibling index to the end)
+        // such page already exists - find new name for it (by adding sibling
+        // index to the end)
         siblingNumber++;
         title = new StringBuilder(baseTitle).append(" (").append(siblingNumber).append(')').toString();
       } while (true);
@@ -2779,7 +2798,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       return true;
     }
 
-    // FYI it's how looks message after MS Word pre-peocessor in Outlook for Windows:
+    // FYI it's how looks message after MS Word pre-peocessor in Outlook for
+    // Windows:
     // everything in tables (no html, body or divs)
     istart = content.indexOf("<table");
     iend = content.indexOf("</table>");
@@ -2980,7 +3000,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       message = StringCommonUtils.encodeSpecialCharInSearchTerm(message);
       message = TransformHTML.fixAddBBcodeAction(message);
       // TODO do we need this when using safe HTML?
-      // message = message.replaceAll("<script", "&lt;script").replaceAll("<link",
+      // message = message.replaceAll("<script",
+      // "&lt;script").replaceAll("<link",
       // "&lt;link").replaceAll("</script>",
       // "&lt;/script>");
       // remove any meta tags explicitly existing in the content
@@ -3015,7 +3036,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       String canView = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANVIEW);
 
       // set link
-      // FYI this original Forum code will use current "outlook" portlet path to build the link
+      // FYI this original Forum code will use current "outlook" portlet path to
+      // build the link
       // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
       String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
       // finally escape the title
@@ -3074,7 +3096,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = resourceBundleService.getResourceBundle("locale.portlet.forum.ForumPortlet", context.getLocale());
       if (res != null) {
-        // TODO this will not work as resources aren't reachable here - it's DEAD CODE in fact
+        // TODO this will not work as resources aren't reachable here - it's
+        // DEAD CODE in fact
         try {
           messageBuilder.setContent(res.getString("UINotificationForm.label.notifyEmailContentDefault"));
           String header = res.getString("UINotificationForm.label.notifyEmailHeaderSubjectDefault");
@@ -3218,7 +3241,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    */
   public static String cleanName(String name) {
     String str = accentsConverter.transliterate(name.trim());
-    // the character ? seems to not be changed to d by the transliterate function
+    // the character ? seems to not be changed to d by the transliterate
+    // function
     StringBuilder cleanedStr = new StringBuilder(str.trim());
     // delete special character
     if (cleanedStr.length() == 1) {

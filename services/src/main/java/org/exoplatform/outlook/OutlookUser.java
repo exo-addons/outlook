@@ -19,24 +19,18 @@
  */
 package org.exoplatform.outlook;
 
+import java.net.URI;
+
 import org.exoplatform.forum.service.Topic;
-import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.wiki.mow.api.Page;
 
-import java.net.URI;
-import java.util.List;
-
 /**
- * Office user API.
- * 
- * Created by The eXo Platform SAS
+ * Office user API. Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookUser.java 00000 JUn 14, 2016 pnedonosko $
- * 
  */
 public abstract class OutlookUser extends OutlookEmail {
 
@@ -49,12 +43,16 @@ public abstract class OutlookUser extends OutlookEmail {
   /**
    * Instantiates a new outlook user.
    *
-   * @param email the email
-   * @param displayName the display name
-   * @param localUser the local user
+   * @param email the email, can be <code>null</code>
+   * @param displayName the display name, can be <code>null</code>
+   * @param localUser the user name in eXo organization
+   * @throws OutlookException if localUser is null or empty
    */
-  protected OutlookUser(String email, String displayName, String localUser) {
+  protected OutlookUser(String email, String displayName, String localUser) throws OutlookException {
     super(email, displayName);
+    if (localUser == null || localUser.length() == 0) {
+      throw new OutlookException("Local username should be not null and not empty");
+    }
     this.localUser = localUser;
   }
 
@@ -105,7 +103,7 @@ public abstract class OutlookUser extends OutlookEmail {
    * @throws Exception the exception
    */
   public abstract ExoSocialActivity postActivity(String title, String body) throws Exception;
-  
+
   /**
    * Post activity.
    *
@@ -134,10 +132,13 @@ public abstract class OutlookUser extends OutlookEmail {
    * @throws Exception the exception
    */
   public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
+  
+  /**
+   * Gets eXo Social identity object of this user.
+   *
+   * @return the local profile in eXo organization
+   * @throws Exception the exception
+   */
+  public abstract Identity getSocialIdentity() throws Exception;
 
-    public abstract RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception;
-
-  public abstract Profile getProfileForName(String name) throws Exception;
-
-  public abstract List<Relationship> getRelationships(String name) throws Exception;
 }

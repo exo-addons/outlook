@@ -18,17 +18,14 @@
  */
 package org.exoplatform.outlook;
 
-import org.exoplatform.commons.utils.ListAccess;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.jcr.RepositoryException;
+
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.UserDocuments;
-import org.exoplatform.services.organization.User;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Created by The eXo Platform SAS.
@@ -48,16 +45,25 @@ public interface OutlookService {
   final String MESSAGE_NODETYPE       = "mso:message";
 
   /**
-   * Build Outlook user object and associate it with current user in eXo portal.
+   * Build Outlook user object and associate it with current user in eXo organization.
    * 
-   * @param email email
-   * @param userName user name
-   * @param ewsUrl Exchange web-service URL
+   * @param email the email
+   * @param userName the user name
+   * @param ewsUrl the Exchange server web-service URL
    * @return {@link OutlookUser} object to access Outlook Mail API
    * @throws OutlookException Outlook exception
    * @throws RepositoryException storage exception
    */
   OutlookUser getUser(String email, String userName, String ewsUrl) throws OutlookException, RepositoryException;
+  
+  /**
+   * Find Outlook user by email in eXo organization.
+   *
+   * @param email the email
+   * @return {@link OutlookUser} object to access Outlook Mail API
+   * @throws Exception the exception in case of search error
+   */
+  OutlookUser findUserByEmail(String email) throws Exception;
 
   /**
    * Build Outlook Email address object.
@@ -99,7 +105,8 @@ public interface OutlookService {
    *
    * @param user {@link OutlookUser}
    * @param messageId {@link String} email message ID
-   * @param messageToken {@link String} secure token to access message on Exchange server
+   * @param messageToken {@link String} secure token to access message on
+   *          Exchange server
    * @return {@link OutlookMessage}
    * @throws OutlookException when error
    */
@@ -198,10 +205,4 @@ public interface OutlookService {
    * @throws OutlookException the outlook exception
    */
   UserDocuments getUserDocuments() throws RepositoryException, OutlookException;
-
-
-  Map<String, String> getUserInfoMap(String name) throws Exception;
-
-
-  ListAccess<User> getUserByEmail(String email) throws OutlookException;
 }

@@ -320,69 +320,69 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 					// TODO something?
 				}
 
-                function userInfoInit() {
-                    var recipientEmails = "";
-                    function addEmailsIfNotUser(recipients){
-                        if (recipients != null){
-                            for(var i = 0; i < recipients.length; i++){
-                                if (recipients[i].emailAddress != userEmail){
-                                    recipientEmails += recipients[i].emailAddress + ",";
-                                }
-                            }
-                        }
-                    }
-                    if (internetMessageId) {
-                        if (from.emailAddress != userEmail){
-                            recipientEmails += from.emailAddress + "," ;
-                        }
-                        addEmailsIfNotUser(from);
-                        var toCopy = Office.context.mailbox.item.to;
-                        var carbonCopy = Office.context.mailbox.item.cc;
-                        addEmailsIfNotUser(toCopy);
-                        addEmailsIfNotUser(carbonCopy);
-                        loadUserInfo(recipientEmails);
-                    } else {
-                        // This will happen when writing a new message or editing a draft.
-                        Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
-                            if (asyncResult.status === "succeeded") {
-                                var toCopy = asyncResult.value;
-                                addEmailsIfNotUser(toCopy);
-                            } else {
-                                console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-                                + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-                                showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-                            }
-                            Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
-                                if (asyncResult.status === "succeeded") {
-                                    var ccCopy = asyncResult.value;
-                                    addEmailsIfNotUser(ccCopy);
-                                    loadUserInfo(recipientEmails);
-                                } else {
-                                    console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-                                    + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-                                    showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-                                }
-                            });
-                        });
-                    }
-                }
-
-				function loadUserInfo(byEmail) {
-					var $userInfo = $("#outlook-userInfo>div");
-					$userInfo.jzLoad("Outlook.userInfo()", {
-						byEmail : byEmail
-					}, function(response, status, jqXHR) {
-						if (status == "error") {
-							showError(jqXHR);
-						} else {
-							clearError();
-							$(document).ready(function() {
-							  if ($.fn.PersonaCard) {
-							    $(".ms-PersonaCard").PersonaCard();
-							  }
-						  });
-						}
-					});
+				function userInfoInit() {
+				  function loadUserInfo(byEmail) {
+				    var $userInfo = $("#outlook-userInfo");
+				    $userInfo.jzLoad("Outlook.userInfo()", {
+				      byEmail : byEmail
+				    }, function(response, status, jqXHR) {
+				      if (status == "error") {
+				        showError(jqXHR);
+				      } else {
+				        clearError();
+				        $(document).ready(function() {
+				          if ($.fn.PersonaCard) {
+				            $(".ms-PersonaCard").PersonaCard();
+				          }
+				        });
+				      }
+				    });
+				  }
+				  var recipientEmails = "";
+				  function addEmailsIfNotUser(recipients) {
+				    if (recipients != null) {
+				      for (var i = 0; i < recipients.length; i++) {
+				        if (recipients[i].emailAddress != userEmail) {
+				          recipientEmails += recipients[i].emailAddress + ",";
+				        }
+				      }
+				    }
+				  }
+				  
+				  if (internetMessageId) {
+				    if (from.emailAddress != userEmail) {
+				      recipientEmails += from.emailAddress + ",";
+				    }
+				    addEmailsIfNotUser(from);
+				    var toCopy = Office.context.mailbox.item.to;
+				    var carbonCopy = Office.context.mailbox.item.cc;
+				    addEmailsIfNotUser(toCopy);
+				    addEmailsIfNotUser(carbonCopy);
+				    loadUserInfo(recipientEmails);
+				  } else {
+				    // This will happen when writing a new message or editing a draft.
+				    Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
+				      if (asyncResult.status === "succeeded") {
+				        var toCopy = asyncResult.value;
+				        addEmailsIfNotUser(toCopy);
+				      } else {
+				        console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+				            + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+				        showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+				      }
+				      Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
+				        if (asyncResult.status === "succeeded") {
+				          var ccCopy = asyncResult.value;
+				          addEmailsIfNotUser(ccCopy);
+				          loadUserInfo(recipientEmails);
+				        } else {
+				          console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+				              + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+				          showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+				        }
+				      });
+				    });
+				  }
 				}
 
 				function saveAttachmentInit() {
@@ -1824,10 +1824,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											// safe to use the function
 											eval(commandFunc + "()");
 										}
-										// TODO cleanup
-										// initNoSpacesLink();
-										// setDropdownSize();
-										// initRefresh();
 										process.resolve(response, status, jqXHR);
 									} catch(e) {
 										console.log(e);

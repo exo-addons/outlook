@@ -20,13 +20,10 @@
 package org.exoplatform.outlook;
 
 /**
- * Outlook Email API.
- * 
- * Created by The eXo Platform SAS
+ * Outlook Email API. Created by The eXo Platform SAS
  * 
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: OutlookEmail.java 00000 JUn 14, 2016 pnedonosko $
- * 
  */
 public class OutlookEmail {
 
@@ -34,13 +31,13 @@ public class OutlookEmail {
   protected final String displayName;
 
   /** The email. */
-  protected String       email;
+  protected final String email;
 
   /**
    * Instantiates a new outlook email.
    *
-   * @param email the email
-   * @param displayName the display name
+   * @param email the email, can be <code>null</code>
+   * @param displayName the display name, can be <code>null</code>
    */
   protected OutlookEmail(String email, String displayName) {
     this.email = email;
@@ -72,14 +69,4 @@ public class OutlookEmail {
   public String getDisplayName() {
     return displayName;
   }
-
-  /**
-   * Sets the email.
-   *
-   * @param email the email to set
-   */
-  protected void setEmail(String email) {
-    this.email = email;
-  }
-  
 }

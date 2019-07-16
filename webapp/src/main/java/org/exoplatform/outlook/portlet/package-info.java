@@ -19,7 +19,8 @@
 @Application
 @Portlet(name = "OutlookPortlet")
 @Bindings({ @Binding(value = OutlookService.class), @Binding(value = OutlookTokenService.class),
-    @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class) })
+    @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class), @Binding(value = IdentityManager.class),
+    @Binding(value = ActivityManager.class), @Binding(value = RelationshipManager.class) })
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.css", location = AssetLocation.SERVER),
@@ -28,15 +29,21 @@
     @Stylesheet(id = "jquery-ui.structure.css", value = "skin/jquery-ui.structure.min.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "jquery-ui.theme.css", value = "skin/jquery-ui.theme.min.css", location = AssetLocation.SERVER) })
 @Scripts({
-    @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js",
-            location = AssetLocation.URL),
-    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER,
-            depends = { "office", "jquery-ui.css", "jquery-ui.structure.css", "jquery-ui.theme.css",
-                "fabric.css", "fabric.components.css", "outlook.css" }) })
+    @Script(id = "office", value = "https://appsforoffice.microsoft.com/lib/1/hosted/Office.js", location = AssetLocation.URL),
+    @Script(id = "outlook", value = "js/outlook.js", location = AssetLocation.SERVER, depends = { "office", "jquery-ui.css",
+        "jquery-ui.structure.css", "jquery-ui.theme.css", "fabric.css", "fabric.components.css", "outlook.css" }) })
 
 @Assets({ "*" })
 
 package org.exoplatform.outlook.portlet;
+
+import org.exoplatform.outlook.OutlookService;
+import org.exoplatform.outlook.jcr.ContentLink;
+import org.exoplatform.outlook.security.OutlookTokenService;
+import org.exoplatform.social.core.manager.ActivityManager;
+import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.web.security.security.CookieTokenService;
 
 import juzu.Application;
 import juzu.asset.AssetLocation;
@@ -48,8 +55,3 @@ import juzu.plugin.asset.Stylesheets;
 import juzu.plugin.binding.Binding;
 import juzu.plugin.binding.Bindings;
 import juzu.plugin.portlet.Portlet;
-
-import org.exoplatform.outlook.OutlookService;
-import org.exoplatform.outlook.jcr.ContentLink;
-import org.exoplatform.outlook.security.OutlookTokenService;
-import org.exoplatform.web.security.security.CookieTokenService;
