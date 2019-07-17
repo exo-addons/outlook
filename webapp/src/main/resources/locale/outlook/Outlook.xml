@@ -22,7 +22,7 @@
     </command>
 
     <!--  Profile  -->
-    <profileTitle>View profile in eXo</profileTitle>
+    <openProfileInIntranet>View profile in eXo</openProfileInIntranet>
 
     <!-- Common -->
     <logout>Sign out</logout>
