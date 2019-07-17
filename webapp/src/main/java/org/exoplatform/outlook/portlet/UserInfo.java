@@ -39,14 +39,38 @@ public class UserInfo {
   /**
    * 
    */
+  //
   public UserInfo(User orgUser, Identity identity) {
     this.orgUser = orgUser;
     this.identity = identity;
   }
 
-  public String getUserName() {
-    return orgUser.getUserName();
+  public String getFirstName() {
+    return orgUser.getFirstName();
   }
+
+  public String getLastName(){
+    return orgUser.getLastName();
+  }
+
+  public String getDisplayName(){
+    return orgUser.getDisplayName();
+  }
+
+  public String getPosition(){
+    return identity.getProfile().getPosition();
+  }
+//
+//  public String some(){
+//    identity.getProfile().getAttachedActivityType();
+//  }
+
+
+
+
+
+
+
 
   public Profile getProfile() {
     return identity.getProfile();
