@@ -19,10 +19,13 @@
 package org.exoplatform.outlook.portlet;
 
 import org.exoplatform.services.organization.User;
+import org.exoplatform.social.common.RealtimeListAccess;
+import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
+import org.exoplatform.social.core.manager.ActivityManager;
 
-import java.util.ResourceBundle;
+import java.util.List;
 
 /**
  * User info acts as a facade on top of eXo organization user and its data in
@@ -38,15 +41,18 @@ public class UserInfo {
 
   private final Identity identity;
 
+  private final ActivityManager socialActivityManager;
+
   /**
    * Instantiates a new user info.
-   *
    * @param orgUser the org user
    * @param identity the identity
+   * @param socialActivityManager the user social activity
    */
-  public UserInfo(User orgUser, Identity identity) {
+  public UserInfo(User orgUser, Identity identity, ActivityManager socialActivityManager) {
     this.orgUser = orgUser;
     this.identity = identity;
+    this.socialActivityManager = socialActivityManager;
   }
 
   public String getFirstName() {
@@ -64,10 +70,14 @@ public class UserInfo {
   public String getPosition() {
     return identity.getProfile().getPosition();
   }
-//
-//  public String some(){
-//    identity.getProfile().getAttachedActivityType();
-//  }
+
+  //???????????????????????????????????????????????????????????
+  public List<ExoSocialActivity> getUserSocialActyvityes(){
+    RealtimeListAccess<ExoSocialActivity> activity = (RealtimeListAccess<ExoSocialActivity>) socialActivityManager
+            .getActivity(identity.getId());
+    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
+    return exoSocialActivityList;
+  }
 
   public Profile getProfile() {
     return identity.getProfile();

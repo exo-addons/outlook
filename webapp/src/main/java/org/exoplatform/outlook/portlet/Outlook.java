@@ -1191,7 +1191,7 @@ public class Outlook {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   //profilesToDisplay.add(userIdentity.getProfile());
-                  users.add(new UserInfo(user, userIdentity));
+                  users.add(new UserInfo(user, userIdentity, socialActivityManager));
                   //organization.getUserProfileHandler().findUserProfileByName(username);
                   Profile userProfile = userIdentity.getProfile();
                   

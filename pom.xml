@@ -56,6 +56,12 @@
     <org.mockito.version>2.2.11</org.mockito.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
+  <repositories>
+    <repository>
+      <id>eXo-pub-repo</id>
+      <url>http://repository.exoplatform.org/public</url>
+    </repository>
+  </repositories>
   <dependencyManagement>
     <dependencies>
       <!-- Import versions of external dependencies to use -->
