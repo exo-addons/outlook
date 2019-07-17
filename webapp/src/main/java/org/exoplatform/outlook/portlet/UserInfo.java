@@ -22,6 +22,8 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 
+import java.util.ResourceBundle;
+
 /**
  * User info acts as a facade on top of eXo organization user and its data in
  * Social.<br>
@@ -70,5 +72,10 @@ public class UserInfo {
   public Profile getProfile() {
     return identity.getProfile();
   }
+
+//  public String getTitle(){
+//    ResourceBundle resourceBundle = ResourceBundle.getBundle("title");
+//    return resourceBundle.getString("title");
+//  }
 
 }
