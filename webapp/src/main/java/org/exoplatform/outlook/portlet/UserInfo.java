@@ -37,9 +37,11 @@ public class UserInfo {
   private final Identity identity;
 
   /**
-   * 
+   * Instantiates a new user info.
+   *
+   * @param orgUser the org user
+   * @param identity the identity
    */
-  //
   public UserInfo(User orgUser, Identity identity) {
     this.orgUser = orgUser;
     this.identity = identity;
@@ -49,28 +51,21 @@ public class UserInfo {
     return orgUser.getFirstName();
   }
 
-  public String getLastName(){
+  public String getLastName() {
     return orgUser.getLastName();
   }
 
-  public String getDisplayName(){
+  public String getDisplayName() {
     return orgUser.getDisplayName();
   }
 
-  public String getPosition(){
+  public String getPosition() {
     return identity.getProfile().getPosition();
   }
 //
 //  public String some(){
 //    identity.getProfile().getAttachedActivityType();
 //  }
-
-
-
-
-
-
-
 
   public Profile getProfile() {
     return identity.getProfile();
