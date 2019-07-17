@@ -4,10 +4,6 @@
 <% /* TODO remove use of the below params */ %>
 #{param name=exoSocialActivityMap/}
 #{param name=profileToRelationship/}
-<%@ page import="java.util.ResourceBundle"%>
-<%
-  ResourceBundle resourceBundle = ResourceBundle.getBundle("title");
-%>
 
 
 <div class="ms-Grid-row">
@@ -53,8 +49,7 @@
     				<li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
     				<li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i>	</li>
             <!-- TODO move title text to i18n bundle -->
-					<!--<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title=" ${ user.getTitle() }">-->
-    				<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title='<%=resourceBundle.getString("title")%>'>
+    				<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="&{Outlook.profileTitle}">
     					<a href="${user.getProfile().getUrl()}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
     				</li>
     			</ul>

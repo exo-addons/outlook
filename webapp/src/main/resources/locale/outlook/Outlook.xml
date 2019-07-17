@@ -21,6 +21,9 @@
       <convertToForum>Convert to Forum Topic</convertToForum>
     </command>
 
+    <!--  Profile  -->
+    <profileTitle>View profile in eXo</profileTitle>
+
     <!-- Common -->
     <logout>Sign out</logout>
     <logoutTitle>Sign out of the intranet</logoutTitle>

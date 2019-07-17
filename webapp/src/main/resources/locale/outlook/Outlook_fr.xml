@@ -22,6 +22,9 @@
       <convertToForum>Convertir en discussion</convertToForum>
     </command>
 
+    <!--  Profile  -->
+    <profileTitle>View profile in eXo</profileTitle>
+
     <!-- Common -->
     <logout>Déconnexion</logout>
     <logoutTitle>Déconnexion de l'intranet eXo</logoutTitle>
