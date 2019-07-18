@@ -117,7 +117,7 @@
                 </div>
               </li>
               <li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-              <% if (user.phones) { %>
+              <% if (user.phones) { %><!-- TODO user.phones -->
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
                 <% user.phones.each { phoneName, phoneNumber -> %>
                 <div class="ms-PersonaCard-detailLine">
@@ -130,7 +130,7 @@
               <li id="video" class="ms-PersonaCard-actionDetails detail-6">
                 <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
               	<div class="ms-PersonaCard-detailLine">
-                <% if (user.links) { %>
+                <% if (user.links) { %><!-- TODO user.links -->
               		<% for (link in user.links) { %>
                   <p>
               			<a class="ms-Link" href="$link" target="_blank">
@@ -139,7 +139,7 @@
                   </p>
               		<% } %>
               	<% } %>
-              	<% if (user.ims) { %>
+              	<% if (user.ims) { %><!-- TODO user.ims -->
               		<% for (im in user.ims) { %>
                     <p>
               			<% if (im.toLowerCase().startsWith("skype")) {%>
@@ -159,30 +159,24 @@
               		<% } %>
               	<% } %>
                 <!-- TODO Check the Chat function is enabled in the platform -->
-                <!-- 
-              	<p>
+                <!-- <p>
               		<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
               			<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
               		</a>
-              	</p>
-                -->
+              	</p> -->
               	</div>
               </li>
-    					<li id="mail" class="ms-PersonaCard-actionDetails detail-6">
-    						<div class="ms-PersonaCard-detailLine">
-    						<span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
-    						<% if (usersInfoMap.get(user.userName).get("user.home-info.online.email") != null) { %>
-    							<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.home-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.home-info.online.email")} </a></p>
-    						<% } %>
-    						<% if (usersInfoMap.get(user.userName).get("user.business-info.online.email") != null) { %>
-    							<p><a class="ms-Link" href="mailto:${usersInfoMap.get(user.userName).get("user.business-info.online.email")}" >${usersInfoMap.get(user.userName).get("user.business-info.online.email")} </a></p>
-    						<% } %>
-    						<% if ( profile.getProperty("email") != null) { %>
-    							<p><a class="ms-Link" href="mailto:${ profile.getProperty("email")}">${profile.getProperty("email")}</a></p>
-    						<% } %>
-    						</div>
-    					</li>
-    				</ul>
+              <li id="mail" class="ms-PersonaCard-actionDetails detail-6">
+                <div class="ms-PersonaCard-detailLine">
+                  <span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
+                  <% if (user.email) { %>
+                  <p><!-- TODO user.email -->
+                    <a class="ms-Link" href="mailto:${user.email}</a>
+                  </p>
+                  <% } %>
+                </div>
+              </li>
+            </ul>
     			</div>
     		</div>
     		<% } %>
