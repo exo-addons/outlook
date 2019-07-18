@@ -81,9 +81,4 @@ public class UserInfo {
     return identity.getProfile();
   }
 
-//  public String getTitle(){
-//    ResourceBundle resourceBundle = ResourceBundle.getBundle("title");
-//    return resourceBundle.getString("title");
-//  }
-
 }
