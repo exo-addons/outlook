@@ -1191,10 +1191,17 @@ public class Outlook {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   //profilesToDisplay.add(userIdentity.getProfile());
-                  RealtimeListAccess<ExoSocialActivity> activity =
-                          (RealtimeListAccess<ExoSocialActivity>) socialActivityManager.getActivity(userIdentity.getId());
-                  List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
-                  users.add(new UserInfo(user, userIdentity, exoSocialActivityList));
+                  List<Map<String, String>> activityes = null;
+                  socialActivityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0,20)
+                          .forEach(o -> {
+                    activityes.add(new HashMap<String, String>(){{
+                      put("link","/portal/intranet/activity?id="+o.getId());
+                      put("type", o.getType());
+                      put("postedDate", DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(o.getPostedTime()));
+                    }}
+                    );
+                  });
+                  users.add(new UserInfo(user, userIdentity, activityes));
                   //organization.getUserProfileHandler().findUserProfileByName(username);
                   Profile userProfile = userIdentity.getProfile();
                   
@@ -1871,6 +1878,7 @@ public class Outlook {
   private RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception {
     Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
     RealtimeListAccess<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity);
+    activity.
     return activity;
   }
 

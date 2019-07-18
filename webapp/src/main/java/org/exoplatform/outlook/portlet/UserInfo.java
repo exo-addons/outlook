@@ -26,6 +26,7 @@ import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.manager.ActivityManager;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User info acts as a facade on top of eXo organization user and its data in
@@ -41,18 +42,18 @@ public class UserInfo {
 
   private final Identity identity;
 
-  private final List<ExoSocialActivity> exoSocialActivityList;
+  private final List<Map<String, String>> activityes;
 
   /**
    * Instantiates a new user info.
    * @param orgUser the org user
    * @param identity the identity
-   * @param exoSocialActivityList the user social activity list
+   * @param activityes list of social activities of the user that includes the link, type and postedDate
    */
-  public UserInfo(User orgUser, Identity identity, List<ExoSocialActivity> exoSocialActivityList) {
+  public UserInfo(User orgUser, Identity identity, List<Map<String, String>> activityes) {
     this.orgUser = orgUser;
     this.identity = identity;
-    this.exoSocialActivityList = exoSocialActivityList;
+    this.activityes = activityes;
   }
 
   public String getFirstName() {
@@ -71,8 +72,8 @@ public class UserInfo {
     return identity.getProfile().getPosition();
   }
 
-  public List<ExoSocialActivity> getUserSocialActyvityes(){
-    return exoSocialActivityList;
+  public List<Map<String, String>> getUserSocialActyvityes(){
+    return activityes;
   }
 
   public Profile getProfile() {
