@@ -7,171 +7,184 @@
 
 
 <div class="ms-Grid-row">
-	<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-	<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
-		<div id="outlook-usersInfo" class="outlook-usersInfo">
-			<div id="outlook-usersInfo-text" class="text-centered">
-				<h4>&{Outlook.command.userInfo}</h4>
-			</div>
-			<% if (users.isEmpty()) { %>
-			<div class="ms-MessageBar ms-MessageBar--severeWarning">
-				<div class="ms-MessageBar-content">
-					<div class="ms-MessageBar-icon">
-						<i class="ms-Icon ms-Icon--person"></i>
-					</div>
-					<div class="ms-MessageBar-text">
-						<!-- TODO get link to Connections from the Navigation API -->
-						&{Outlook.notUser} <br><a href="/portal/intranet/connexions" class="ms-Link" target="_blank">&{Outlook.linkConnexions}</a>
-					</div>
-				</div>
-			</div>
-			<% } else { %>
-			<div class="outlook-usersInfo-person">
-				<% for (user in users) { %>
-				<div class="ms-PersonaCard">
-					<div class="ms-PersonaCard-persona ">
-						<div class="ms-Persona ms-Persona--xl">
-							<div class="ms-Persona-imageArea">
-								<!-- TODO implement getFirstName/getLastName in UserInfo -->
-								<div class="ms-Persona-initials ms-Persona-initials--purple">${user.firstName.substring(0,1)}${user.lastName.substring(0,1)}</div>
-								<img class="ms-Persona-image" src="${user.avatarUrl}"> <!-- TODO was in profile -->
-							</div>
-							<div class="ms-Persona-details">
-								<div class="ms-Persona-primaryText">${user.displayName}</div>
-								<div class="ms-Persona-secondaryText">${user.position}</div>
-							</div>
-						</div>
-					</div>
-					<ul class="ms-PersonaCard-actions">
-						<li id="chat" class="ms-PersonaCard-action is-active"><i class="ms-Icon ms-Icon--panel"></i></li>
-						<li id="org" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--people"></i>	</li>
-						<li id="phone" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--phone"></i> </li>
-						<li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
-						<li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i>	</li>
-						<!-- TODO move title text to i18n bundle -->
-						<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="&{Outlook.openProfileInIntranet}">
-							<!-- TODO profileLink take from profile.url -->
-							<a href="${user.profileLink}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
-						</li>
-					</ul>
-					<div class="ms-PersonaCard-actionDetailBox">
-						<ul id="detailList" class="ms-PersonaCard-detailChat">
-							<li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
-								<!-- TODO we need keep last 20 user activities in UserInfo class and get them as collection here for rendering  -->
-								<!-- Get rid of userInfo and collections to read activities here -->
-								<!-- Each activity should have already an URL and date formatted in user locale as TODOed below -->
-								<h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
-								<div class="text-userInfoActivity">
-									<!-- TODO we need ActivityInfo class that will read/prepare required data for us (URL, date etc) -->
-									<% for (activity in user.activities) { %>
-									<!-- TODO do we really need CSS class of activity.type? -->
-									<div class="ms-depth-8 activity ${activity.type}">
-										<ul class="ms--list">
-											<% if (activity.title) { %>
-											<li class="activity-title">
-												<!-- TODO Get activity URL from Social --> <a href="/portal/intranet/activity?id=???"
-																							  class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title.title}</a><!-- TODO title.title is it OK? -->
-											</li>
-											<% } %>
-											<% if (activity.postedDate) { %>
-											<!-- TODO We need formatted Date in user locale (take from profile) -->
-											<time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
-											<% } %>
-										</ul>
-									</div>
-									<% } %>
-								</div>
-							</li>
-							<li id="org" class="ms-PersonaCard-actionDetails detail-6">
-								<div class="ms-OrgChart">
-									<div class="ms-OrgChart-group">
-										<ul class="ms-OrgChart-list">
-											<!-- TODO user.connections return list of Identity -->
-											<% for (conn in user.connections")) {%>
-											<li class="ms-OrgChart-listItem">
-												<div class="ms-Persona">
-													<div class="ms-Persona-imageArea">
-														<div class="ms-Persona-initials ms-Persona-initials--darkBlue">
-															<font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-																${conn.firstName.substring(0,1)}${conn.lastName.substring(0,1)}</font></font>
-														</div>
-														<img class="ms-Persona-image" src="${conn.avatarUrl}">
-													</div>
-													<div class="ms-Persona-details">
-														<div class="ms-Persona-primaryText">
-															<font style="vertical-align: inherit;"> <a href="${conn.url}" class="ms-Link" target="_blank">${conn.fullName}</a>
-															</font>
-														</div>
-														<%if (conn.aboutMe) { %>
-														<div class="ms-Persona-secondaryText">
-															<font style="vertical-align: inherit;"> <font style="vertical-align: inherit;">${conn.aboutMe}</font>
-															</font>
-														</div>
-														<% } %>
-													</div>
-												</div>
-											</li>
-											<% } %>
-										</ul>
-									</div>
-								</div>
-							</li>
-							<li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-								<% if (user.phones) { %><!-- TODO user.phones -->
-								<!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
-								<% user.phones.each { phoneName, phoneNumber -> %>
-								<div class="ms-PersonaCard-detailLine">
+  <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+  <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+    <div id="outlook-usersInfo" class="outlook-usersInfo">
+      <div id="outlook-usersInfo-text" class="text-centered">
+        <h4>&{Outlook.command.userInfo}</h4>
+      </div>
+      <% if (users.isEmpty()) { %>
+      <div class="ms-MessageBar ms-MessageBar--severeWarning">
+        <div class="ms-MessageBar-content">
+          <div class="ms-MessageBar-icon">
+            <i class="ms-Icon ms-Icon--person"></i>
+          </div>
+          <div class="ms-MessageBar-text">
+            <!-- TODO get link to Connections from the Navigation API -->
+            &{Outlook.notUser} <br><a href="/portal/intranet/connexions" class="ms-Link" target="_blank">&{Outlook.linkConnexions}</a>
+          </div>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="outlook-usersInfo-person">
+        <% for (user in users) { %>
+        <div class="ms-PersonaCard">
+          <div class="ms-PersonaCard-persona ">
+            <div class="ms-Persona ms-Persona--xl">
+              <div class="ms-Persona-imageArea">
+                <!-- TODO implement getFirstName/getLastName in UserInfo -->
+                <div class="ms-Persona-initials ms-Persona-initials--purple">
+                  ${user.firstName.substring(0,1)}${user.lastName.substring(0,1)}
+                </div>
+                <img class="ms-Persona-image" src="${user.avatarUrl}"> <!-- TODO was in profile -->
+              </div>
+              <div class="ms-Persona-details">
+                <div class="ms-Persona-primaryText">${user.displayName}</div>
+                <div class="ms-Persona-secondaryText">${user.position}</div>
+              </div>
+            </div>
+          </div>
+          <ul class="ms-PersonaCard-actions">
+            <li id="chat" class="ms-PersonaCard-action is-active"><i class="ms-Icon ms-Icon--panel"></i>
+            </li>
+            <li id="org" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--people"></i></li>
+            <li id="phone" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--phone"></i></li>
+            <li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
+            <li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i></li>
+            <!-- TODO move title text to i18n bundle -->
+            <li class="ms-PersonaCard-overflow" alt="View profile in eXo"
+                title="&{Outlook.openProfileInIntranet}">
+              <!-- TODO profileLink take from profile.url -->
+              <a href="${user.profileLink}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
+            </li>
+          </ul>
+          <div class="ms-PersonaCard-actionDetailBox">
+            <ul id="detailList" class="ms-PersonaCard-detailChat">
+              <li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
+                <!-- TODO we need keep last 20 user activities in UserInfo class and get them as collection here for rendering  -->
+                <!-- Get rid of userInfo and collections to read activities here -->
+                <!-- Each activity should have already an URL and date formatted in user locale as TODOed below -->
+                <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
+                <div class="text-userInfoActivity">
+                  <!-- TODO we need ActivityInfo class that will read/prepare required data for us (URL, date etc) -->
+                  <% for (activity in user.activities) { %>
+                  <!-- TODO do we really need CSS class of activity.type? -->
+                  <div class="ms-depth-8 activity ${activity.type}">
+                    <ul class="ms--list">
+                      <% if (activity.title) { %>
+                      <li class="activity-title">
+                        <!-- TODO Get activity URL from Social --> <a
+                        href="/portal/intranet/activity?id=???"
+                        class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link "
+                        target="_blank">${activity.title.title}</a>
+                        <!-- TODO title.title is it OK? -->
+                      </li>
+                      <% } %>
+                      <% if (activity.postedDate) { %>
+                      <!-- TODO We need formatted Date in user locale (take from profile) -->
+                      <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                      <% } %>
+                    </ul>
+                  </div>
+                  <% } %>
+                </div>
+              </li>
+              <li id="org" class="ms-PersonaCard-actionDetails detail-6">
+                <div class="ms-OrgChart">
+                  <div class="ms-OrgChart-group">
+                    <ul class="ms-OrgChart-list">
+                      <!-- TODO user.connections return list of Identity -->
+                      <% for (conn in user.connections")) {%>
+                      <li class="ms-OrgChart-listItem">
+                        <div class="ms-Persona">
+                          <div class="ms-Persona-imageArea">
+                            <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                              <font style="vertical-align: inherit;"><font
+                                style="vertical-align: inherit;">
+                                ${conn.firstName.substring(0,1)}${conn.lastName.substring(0,1)}</font></font>
+                            </div>
+                            <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                          </div>
+                          <div class="ms-Persona-details">
+                            <div class="ms-Persona-primaryText">
+                              <font style="vertical-align: inherit;"> <a
+                                href="${conn.url}" class="ms-Link" target="_blank">${conn.fullName}</a>
+                              </font>
+                            </div>
+                            <%if (conn.aboutMe) { %>
+                            <div class="ms-Persona-secondaryText">
+                              <font style="vertical-align: inherit;"> <font
+                                style="vertical-align: inherit;">${conn.aboutMe}</font>
+                              </font>
+                            </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      </li>
+                      <% } %>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+              <li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span
+                class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
+                <% if (user.phones) { %><!-- TODO user.phones -->
+                <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
+                <% user.phones.each { phoneName, phoneNumber -> %>
+                <div class="ms-PersonaCard-detailLine">
                   <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
-						  class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
-								</div>
-								<% } %>
-								<% } %>
-							</li>
-							<li id="video" class="ms-PersonaCard-actionDetails detail-6">
-								<!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
-								<div class="ms-PersonaCard-detailLine">
-									<% if (user.links) { %><!-- TODO user.links -->
-									<% for (link in user.links) { %>
-									<p>
-										<a class="ms-Link" href="$link" target="_blank">
-											<span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$link</span>
-										</a>
-									</p>
-									<% } %>
-									<% } %>
-									<% if (user.ims) { %><!-- TODO user.ims -->
-									<% for (im in user.ims) { %>
-									<p>
-										<% if (im.toLowerCase().startsWith("skype")) {%>
-										<!-- TODO cleanup after UI refactoring -->
-										<!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
-										<a class="ms-Link" href="skype:$im">
-											<span class="ms-Icon"><i class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
-										</a>
-										<% } else { %>
-										<span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$im</span>
-										<!-- TODO Check the WebConferencing function is enabled in the platform-->
-										<!-- a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
-                                          <span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
-                                        </a -->
-										<% } %>
-									</p>
-									<% } %>
-									<% } %>
-									<!-- TODO Check the Chat function is enabled in the platform -->
-									<!-- <p>
-                                          <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
-                                              <span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-                                          </a>
-                                      </p> -->
-								</div>
-							</li>
-							<li id="mail" class="ms-PersonaCard-actionDetails detail-6">
-								<div class="ms-PersonaCard-detailLine">
-									<span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
-									<% if (user.email) { %>
-									<p><!-- TODO user.email -->
-										<a class="ms-Link" href="mailto:${user.email}</a>
+                    class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
+                </div>
+                <% } %>
+                <% } %>
+              </li>
+              <li id="video" class="ms-PersonaCard-actionDetails detail-6">
+                <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
+                <div class="ms-PersonaCard-detailLine">
+                  <% if (user.links) { %><!-- TODO user.links -->
+                  <% for (link in user.links) { %>
+                  <p>
+                    <a class="ms-Link" href="$link" target="_blank">
+                                            <span class="ms-Icon"><i
+                                              class="ms-Icon ms-Icon--onlineJoin"></i>$link</span>
+                    </a>
+                  </p>
+                  <% } %>
+                  <% } %>
+                  <% if (user.ims) { %><!-- TODO user.ims -->
+                  <% for (im in user.ims) { %>
+                  <p>
+                    <% if (im.toLowerCase().startsWith("skype")) {%>
+                    <!-- TODO cleanup after UI refactoring -->
+                    <!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
+                    <a class="ms-Link" href="skype:$im">
+                                            <span class="ms-Icon"><i
+                                              class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
+                    </a>
+                    <% } else { %>
+                    <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$im</span>
+                    <!-- TODO Check the WebConferencing function is enabled in the platform-->
+                    <!-- a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
+                      <span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
+                    </a -->
+                    <% } %>
+                  </p>
+                  <% } %>
+                  <% } %>
+                  <!-- TODO Check the Chat function is enabled in the platform -->
+                  <!-- <p>
+                        <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
+                            <span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
+                        </a>
+                    </p> -->
+                </div>
+              </li>
+              <li id="mail" class="ms-PersonaCard-actionDetails detail-6">
+                <div class="ms-PersonaCard-detailLine">
+                  <span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
+                  <% if (user.email) { %>
+                  <p><!-- TODO user.email -->
+                    <a class="ms-Link" href="mailto:${user.email}</a>
                   </p>
                   <% } %>
                 </div>
@@ -183,6 +196,6 @@
     	</div>
       <% } %>
     </div>
-    <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-					</div>
-				</div>
+    <div class=" ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+          </div>
+        </div>
