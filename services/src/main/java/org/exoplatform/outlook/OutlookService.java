@@ -63,6 +63,7 @@ public interface OutlookService {
    * @return {@link OutlookUser} object to access Outlook Mail API
    * @throws Exception the exception in case of search error
    */
+  @Deprecated
   OutlookUser findUserByEmail(String email) throws Exception;
 
   /**

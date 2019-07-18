@@ -526,9 +526,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     /** The social relationship manager. */
     protected final RelationshipManager socialRelationshipManager;
     
-    /** The exo user. */
-    private User exoUser;
-
     /**
      * Instantiates a new user by given email, display name and username.
      *
@@ -550,9 +547,10 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * @param exoUser the eXo user instance
      * @throws OutlookException if userName is not valid
      */
+    @Deprecated
     protected UserImpl(User exoUser) throws OutlookException {
       this(exoUser.getEmail(), exoUser.getDisplayName(), exoUser.getUserName());
-      this.exoUser = exoUser;
+      //this.exoUser = exoUser;
     }
 
     /**
@@ -1387,6 +1385,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     return null;
   }
   
+  @Deprecated
   public OutlookUser findUserByEmail(String email) throws Exception {
     org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
     query.setEmail(email);
