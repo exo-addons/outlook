@@ -453,7 +453,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   margin-left: 5px;
 }
 
-.postedTime {
+.outlook-usersInfo-person .postedDate {
   text-align: right;
   overflow: hidden;
   position: absolute;
