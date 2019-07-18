@@ -117,9 +117,9 @@
                 </div>
               </li>
               <li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-                <% if (user.phones) {   %>
+              <% if (user.phones) { %>
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
-                <% userPhones.each { phoneName, phoneNumber -> %>
+                <% user.phones.each { phoneName, phoneNumber -> %>
                 <div class="ms-PersonaCard-detailLine">
                   <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
                     class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
@@ -128,49 +128,46 @@
               <% } %>
               </li>
               <li id="video" class="ms-PersonaCard-actionDetails detail-6">
-    						<div class="ms-PersonaCard-detailLine">
-    						  <% if (profile.getProperty("urls") != null) { %>
-    							<% for (urls in profile.getProperty("urls")) { %>
-    							  <% if (urls.toString().matches("(.*)url(.*)") ) { %>
-    								<% for (String url in urls.toString().split(",",0)) { %>
-    								  <% if (url.startsWith("[value")){%>
-    									<% if (url.substring(7).startsWith("http")) {%>
-    									  <a class="ms-Link" href="${url.substring(7)}" target="_blank">
-    									<% } else { %>
-    									  <a class="ms-Link" href="http://${url.substring(7)}" target="_blank">
-    									<% } %><spanclass "ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i> ${url.substring(7)}</span>
-    									</a>
-    								  </p>
-    								  <% } %>
-    								<% } %>
-    							  <% } %>
-    							<% } %>
-    						  <% } %>
-    							<% if (profile.getProperty("ims") != null) { %>
-    							<% for (ims in profile.getProperty("ims")) { %>
-    								<% if (ims.toString().matches("(.*)skype(.*)") ) {%>
-    									<% for (String skypeName in ims.toString().split(",",0)) { %>
-    										<% if (skypeName.startsWith("[value")) {%>
-    											<p><i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:${skypeName.substring(7)}">${skypeName.substring(7)}</a></p>
-    										<% } %>
-    									<% } %>
-    								<% } %>
-    							<% } %>
-    							<% } %>
-    							<p>
-                    <!-- TODO Check the WebConferencing function is enabled in the platform-->
-    								<a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
-    									<span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
-    								</a>
-    							</p>
-    							<p>
-    							<!-- TODO Check the Chat function is enabled in the platform-->
-    								<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
-    									<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-    								</a>
-    							</p>
-    						</div>
-    					</li>
+                <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
+              	<div class="ms-PersonaCard-detailLine">
+                <% if (user.links) { %>
+              		<% for (link in user.links) { %>
+                  <p>
+              			<a class="ms-Link" href="$link" target="_blank">
+                      <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$link</span>
+                    </a>
+                  </p>
+              		<% } %>
+              	<% } %>
+              	<% if (user.ims) { %>
+              		<% for (im in user.ims) { %>
+                    <p>
+              			<% if (im.toLowerCase().startsWith("skype")) {%>
+                      <!-- TODO cleanup after UI refactoring -->
+                      <!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
+                      <a class="ms-Link" href="skype:$im">
+                        <span class="ms-Icon"><i class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
+                      </a>
+              			<% } else { %>
+                      <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$im</span>
+                      <!-- TODO Check the WebConferencing function is enabled in the platform-->
+                      <!-- a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
+                        <span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
+                      </a -->
+                    <% } %>
+                    </p>
+              		<% } %>
+              	<% } %>
+                <!-- TODO Check the Chat function is enabled in the platform -->
+                <!-- 
+              	<p>
+              		<a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
+              			<span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
+              		</a>
+              	</p>
+                -->
+              	</div>
+              </li>
     					<li id="mail" class="ms-PersonaCard-actionDetails detail-6">
     						<div class="ms-PersonaCard-detailLine">
     						<span class="ms-PersonaCard-detailLabel">&{Outlook.mail}</span>
