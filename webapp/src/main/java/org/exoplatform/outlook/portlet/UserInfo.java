@@ -41,18 +41,18 @@ public class UserInfo {
 
   private final Identity identity;
 
-  private final ActivityManager socialActivityManager;
+  private final List<ExoSocialActivity> exoSocialActivityList;
 
   /**
    * Instantiates a new user info.
    * @param orgUser the org user
    * @param identity the identity
-   * @param socialActivityManager the user social activity
+   * @param exoSocialActivityList the user social activity list
    */
-  public UserInfo(User orgUser, Identity identity, ActivityManager socialActivityManager) {
+  public UserInfo(User orgUser, Identity identity, List<ExoSocialActivity> exoSocialActivityList) {
     this.orgUser = orgUser;
     this.identity = identity;
-    this.socialActivityManager = socialActivityManager;
+    this.exoSocialActivityList = exoSocialActivityList;
   }
 
   public String getFirstName() {
@@ -71,11 +71,7 @@ public class UserInfo {
     return identity.getProfile().getPosition();
   }
 
-  //???????????????????????????????????????????????????????????
   public List<ExoSocialActivity> getUserSocialActyvityes(){
-    RealtimeListAccess<ExoSocialActivity> activity = (RealtimeListAccess<ExoSocialActivity>) socialActivityManager
-            .getActivity(identity.getId());
-    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
     return exoSocialActivityList;
   }
 

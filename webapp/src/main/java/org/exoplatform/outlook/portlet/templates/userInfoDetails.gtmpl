@@ -55,32 +55,35 @@
     			</ul>
     			<div class="ms-PersonaCard-actionDetailBox">
     				<ul id="detailList" class="ms-PersonaCard-detailChat">
-              <li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
+    					<li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
                 <!-- TODO we need keep last 20 user activities in UserInfo class and get them as collection here for rendering  -->
                 <!-- Get rid of userInfo and collections to read activities here -->
                 <!-- Each activity should have already an URL and date formatted in user locale as TODOed below -->
+                <% if ( userInfo.get(user.userName+"idActivity") != null ) { %>
                 <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
                 <div class="text-userInfoActivity">
-                  <!-- TODO we need ActivityInfo class that will read/prepare required data for us (URL, date etc) -->
-                  <% for (activity in user.activities) { %>
-                  <!-- TODO do we really need CSS class of activity.type? -->
-                  <div class="ms-depth-8 activity ${activity.type}">
-                    <ul class="ms--list">
-                      <% if (activity.title) { %>
-                      <li class="activity-title">
-                        <!-- TODO Get activity URL from Social --> <a href="/portal/intranet/activity?id=???"
-                        class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank"> ${activity.title.title}</a>
-                      </li>
-                      <% } %>
-                      <% if (activity.postedDate) { %>
-                      <!-- TODO We need formatted Date in user locale (take from profile) -->
-                      <time class=" ms-fwt-sl ms-fcl-ns postedTime">${activity.postedDate}</time>
-                      <% } %>
-                    </ul>
-                  </div>
-                  <% } %>
-                </div>
-              </li>
+    							<% for (String idActivity in userInfo.get(user.userName+"idActivity")) { %>
+    							<% if (exoSocialActivityMap.size() > 0 ) { %>
+    							<div class="ms-depth-8 activity  ${exoSocialActivityMap.get(idActivity).getType()}">
+    								<ul class="ms--list">
+    								<% if(exoSocialActivityMap.get(idActivity).title != null) { %>
+    									<li class="activity-title">
+                        <!-- TODO Can we get activity URL from Social? -->
+    										<a href="/portal/intranet/activity?id=${idActivity}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">
+    										${exoSocialActivityMap.get(idActivity).title}</a>
+    									</li>
+    								<% } %>
+    								<% if (<exoSocial></exoSocial>ActivityMap.get(idActivity).getPostedTime() != null) { %>
+                      <!-- TODO We need formatted Date in user locale (do this higher in Java, send here) -->
+    									<time class=" ms-fwt-sl ms-fcl-ns postedTime">${new Date(exoSocialActivityMap.get(idActivity).getPostedTime())}</time>
+    								<% } %>
+    								</ul>
+    							</div>
+    							<% } %>
+    							<% } %>
+                </div> 
+                <% } %>
+    					</li>
     					<li id="org" class="ms-PersonaCard-actionDetails detail-6">
               <div class="ms-OrgChart">
                 <div class="ms-OrgChart-group">
