@@ -42,18 +42,18 @@ public class UserInfo {
 
   private final Identity identity;
 
-  private final List<Map<String, String>> activityes;
+  private final List<ActivityInfo> activities;
 
   /**
    * Instantiates a new user info.
    * @param orgUser the org user
    * @param identity the identity
-   * @param activityes list of social activities of the user that includes the link, type and postedDate
+   * @param activities list of social activities of the user that includes the link, type and postedDate
    */
-  public UserInfo(User orgUser, Identity identity, List<Map<String, String>> activityes) {
+  public UserInfo(User orgUser, Identity identity, List<ActivityInfo> activities) {
     this.orgUser = orgUser;
     this.identity = identity;
-    this.activityes = activityes;
+    this.activities = activities;
   }
 
   public String getFirstName() {
@@ -72,8 +72,8 @@ public class UserInfo {
     return identity.getProfile().getPosition();
   }
 
-  public List<Map<String, String>> getUserSocialActyvityes(){
-    return activityes;
+  public List<ActivityInfo> getUserSocialActyvityes(){
+    return activities;
   }
 
   @Deprecated // TODO remove it, everything required should be exposed via this class methods

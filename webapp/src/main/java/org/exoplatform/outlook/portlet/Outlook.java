@@ -1191,17 +1191,16 @@ public class Outlook {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   //profilesToDisplay.add(userIdentity.getProfile());
-                  List<Map<String, String>> activityes = null;
-                  socialActivityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0,20)
-                          .forEach(o -> {
-                    activityes.add(new HashMap<String, String>(){{
-                      put("link","/portal/intranet/activity?id="+o.getId());
-                      put("type", o.getType());
-                      put("postedDate", DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(o.getPostedTime()));
-                    }}
-                    );
-                  });
-                  users.add(new UserInfo(user, userIdentity, activityes));
+                  List<ActivityInfo> activities = null;
+                  List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0,20);
+                    activity.forEach(o ->
+                            activities.add(
+                                    new ActivityInfo(
+                                            o.getTitle(),
+                                            o.getType(),
+                                            "/portal/intranet/activity?id="+o.getId(),
+                                            o.getPostedTime())));
+                  users.add(new UserInfo(user, userIdentity, activities));
                   //organization.getUserProfileHandler().findUserProfileByName(username);
                   Profile userProfile = userIdentity.getProfile();
                   
