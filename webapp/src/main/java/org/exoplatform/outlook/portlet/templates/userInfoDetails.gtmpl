@@ -34,7 +34,7 @@
     					<div class="ms-Persona-imageArea">
                 <!-- TODO implement getFirstName/getLastName in UserInfo -->
     						<div class="ms-Persona-initials ms-Persona-initials--purple">${user.firstName.substring(0,1)}${user.lastName.substring(0,1)}</div>
-    						<img class="ms-Persona-image" src="${user.profile.avatarUrl}">
+    						<img class="ms-Persona-image" src="${user.avatarUrl}"> <!-- TODO was in profile -->
     					</div>
     					<div class="ms-Persona-details">
     						<div class="ms-Persona-primaryText">${user.displayName}</div>
@@ -50,7 +50,8 @@
     				<li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i>	</li>
             <!-- TODO move title text to i18n bundle -->
     				<li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="&{Outlook.openProfileInIntranet}">
-    					<a href="${user.profile.url}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
+              <!-- TODO profileLink take from profile.url -->
+    					<a href="${user.profileLink}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
     				</li>
     			</ul>
     			<div class="ms-PersonaCard-actionDetailBox">
@@ -69,7 +70,7 @@
                       <% if (activity.title) { %>
                       <li class="activity-title">
                         <!-- TODO Get activity URL from Social --> <a href="/portal/intranet/activity?id=???"
-                        class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank"> ${activity.title.title}</a>
+                        class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title.title}</a><!-- TODO title.title is it OK? -->
                       </li>
                       <% } %>
                       <% if (activity.postedDate) { %>
@@ -115,40 +116,18 @@
                   </div>
                 </div>
               </li>
-    					<li id="phone" class="ms-PersonaCard-actionDetails detail-6">
-    						<span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-    						<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number") != null) {   %>
-    							<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-    							<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.mobile.number")}</span>
-    						  </div>
-    						<% } %>
-    						<% if (usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number") != null) {   %>
-    							<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-    							<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.business-info.telecom.telephone.number")}</span>
-    						  </div>
-    						<% } %>
-    						<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number") != null) {   %>
-    							<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-    							<i class="ms-Icon ms-Icon--phone"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.telephone.number")} </span>
-    						  </div>
-    						<% } %>
-    						<% if (usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number") != null) {   %>
-    							<div class="ms-PersonaCard-detailLine"><span class="ms-PersonaCard-detailLabel">
-    							<i class="ms-Icon ms-Icon--mobile"></i>${usersInfoMap.get(user.userName).get("user.home-info.telecom.mobile.number")}</span>
-    						  </div>
-    						<% } %>
-    						<% if ( profile.getPhones() != null) {   %>
-    							<% for ( Map<String, String> phones in profile.getPhones()) { %>
-    								<% for (String phone in phones.toString().split(",",0)){ %>
-    									<% if ( phone.startsWith("[val")){%>
-    										<div class="ms-PersonaCard-detailLine"><span class="ms-phone">
-    										<i class="ms-Icon ms-Icon--phone"></i>${phone.substring(7)} </span>  </div>
-    									<% } %>
-    								<% } %>
-    							<% } %>
-    						<% } %>
-    					</li>
-    					<li id="video" class="ms-PersonaCard-actionDetails detail-6">
+              <li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
+                <% if (user.phones) {   %>
+                <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
+                <% userPhones.each { phoneName, phoneNumber -> %>
+                <div class="ms-PersonaCard-detailLine">
+                  <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
+                    class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
+                </div>
+                <% } %> 
+              <% } %>
+              </li>
+              <li id="video" class="ms-PersonaCard-actionDetails detail-6">
     						<div class="ms-PersonaCard-detailLine">
     						  <% if (profile.getProperty("urls") != null) { %>
     							<% for (urls in profile.getProperty("urls")) { %>

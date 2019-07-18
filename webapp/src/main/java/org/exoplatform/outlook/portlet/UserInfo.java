@@ -79,6 +79,7 @@ public class UserInfo {
     return exoSocialActivityList;
   }
 
+  @Deprecated // TODO remove it, everything required should be exposed via this class methods
   public Profile getProfile() {
     return identity.getProfile();
   }
