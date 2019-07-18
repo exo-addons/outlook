@@ -76,6 +76,7 @@ public class UserInfo {
     return activityes;
   }
 
+  @Deprecated // TODO remove it, everything required should be exposed via this class methods
   public Profile getProfile() {
     return identity.getProfile();
   }
