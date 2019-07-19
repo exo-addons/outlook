@@ -12,7 +12,7 @@ public class ActivityInfo {
     public ActivityInfo() {
     }
 
-    public ActivityInfo(String title, String type, String link, Long postedDate) {
+    ActivityInfo(String title, String type, String link, Long postedDate) {
         this.title = title;
         this.type = type;
         this.link = link;

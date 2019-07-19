@@ -19,14 +19,14 @@
 package org.exoplatform.outlook.portlet;
 
 import org.exoplatform.services.organization.User;
-import org.exoplatform.social.common.RealtimeListAccess;
-import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.ActivityManager;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * User info acts as a facade on top of eXo organization user and its data in
@@ -72,8 +72,14 @@ public class UserInfo {
     return identity.getProfile().getPosition();
   }
 
-  public List<ActivityInfo> getUserSocialActyvityes(){
+  public List<ActivityInfo> getActyvities(){
     return activities;
+  }
+
+  public Map<String, String> getPhones() {
+    Map<String, String> phones = new HashMap<>();
+    identity.getProfile().getPhones().forEach(phones::putAll);
+    return phones;
   }
 
   @Deprecated // TODO remove it, everything required should be exposed via this class methods
