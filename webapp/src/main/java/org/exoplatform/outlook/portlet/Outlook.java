@@ -329,8 +329,8 @@ public class Outlook {
    * The user info.
    */
   @Inject
-  @Path("userInfoactivity.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoactivity  userInfoactivity;
+  @Path("userInfoDetails.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoDetails  userInfoDetails;
 
   /**
    * The convert to status.
@@ -1239,7 +1239,7 @@ public class Outlook {
               LOG.warn("Cannot find user with email: {}", email);
             }
           }
-          /*return userInfoactivity.with()
+          /*return userInfoDetails.with()
                                  .exoSocialActivityMap(exoSocialActivityMap)
                                  .usersToDisplay(usersToDisplay)
                                  .usersInfoMap(usersInfoMap)
@@ -1249,7 +1249,7 @@ public class Outlook {
                                  .nameOwner(currentUsername)
                                  .ok(); */
           
-          return userInfoactivity.with()
+          return userInfoDetails.with()
               .currentUser(currentUserIdentity)
               .users(users)
               .ok();
