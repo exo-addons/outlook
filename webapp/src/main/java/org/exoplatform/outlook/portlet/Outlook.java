@@ -1184,7 +1184,7 @@ public class Outlook {
               if (userIdentity != null) {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
-                  List<ActivityInfo> activities = null;
+                  List<ActivityInfo> activities = new ArrayList<>();
                   List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity)
                                                                           .loadAsList(0, 20);
                   // TODO Get activity URL from Social
