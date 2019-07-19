@@ -22,6 +22,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.model.Profile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,9 @@ public class UserInfo {
   }
 
   public List<Identity> getConnections(){
-    return null;
+    List<Identity> identitiList = new ArrayList<>();
+    identitiList.add(identity);
+    return identitiList;
   }
 
   public String getProfileLink(){

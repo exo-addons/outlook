@@ -86,7 +86,7 @@
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
                       <!-- TODO user.connections return list of Identity -->
-                      <% for (conn in user.connections")) {%>
+                      <% for (conn in user.connections) {%>
                       <li class="ms-OrgChart-listItem">
                         <div class="ms-Persona">
                           <div class="ms-Persona-imageArea">
