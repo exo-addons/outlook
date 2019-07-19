@@ -25,8 +25,6 @@ import org.exoplatform.social.core.identity.model.Profile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * User info acts as a facade on top of eXo organization user and its data in
@@ -74,6 +72,28 @@ public class UserInfo {
 
   public List<ActivityInfo> getActyvities(){
     return activities;
+  }
+
+  public String getEmail() {
+    return orgUser.getEmail();
+  }
+
+  public List<Identity> getConnections(){
+    return null;
+  }
+
+  public String getProfileLink(){
+    return identity.getProfile().getUrl();
+  }
+
+  //*****************************************************
+  public List<Map<String, String>> getIms() {
+    //List<Map<String, String>> property = (List<Map<String, String>>) identity.getProfile().getProperty("ims");
+    return null;
+  }
+
+  public List<String> getLinks(){
+    return null;
   }
 
   public Map<String, String> getPhones() {
