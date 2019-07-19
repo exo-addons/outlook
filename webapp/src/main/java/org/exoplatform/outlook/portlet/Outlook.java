@@ -30,7 +30,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -77,11 +76,9 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -1181,28 +1178,21 @@ public class Outlook {
           for (String email : byEmail.split(",")) {
             User user = findUserByEmail(email.toLowerCase());
             if (user != null) {
-              //List<String> idActivity = new LinkedList<>();
-              //List<String> profileRelationshipName = new LinkedList<>();
               String username = user.getUserName();
               Identity userIdentity =
                                     socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
               if (userIdentity != null) {
-                //OutlookUser user = outlook.getUser(email, username, null);
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
-                  //profilesToDisplay.add(userIdentity.getProfile());
                   List<ActivityInfo> activities = null;
-                  List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0,20);
-                    activity.forEach(o ->
-                            activities.add(
-                                    new ActivityInfo(
-                                            o.getTitle(),
-                                            o.getType(),
-                                            "/portal/intranet/activity?id="+o.getId(),
-                                            o.getPostedTime())));
+                  List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity)
+                                                                          .loadAsList(0, 20);
+                  // TODO Get activity URL from Social
+                  activity.forEach(o -> activities.add(new ActivityInfo(o.getTitle(),
+                                                                        o.getType(),
+                                                                        "/portal/intranet/activity?id=" + o.getId(),
+                                                                        o.getPostedTime())));
                   users.add(new UserInfo(user, userIdentity, activities));
-                  //organization.getUserProfileHandler().findUserProfileByName(username);
-                  Profile userProfile = userIdentity.getProfile();
                   
                   //usersInfoMap.put(username, outlook.getUserInfoMap(username));
                   //List<Relationship> userGetRelationships = exoUser.getRelationships(username);
@@ -1248,7 +1238,6 @@ public class Outlook {
                                  .profileToRelationship(profileToRelationship)
                                  .nameOwner(currentUsername)
                                  .ok(); */
-          
           return userInfoDetails.with()
               .currentUser(currentUserIdentity)
               .users(users)

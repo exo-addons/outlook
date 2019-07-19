@@ -68,11 +68,8 @@
                     <ul class="ms--list">
                       <% if (activity.title) { %>
                       <li class="activity-title">
-                        <!-- TODO Get activity URL from Social --> <a
-                        href="/portal/intranet/activity?id=???"
-                        class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link "
-                        target="_blank">${activity.title.title}</a>
-                        <!-- TODO title.title is it OK? -->
+                        <!-- TODO Get activity URL from Social. TODO title.title is it OK? -->
+                        <a href="/portal/intranet/activity?id=???" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title.title}</a>
                       </li>
                       <% } %>
                       <% if (activity.postedDate) { %>
