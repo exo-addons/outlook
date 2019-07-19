@@ -20,7 +20,8 @@
 @Portlet(name = "OutlookPortlet")
 @Bindings({ @Binding(value = OutlookService.class), @Binding(value = OutlookTokenService.class),
     @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class), @Binding(value = IdentityManager.class),
-    @Binding(value = ActivityManager.class), @Binding(value = RelationshipManager.class) })
+    @Binding(value = ActivityManager.class), @Binding(value = RelationshipManager.class),
+    @Binding(value = OrganizationService.class) })
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.css", location = AssetLocation.SERVER),
     @Stylesheet(id = "fabric.components.css", value = "skin/fabric.components.css", location = AssetLocation.SERVER),
@@ -40,6 +41,7 @@ package org.exoplatform.outlook.portlet;
 import org.exoplatform.outlook.OutlookService;
 import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.security.OutlookTokenService;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
