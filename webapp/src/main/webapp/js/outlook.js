@@ -355,8 +355,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				    }
 				    addEmailsIfNotUser(from);
 				    var toCopy = Office.context.mailbox.item.to;
-				    var carbonCopy = Office.context.mailbox.item.cc;
 				    addEmailsIfNotUser(toCopy);
+				    var carbonCopy = Office.context.mailbox.item.cc;
 				    addEmailsIfNotUser(carbonCopy);
 				    loadUserInfo(recipientEmails);
 				  } else {

@@ -1,11 +1,6 @@
 #{param name=users/}
 #{param name=currentUser/} <% /* was userInfo */ %>
 
-<% /* TODO remove use of the below params */ %>
-#{param name=exoSocialActivityMap/}
-#{param name=profileToRelationship/}
-
-
 <div class="ms-Grid-row">
   <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
   <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
@@ -130,26 +125,25 @@
                 class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
                 <% if (user.phones) { %><!-- TODO user.phones -->
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
-                <% user.phones.each { phoneName, phoneNumber -> %>
-                <div class="ms-PersonaCard-detailLine">
-                  <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
-                    class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
-                </div>
-                <% } %>
+                  <% user.phones.each { phoneName, phoneNumber -> %>
+                  <div class="ms-PersonaCard-detailLine">
+                    <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
+                      class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
+                  </div>
+                  <% } %>
                 <% } %>
               </li>
               <li id="video" class="ms-PersonaCard-actionDetails detail-6">
                 <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
                 <div class="ms-PersonaCard-detailLine">
                   <% if (user.links) { %><!-- TODO user.links -->
-                  <% for (link in user.links) { %>
-                  <p>
-                    <a class="ms-Link" href="$link" target="_blank">
-                                            <span class="ms-Icon"><i
-                                              class="ms-Icon ms-Icon--onlineJoin"></i>$link</span>
-                    </a>
-                  </p>
-                  <% } %>
+                    <% for (link in user.links) { %>
+                    <p>
+                      <a class="ms-Link" href="$link" target="_blank">
+                        <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$link</span>
+                      </a>
+                    </p>
+                    <% } %>
                   <% } %>
                   <% if (user.ims) { %><!-- TODO user.ims -->
                   <% for (im in user.ims) { %>
@@ -158,8 +152,7 @@
                     <!-- TODO cleanup after UI refactoring -->
                     <!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
                     <a class="ms-Link" href="skype:$im">
-                                            <span class="ms-Icon"><i
-                                              class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
+                      <span class="ms-Icon"><i class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
                     </a>
                     <% } else { %>
                     <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$im</span>
@@ -176,7 +169,7 @@
                         <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
                             <span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
                         </a>
-                    </p> -->
+                  </p> -->
                 </div>
               </li>
               <li id="mail" class="ms-PersonaCard-actionDetails detail-6">
@@ -197,5 +190,5 @@
       <% } %>
     </div>
     <div class=" ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-          </div>
-        </div>
+  </div>
+</div>

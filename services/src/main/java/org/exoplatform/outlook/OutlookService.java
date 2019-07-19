@@ -45,7 +45,8 @@ public interface OutlookService {
   final String MESSAGE_NODETYPE       = "mso:message";
 
   /**
-   * Build Outlook user object and associate it with current user in eXo organization.
+   * Build Outlook user object and associate it with current user in eXo
+   * organization.
    * 
    * @param email the email
    * @param userName the user name
@@ -55,16 +56,6 @@ public interface OutlookService {
    * @throws RepositoryException storage exception
    */
   OutlookUser getUser(String email, String userName, String ewsUrl) throws OutlookException, RepositoryException;
-  
-  /**
-   * Find Outlook user by email in eXo organization.
-   *
-   * @param email the email
-   * @return {@link OutlookUser} object to access Outlook Mail API
-   * @throws Exception the exception in case of search error
-   */
-  @Deprecated
-  OutlookUser findUserByEmail(String email) throws Exception;
 
   /**
    * Build Outlook Email address object.
@@ -112,27 +103,6 @@ public interface OutlookService {
    * @throws OutlookException when error
    */
   OutlookMessage getMessage(OutlookUser user, String messageId, String messageToken) throws OutlookException;
-
-  /**
-   * Gets the folder.
-   *
-   * @param path the path
-   * @return the folder
-   * @throws OutlookException the outlook exception
-   * @throws RepositoryException the repository exception
-   */
-  Folder getFolder(String path) throws OutlookException, RepositoryException;
-
-  /**
-   * Gets the folder.
-   *
-   * @param parent the parent
-   * @param path the path
-   * @return the folder
-   * @throws OutlookException the outlook exception
-   * @throws RepositoryException the repository exception
-   */
-  Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException;
 
   /**
    * Save attachment.

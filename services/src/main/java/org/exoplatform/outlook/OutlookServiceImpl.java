@@ -33,12 +33,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,14 +68,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.entity.ContentType;
-import org.exoplatform.services.cms.documents.DocumentService;
-import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.wcm.core.NodeLocation;
-import org.exoplatform.social.core.identity.model.Profile;
-import org.exoplatform.social.core.manager.RelationshipManager;
-import org.exoplatform.social.core.relationship.model.Relationship;
-import org.exoplatform.social.plugin.doc.UIDocActivity;
-import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
@@ -120,6 +110,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
+import org.exoplatform.services.cms.documents.DocumentService;
 import org.exoplatform.services.cms.documents.TrashService;
 import org.exoplatform.services.cms.drives.DriveData;
 import org.exoplatform.services.cms.drives.ManageDriveService;
@@ -127,6 +118,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.jcr.core.ManageableRepository;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
@@ -137,13 +129,11 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserProfile;
 import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.services.wcm.core.NodeLocation;
 import org.exoplatform.services.wcm.core.NodetypeConstant;
-import org.exoplatform.social.common.RealtimeListAccess;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.activity.model.ExoSocialActivityImpl;
 import org.exoplatform.social.core.application.PeopleService;
@@ -153,11 +143,14 @@ import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvide
 import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
+import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceUtils;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.plugin.doc.UIDocActivity;
 import org.exoplatform.social.webui.activity.UIDefaultActivity;
+import org.exoplatform.wcm.ext.component.activity.FileUIActivity;
 import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
@@ -172,8 +165,6 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
-
-import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
 
 /**
  * Service implementing {@link OutlookService} and {@link Startable}.<br>
@@ -525,7 +516,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
     /** The social relationship manager. */
     protected final RelationshipManager socialRelationshipManager;
-    
+
     /**
      * Instantiates a new user by given email, display name and username.
      *
@@ -539,18 +530,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       this.socialIdentityManager = socialIdentityManager();
       this.socialActivityManager = socialActivityManager();
       this.socialRelationshipManager = socialRelationshipManager();
-    }
-    
-    /**
-     * Instantiates a new user from eXo organization user.
-     *
-     * @param exoUser the eXo user instance
-     * @throws OutlookException if userName is not valid
-     */
-    @Deprecated
-    protected UserImpl(User exoUser) throws OutlookException {
-      this(exoUser.getEmail(), exoUser.getDisplayName(), exoUser.getUserName());
-      //this.exoUser = exoUser;
     }
 
     /**
@@ -1244,27 +1223,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * {@inheritDoc}
    */
   @Override
-  @Deprecated
-  public Folder getFolder(String path) throws OutlookException, RepositoryException {
-    Node node = node(path);
-    Folder folder = new UserFolder(path, node);
-    return folder;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  @Deprecated
-  public Folder getFolder(Folder parent, String path) throws OutlookException, RepositoryException {
-    Node node = node(path);
-    return new UserFolder(parent, node);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public List<File> saveAttachment(OutlookSpace space,
                                    Folder destFolder,
                                    OutlookUser user,
@@ -1381,19 +1339,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
         }
         return user;
       }
-    }
-    return null;
-  }
-  
-  @Deprecated
-  public OutlookUser findUserByEmail(String email) throws Exception {
-    org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
-    query.setEmail(email);
-    ListAccess<User> res = organization.getUserHandler()
-                                       .findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ENABLED);
-    if (res.getSize() > 0) {
-      User exoUser = res.load(0, 1)[0];
-      return new UserImpl(exoUser);
     }
     return null;
   }
@@ -1566,22 +1511,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     } catch (Exception e) {
       throw new OutlookException("Error reading user's Personal Documents node for " + userName, e);
     }
-  }
-
-  /**
-   * Gets the Map exo users by name *
-   *
-   * @return the Map exo users that contains the user information
-   */
-  @Deprecated
-  public Map<String, String> getUserInfoMap(String name) {
-    try {
-      UserProfile userProfile = organization.getUserProfileHandler().findUserProfileByName(name);
-      return userProfile.getUserInfoMap();
-    } catch (Exception e) {
-      LOG.error("Error searching User Info Map ", e);
-    }
-    return null;
   }
 
   // *********************** testing level **********************

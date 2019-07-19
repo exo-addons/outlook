@@ -1877,7 +1877,6 @@ public class Outlook {
   private RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception {
     Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
     RealtimeListAccess<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity);
-    activity.
     return activity;
   }
 
