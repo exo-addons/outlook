@@ -93,12 +93,11 @@ public class UserInfo {
     return identity.getProfile().getUrl();
   }
 
-  public List<Map<String, String>> getIms() {
+  public Map<String, List<String>> getIms() {
     if (identity.getProfile().getProperty("ims") != null) {
-      return (List<Map<String, String>>) identity.getProfile().getProperty("ims");
-    } else {
-      return null;
+      //return (List<Map<String, String>>) identity.getProfile().getProperty("ims");
     }
+    return null;
   }
 
   public List<String> getLinks() {
@@ -106,12 +105,11 @@ public class UserInfo {
     return null;
   }
 
-  public List<Map<String, String>> getPhones() {
+  public Map<String, List<String>> getPhones() {
     if (identity.getProfile().getPhones() != null) {
-      return identity.getProfile().getPhones();
-    } else {
-      return null;
+      //return identity.getProfile().getPhones();
     }
+    return null;
   }
 
 }
