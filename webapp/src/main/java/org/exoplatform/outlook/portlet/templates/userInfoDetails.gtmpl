@@ -15,8 +15,9 @@
             <i class="ms-Icon ms-Icon--person"></i>
           </div>
           <div class="ms-MessageBar-text">
+            &{Outlook.notUser}<br>
             <!-- TODO get link to Connections from the Navigation API -->
-            &{Outlook.notUser} <br><a href="/portal/intranet/connexions" class="ms-Link" target="_blank">&{Outlook.linkConnexions}</a>
+            <a href="/portal/intranet/connexions" class="ms-Link" target="_blank">&{Outlook.linkConnexions}</a>
           </div>
         </div>
       </div>
@@ -31,7 +32,7 @@
                 <div class="ms-Persona-initials ms-Persona-initials--purple">
                   ${user.firstName.substring(0,1)}${user.lastName.substring(0,1)}
                 </div>
-                <img class="ms-Persona-image" src="${user.avatarUrl}"> <!-- TODO was in profile -->
+                <img class="ms-Persona-image" src="${user.avatarUrl}">
               </div>
               <div class="ms-Persona-details">
                 <div class="ms-Persona-primaryText">${user.displayName}</div>
@@ -47,8 +48,7 @@
             <li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
             <li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i></li>
             <!-- TODO move title text to i18n bundle -->
-            <li class="ms-PersonaCard-overflow" alt="View profile in eXo"
-                title="&{Outlook.openProfileInIntranet}">
+            <li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="&{Outlook.openProfileInIntranet}">
               <!-- TODO profileLink take from profile.url -->
               <a href="${user.profileLink}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
             </li>
@@ -56,7 +56,7 @@
           <div class="ms-PersonaCard-actionDetailBox">
             <ul id="detailList" class="ms-PersonaCard-detailChat">
               <li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
-                <!-- TODO we need keep last 20 user activities in UserInfo class and get them as collection here for rendering  -->
+                <!-- TODO we need keep last 20 user activities in UserInfo class and get them as collection here for rendering -->
                 <!-- Get rid of userInfo and collections to read activities here -->
                 <!-- Each activity should have already an URL and date formatted in user locale as TODOed below -->
                 <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
@@ -69,7 +69,8 @@
                       <% if (activity.title) { %>
                       <li class="activity-title">
                         <!-- TODO Get activity URL from Social. TODO title.title is it OK? -->
-                        <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title}</a>
+                        <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">
+                        ${activity.title}</a>
                       </li>
                       <% } %>
                       <% if (activity.postedDate) { %>
@@ -86,27 +87,29 @@
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
                       <!-- TODO user.connections return list of Identity -->
-                      <% for ( conn in user.connections ) {%>
+                      <% for (conn in user.connections) {%>
                       <li class="ms-OrgChart-listItem">
                         <div class="ms-Persona">
                           <div class="ms-Persona-imageArea">
                             <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
-                              <font style="vertical-align: inherit;"><font
-                                style="vertical-align: inherit;">
-                                ${conn.getProfile().getProperty("firstName")}${conn.getProfile().getProperty("lastName")}</font></font>
+                              <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                                ${conn.getProfile().getProperty("firstName")}${conn.getProfile().getProperty("lastName")}</font>
+                              </font>
                             </div>
                             <img class="ms-Persona-image" src="${conn.profile.avatarUrl.value}">
                           </div>
                           <div class="ms-Persona-details">
                             <div class="ms-Persona-primaryText">
-                              <font style="vertical-align: inherit;"> <a
-                                href="${conn.profile.url.value}" class="ms-Link" target="_blank">${conn.getProfile().getProperty("fullName")}</a>
+                              <font style="vertical-align: inherit;">
+                                <a href="${conn.profile.url.value}" class="ms-Link" target="_blank">
+                                  ${conn.fullName)}
+                                </a>
                               </font>
                             </div>
                             <%if (conn.getProfile().getProperty("aboutMe")) { %>
                             <div class="ms-Persona-secondaryText">
                               <font style="vertical-align: inherit;"> <font
-                                style="vertical-align: inherit;">${conn.getProfile().getProperty("aboutMe")}</font>
+                                style="vertical-align: inherit;">${conn.aboutMe}</font>
                               </font>
                             </div>
                             <% } %>
@@ -118,11 +121,11 @@
                   </div>
                 </div>
               </li>
-              <li id="phone" class="ms-PersonaCard-actionDetails detail-6"><span
-                class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
-                <% if (user.phones) { %><!-- TODO user.phones -->
+              <li id="phone" class="ms-PersonaCard-actionDetails detail-6">
+                <span class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
-                <% for ( phone in user.phones ) {%>
+                <% if (user.phones) { %>
+                  <% for (phone in user.phones) {%>
                   <div class="ms-PersonaCard-detailLine">
                     <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
                       class="ms-Icon ms-Icon--phone"></i>${phone.get("key")} ${phone.get("value")}</span>

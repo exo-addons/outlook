@@ -35,17 +35,19 @@ import java.util.Map;
  */
 public class UserInfo {
 
-  private final User     orgUser;
+  private final User               orgUser;
 
-  private final Identity identity;
+  private final Identity           identity;
 
   private final List<ActivityInfo> activities;
 
   /**
    * Instantiates a new user info.
+   * 
    * @param orgUser the org user
    * @param identity the identity
-   * @param activities list of social activities of the user that includes the link, type and postedDate
+   * @param activities list of social activities of the user that includes the
+   *          link, type and postedDate
    */
   public UserInfo(User orgUser, Identity identity, List<ActivityInfo> activities) {
     this.orgUser = orgUser;
@@ -69,7 +71,7 @@ public class UserInfo {
     return identity.getProfile().getPosition();
   }
 
-  public List<ActivityInfo> getActyvities(){
+  public List<ActivityInfo> getActivities() {
     return activities;
   }
 
@@ -77,36 +79,35 @@ public class UserInfo {
     return orgUser.getEmail().toLowerCase();
   }
 
-  public String getAvatarUrl(){
+  public String getAvatarUrl() {
     return identity.getProfile().getAvatarUrl();
   }
 
-  public List<Identity> getConnections(){
+  public List<Identity> getConnections() {
     List<Identity> identitiList = new ArrayList<>();
     identitiList.add(identity);
     return identitiList;
   }
 
-  public String getProfileLink(){
+  public String getProfileLink() {
     return identity.getProfile().getUrl();
   }
 
-
   public List<Map<String, String>> getIms() {
-    if (identity.getProfile().getProperty("ims") != null){
+    if (identity.getProfile().getProperty("ims") != null) {
       return (List<Map<String, String>>) identity.getProfile().getProperty("ims");
     } else {
       return null;
     }
   }
 
-  public List<String> getLinks(){
-    //what is it "links"????
+  public List<String> getLinks() {
+    // what is it "links"????
     return null;
   }
 
   public List<Map<String, String>> getPhones() {
-    if (identity.getProfile().getPhones() != null){
+    if (identity.getProfile().getPhones() != null) {
       return identity.getProfile().getPhones();
     } else {
       return null;
