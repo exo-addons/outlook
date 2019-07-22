@@ -69,7 +69,7 @@
                       <% if (activity.title) { %>
                       <li class="activity-title">
                         <!-- TODO Get activity URL from Social. TODO title.title is it OK? -->
-                        <a href="/portal/intranet/activity?id=???" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title.title}</a>
+                        <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link " target="_blank">${activity.title}</a>
                       </li>
                       <% } %>
                       <% if (activity.postedDate) { %>
@@ -86,27 +86,27 @@
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
                       <!-- TODO user.connections return list of Identity -->
-                      <% for (conn in user.connections) {%>
+                      <% for ( conn in user.connections ) {%>
                       <li class="ms-OrgChart-listItem">
                         <div class="ms-Persona">
                           <div class="ms-Persona-imageArea">
                             <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
                               <font style="vertical-align: inherit;"><font
                                 style="vertical-align: inherit;">
-                                ${conn.firstName.substring(0,1)}${conn.lastName.substring(0,1)}</font></font>
+                                ${conn.getProfile().getProperty("firstName")}${conn.getProfile().getProperty("lastName")}</font></font>
                             </div>
-                            <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                            <img class="ms-Persona-image" src="${conn.profile.avatarUrl.value}">
                           </div>
                           <div class="ms-Persona-details">
                             <div class="ms-Persona-primaryText">
                               <font style="vertical-align: inherit;"> <a
-                                href="${conn.url}" class="ms-Link" target="_blank">${conn.fullName}</a>
+                                href="${conn.profile.url.value}" class="ms-Link" target="_blank">${conn.getProfile().getProperty("fullName")}</a>
                               </font>
                             </div>
-                            <%if (conn.aboutMe) { %>
+                            <%if (conn.getProfile().getProperty("aboutMe")) { %>
                             <div class="ms-Persona-secondaryText">
                               <font style="vertical-align: inherit;"> <font
-                                style="vertical-align: inherit;">${conn.aboutMe}</font>
+                                style="vertical-align: inherit;">${conn.getProfile().getProperty("aboutMe")}</font>
                               </font>
                             </div>
                             <% } %>
@@ -122,10 +122,10 @@
                 class="ms-PersonaCard-detailLabel">&{Outlook.telephone}</span>
                 <% if (user.phones) { %><!-- TODO user.phones -->
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
-                  <% user.phones.each { phoneName, phoneNumber -> %>
+                <% for ( phone in user.phones ) {%>
                   <div class="ms-PersonaCard-detailLine">
                     <span class="ms-phone"> <!-- TODO do a right markup/style for person phone UI --> <i
-                      class="ms-Icon ms-Icon--phone"></i>$phoneName $phoneNumber</span>
+                      class="ms-Icon ms-Icon--phone"></i>${phone.get("key")} ${phone.get("value")}</span>
                   </div>
                   <% } %>
                 <% } %>
@@ -145,14 +145,14 @@
                   <% if (user.ims) { %><!-- TODO user.ims -->
                   <% for (im in user.ims) { %>
                   <p>
-                    <% if (im.toLowerCase().startsWith("skype")) {%>
+                    <% if (im.get("key").equals("skype")) {%>
                     <!-- TODO cleanup after UI refactoring -->
                     <!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
-                    <a class="ms-Link" href="skype:$im">
-                      <span class="ms-Icon"><i class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>$im</span>
+                    <a class="ms-Link" href='skype:$im.get("skype")'>
+                      <span class="ms-Icon"><i class="ms-Icon uiIconSocSkype uiIconSocLightGray"></i>${im.get("value")}</span>
                     </a>
                     <% } else { %>
-                    <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>$im</span>
+                    <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>${im.get("value")}</span>
                     <!-- TODO Check the WebConferencing function is enabled in the platform-->
                     <!-- a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
                       <span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
@@ -162,11 +162,7 @@
                   <% } %>
                   <% } %>
                   <!-- TODO Check the Chat function is enabled in the platform' -->
-                  <!-- <p>
-                        <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
-                            <span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-                        </a>
-                  </p> -->
+Ghb
                 </div>
               </li>
               <li id="mail" class="ms-PersonaCard-actionDetails detail-6">

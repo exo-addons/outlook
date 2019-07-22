@@ -20,10 +20,8 @@ package org.exoplatform.outlook.portlet;
 
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.social.core.identity.model.Profile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +74,11 @@ public class UserInfo {
   }
 
   public String getEmail() {
-    return orgUser.getEmail();
+    return orgUser.getEmail().toLowerCase();
+  }
+
+  public String getAvatarUrl(){
+    return identity.getProfile().getAvatarUrl();
   }
 
   public List<Identity> getConnections(){
@@ -89,25 +91,26 @@ public class UserInfo {
     return identity.getProfile().getUrl();
   }
 
-  //*****************************************************
+
   public List<Map<String, String>> getIms() {
-    //List<Map<String, String>> property = (List<Map<String, String>>) identity.getProfile().getProperty("ims");
-    return null;
+    if (identity.getProfile().getProperty("ims") != null){
+      return (List<Map<String, String>>) identity.getProfile().getProperty("ims");
+    } else {
+      return null;
+    }
   }
 
   public List<String> getLinks(){
+    //what is it "links"????
     return null;
   }
 
-  public Map<String, String> getPhones() {
-    Map<String, String> phones = new HashMap<>();
-    identity.getProfile().getPhones().forEach(phones::putAll);
-    return phones;
-  }
-
-  @Deprecated // TODO remove it, everything required should be exposed via this class methods
-  public Profile getProfile() {
-    return identity.getProfile();
+  public List<Map<String, String>> getPhones() {
+    if (identity.getProfile().getPhones() != null){
+      return identity.getProfile().getPhones();
+    } else {
+      return null;
+    }
   }
 
 }
