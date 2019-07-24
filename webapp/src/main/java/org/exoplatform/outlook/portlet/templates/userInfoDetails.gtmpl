@@ -88,7 +88,7 @@
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
                       <!-- TODO user.connections return list of Identity -->
-                      <% for (conn in user.connections) {%>
+                      <% for (conn in user.connections) { %>
                       <li class="ms-OrgChart-listItem">
                         <div class="ms-Persona">
                           <div class="ms-Persona-imageArea">
@@ -107,12 +107,12 @@
                                 </a>
                               </font>
                             </div>
-                            <%if (conn.aboutMe) { %>
-                            <div class="ms-Persona-secondaryText">
-                              <font style="vertical-align: inherit;"> <font
-                                style="vertical-align: inherit;">${conn.getAboutMe()}</font>
-                              </font>
-                            </div>
+                            <% if (conn.getAboutMe()) { %>
+                              <div class="ms-Persona-secondaryText">
+                                <font style="vertical-align: inherit;"> <font
+                                  style="vertical-align: inherit;">${conn.getAboutMe()}</font>
+                                </font>
+                              </div>
                             <% } %>
                           </div>
                         </div>
@@ -159,7 +159,7 @@
                     <% for (link in user.links) { %>
                     <p>
                       <a class="ms-Link" href="${link}" target="_blank">
-                        <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>${lik}</span>
+                        <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>${link}</span>
                       </a>
                     </p>
                     <% } %>
