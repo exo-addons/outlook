@@ -22,6 +22,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import java.util.Map;
  * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
  * @version $Id: UserInfo.java 00000 Jul 16, 2019 pnedonosko $
  */
-public class UserInfo {
+public class UserInfo extends IdentityInfo {
 
   private final User               orgUser;
 
@@ -41,18 +42,22 @@ public class UserInfo {
 
   private final List<ActivityInfo> activities;
 
+  private final List<IdentityInfo> connections;
+
   /**
    * Instantiates a new user info.
-   * 
    * @param orgUser the org user
    * @param identity the identity
    * @param activities list of social activities of the user that includes the
-   *          link, type and postedDate
+   * @param connections list of social connections of the user that includes the
    */
-  public UserInfo(User orgUser, Identity identity, List<ActivityInfo> activities) {
+
+  public UserInfo(User orgUser, Identity identity, List<ActivityInfo> activities, List<IdentityInfo> connections) {
+    super(identity);
     this.orgUser = orgUser;
     this.identity = identity;
     this.activities = activities;
+    this.connections = connections;
   }
 
   public String getFirstName() {
@@ -67,10 +72,6 @@ public class UserInfo {
     return orgUser.getDisplayName();
   }
 
-  public String getPosition() {
-    return identity.getProfile().getPosition();
-  }
-
   public List<ActivityInfo> getActivities() {
     return activities;
   }
@@ -79,37 +80,20 @@ public class UserInfo {
     return orgUser.getEmail().toLowerCase();
   }
 
+  public List<IdentityInfo> getConnections() {
+    return connections;
+  }
+
+  public String getPosition() {
+    return identity.getProfile().getPosition();
+  }
+
   public String getAvatarUrl() {
     return identity.getProfile().getAvatarUrl();
   }
 
-  public List<Identity> getConnections() {
-    List<Identity> identitiList = new ArrayList<>();
-    identitiList.add(identity);
-    return identitiList;
-  }
-
   public String getProfileLink() {
     return identity.getProfile().getUrl();
-  }
-
-  public Map<String, List<String>> getIms() {
-    if (identity.getProfile().getProperty("ims") != null) {
-      //return (List<Map<String, String>>) identity.getProfile().getProperty("ims");
-    }
-    return null;
-  }
-
-  public List<String> getLinks() {
-    // what is it "links"????
-    return null;
-  }
-
-  public Map<String, List<String>> getPhones() {
-    if (identity.getProfile().getPhones() != null) {
-      //return identity.getProfile().getPhones();
-    }
-    return null;
   }
 
 }

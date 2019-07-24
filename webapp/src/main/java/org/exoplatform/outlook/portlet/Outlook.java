@@ -1175,6 +1175,7 @@ public class Outlook {
                                                                                  currentUsername,
                                                                                  true);
         if (currentUserIdentity != null) {
+
           for (String email : byEmail.split(",")) {
             User user = findUserByEmail(email.toLowerCase());
             if (user != null) {
@@ -1185,14 +1186,22 @@ public class Outlook {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   List<ActivityInfo> activities = new ArrayList<>();
+                  List<IdentityInfo> connectionList = new ArrayList<>();
                   List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity)
                                                                           .loadAsList(0, 20);
+                  for (Relationship relationship: getRelationships(username)) {
+                    if(!relationship.getSender().getRemoteId().equals(username)){
+                      connectionList.add(new IdentityInfo(relationship.getSender()));
+                    }else{
+                      connectionList.add(new IdentityInfo(relationship.getReceiver()));
+                    }
+                  }
                   // TODO Get activity URL from Social
                   activity.forEach(o -> activities.add(new ActivityInfo(o.getTitle(),
                                                                         o.getType(),
                                                                         "/portal/intranet/activity?id=" + o.getId(),
                                                                         o.getPostedTime())));
-                  users.add(new UserInfo(user, userIdentity, activities));
+                  users.add(new UserInfo(user, userIdentity, activities, connectionList));
                   
                   //usersInfoMap.put(username, outlook.getUserInfoMap(username));
                   //List<Relationship> userGetRelationships = exoUser.getRelationships(username);
