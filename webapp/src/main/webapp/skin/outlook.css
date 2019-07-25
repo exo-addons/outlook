@@ -3,6 +3,14 @@ body {
   padding: 0;
 }
 
+.ms-Persona-initials.ms-Persona-initials--darkBlue {
+  width: 48px;
+}
+
+.ms-personaCard-actionDetails {
+  padding: 9px 10px;
+}
+
 .logoIcon* {
   display: inline-block;
 }
@@ -457,7 +465,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   text-align: right;
   overflow: hidden;
   position: absolute;
-  right: 5px;
+  right: -10px;
   font-size: 11px;
   width: 80px;
   bottom: 10px;
