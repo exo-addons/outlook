@@ -169,8 +169,6 @@
                       <% if (imName.equals("skype")) { %>
                         <% for (im in imValue) { %>
                           <p>
-                            <!-- TODO cleanup after UI refactoring -->
-                            <!-- i class="uiIconSocSkype uiIconSocLightGray"></i><a class="ms-Link" href="skype:$im">$im</a -->
                             <a class="ms-Link" href="skype:${imName}">
                               <span class="ms-Icon">${imName}<i class="ms-Icon uiIconSocSkype uiIconSocLightGray">${im}</i></span>
                             </a>
@@ -180,21 +178,11 @@
                         <% for (im in imValue) { %>
                           <p>
                             <span class="ms-Icon">${imName}<i class="ms-Icon ms-Icon--onlineJoin">${im}</i></span>
-                            <!-- TODO Check the WebConferencing function is enabled in the platform-->
-                            <!-- a class="ms-Link" href="/webrtc/call/p/${nameOwner}@${user.userName}" target="_blank">
-                              <span class="callTitle"><i class="uiIcon callButtonIconVideo uiIconLightGray"></i> &{Outlook.vchat}</span>
-                            </a -->
                           </p>
                         <% } %>
                       <% } %>
                     <% } %>
                   <% } %>
-                  <!-- TODO Check the Chat function is enabled in the platform -->
-                  <!-- <p>
-                        <a onclick="document.dispatchEvent(new CustomEvent('exo-chat-room-open-requested', {detail: {name: '${user.userName}', type: 'username'}}))" class="ms-Link" href="/portal/intranet/chat" target="_blank">
-                            <span class="chat-label-status"><i class="uiIconBannerChat"></i> &nbsp;&{Outlook.chat}</span>
-                        </a>
-                    </p> -->
                 </div>
               </li>
               <li id="mail" class="ms-PersonaCard-actionDetails detail-6">
