@@ -12,10 +12,6 @@ body {
   line-height: 23px;
 }
 
-.ms-PersonaCard-detailLine-phone .ms-phone{
-  margin: 0 0 0 54px;
-}
-
 .ms-personaCard-actionDetails {
   padding: 9px 10px;
 }
@@ -24,6 +20,20 @@ body {
   overflow-x: auto;
 }
 
+.ims-table {
+  table-layout: fixed;
+}
+.ims-table-col1 {
+  width: 70px;
+}
+
+.ims-table-col2 {
+  width: 150px;
+}
+
+.ims-table td {
+  vertical-align: top;
+}
 .logoIcon* {
   display: inline-block;
 }

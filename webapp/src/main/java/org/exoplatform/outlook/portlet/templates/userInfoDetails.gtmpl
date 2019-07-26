@@ -129,67 +129,149 @@
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
                 <% if (user.isPhoneNumberPresent()) { %>
                   <% if (user.getWorkPhones()) { %>
-                    <div class="ms-PersonaCard-detailLine">
-                      <i class="ms-Icon ms-Icon--phone">work:</i>
-                    </div>
-                    <% for (phone in user.getWorkPhones()) {%>
-                      <div class="ms-PersonaCard-detailLine-phone">
-                        <span class="ms-phone"> ${phone}</span>
-                      </div>
+                    <table class="ims-table">
+                      <col class="ims-table-col1">
+                      <col class="ims-table-col2">
+                      <tr>
+                        <td><i class="ms-Icon ms-Icon--phone">Work:</i></td>
+                        <td>
+                          <% for (phone in user.getWorkPhones()) { %>
+                          <div class="ms-PersonaCard-detailLine-phone">
+                            <span class="ms-phone"> ${phone}</span>
+                          </div>
+                          <% } %>
+                        </td>
+                      </tr>
+                    </table>
                   <% } %>
-                <% } %>
                   <% if (user.getHomePhones()) { %>
-                  <div class="ms-PersonaCard-detailLine">
-                    <i class="ms-Icon ms-Icon--phone">home:</i>
-                  </div>
-                    <% for (phone in user.getHomePhones()) {%>
-                      <div class="ms-PersonaCard-detailLine-phone">
-                        <span class="ms-phone"> ${phone}</span>
-                      </div>
-                    <% } %>
+                    <table class="ims-table">
+                      <col class="ims-table-col1">
+                      <col class="ims-table-col2">
+                      <tr>
+                        <td><i class="ms-Icon ms-Icon--phone">Home:</i></td>
+                        <td>
+                          <% for (phone in user.getHomePhones()) { %>
+                          <div class="ms-PersonaCard-detailLine-phone">
+                            <span class="ms-phone"> ${phone}</span>
+                          </div>
+                          <% } %>
+                        </td>
+                      </tr>
+                    </table>
                   <% } %>
                   <% if (user.getOtherPhones()) { %>
-                  <div class="ms-PersonaCard-detailLine">
-                    <i class="ms-Icon ms-Icon--phone">other:</i>
-                  </div>
-                    <% for (phone in user.getOtherPhones()) {%>
-                      <div class="ms-PersonaCard-detailLine-phone">
-                        <span class="ms-phone"> ${phone}</span>
-                      </div>
-                    <% } %>
+                    <table class="ims-table">
+                      <col class="ims-table-col1">
+                      <col class="ims-table-col2">
+                      <tr>
+                        <td><i class="ms-Icon ms-Icon--phone">Other:</i></td>
+                        <td>
+                          <% for (phone in user.getOtherPhones()) { %>
+                          <div class="ms-PersonaCard-detailLine-phone">
+                            <span class="ms-phone"> ${phone}</span>
+                          </div>
+                          <% } %>
+                        </td>
+                      </tr>
+                    </table>
                   <% } %>
                 <% } %>
               </li>
               <li id="video" class="ms-PersonaCard-actionDetails detail-6">
                 <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
                 <div class="ms-PersonaCard-detailLine">
-                  <% if (user.links) { %><!-- TODO user.links -->
-                    <% for (link in user.links) { %>
-                    <p>
-                      <a class="ms-Link" href="${link}" target="_blank">
-                        <span class="ms-Icon"><i class="ms-Icon ms-Icon--onlineJoin"></i>${link}</span>
-                      </a>
-                    </p>
-                    <% } %>
-                  <% } %>
                   <% if (user.getIms()) { %><!-- TODO user.ims -->
                     <% user.getIms().each { imName, imValue -> %>
                       <% if (imName.equals("skype")) { %>
-                        <% for (im in imValue) { %>
-                          <p>
-                            <a class="ms-Link" href="skype:${imName}">
-                              <span class="ms-Icon">${imName} <i class="ms-Icon uiIconSocSkype uiIconSocLightGray"> ${im}</i></span>
-                            </a>
-                          </p>
-                        <% } %>
-                      <% } else { %>
-                        <% for (im in imValue) { %>
-                          <p>
-                            <span class="ms-Icon">${imName} <i class="ms-Icon ms-Icon--onlineJoin"> ${im}</i></span>
-                          </p>
-                        <% } %>
+                        <table class="ims-table">
+                          <col class="ims-table-col1">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><span class="ms-Icon"><i class="uiIconSocSkype uiIconSocLightGray"></i> Skype:</span></td>
+                            <td>
+                              <% for (im in imValue) { %>
+                                <div>
+                                  <a class="ms-Link" href="skype:${imName}">
+                                    <span class="ms-Icon">${im}</i></span>
+                                  </a>
+                                </div>
+                              <% } %>
+                            </td>
+                          </tr>
+                        </table>
+                      <% } %>
+                      <% if (imName.equals("gtalk")) { %>
+                        <table class="ims-table">
+                          <col class="ims-table-col1">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><span class="ms-Icon"><i class="uiIconSocGtalk uiIconSocLightGray"></i> Gtalk:</span></td>
+                            <td>
+                              <% for (im in imValue) { %>
+                              <div><span class="ms-Icon">${im}</span></div>
+                              <% } %>
+                            </td>
+                          </tr>
+                        </table>
+                      <% } %>
+                      <% if (imName.equals("yahoo")) { %>
+                        <table class="ims-table">
+                          <col class="ims-table-col1">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><span class="ms-Icon"><i class="uiIconSocYahoo uiIconSocLightGray"></i> Yahoo:</span><td>
+                              <% for (im in imValue) { %>
+                              <div><span class="ms-Icon">${im}</span></div>
+                              <% } %>
+                            </td>
+                          </tr>
+                        </table>
+                      <% } %>
+                      <% if (imName.equals("other")) { %>
+                        <table class="ims-table">
+                          <col class="ims-table-col1">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><span class="ms-Icon"><i class="uiIconSocOther uiIconSocLightGray"></i> Other:</span><td>
+                            <% for (im in imValue) { %>
+                            <div><span class="ms-Icon">${im}</span></div>
+                            <% } %>
+                          </td>
+                          </tr>
+                        </table>
+                      <% } %>
+                      <% if (imName.equals("msn")) { %>
+                        <table class="ims-table">
+                          <col class="ims-table-col1">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><span class="ms-Icon"><i class="uiIconSocMsn uiIconSocLightGray"></i> Msn:</span><td>
+                            <% for (im in imValue) { %>
+                            <div><span class="ms-Icon">${im}</span></div>
+                            <% } %>
+                          </td>
+                          </tr>
+                        </table>
                       <% } %>
                     <% } %>
+                  <% } %>
+                  <% if (user.links) { %><!-- TODO user.links -->
+                    <table class="ims-table">
+                      <col class="ims-table-col1">
+                      <col class="ims-table-col2">
+                      <tr>
+                        <td><span><i class="ms-Icon ms-Icon--onlineJoin"></i> URL:</span><td>
+                        <% for (link in user.links) { %>
+                        <div>
+                          <a class="ms-Link" href="${link}" target="_blank">
+                            <span class="ms-Icon">${link}</span>
+                          </a>
+                        </div>
+                        <% } %>
+                      </td>
+                      </tr>
+                    </table>
                   <% } %>
                 </div>
               </li>
