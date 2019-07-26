@@ -36,7 +36,9 @@
               </div>
               <div class="ms-Persona-details">
                 <div class="ms-Persona-primaryText">${user.displayName}</div>
-                <div class="ms-Persona-secondaryText">${user.position}</div>
+                <% if (user.position) { %>
+                  <div class="ms-Persona-secondaryText">${user.position}</div>
+                <% } %>
               </div>
             </div>
           </div>
@@ -102,7 +104,7 @@
                           <div class="ms-Persona-details">
                             <div class="ms-Persona-primaryText">
                               <font style="vertical-align: inherit;">
-                                <a href="${conn.getAvatarUrl()}" class="ms-Link" target="_blank">
+                                <a href="${conn.getUrl()}" class="ms-Link" target="_blank">
                                   ${conn.getFirstName()}
                                 </a>
                               </font>
@@ -127,26 +129,32 @@
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
                 <% if (user.isPhoneNumberPresent()) { %>
                   <% if (user.getWorkPhones()) { %>
+                    <div class="ms-PersonaCard-detailLine">
+                      <i class="ms-Icon ms-Icon--phone">work:</i>
+                    </div>
                     <% for (phone in user.getWorkPhones()) {%>
-                      <div class="ms-PersonaCard-detailLine">
-                        <span class="ms-phone">
-                          <i class="ms-Icon ms-Icon--phone">work:</i> ${phone}</span>
+                      <div class="ms-PersonaCard-detailLine-phone">
+                        <span class="ms-phone"> ${phone}</span>
                       </div>
-                    <% } %>
                   <% } %>
+                <% } %>
                   <% if (user.getHomePhones()) { %>
+                  <div class="ms-PersonaCard-detailLine">
+                    <i class="ms-Icon ms-Icon--phone">home:</i>
+                  </div>
                     <% for (phone in user.getHomePhones()) {%>
-                      <div class="ms-PersonaCard-detailLine">
-                        <span class="ms-phone">
-                          <i class="ms-Icon ms-Icon--phone">home:</i> ${phone}</span>
+                      <div class="ms-PersonaCard-detailLine-phone">
+                        <span class="ms-phone"> ${phone}</span>
                       </div>
                     <% } %>
                   <% } %>
                   <% if (user.getOtherPhones()) { %>
+                  <div class="ms-PersonaCard-detailLine">
+                    <i class="ms-Icon ms-Icon--phone">other:</i>
+                  </div>
                     <% for (phone in user.getOtherPhones()) {%>
-                      <div class="ms-PersonaCard-detailLine">
-                        <span class="ms-phone">
-                          <i class="ms-Icon ms-Icon--phone">other:</i> ${phone}</span>
+                      <div class="ms-PersonaCard-detailLine-phone">
+                        <span class="ms-phone"> ${phone}</span>
                       </div>
                     <% } %>
                   <% } %>
@@ -170,14 +178,14 @@
                         <% for (im in imValue) { %>
                           <p>
                             <a class="ms-Link" href="skype:${imName}">
-                              <span class="ms-Icon">${imName}<i class="ms-Icon uiIconSocSkype uiIconSocLightGray">${im}</i></span>
+                              <span class="ms-Icon">${imName} <i class="ms-Icon uiIconSocSkype uiIconSocLightGray"> ${im}</i></span>
                             </a>
                           </p>
                         <% } %>
                       <% } else { %>
                         <% for (im in imValue) { %>
                           <p>
-                            <span class="ms-Icon">${imName}<i class="ms-Icon ms-Icon--onlineJoin">${im}</i></span>
+                            <span class="ms-Icon">${imName} <i class="ms-Icon ms-Icon--onlineJoin"> ${im}</i></span>
                           </p>
                         <% } %>
                       <% } %>

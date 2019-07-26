@@ -31,6 +31,10 @@ public class IdentityInfo {
         return (String) identity.getProfile().getProperty("aboutMe");
     }
 
+    public String getUrl(){
+        return identity.getProfile().getUrl();
+    }
+
     public String getPosition() {
         return identity.getProfile().getPosition();
     }
