@@ -130,10 +130,10 @@
                 <% if (user.isPhoneNumberPresent()) { %>
                   <% if (user.getWorkPhones()) { %>
                     <table class="ims-table">
-                      <col class="ims-table-col1">
+                      <col class="ims-table-col3">
                       <col class="ims-table-col2">
                       <tr>
-                        <td><i class="ms-Icon ms-Icon--phone">Work:</i></td>
+                        <td><i class="ms-Icon ms-Icon--phone"></i>Work:</td>
                         <td>
                           <% for (phone in user.getWorkPhones()) { %>
                           <div class="ms-PersonaCard-detailLine-phone">
@@ -146,10 +146,10 @@
                   <% } %>
                   <% if (user.getHomePhones()) { %>
                     <table class="ims-table">
-                      <col class="ims-table-col1">
+                      <col class="ims-table-col3">
                       <col class="ims-table-col2">
                       <tr>
-                        <td><i class="ms-Icon ms-Icon--phone">Home:</i></td>
+                        <td><i class="ms-Icon ms-Icon--phone"></i>Home:</td>
                         <td>
                           <% for (phone in user.getHomePhones()) { %>
                           <div class="ms-PersonaCard-detailLine-phone">
@@ -162,10 +162,10 @@
                   <% } %>
                   <% if (user.getOtherPhones()) { %>
                     <table class="ims-table">
-                      <col class="ims-table-col1">
+                      <col class="ims-table-col3">
                       <col class="ims-table-col2">
                       <tr>
-                        <td><i class="ms-Icon ms-Icon--phone">Other:</i></td>
+                        <td><i class="ms-Icon ms-Icon--phone"></i>Other:</td>
                         <td>
                           <% for (phone in user.getOtherPhones()) { %>
                           <div class="ms-PersonaCard-detailLine-phone">
@@ -188,12 +188,12 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><span class="ms-Icon"><i class="uiIconSocSkype uiIconSocLightGray"></i> Skype:</span></td>
+                            <td><i class="uiIconSocSkype uiIconSocLightGray"></i> Skype:</td>
                             <td>
                               <% for (im in imValue) { %>
                                 <div>
                                   <a class="ms-Link" href="skype:${imName}">
-                                    <span class="ms-Icon">${im}</i></span>
+                                    ${im}
                                   </a>
                                 </div>
                               <% } %>
@@ -206,10 +206,10 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><span class="ms-Icon"><i class="uiIconSocGtalk uiIconSocLightGray"></i> Gtalk:</span></td>
+                            <td><i class="uiIconSocGtalk uiIconSocLightGray"></i> Gtalk:</td>
                             <td>
                               <% for (im in imValue) { %>
-                              <div><span class="ms-Icon">${im}</span></div>
+                              <div>${im}</div>
                               <% } %>
                             </td>
                           </tr>
@@ -220,9 +220,9 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><span class="ms-Icon"><i class="uiIconSocYahoo uiIconSocLightGray"></i> Yahoo:</span><td>
+                            <td><i class="uiIconSocYahoo uiIconSocLightGray"></i> Yahoo:<td>
                               <% for (im in imValue) { %>
-                              <div><span class="ms-Icon">${im}</span></div>
+                              <div>${im}</div>
                               <% } %>
                             </td>
                           </tr>
@@ -233,9 +233,9 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><span class="ms-Icon"><i class="uiIconSocOther uiIconSocLightGray"></i> Other:</span><td>
+                            <td><i class="uiIconSocOther uiIconSocLightGray"></i> Other:<td>
                             <% for (im in imValue) { %>
-                            <div><span class="ms-Icon">${im}</span></div>
+                            <div>${im}</div>
                             <% } %>
                           </td>
                           </tr>
@@ -246,9 +246,9 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><span class="ms-Icon"><i class="uiIconSocMsn uiIconSocLightGray"></i> Msn:</span><td>
+                            <td><i class="uiIconSocMsn uiIconSocLightGray"></i> Msn:<td>
                             <% for (im in imValue) { %>
-                            <div><span class="ms-Icon">${im}</span></div>
+                            <div>${im}</div>
                             <% } %>
                           </td>
                           </tr>

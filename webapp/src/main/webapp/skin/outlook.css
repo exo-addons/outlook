@@ -23,8 +23,13 @@ body {
 .ims-table {
   table-layout: fixed;
 }
+
 .ims-table-col1 {
   width: 70px;
+}
+
+.ims-table-col3 {
+  width: 50px;
 }
 
 .ims-table-col2 {
@@ -491,7 +496,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   right: -10px;
   font-size: 11px;
   width: 80px;
-  bottom: 10px;
+  bottom: 0px;
   z-index: 1;
 }
 
@@ -509,9 +514,9 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   background: #ffffff;
   border: 1px double white;
   text-align: left;
-  height: 30px;
+  height: 25px;
   position: relative;
-  padding: 5px;
+  padding: 0px;
 }
 
 .activity:hover {
@@ -597,6 +602,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .ms-PersonaCard-detailChat .detail-6, .ms-PersonaCard-detailOrg .detail-6 {
   max-height: 320px;
   transition: max-height 0.25s ease;
+  padding: 9px 20px 9px 0;
+  width: 20.5%;
 }
 
 .ms-PersonaCard-actionDetailBox {
