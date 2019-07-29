@@ -327,7 +327,7 @@ public class Outlook {
    */
   @Inject
   @Path("userInfoDetails.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoDetails  userInfoDetails;
+  org.exoplatform.outlook.portlet.templates.userInfoDetails   userInfoDetails;
 
   /**
    * The convert to status.
@@ -465,8 +465,7 @@ public class Outlook {
   }
 
   /**
-   * Formats a date into a cookie date compatible string (Netscape's
-   * specification).
+   * Formats a date into a cookie date compatible string (Netscape's specification).
    *
    * @param date the date to format
    * @return an HTTP 1.0/1.1 Cookie compatible date string (GMT-based).
@@ -1162,20 +1161,12 @@ public class Outlook {
   public Response userInfo(String byEmail, RequestContext context) {
     if (byEmail != null && byEmail.length() > 2) {
       String currentUsername = context.getSecurityContext().getRemoteUser();
-      //Map<String, List<String>> userInfo = new HashMap<String, List<String>>();
-      //Map<String, Map<String, String>> usersInfoMap = new HashMap<>();
-      //Map<String, ExoSocialActivity> exoSocialActivityMap = new HashMap<>();
-      /*
-       * TODO Check it is possible to use only the Profile do not use UserInfo when
-       * rendering the markup
-       */
       List<UserInfo> users = new LinkedList<>();
       try {
         Identity currentUserIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
                                                                                  currentUsername,
                                                                                  true);
         if (currentUserIdentity != null) {
-
           for (String email : byEmail.split(",")) {
             User user = findUserByEmail(email.toLowerCase());
             if (user != null) {
@@ -1189,47 +1180,46 @@ public class Outlook {
                   List<IdentityInfo> connectionList = new ArrayList<>();
                   List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity)
                                                                           .loadAsList(0, 20);
-                  for (Relationship relationship: getRelationships(username)) {
-                    if(!relationship.getSender().getRemoteId().equals(username)){
+                  for (Relationship relationship : getRelationships(username)) {
+                    if (!relationship.getSender().getRemoteId().equals(username)) {
                       connectionList.add(new IdentityInfo(relationship.getSender()));
-                    }else{
+                    } else {
                       connectionList.add(new IdentityInfo(relationship.getReceiver()));
                     }
                   }
                   // TODO Get activity URL from Social
-                  activity.forEach(o -> activities.add(new ActivityInfo(o.getTitle(),
-                                                                        o.getType(),
-                                                                        "/portal/intranet/activity?id=" + o.getId(),
-                                                                        o.getPostedTime())));
+                  activity.forEach(a -> activities.add(new ActivityInfo(a.getTitle(),
+                                                                        a.getType(),
+                                                                        // "/portal/intranet/activity?id=" + a.getId(),
+                                                                        a.getUrl(),
+                                                                        a.getPostedTime())));
                   users.add(new UserInfo(user, userIdentity, activities, connectionList));
-                  
-                  //usersInfoMap.put(username, outlook.getUserInfoMap(username));
-                  //List<Relationship> userGetRelationships = exoUser.getRelationships(username);
-                  /*
-                  for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
-                    if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(username)) {
-                      profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(),
-                                                relationship.getSender().getProfile());
-                      profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
-                    } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(username)) {
-                      profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(),
-                                                relationship.getReceiver().getProfile());
-                      profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
-                    }
-                  }
-                  userInfo.put(username + "relationship", profileRelationshipName);
-                  RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(username);
-                  if (activity.getSize() > 0) {
-                    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
-                    if (exoSocialActivityList != null) {
-                      for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
-                        idActivity.add(exoSocialActivity.getId());
-                        exoSocialActivityMap.put(exoSocialActivity.getId(), exoSocialActivity);
-                      }
-                    }
-                  }
-                  userInfo.put(username + "idActivity", idActivity);
-                  */
+                  // TODO cleanup
+                  // usersInfoMap.put(username, outlook.getUserInfoMap(username));
+                  // List<Relationship> userGetRelationships = exoUser.getRelationships(username);
+//                  for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
+//                    if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(username)) {
+//                      profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(),
+//                                                relationship.getSender().getProfile());
+//                      profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
+//                    } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(username)) {
+//                      profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(),
+//                                                relationship.getReceiver().getProfile());
+//                      profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
+//                    }
+//                  }
+//                  userInfo.put(username + "relationship", profileRelationshipName);
+//                  RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(username);
+//                  if (activity.getSize() > 0) {
+//                    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
+//                    if (exoSocialActivityList != null) {
+//                      for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
+//                        idActivity.add(exoSocialActivity.getId());
+//                        exoSocialActivityMap.put(exoSocialActivity.getId(), exoSocialActivity);
+//                      }
+//                    }
+//                  }
+//                  userInfo.put(username + "idActivity", idActivity);
                 }
               } else {
                 LOG.warn("Cannot find user identity: {}[{}]", username, email);
@@ -1238,19 +1228,12 @@ public class Outlook {
               LOG.warn("Cannot find user with email: {}", email);
             }
           }
-          /*return userInfoDetails.with()
-                                 .exoSocialActivityMap(exoSocialActivityMap)
-                                 .usersToDisplay(usersToDisplay)
-                                 .usersInfoMap(usersInfoMap)
-                                 .userInfo(userInfo)
-                                 .profilesToDisplay(profilesToDisplay)
-                                 .profileToRelationship(profileToRelationship)
-                                 .nameOwner(currentUsername)
-                                 .ok(); */
-          return userInfoDetails.with()
-              .currentUser(currentUserIdentity)
-              .users(users)
-              .ok();
+          /*
+           * return userInfoDetails.with() .exoSocialActivityMap(exoSocialActivityMap) .usersToDisplay(usersToDisplay)
+           * .usersInfoMap(usersInfoMap) .userInfo(userInfo) .profilesToDisplay(profilesToDisplay)
+           * .profileToRelationship(profileToRelationship) .nameOwner(currentUsername) .ok();
+           */
+          return userInfoDetails.with().currentUser(currentUserIdentity).users(users).ok();
         } else {
           LOG.error("Cannot find current user indentity in Social: {}", currentUsername);
           return errorMessage("Cannot find current user indentity", 500);
