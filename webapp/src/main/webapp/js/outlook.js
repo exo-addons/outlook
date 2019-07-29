@@ -330,9 +330,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				        showError(jqXHR);
 				      } else {
 				        clearError();
-				        $(document).ready(function() {
+				        $(function() {
 				          if ($.fn.PersonaCard) {
-				            $(".ms-PersonaCard").PersonaCard();
+				            $userInfo.find(".ms-PersonaCard").PersonaCard();
 				          }
 				        });
 				      }

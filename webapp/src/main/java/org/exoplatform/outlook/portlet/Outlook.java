@@ -1221,32 +1221,6 @@ public class Outlook {
                     }
                   });
                   users.add(new UserInfo(user, userIdentity, activities, connectionList));
-                  // TODO cleanup
-                  // usersInfoMap.put(username, outlook.getUserInfoMap(username));
-                  // List<Relationship> userGetRelationships = exoUser.getRelationships(username);
-//                  for (Relationship relationship : userGetRelationships.subList(0, Math.min(userGetRelationships.size(), 20))) {
-//                    if (relationship.getReceiver().getProfile().getProperty("username").toString().equals(username)) {
-//                      profileToRelationship.put(relationship.getSender().getProfile().getProperty("username").toString(),
-//                                                relationship.getSender().getProfile());
-//                      profileRelationshipName.add(relationship.getSender().getProfile().getProperty("username").toString());
-//                    } else if (relationship.getSender().getProfile().getProperty("username").toString().equals(username)) {
-//                      profileToRelationship.put(relationship.getReceiver().getProfile().getProperty("username").toString(),
-//                                                relationship.getReceiver().getProfile());
-//                      profileRelationshipName.add(relationship.getReceiver().getProfile().getProperty("username").toString());
-//                    }
-//                  }
-//                  userInfo.put(username + "relationship", profileRelationshipName);
-//                  RealtimeListAccess<ExoSocialActivity> activity = exoUser.getActivity(username);
-//                  if (activity.getSize() > 0) {
-//                    List<ExoSocialActivity> exoSocialActivityList = activity.loadAsList(0, 20);
-//                    if (exoSocialActivityList != null) {
-//                      for (ExoSocialActivity exoSocialActivity : exoSocialActivityList) {
-//                        idActivity.add(exoSocialActivity.getId());
-//                        exoSocialActivityMap.put(exoSocialActivity.getId(), exoSocialActivity);
-//                      }
-//                    }
-//                  }
-//                  userInfo.put(username + "idActivity", idActivity);
                 }
               } else {
                 LOG.warn("Cannot find user identity: {}[{}]", username, email);
@@ -1255,7 +1229,7 @@ public class Outlook {
               LOG.warn("Cannot find user with email: {}", email);
             }
           }
-          return userInfoDetails.with().currentUser(currentUserIdentity).users(users).ok();
+          return userInfoDetails.with().users(users).ok();
         } else {
           LOG.error("Cannot find current user indentity in Social: {}", currentUsername);
           return errorMessage("Cannot find current user indentity", 500);

@@ -3,46 +3,6 @@ body {
   padding: 0;
 }
 
-#people {
-  width: 100%;
-}
-
-.ms-Persona-initials.ms-Persona-initials--darkBlue {
-  width: 48px;
-}
-
-.ms-PersonaCard-detailLine-phone {
-  color: #333333;
-  line-height: 23px;
-}
-
-.ms-personaCard-actionDetails {
-  padding: 9px 10px;
-}
-
-.ms-PersonaCard-actionDetailBox #phone, .ms-PersonaCard-actionDetailBox #video {
-  overflow-x: auto;
-}
-
-.ims-table {
-  table-layout: fixed;
-}
-
-.ims-table-col1 {
-  width: 70px;
-}
-
-.ims-table-col3 {
-  width: 50px;
-}
-
-.ims-table-col2 {
-  width: 150px;
-}
-
-.ims-table td {
-  vertical-align: top;
-}
 .logoIcon* {
   display: inline-block;
 }
@@ -493,7 +453,9 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   margin-left: 5px;
 }
 
-.outlook-usersInfo-person .postedDate {
+/* User panel */
+
+.outlook-userInfo-person .postedDate {
   text-align: right;
   overflow: hidden;
   position: absolute;
@@ -540,7 +502,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   color: #0078d7;
 }
 
-.outlook-usersInfo .ms-OrgChart-listItem {
+#outlook-userInfo .ms-OrgChart-listItem {
   height: 50px;
   width: 95%;
   position: relative;
@@ -551,71 +513,71 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   top: 1px;
 }
 
-.outlook-usersInfo .ms-OrgChart {
+#outlook-userInfo .ms-OrgChart {
   margin-bottom: 40px;
 }
 
-.outlook-usersInfo .ms-PersonaCard {
+#outlook-userInfo .ms-PersonaCard {
   position: relative;
   z-index: 1;
 }
 
-.outlook-usersInfo .ms-PersonaCard-action, .ms-PersonaCard-overflow {
+#outlook-userInfo .ms-PersonaCard-action, #outlook-userInfo .ms-PersonaCard-overflow {
   padding: 0 5px;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailOrg .detail-5 {
+#outlook-userInfo .ms-PersonaCard-detailOrg .detail-5 {
   max-height: 200px;
 }
 
-.ms-PersonaCard-detailOrg, .ms-PersonaCard-detailChat {
+#outlook-userInfo .ms-PersonaCard-detailOrg, #outlook-userInfo .ms-PersonaCard-detailChat {
   overflow-y: auto;
   z-index: 9;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailOrg {
+#outlook-userInfo .ms-PersonaCard-detailOrg {
   overflow-y: auto;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailChat {
+#outlook-userInfo .ms-PersonaCard-detailChat {
   margin-left: 0;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailPhone {
+#outlook-userInfo .ms-PersonaCard-detailPhone {
   margin-left: -200%;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailVideo {
+#outlook-userInfo .ms-PersonaCard-detailVideo {
   margin-left: -300%;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailMail {
+#outlook-userInfo .ms-PersonaCard-detailMail {
   margin-left: -400%;
 }
 
-.outlook-usersInfo .ms-PersonaCard-detailOrg {
+#outlook-userInfo .ms-PersonaCard-detailOrg {
   margin-left: -100%;
 }
 
-.ms-PersonaCard-detailPhone .detail-6, .ms-PersonaCard-detailVideo .detail-6, .ms-PersonaCard-detailMail .detail-6 {
+#outlook-userInfo .ms-PersonaCard-detailPhone .detail-6, #outlook-userInfo .ms-PersonaCard-detailVideo .detail-6, #outlook-userInfo .ms-PersonaCard-detailMail .detail-6 {
   min-height: 100px;
   max-height: 210px;
   transition: max-height 0.25s ease;
 }
 
-.ms-PersonaCard-detailChat .detail-6, .ms-PersonaCard-detailOrg .detail-6 {
+#outlook-userInfo .ms-PersonaCard-detailChat .detail-6, #outlook-userInfo #outlook-userInfo .ms-PersonaCard-detailOrg .detail-6 {
   max-height: 320px;
   transition: max-height 0.25s ease;
   padding: 9px 20px 9px 0;
   width: 20.5%;
 }
 
-.ms-PersonaCard-actionDetailBox {
+#outlook-userInfo .ms-PersonaCard-actionDetailBox {
   height: max-content;
 }
 
 @media ( min-width : 480px) {
-  .outlook-usersInfo .ms-PersonaCard {
+  #outlook-userInfo .ms-PersonaCard {
     max-width: 90%;
     width: 80%;
     margin: 0 auto;
@@ -623,8 +585,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 @media ( max-width : 479px) {
-  .outlook-usersInfo .ms-Persona-imageArea, .outlook-usersInfo .ms-Persona-image, .outlook-usersInfo .ms-Persona-imageArea,
-    .outlook-usersInfo .ms-Persona-image {
+  #outlook-userInfo .ms-Persona-imageArea, #outlook-userInfo .ms-Persona-image, #outlook-userInfo .ms-Persona-imageArea,
+    #outlook-userInfo .ms-Persona-image {
     min-height: 48px;
     min-width: 48px;
     width: 100%;
@@ -632,21 +594,21 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   }
 }
 
-.outlook-usersInfo .ms-Persona-image {
+#outlook-userInfo .ms-Persona-image {
   width: 100%;
   height: auto;
   min-width: 48px;
   min-height: 48px;
 }
 
-.outlook-usersInfo .ms-PersonaCard-persona .ms-Persona .ms-Persona-image {
+#outlook-userInfo .ms-PersonaCard-persona .ms-Persona .ms-Persona-image {
   min-height: 80px;
   min-width: 80px;
   width: 100%;
   height: auto;
 }
 
-.ms-PersonaCard-actionDetailBox:before {
+#outlook-userInfo .ms-PersonaCard-actionDetailBox:before {
   content: "";
   z-index: 999;
   width: 100%;
@@ -656,6 +618,48 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   background: linear-gradient(to bottom, transparent 30%, white);
 }
 
-.text-userInfoActivity {
+#outlook-userInfo .activities-list {
   margin-bottom: 40px;
 }
+
+#people { /*TODO not used*/
+  width: 100%;
+}
+
+.ms-Persona-initials.ms-Persona-initials--darkBlue {
+  width: 48px;
+}
+
+.ms-PersonaCard-detailLine-phone {
+  color: #333333;
+  line-height: 23px;
+}
+
+.ms-personaCard-actionDetails {
+  padding: 9px 10px;
+}
+
+.ms-PersonaCard-actionDetailBox .contact-detail {
+  overflow-x: auto;
+}
+
+.ims-table {
+  /*table-layout: fixed;*/
+}
+
+.ims-table-col1 {
+  width: 70px;
+}
+
+.ims-table-col3 {
+  width: 50px;
+}
+
+.ims-table-col2 {
+  width: 150px;
+}
+
+.ims-table td {
+  vertical-align: top;
+}
+

@@ -140,7 +140,7 @@
 
     <!-- Search -->
     <searchDescription>Search inside the intranet for content such as documents, wiki pages, discussions, etc.</searchDescription>
-    <searchQuery>Type in your query:</searchQuery>
+    <searchQuery>Type in your query</searchQuery>
     <searchQueryPlaceholder>Type in your search query here</searchQueryPlaceholder>
     <searchQueryDescription>You can use one or several keywords for document names and metadata, body text, etc.</searchQueryDescription>
     <searchTargetSpaceDescription>If selected, the search will be limited to the content of a space (space documents, wiki pages, discussions, etc.).</searchTargetSpaceDescription>
@@ -154,19 +154,19 @@
     <inexo>View in eXo</inexo>
     <activityInfo>Latest activity</activityInfo>
     <notUser>Sorry, no intranet users found in this email.</notUser>
-    <employer>Works  </employer>
+    <employer>Works</employer>
     <in>in</in>
     <of>in the</of>
-    <phone>Telephone numbers:</phone>
-    <workPhone>Work:</workPhone>
-    <homePhone>Home:</homePhone>
-    <otherPhone>Other:</otherPhone>
+    <phone>Phone numbers</phone>
+    <workPhone>Work</workPhone>
+    <homePhone>Home</homePhone>
+    <otherPhone>Other</otherPhone>
     <noInfo>Sorry, the user did not provide this information.</noInfo>
-    <imsSkype> Skype:</imsSkype>
-    <imsGtalk> Gtalk:</imsGtalk>
-    <imsYahoo> Yahoo:</imsYahoo>
-    <imsOther> Other:</imsOther>
-    <imsMsn> Msn:</imsMsn>
+    <imsSkype>Skype</imsSkype>
+    <imsGtalk>Gtalk</imsGtalk>
+    <imsYahoo>Yahoo</imsYahoo>
+    <imsOther>Other</imsOther>
+    <imsMsn>Msn</imsMsn>
     <email>Email</email>
     <chat>Chat</chat>
     <vchat>Video chat</vchat>
