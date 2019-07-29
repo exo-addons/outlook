@@ -20,7 +20,7 @@
 @Portlet(name = "OutlookPortlet")
 @Bindings({ @Binding(value = OutlookService.class), @Binding(value = OutlookTokenService.class),
     @Binding(value = CookieTokenService.class), @Binding(value = ContentLink.class), @Binding(value = IdentityManager.class),
-    @Binding(value = ActivityManager.class), @Binding(value = RelationshipManager.class),
+    @Binding(value = ActivityManager.class), @Binding(value = RelationshipManager.class), @Binding(value = SpaceService.class),
     @Binding(value = OrganizationService.class) })
 
 @Stylesheets({ @Stylesheet(id = "fabric.css", value = "skin/fabric.css", location = AssetLocation.SERVER),
@@ -45,6 +45,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.security.security.CookieTokenService;
 
 import juzu.Application;

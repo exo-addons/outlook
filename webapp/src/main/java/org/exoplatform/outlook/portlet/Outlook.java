@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
@@ -84,6 +85,9 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.manager.RelationshipManager;
 import org.exoplatform.social.core.relationship.model.Relationship;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.login.LoginServlet;
 import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
@@ -195,13 +199,16 @@ public class Outlook {
   OutlookService                                              outlook;
 
   @Inject
-  IdentityManager                                             socialIdentityManager;
+  IdentityManager                                             identityManager;
 
   @Inject
-  ActivityManager                                             socialActivityManager;
+  ActivityManager                                             activityManager;
 
   @Inject
-  RelationshipManager                                         socialRelationshipManager;
+  RelationshipManager                                         relationshipManager;
+
+  @Inject
+  SpaceService                                                spaceService;
 
   @Inject
   OrganizationService                                         organization;
@@ -1163,23 +1170,37 @@ public class Outlook {
       String currentUsername = context.getSecurityContext().getRemoteUser();
       List<UserInfo> users = new LinkedList<>();
       try {
-        Identity currentUserIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                                                                                 currentUsername,
-                                                                                 true);
+        Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                                                                           currentUsername,
+                                                                           true);
         if (currentUserIdentity != null) {
+          Set<String> currentUserGroupIds = organization.getMembershipHandler()
+                                                        .findMembershipsByUser(currentUsername)
+                                                        .stream()
+                                                        .map(m -> m.getGroupId())
+                                                        .collect(Collectors.toSet());
+          Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
+                                                            .stream()
+                                                            .map(r -> {
+                                                              if (!r.getSender().getRemoteId().equals(currentUsername)) {
+                                                                return r.getSender().getRemoteId();
+                                                              } else {
+                                                                return r.getReceiver().getRemoteId();
+                                                              }
+                                                            })
+                                                            .collect(Collectors.toSet());
+
           for (String email : byEmail.split(",")) {
             User user = findUserByEmail(email.toLowerCase());
             if (user != null) {
               String username = user.getUserName();
-              Identity userIdentity =
-                                    socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+              Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
               if (userIdentity != null) {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   List<ActivityInfo> activities = new ArrayList<>();
                   List<IdentityInfo> connectionList = new ArrayList<>();
-                  List<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity)
-                                                                          .loadAsList(0, 20);
+                  List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
                   for (Relationship relationship : getRelationships(username)) {
                     if (!relationship.getSender().getRemoteId().equals(username)) {
                       connectionList.add(new IdentityInfo(relationship.getSender()));
@@ -1187,12 +1208,18 @@ public class Outlook {
                       connectionList.add(new IdentityInfo(relationship.getReceiver()));
                     }
                   }
-                  // TODO Get activity URL from Social
-                  activity.forEach(a -> activities.add(new ActivityInfo(a.getTitle(),
-                                                                        a.getType(),
-                                                                        // "/portal/intranet/activity?id=" + a.getId(),
-                                                                        a.getUrl(),
-                                                                        a.getPostedTime())));
+                  activity.forEach(a -> {
+                    // Show only activities current user can see
+                    String streamId = a.getStreamOwner();
+                    if (streamId != null) {
+                      if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
+                        activities.add(new ActivityInfo(a.getTitle(),
+                                                        a.getType(),
+                                                        LinkProvider.getSingleActivityUrl(a.getId()),
+                                                        a.getPostedTime()));
+                      }
+                    }
+                  });
                   users.add(new UserInfo(user, userIdentity, activities, connectionList));
                   // TODO cleanup
                   // usersInfoMap.put(username, outlook.getUserInfoMap(username));
@@ -1228,11 +1255,6 @@ public class Outlook {
               LOG.warn("Cannot find user with email: {}", email);
             }
           }
-          /*
-           * return userInfoDetails.with() .exoSocialActivityMap(exoSocialActivityMap) .usersToDisplay(usersToDisplay)
-           * .usersInfoMap(usersInfoMap) .userInfo(userInfo) .profilesToDisplay(profilesToDisplay)
-           * .profileToRelationship(profileToRelationship) .nameOwner(currentUsername) .ok();
-           */
           return userInfoDetails.with().currentUser(currentUserIdentity).users(users).ok();
         } else {
           LOG.error("Cannot find current user indentity in Social: {}", currentUsername);
@@ -1501,8 +1523,7 @@ public class Outlook {
   @Ajax
   @Resource
   public Response rememberme(RequestContext context) throws IOException {
-    // we assume portal's LoginServlet with forced rememberme already worked
-    // here
+    // we assume portal's LoginServlet with forced rememberme already worked here
     // and we will save a dedicated cookie for long period (1 year)
 
     String userName = context.getSecurityContext().getRemoteUser();
@@ -1855,16 +1876,23 @@ public class Outlook {
 
   // ***** Helpers *******
 
+  @Deprecated
   private RealtimeListAccess<ExoSocialActivity> getActivity(String name) throws Exception {
-    Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-    RealtimeListAccess<ExoSocialActivity> activity = socialActivityManager.getActivitiesWithListAccess(userIdentity);
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
+    RealtimeListAccess<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity);
     return activity;
   }
 
+  @Deprecated
   private List<Relationship> getRelationships(String name) throws Exception {
-    Identity userIdentity = socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-    List<Relationship> relationships = socialRelationshipManager.getRelationshipsByStatus(userIdentity, CONFIRMED, 0, 0);
+    Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
+    List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(userIdentity, CONFIRMED, 0, 0);
     return relationships;
+  }
+
+  private String findSpaceGroupId(String prettyName) {
+    Space space = spaceService.getSpaceByPrettyName(prettyName);
+    return space != null ? space.getGroupId() : "".intern();
   }
 
   private User findUserByEmail(String email) throws Exception {
