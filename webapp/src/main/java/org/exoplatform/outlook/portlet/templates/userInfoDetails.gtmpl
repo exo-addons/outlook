@@ -3,7 +3,7 @@
 
 <div class="ms-Grid-row">
   <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-  <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+  <div id="people" class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
     <div id="outlook-usersInfo" class="outlook-usersInfo">
       <div id="outlook-usersInfo-text" class="text-centered">
         <h4>&{Outlook.command.userInfo}</h4>
@@ -43,8 +43,7 @@
             </div>
           </div>
           <ul class="ms-PersonaCard-actions">
-            <li id="chat" class="ms-PersonaCard-action is-active"><i class="ms-Icon ms-Icon--panel"></i>
-            </li>
+            <li id="chat" class="ms-PersonaCard-action is-active"><i class="ms-Icon ms-Icon--panel"></i></li>
             <li id="org" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--people"></i></li>
             <li id="phone" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--phone"></i></li>
             <li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
