@@ -3,6 +3,10 @@ body {
   padding: 0;
 }
 
+.ms-u-sm10 {
+  width: 100%;
+}
+
 .ms-Persona-initials.ms-Persona-initials--darkBlue {
   width: 48px;
 }

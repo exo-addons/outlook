@@ -96,23 +96,23 @@
                           <div class="ms-Persona-imageArea">
                             <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
                               <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
-                                ${conn.getFirstName()}${conn.getLastName()}</font>
+                                ${conn.firstName}${conn.lastName}</font>
                               </font>
                             </div>
-                            <img class="ms-Persona-image" src="${conn.getAvatarUrl()}">
+                            <img class="ms-Persona-image" src="${conn.avatarUrl}">
                           </div>
                           <div class="ms-Persona-details">
                             <div class="ms-Persona-primaryText">
                               <font style="vertical-align: inherit;">
-                                <a href="${conn.getUrl()}" class="ms-Link" target="_blank">
-                                  ${conn.getFirstName()}
+                                <a href="${conn.profileLink}" class="ms-Link" target="_blank">
+                                  ${conn.fullName}
                                 </a>
                               </font>
                             </div>
-                            <% if (conn.getAboutMe()) { %>
+                            <% if (conn.aboutMe) { %>
                               <div class="ms-Persona-secondaryText">
                                 <font style="vertical-align: inherit;"> <font
-                                  style="vertical-align: inherit;">${conn.getAboutMe()}</font>
+                                  style="vertical-align: inherit;">${conn.aboutMe}</font>
                                 </font>
                               </div>
                             <% } %>
@@ -125,57 +125,61 @@
                 </div>
               </li>
               <li id="phone" class="ms-PersonaCard-actionDetails detail-6">
-                <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
                 <!-- TODO User profile has list of maps with phones, collect the list into a map and return here -->
                 <% if (user.isPhoneNumberPresent()) { %>
-                  <% if (user.getWorkPhones()) { %>
-                    <table class="ims-table">
-                      <col class="ims-table-col3">
-                      <col class="ims-table-col2">
-                      <tr>
-                        <td><i class="ms-Icon ms-Icon--phone"></i>Work:</td>
-                        <td>
-                          <% for (phone in user.getWorkPhones()) { %>
-                          <div class="ms-PersonaCard-detailLine-phone">
-                            <span class="ms-phone"> ${phone}</span>
-                          </div>
-                          <% } %>
-                        </td>
-                      </tr>
-                    </table>
+                <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
+                  <% user.getPhones().each { phName, phNumber -> %>
+                    <% if(phName.equals("work")) { %>
+                      <table class="ims-table">
+                        <col class="ims-table-col3">
+                        <col class="ims-table-col2">
+                        <tr>
+                          <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.workPhone}</td>
+                          <td>
+                            <% for (phone in phNumber) { %>
+                            <div class="ms-PersonaCard-detailLine-phone">
+                              <span class="ms-phone">${phone}</span>
+                            </div>
+                            <% } %>
+                          </td>
+                        </tr>
+                      </table>
+                    <% } else { %>
+                      <% if(phName.equals("home")) { %>
+                      <table class="ims-table">
+                        <col class="ims-table-col3">
+                        <col class="ims-table-col2">
+                        <tr>
+                          <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.homePhone}</td>
+                          <td>
+                            <% for (phone in phNumber) { %>
+                            <div class="ms-PersonaCard-detailLine-phone">
+                              <span class="ms-phone">${phone}</span>
+                            </div>
+                            <% } %>
+                          </td>
+                        </tr>
+                      </table>
+                      <% } else { %>
+                        <table class="ims-table">
+                          <col class="ims-table-col3">
+                          <col class="ims-table-col2">
+                          <tr>
+                            <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.otherPhone}</td>
+                            <td>
+                              <% for (phone in phNumber) { %>
+                              <div class="ms-PersonaCard-detailLine-phone">
+                                <span class="ms-phone">${phone}</span>
+                              </div>
+                              <% } %>
+                            </td>
+                          </tr>
+                        </table>
+                      <% } %>
+                    <% } %>
                   <% } %>
-                  <% if (user.getHomePhones()) { %>
-                    <table class="ims-table">
-                      <col class="ims-table-col3">
-                      <col class="ims-table-col2">
-                      <tr>
-                        <td><i class="ms-Icon ms-Icon--phone"></i>Home:</td>
-                        <td>
-                          <% for (phone in user.getHomePhones()) { %>
-                          <div class="ms-PersonaCard-detailLine-phone">
-                            <span class="ms-phone"> ${phone}</span>
-                          </div>
-                          <% } %>
-                        </td>
-                      </tr>
-                    </table>
-                  <% } %>
-                  <% if (user.getOtherPhones()) { %>
-                    <table class="ims-table">
-                      <col class="ims-table-col3">
-                      <col class="ims-table-col2">
-                      <tr>
-                        <td><i class="ms-Icon ms-Icon--phone"></i>Other:</td>
-                        <td>
-                          <% for (phone in user.getOtherPhones()) { %>
-                          <div class="ms-PersonaCard-detailLine-phone">
-                            <span class="ms-phone"> ${phone}</span>
-                          </div>
-                          <% } %>
-                        </td>
-                      </tr>
-                    </table>
-                  <% } %>
+                <% } else { %>
+                  <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
                 <% } %>
               </li>
               <li id="video" class="ms-PersonaCard-actionDetails detail-6">
@@ -188,7 +192,7 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><i class="uiIconSocSkype uiIconSocLightGray"></i> Skype:</td>
+                            <td><i class="uiIconSocSkype uiIconSocLightGray"></i>&{Outlook.imsSkype}</td>
                             <td>
                               <% for (im in imValue) { %>
                                 <div>
@@ -206,7 +210,7 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><i class="uiIconSocGtalk uiIconSocLightGray"></i> Gtalk:</td>
+                            <td><i class="uiIconSocGtalk uiIconSocLightGray"></i>&{Outlook.imsGtalk}</td>
                             <td>
                               <% for (im in imValue) { %>
                               <div>${im}</div>
@@ -220,7 +224,7 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><i class="uiIconSocYahoo uiIconSocLightGray"></i> Yahoo:<td>
+                            <td><i class="uiIconSocYahoo uiIconSocLightGray"></i>&{Outlook.imsYahoo}<td>
                               <% for (im in imValue) { %>
                               <div>${im}</div>
                               <% } %>
@@ -233,7 +237,7 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><i class="uiIconSocOther uiIconSocLightGray"></i> Other:<td>
+                            <td><i class="uiIconSocOther uiIconSocLightGray"></i>&{Outlook.imsOther}<td>
                             <% for (im in imValue) { %>
                             <div>${im}</div>
                             <% } %>
@@ -246,7 +250,7 @@
                           <col class="ims-table-col1">
                           <col class="ims-table-col2">
                           <tr>
-                            <td><i class="uiIconSocMsn uiIconSocLightGray"></i> Msn:<td>
+                            <td><i class="uiIconSocMsn uiIconSocLightGray"></i>&{Outlook.imsMsn}<td>
                             <% for (im in imValue) { %>
                             <div>${im}</div>
                             <% } %>
@@ -255,6 +259,8 @@
                         </table>
                       <% } %>
                     <% } %>
+                  <% } else { %>
+                    <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
                   <% } %>
                   <% if (user.links) { %><!-- TODO user.links -->
                     <table class="ims-table">
@@ -280,6 +286,7 @@
                   <span class="ms-PersonaCard-detailLabel">&{Outlook.еmail}</span>
                   <% if (user.email) { %>
                   <p><!-- TODO user.email -->
+                    <i class="uiIconMail uiIconLightGray"></i>
                     <a class="ms-Link" href="mailto:${user.email}">${user.email}</a>
                   </p>
                   <% } %>

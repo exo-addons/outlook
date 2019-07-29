@@ -23,6 +23,10 @@ public class IdentityInfo {
         return (String) identity.getProfile().getProperty("lastName");
     }
 
+    public String getFullName(){
+        return identity.getProfile().getFullName();
+    }
+
     public String getAvatarUrl(){
         return (String) identity.getProfile().getAvatarUrl();
     }
@@ -31,7 +35,7 @@ public class IdentityInfo {
         return (String) identity.getProfile().getProperty("aboutMe");
     }
 
-    public String getUrl(){
+    public String getProfileLink(){
         return identity.getProfile().getUrl();
     }
 
@@ -71,7 +75,7 @@ public class IdentityInfo {
                     case "msn":
                         msn.add(map.get("value"));
                         break;
-                    case "other":
+                    default:
                         other.add(map.get("value"));
                         break;
                 }
@@ -102,43 +106,36 @@ public class IdentityInfo {
         return identity.getProfile().getPhones() != null;
     }
 
-    public List<String> getWorkPhones(){
-        if (identity.getProfile().getPhones() != null) {
-            List<String> work = new ArrayList<>();
-            identity.getProfile().getPhones().stream()
-                    .filter(p -> p.get("key").equals("work"))
-                    .forEach(o -> work.add(o.get("value")));
-            if (!work.isEmpty()){
-                return work;
+    public Map<String, List<String>> getPhones(){
+        List<Map<String,String>> ph =identity.getProfile().getPhones();
+        List<String> work = new ArrayList<>(2);
+        List<String> home = new ArrayList<>(2);
+        List<String> other = new ArrayList<>(2);
+        for (Map<String, String> map : ph) {
+            switch (map.get("key")){
+                case "work":
+                    work.add(map.get("value"));
+                    break;
+                case "home":
+                    home.add(map.get("value"));
+                    break;
+                default:
+                    other.add(map.get("value"));
+                    break;
             }
         }
-        return null;
-    }
+        Map<String, List<String>> phones = new HashMap<>();
+        if(!work.isEmpty()){
+            phones.put("work", work);
+        }
+        if(!home.isEmpty()){
+            phones.put("home", work);
+        }
+        if(!other.isEmpty()){
+            phones.put("other", work);
+        }
 
-    public List<String> getHomePhones(){
-        if (identity.getProfile().getPhones() != null) {
-            List<String> home = new ArrayList<>();
-            identity.getProfile().getPhones().stream()
-                    .filter(p -> p.get("key").equals("home"))
-                    .forEach(o -> home.add(o.get("value")));
-            if (!home.isEmpty()){
-                return home;
-            }
-        }
-        return null;
-    }
-
-    public List<String> getOtherPhones(){
-        if (identity.getProfile().getPhones() != null) {
-            List<String> other = new ArrayList<>();
-            identity.getProfile().getPhones().stream()
-                    .filter(p -> p.get("key").equals("other"))
-                    .forEach(o -> other.add(o.get("value")));
-            if (!other.isEmpty()){
-                return other;
-            }
-        }
-        return null;
+        return phones;
     }
 
 

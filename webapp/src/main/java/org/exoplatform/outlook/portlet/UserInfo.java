@@ -84,16 +84,16 @@ public class UserInfo extends IdentityInfo {
     return connections;
   }
 
-  public String getPosition() {
-    return identity.getProfile().getPosition();
-  }
-
-  public String getAvatarUrl() {
-    return identity.getProfile().getAvatarUrl();
-  }
-
-  public String getProfileLink() {
-    return identity.getProfile().getUrl();
-  }
+//  public String getPosition() {
+//    return identity.getProfile().getPosition();
+//  }
+//
+//  public String getAvatarUrl() {
+//    return identity.getProfile().getAvatarUrl();
+//  }
+//
+//  public String getProfileLink() {
+//    return identity.getProfile().getUrl();
+//  }
 
 }

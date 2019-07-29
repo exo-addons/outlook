@@ -157,8 +157,17 @@
     <employer>Works  </employer>
     <in>in</in>
     <of>in the</of>
-    <telephone>Telephone numbers</telephone>
-    <mail>Email</mail>
+    <phone>Telephone numbers:</phone>
+    <workPhone>Work:</workPhone>
+    <homePhone>Home:</homePhone>
+    <otherPhone>Other:</otherPhone>
+    <noInfo>Sorry, the user did not provide this information.</noInfo>
+    <imsSkype> Skype:</imsSkype>
+    <imsGtalk> Gtalk:</imsGtalk>
+    <imsYahoo> Yahoo:</imsYahoo>
+    <imsOther> Other:</imsOther>
+    <imsMsn> Msn:</imsMsn>
+    <email>Email</email>
     <chat>Chat</chat>
     <vchat>Video chat</vchat>
     <linkConnexions>Self searching people</linkConnexions>
