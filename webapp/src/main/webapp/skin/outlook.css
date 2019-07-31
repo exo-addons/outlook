@@ -559,7 +559,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 #outlook-userInfo .ms-PersonaCard-detailPhone {
-  /*margin-left: -200%;*/
+  margin-left: -200%;
 }
 
 #outlook-userInfo .ms-PersonaCard-detailVideo {
@@ -567,11 +567,11 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 #outlook-userInfo .ms-PersonaCard-detailMail {
-  /*margin-left: -400%;*/
+  margin-left: -400%;
 }
 
 #outlook-userInfo .ms-PersonaCard-detailOrg {
-  /*margin-left: -100%;*/
+  margin-left: -100%;
 }
 
 #outlook-userInfo .ms-PersonaCard-detailPhone .detail-6, #outlook-userInfo .ms-PersonaCard-detailVideo .detail-6, #outlook-userInfo .ms-PersonaCard-detailMail .detail-6 {
@@ -655,22 +655,22 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .ims-table {
-  /*table-layout: fixed;*/
+  table-layout: fixed;
 }
 
 .ims-table-col1 {
-  /*width: 70px;*/
+  width: 70px;
 }
 
 .ims-table-col3 {
-  /*width: 50px;*/
+  width: 50px;
 }
 
 .ims-table-col2 {
-  /*width: 150px;*/
+  width: 150px;
 }
 
 .ims-table td {
-  /*vertical-align: top;*/
+  vertical-align: top;
 }
 

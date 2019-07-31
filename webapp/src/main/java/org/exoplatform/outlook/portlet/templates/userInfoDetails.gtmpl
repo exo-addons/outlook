@@ -50,7 +50,7 @@
         </ul>
         <div class="ms-PersonaCard-actionDetailBox">
           <ul id="detailList" class="ms-PersonaCard-detailChat">
-            <li id="chat" class="ms-PersonaCard-actionDetails detail-6 is-active">
+            <li class="ms-PersonaCard-actionDetails detail-6 is-active">
               <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
               <div class="activities-list">
                 <% for (activity in user.activities) { %>
@@ -73,7 +73,7 @@
                 <% } %>
               </div>
             </li>
-            <li id="org" class="ms-PersonaCard-actionDetails detail-6">
+            <li class="ms-PersonaCard-actionDetails detail-6">
               <div class="ms-OrgChart">
                 <div class="ms-OrgChart-group">
                   <ul class="ms-OrgChart-list">
@@ -111,7 +111,7 @@
                 </div>
               </div>
             </li>
-            <li id="phone" class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
               <% if (user.isPhoneNumberPresent()) { %>
               <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
                 <% user.getPhones().each { phName, phNumber -> %>
@@ -168,7 +168,7 @@
                 <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
               <% } %>
             </li>
-            <li id="video" class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
               <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
               <div class="ms-PersonaCard-detailLine">
                 <% if (user.getIms()) { %>
@@ -253,7 +253,7 @@
                     <col class="ims-table-col1">
                     <col class="ims-table-col2">
                     <tr>
-                      <td><span><i class="ms-Icon ms-Icon--onlineJoin"></i>&nbsp;URL:</span><td>
+                      <td><span><i class="ms-Icon ms-Icon--onlineJoin"></i>&nbsp;&nbsp;URL:</span><td>
                       <% for (link in user.links) { %>
                       <div>
                         <a class="ms-Link" href="${link}" target="_blank">
@@ -267,7 +267,7 @@
                 <% } %>
               </div>
             </li>
-            <li id="mail" class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
               <div class="ms-PersonaCard-detailLine">
                 <span class="ms-PersonaCard-detailLabel">&{Outlook.email}:</span>
                 <% if (user.email) { %>
