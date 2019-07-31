@@ -654,7 +654,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   overflow-x: auto;
 }
 
-.ims-table {
+.ims-table, .phone-table {
   table-layout: fixed;
 }
 
@@ -662,15 +662,15 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   width: 70px;
 }
 
-.ims-table-col3 {
+.phone-table-col1 {
   width: 50px;
 }
 
-.ims-table-col2 {
+.ims-table-col2, .phone-table-col2 {
   width: 150px;
 }
 
-.ims-table td {
+.ims-table td, .phone-table td {
   vertical-align: top;
 }
 

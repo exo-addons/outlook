@@ -116,9 +116,9 @@
               <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
                 <% user.getPhones().each { phName, phNumber -> %>
                   <% if(phName.equals("work")) { %>
-                    <table class="ims-table">
-                      <col class="ims-table-col3">
-                      <col class="ims-table-col2">
+                    <table class="phone-table">
+                      <col class="phone-table-col1">
+                      <col class="phone-table-col2">
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.workPhone}:</td>
                         <td>
@@ -132,9 +132,9 @@
                     </table>
                   <% } else { %>
                     <% if(phName.equals("home")) { %>
-                    <table class="ims-table">
-                      <col class="ims-table-col3">
-                      <col class="ims-table-col2">
+                    <table class="phone-table">
+                      <col class="phone-table-col1">
+                      <col class="phone-table-col2">
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.homePhone}:</td>
                         <td>
@@ -147,9 +147,9 @@
                       </tr>
                     </table>
                     <% } else { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col3">
-                        <col class="ims-table-col2">
+                      <table class="phone-table">
+                        <col class="phone-table-col1">
+                        <col class="phone-table-col2">
                         <tr>
                           <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.otherPhone}:</td>
                           <td>
