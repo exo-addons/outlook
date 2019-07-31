@@ -117,8 +117,8 @@
                 <% user.getPhones().each { phName, phNumber -> %>
                   <% if(phName.equals("work")) { %>
                     <table class="map-table">
-                      <col class="map-table-col60">
-                      <col>
+                      <col class="map-table-title">
+                      <col class="map-table-value">
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.workPhone}:</td>
                         <td>
@@ -133,8 +133,8 @@
                   <% } else { %>
                     <% if(phName.equals("home")) { %>
                     <table class="map-table">
-                      <col class="map-table-col60">
-                      <col>
+                      <col class="map-table-title">
+                      <col class="map-table-value">
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.homePhone}:</td>
                         <td>
@@ -148,8 +148,8 @@
                     </table>
                     <% } else { %>
                       <table class="map-table">
-                        <col class="map-table-col60">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.otherPhone}:</td>
                           <td>
@@ -168,15 +168,15 @@
                 <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
               <% } %>
             </li>
-            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail ims">
               <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
               <div class="ms-PersonaCard-detailLine">
                 <% if (user.getIms()) { %>
                   <% user.getIms().each { imName, imValue -> %>
                     <% if (imName.equals("skype")) { %>
                       <table class="map-table">
-                        <col class="map-table-col70">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="uiIconSocSkype uiIconSocLightGray"></i>&nbsp;&{Outlook.imsSkype}:</td>
                           <td>
@@ -193,8 +193,8 @@
                     <% } %>
                     <% if (imName.equals("gtalk")) { %>
                       <table class="map-table">
-                        <col class="map-table-col70">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="uiIconSocGtalk uiIconSocLightGray"></i>&nbsp;&{Outlook.imsGtalk}:</td>
                           <td>
@@ -207,8 +207,8 @@
                     <% } %>
                     <% if (imName.equals("yahoo")) { %>
                       <table class="map-table">
-                        <col class="map-table-col70">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="uiIconSocYahoo uiIconSocLightGray"></i>&nbsp;&{Outlook.imsYahoo}:<td>
                             <% for (im in imValue) { %>
@@ -220,8 +220,8 @@
                     <% } %>
                     <% if (imName.equals("other")) { %>
                       <table class="map-table">
-                        <col class="map-table-col70">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:<td>
                           <% for (im in imValue) { %>
@@ -233,8 +233,8 @@
                     <% } %>
                     <% if (imName.equals("msn")) { %>
                       <table class="map-table">
-                        <col class="map-table-col70">
-                        <col>
+                        <col class="map-table-title">
+                        <col class="map-table-value">
                         <tr>
                           <td><i class="uiIconSocMsn uiIconSocLightGray"></i>&nbsp;&{Outlook.imsMsn}:<td>
                           <% for (im in imValue) { %>
@@ -250,8 +250,8 @@
                 <% } %>
                 <% if (user.links) { %>
                   <table class="map-table">
-                    <col class="map-table-col70">
-                    <col>
+                    <col class="map-table-title">
+                    <col class="map-table-value">
                     <tr>
                       <td><span><i class="ms-Icon ms-Icon--onlineJoin"></i>&nbsp;&nbsp;URL:</span><td>
                       <% for (link in user.links) { %>

@@ -654,19 +654,23 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   overflow-x: auto;
 }
 
-.map-table {-
+.map-table {
   table-layout: fixed;
 }
 
-.map-table-col60 {
+.map-table-title {
   width: 60px;
 }
 
-.map-table-col70 {
-  width: 70px;
+.map-table-value {
+  width: 150px;
 }
 
 .map-table td {
   vertical-align: top;
+}
+
+.ims .map-table-title {
+  width: 70px;
 }
 
