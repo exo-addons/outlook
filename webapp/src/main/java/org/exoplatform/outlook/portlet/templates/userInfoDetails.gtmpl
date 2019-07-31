@@ -111,7 +111,7 @@
                 </div>
               </div>
             </li>
-            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalPhones">
               <% if (user.isPhoneNumberPresent()) { %>
               <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
                 <% user.getPhones().each { phName, phNumber -> %>
@@ -168,7 +168,7 @@
                 <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
               <% } %>
             </li>
-            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail ims">
+            <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalIms">
               <!-- TODO is it correct to use Fabric's detailLine, or need per each link, IM, etc? -->
               <div class="ms-PersonaCard-detailLine">
                 <% if (user.getIms()) { %>
