@@ -116,9 +116,9 @@
               <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
                 <% user.getPhones().each { phName, phNumber -> %>
                   <% if(phName.equals("work")) { %>
-                    <table class="phone-table">
-                      <col class="phone-table-col1">
-                      <col class="phone-table-col2">
+                    <table class="map-table">
+                      <col class="map-table-col60">
+                      <col>
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.workPhone}:</td>
                         <td>
@@ -132,9 +132,9 @@
                     </table>
                   <% } else { %>
                     <% if(phName.equals("home")) { %>
-                    <table class="phone-table">
-                      <col class="phone-table-col1">
-                      <col class="phone-table-col2">
+                    <table class="map-table">
+                      <col class="map-table-col60">
+                      <col>
                       <tr>
                         <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.homePhone}:</td>
                         <td>
@@ -147,9 +147,9 @@
                       </tr>
                     </table>
                     <% } else { %>
-                      <table class="phone-table">
-                        <col class="phone-table-col1">
-                        <col class="phone-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col60">
+                        <col>
                         <tr>
                           <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.otherPhone}:</td>
                           <td>
@@ -174,9 +174,9 @@
                 <% if (user.getIms()) { %>
                   <% user.getIms().each { imName, imValue -> %>
                     <% if (imName.equals("skype")) { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col1">
-                        <col class="ims-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col70">
+                        <col>
                         <tr>
                           <td><i class="uiIconSocSkype uiIconSocLightGray"></i>&nbsp;&{Outlook.imsSkype}:</td>
                           <td>
@@ -192,9 +192,9 @@
                       </table>
                     <% } %>
                     <% if (imName.equals("gtalk")) { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col1">
-                        <col class="ims-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col70">
+                        <col>
                         <tr>
                           <td><i class="uiIconSocGtalk uiIconSocLightGray"></i>&nbsp;&{Outlook.imsGtalk}:</td>
                           <td>
@@ -206,9 +206,9 @@
                       </table>
                     <% } %>
                     <% if (imName.equals("yahoo")) { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col1">
-                        <col class="ims-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col70">
+                        <col>
                         <tr>
                           <td><i class="uiIconSocYahoo uiIconSocLightGray"></i>&nbsp;&{Outlook.imsYahoo}:<td>
                             <% for (im in imValue) { %>
@@ -219,9 +219,9 @@
                       </table>
                     <% } %>
                     <% if (imName.equals("other")) { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col1">
-                        <col class="ims-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col70">
+                        <col>
                         <tr>
                           <td><i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:<td>
                           <% for (im in imValue) { %>
@@ -232,9 +232,9 @@
                       </table>
                     <% } %>
                     <% if (imName.equals("msn")) { %>
-                      <table class="ims-table">
-                        <col class="ims-table-col1">
-                        <col class="ims-table-col2">
+                      <table class="map-table">
+                        <col class="map-table-col70">
+                        <col>
                         <tr>
                           <td><i class="uiIconSocMsn uiIconSocLightGray"></i>&nbsp;&{Outlook.imsMsn}:<td>
                           <% for (im in imValue) { %>
@@ -249,9 +249,9 @@
                   <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
                 <% } %>
                 <% if (user.links) { %>
-                  <table class="ims-table">
-                    <col class="ims-table-col1">
-                    <col class="ims-table-col2">
+                  <table class="map-table">
+                    <col class="map-table-col70">
+                    <col>
                     <tr>
                       <td><span><i class="ms-Icon ms-Icon--onlineJoin"></i>&nbsp;&nbsp;URL:</span><td>
                       <% for (link in user.links) { %>

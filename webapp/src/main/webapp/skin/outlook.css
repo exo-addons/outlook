@@ -654,23 +654,19 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   overflow-x: auto;
 }
 
-.ims-table, .phone-table {
+.map-table {-
   table-layout: fixed;
 }
 
-.ims-table-col1 {
+.map-table-col60 {
+  width: 60px;
+}
+
+.map-table-col70 {
   width: 70px;
 }
 
-.phone-table-col1 {
-  width: 50px;
-}
-
-.ims-table-col2, .phone-table-col2 {
-  width: 150px;
-}
-
-.ims-table td, .phone-table td {
+.map-table td {
   vertical-align: top;
 }
 
