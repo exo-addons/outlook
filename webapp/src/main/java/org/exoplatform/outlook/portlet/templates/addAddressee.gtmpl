@@ -13,7 +13,7 @@
                 <div class="ms-OrgChart">
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
-                      <% for (conn in addressee.getConnectionList()) { %>
+                      <% for (conn in addressee) { %>
                         <li class="ms-OrgChart-listItem">
                           <div class="ms-Persona">
                             <div class="ms-Persona-imageArea">
@@ -42,7 +42,7 @@
                                 </div>
                               <% } %>
                             </div>
-                            <button class="ms-Button ms-Button--hero">
+                            <button class="ms-Button ms-Button--hero" id="${conn.email}">
                               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
                             </button>
                           </div>

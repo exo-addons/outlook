@@ -43,6 +43,10 @@ public class IdentityInfo {
         return identity.getProfile().getPosition();
     }
 
+    public String getEmail() {
+        return identity.getProfile().getEmail().toLowerCase();
+    }
+
     public List<String> getLinks() {
         List<String> links = new ArrayList<>();
         List<Map<String,String>> urls = (List<Map<String,String>>)identity.getProfile().getProperty("urls");

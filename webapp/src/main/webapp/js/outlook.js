@@ -323,6 +323,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 				}
 
 				function userInfoInit() {
+					var item = Office.context.mailbox.item;
 					function loadUserInfo(byEmail) {
 						var $userInfo = $("#outlook-userInfo");
 						$userInfo.jzLoad("Outlook.userInfo()", {
@@ -354,9 +355,46 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 									if ($.fn.PersonaCard) {
 										$addressee.find(".ms-PersonaCard").PersonaCard();
 									}
+
+									checkRecipients();
+
 									$('button').on('click',function () {
-										console.log('CLICK!!!!!!!!!!!!!!!!!!!!!!!!!!');
-									})
+										addRecipients($(this).attr('id'));
+									});
+
+									function addRecipients(emailAddress) {
+										var toRecipients = item.to;
+										if (toRecipients) {
+											toRecipients.addAsync(
+												[{
+													"displayName":emailAddress,
+													"emailAddress":emailAddress
+												}],
+												function (asyncResult) {
+													if (asyncResult.status === Office.AsyncResultStatus.Failed){
+														write(asyncResult.error.message);
+													}
+													else {
+														checkRecipients();
+													}
+												});
+										}
+									}
+
+									function checkRecipients() {
+										var toRecipients = item.to;
+										toRecipients.getAsync(function (asyncResult) {
+											if (asyncResult.status === Office.AsyncResultStatus.Failed){
+												write(asyncResult.error.message);
+											}
+											else {
+												for (var i=0; i<asyncResult.value.length; i++){
+													var id = asyncResult.value[i].emailAddress.toLowerCase();
+													$(document.getElementById(id)).attr("disabled", "true");
+												}
+											}
+										}); // End getAsync for bcc-recipients.
+									}
 								});
 							}
 						});
@@ -385,30 +423,31 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 						addEmailsIfNotUser(carbonCopy);
 						loadUserInfo(recipientEmails);
 					} else {
-						// This will happen when writing a new message or editing a draft.
-						Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
-							if (asyncResult.status === "succeeded") {
-								var toCopy = asyncResult.value;
-								addEmailsIfNotUser(toCopy);
-							} else {
-								console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-									+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-								showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-							}
-							Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
-								if (asyncResult.status === "succeeded") {
-									var ccCopy = asyncResult.value;
-									addEmailsIfNotUser(ccCopy);
-									loadAddAddressee(recipientEmails);
-								} else {
-									console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
-										+ JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
-									showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
-								}
-							});
-						});
-					}
-				}
+                        // This will happen when writing a new message or editing a draft.
+                        // Office.context.mailbox.item.to.getAsync(function callback(asyncResult) {
+                        //     if (asyncResult.status === "succeeded") {
+                        //         var toCopy = asyncResult.value;
+                        //         addEmailsIfNotUser(toCopy);
+                        //     } else {
+                        //         console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+                        //             + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+                        //         showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+                        //     }
+                        //     Office.context.mailbox.item.cc.getAsync(function callback(asyncResult) {
+                        //         if (asyncResult.status === "succeeded") {
+                        //             var ccCopy = asyncResult.value;
+                        //             addEmailsIfNotUser(ccCopy);
+						// 			loadUserInfo(recipientEmails);
+                        //         } else {
+                        //             console.log("Office.context.mailbox.item.subject.getAsync() [" + asyncResult.status + "] error: "
+                        //                 + JSON.stringify(asyncResult.error) + " value: " + JSON.stringify(asyncResult.value));
+                        //             showError("Outlook.messages.gettingSubjectError", asyncResult.error.message);
+                        //         }
+                        //     });
+                        // });
+						loadAddAddressee();
+                    }
+                }
 
 				function saveAttachmentInit() {
 					var $saveAttachment = $("#outlook-saveAttachment");

@@ -1372,7 +1372,7 @@ public class Outlook {
    */
   @Ajax
   @Resource
-  public Response addAddressee(String byEmail, RequestContext context) {
+  public Response addAddressee(RequestContext context) {
     List<IdentityInfo> connectionList = new ArrayList<>();
     try {
     String currentUsername = context.getSecurityContext().getRemoteUser();
@@ -1385,11 +1385,11 @@ public class Outlook {
         }
       }
     } catch (Exception e) {
-      LOG.error("Error showing UserInfo Info by email " + byEmail, e);
+      LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
     }
-    String[] presentEmail = byEmail.split(",");
-    return addAddressee.with().addressee(new addAddresseeInfo(connectionList, presentEmail)).ok();
+//    String[] presentEmail = byEmail.split(",");
+    return addAddressee.with().addressee(connectionList).ok();
   }
 
   /**

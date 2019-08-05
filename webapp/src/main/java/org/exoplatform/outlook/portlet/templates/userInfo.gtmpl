@@ -1,7 +1,6 @@
 <div id="outlook-userInfo"class="ms-Grid">
 	<div class="text-centered">
 		<h4>&{Outlook.command.userInfo}</h4>
-		<h4>This is some code</h4>
 	</div>
 </div>
 
