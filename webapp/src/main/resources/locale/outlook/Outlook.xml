@@ -19,6 +19,7 @@
       <convertToStatus>Convert to Activity</convertToStatus>
       <convertToWiki>Convert to Wiki Page</convertToWiki>
       <convertToForum>Convert to Forum Topic</convertToForum>
+      <addAddressee>Find addressee</addAddressee>
     </command>
 
     <!--  Profile  -->

@@ -295,6 +295,13 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.postStatus        postStatus;
 
   /**
+   * The add Addressee.
+   */
+  @Inject
+  @Path("addAddressee.gtmpl")
+  org.exoplatform.outlook.portlet.templates.addAddressee        addAddressee;
+
+  /**
    * The posted status.
    */
   @Inject
@@ -430,6 +437,7 @@ public class Outlook {
     // TODO features for 1.1+ version
     // addRootMenuItem(new MenuItem("search"));
     addRootMenuItem(new MenuItem("userInfo"));
+    addRootMenuItem(new MenuItem("addAddressee"));
   }
 
   /**
@@ -1337,6 +1345,51 @@ public class Outlook {
       }
       return errorMessage("Message ID and user parameters required", 400);
     }
+  }
+
+  /**
+   * Convert to add Addressee form.
+   *
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response addAddresseeForm() {
+    try {
+      return /*addAddressee*/userInfo.ok();
+    } catch (Throwable e) {
+      LOG.error("Fuck! Fuck! Fu-u-u-u-u-u-uck!!!!!!!", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+
+  /**
+   * addAddressee info response.
+   *
+   * @param byEmail Array of emails to search in eXoplatform
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response addAddressee(String byEmail, RequestContext context) {
+    List<IdentityInfo> connectionList = new ArrayList<>();
+    try {
+    String currentUsername = context.getSecurityContext().getRemoteUser();
+
+      for (Relationship relationship : getRelationships(currentUsername)) {
+        if (!relationship.getSender().getRemoteId().equals(currentUsername)) {
+          connectionList.add(new IdentityInfo(relationship.getSender()));
+        } else {
+          connectionList.add(new IdentityInfo(relationship.getReceiver()));
+        }
+      }
+    } catch (Exception e) {
+      LOG.error("Error showing UserInfo Info by email " + byEmail, e);
+      return errorMessage(e.getMessage(), 500);
+    }
+    String[] presentEmail = byEmail.split(",");
+    return addAddressee.with().addressee(new addAddresseeInfo(connectionList, presentEmail)).ok();
   }
 
   /**

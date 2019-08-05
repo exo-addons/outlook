@@ -674,3 +674,15 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   width: 70px;
 }
 
+.for-addressee {
+  margin: 0 -15px 0 -15px;
+}
+
+.less-details {
+  padding: 0 5px 0 5px;
+}
+
+.ms-Persona .ms-Button {
+  min-width: 0;
+  padding: 0 0 0 5px;
+}
