@@ -269,10 +269,8 @@
             </li>
             <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
               <div class="ms-PersonaCard-detailLine">
-                <span class="ms-PersonaCard-detailLabel">&{Outlook.email}:</span>
                 <% if (user.email) { %>
                 <p>
-                  <i class="uiIconMail uiIconLightGray"></i>
                   <a class="ms-Link" href="mailto:${user.email}">${user.email}</a>
                 </p>
                 <% } %>

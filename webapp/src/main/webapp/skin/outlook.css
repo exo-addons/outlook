@@ -674,3 +674,6 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   width: 70px;
 }
 
+.ms-PersonaCard-action.is-active:after, .is-active.ms-PersonaCard-overflow:after {
+  left: 9px;
+}
