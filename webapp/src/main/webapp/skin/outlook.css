@@ -682,6 +682,18 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   padding: 0 5px 0 5px;
 }
 
+.less-details .ms-Persona-primaryText, .less-details .ms-Persona-secondaryText {
+  width: 150px;
+}
+
+.compose {
+  display: contents;
+}
+
+.compose .ms-Persona {
+  padding: 5px 0;
+}
+
 .ms-Persona .ms-Button {
   min-width: 0;
   padding: 0 0 0 5px;

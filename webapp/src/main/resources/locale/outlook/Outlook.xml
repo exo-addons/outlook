@@ -14,12 +14,12 @@
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
       <userInfo>People</userInfo>
+      <userInfoCompose>Find addressee</userInfoCompose>
       <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
       <convertToStatus>Convert to Activity</convertToStatus>
       <convertToWiki>Convert to Wiki Page</convertToWiki>
       <convertToForum>Convert to Forum Topic</convertToForum>
-      <addAddressee>Find addressee</addAddressee>
     </command>
 
     <!--  Profile  -->

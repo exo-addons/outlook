@@ -95,24 +95,6 @@
                                 </Control>
                                 <!--  Search: task pane button  -->
 
-                                <Control xsi:type="Button" id="composeAddAddresseeButton">
-                                    <Label resid="addAddresseeLabel"/>
-                                    <Supertip>
-                                        <Title resid="addAddresseeTipTitle"/>
-                                        <Description resid="addAddresseeTipDescription"/>
-                                    </Supertip>
-                                    <Icon>
-                                        <bt:Image size="16" resid="addAddressee-16"/>
-                                        <bt:Image size="24" resid="addAddressee-24"/>
-                                        <bt:Image size="32" resid="addAddressee-32"/>
-                                        <bt:Image size="64" resid="addAddressee-64"/>
-                                        <bt:Image size="80" resid="addAddressee-80"/>
-                                    </Icon>
-                                    <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="addAddresseeUrl"/>
-                                    </Action>
-                                </Control>
-
 
                                 <!--                                <Control xsi:type="Button" id="composeSearchButton">-->
                                 <!--                                    <Label resid="searchLabel" />-->
@@ -188,10 +170,10 @@
                                 </Control>
                                 <!--  User Info: task pane button  -->
                                 <Control xsi:type="Button" id="composeUserInfoButton">
-                                    <Label resid="userInfoLabel"/>
+                                    <Label resid="userInfoComposeLabel"/>
                                     <Supertip>
-                                        <Title resid="userInfoTipTitle"/>
-                                        <Description resid="userInfoTipDescription"/>
+                                        <Title resid="userInfoComposeTipTitle"/>
+                                        <Description resid="userInfoComposeTipDescription"/>
                                     </Supertip>
                                     <Icon>
                                         <bt:Image size="16" resid="users-16"/>
@@ -201,7 +183,7 @@
                                         <bt:Image size="80" resid="users-80"/>
                                     </Icon>
                                     <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="userInfoUrl"/>
+                                        <SourceLocation resid="userInfoCompose"/>
                                     </Action>
                                 </Control>
                             </Group>
@@ -283,23 +265,6 @@
                                 <!--  Search: task pane button  -->
 
 
-                                <Control xsi:type="Button" id="readAddAddresseeButton">
-                                    <Label resid="addAddresseeLabel"/>
-                                    <Supertip>
-                                        <Title resid="addAddresseeTipTitle"/>
-                                        <Description resid="addAddresseeTipDescription"/>
-                                    </Supertip>
-                                    <Icon>
-                                        <bt:Image size="16" resid="addAddressee-16"/>
-                                        <bt:Image size="24" resid="addAddressee-24"/>
-                                        <bt:Image size="32" resid="addAddressee-32"/>
-                                        <bt:Image size="64" resid="addAddressee-64"/>
-                                        <bt:Image size="80" resid="addAddressee-80"/>
-                                    </Icon>
-                                    <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="addAddresseeUrl"/>
-                                    </Action>
-                                </Control>
 
 
                                 <!--                                <Control xsi:type="Button" id="readSearchButton">-->
@@ -394,10 +359,10 @@
                                 </Control>
                                 <!--  User Info: task pane button  -->
                                 <Control xsi:type="Button" id="readUserInfoButton">
-                                    <Label resid="userInfoLabel"/>
+                                    <Label resid="userInfoReadLabel"/>
                                     <Supertip>
-                                        <Title resid="userInfoTipTitle"/>
-                                        <Description resid="userInfoTipDescription"/>
+                                        <Title resid="userInfoReadTipTitle"/>
+                                        <Description resid="userInfoReadTipDescription"/>
                                     </Supertip>
                                     <Icon>
                                         <bt:Image size="16" resid="users-16"/>
@@ -407,7 +372,7 @@
                                         <bt:Image size="80" resid="users-80"/>
                                     </Icon>
                                     <Action xsi:type="ShowTaskpane">
-                                        <SourceLocation resid="userInfoUrl"/>
+                                        <SourceLocation resid="userInfoRead"/>
                                     </Action>
                                 </Control>
                             </Group>
@@ -435,20 +400,6 @@
                           DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/64x64/attachment.png"/>
                 <bt:Image id="attachment-80"
                           DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/80x80/attachment.png"/>
-
-
-                <bt:Image id="addAddressee-16"
-                          DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/16x16/addAddressee.png"/>
-                <bt:Image id="addAddressee-24"
-                          DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/24x24/addAddressee.png"/>
-                <bt:Image id="addAddressee-32"
-                          DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/32x32/addAddressee.png"/>
-                <bt:Image id="addAddressee-64"
-                          DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/64x64/addAddressee.png"/>
-                <bt:Image id="addAddressee-80"
-                          DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/80x80/addAddressee.png"/>
-
-
                 <bt:Image id="search-16"
                           DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/images/16x16/search.png"/>
                 <bt:Image id="search-24"
@@ -545,16 +496,12 @@
                 bt:Url id="functionFile" DefaultValue="https://outlook.exoplatform.com.ua:8443/outlook/login/menu;"/
                -->
                 <bt:Url id="readUrl" DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook"/>
-
-
-                <bt:Url id="addAddresseeUrl"
-                        DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook?command=addAddressee"/>
-
-
                 <bt:Url id="searchUrl"
                         DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook?command=postStatus"/>
-                <bt:Url id="userInfoUrl"
+                <bt:Url id="userInfoRead"
                         DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook?command=userInfo"/>
+                <bt:Url id="userInfoCompose"
+                        DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook?command=userInfoCompose"/>
                 <bt:Url id="postStatusUrl"
                         DefaultValue="https://outlook.exoplatform.com.ua:8443/portal/intranet/outlook?command=postStatus"/>
                 <bt:Url id="startDiscussionUrl"
@@ -580,16 +527,6 @@
                     <bt:Override Locale="fr-fr" Value="eXo Platform"/>
                 </bt:String>
                 <!--  Common  -->
-
-
-                <bt:String id="addAddresseeLabel" DefaultValue="Add Addressee">
-                    <bt:Override Locale="fr-fr" Value="Add Addressee"/>
-                </bt:String>
-                <bt:String id="addAddresseeTipTitle" DefaultValue="Add Addressee from the connections">
-                    <bt:Override Locale="fr-fr" Value="Add Addressee from the connections"/>
-                </bt:String>
-
-
                 <bt:String id="searchLabel" DefaultValue="Search">
                     <bt:Override Locale="fr-fr" Value="Rechercher"/>
                 </bt:String>
@@ -614,10 +551,16 @@
                 <bt:String id="startDiscussionTipTitle" DefaultValue="Start a discussion in the forums">
                     <bt:Override Locale="fr-fr" Value="Démarrer une discussion dans les forums"/>
                 </bt:String>
-                <bt:String id="userInfoLabel" DefaultValue="People">
+                <bt:String id="userInfoReadLabel" DefaultValue="People">
                     <bt:Override Locale="fr-fr" Value="Personnes"/>
                 </bt:String>
-                <bt:String id="userInfoTipTitle" DefaultValue="Find participants among Intranet members">
+                <bt:String id="userInfoReadTipTitle" DefaultValue="Find participants among Intranet members">
+                    <bt:Override Locale="fr-fr" Value="Trouvez vos contacts parmis les membre de l'intranet"/>
+                </bt:String>
+                <bt:String id="userInfoComposeLabel" DefaultValue="People">
+                    <bt:Override Locale="fr-fr" Value="Personnes"/>
+                </bt:String>
+                <bt:String id="userInfoComposeTipTitle" DefaultValue="Find participants among Intranet members">
                     <bt:Override Locale="fr-fr" Value="Trouvez vos contacts parmis les membre de l'intranet"/>
                 </bt:String>
                 <!--  Compose mode  -->
@@ -661,14 +604,6 @@
             </bt:ShortStrings>
             <bt:LongStrings>
                 <!--  Common  -->
-
-
-                <bt:String id="addAddresseeTipDescription"
-                           DefaultValue="Open the pane to add Addressee from eXo connections">
-                    <bt:Override Locale="fr-fr" Value="Open the pane to add Addressee from eXo connections"/>
-                </bt:String>
-
-
                 <bt:String id="searchTipDescription" DefaultValue="Open the pane to search for content in eXo">
                     <bt:Override Locale="fr-fr" Value="Ouvrir le panneau de recherhe de contenu dans eXo"/>
                 </bt:String>
@@ -682,7 +617,10 @@
                            DefaultValue="Open the pane to start a discussion in the forums">
                     <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour démarrer une discussion dans les forums"/>
                 </bt:String>
-                <bt:String id="userInfoTipDescription" DefaultValue="Open the pane to show intranet people">
+                <bt:String id="userInfoReadTipDescription" DefaultValue="Open the pane to show intranet people">
+                    <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour voir les personnes de l'intranet"/>
+                </bt:String>
+                <bt:String id="userInfoComposeTipDescription" DefaultValue="Open the pane to show intranet people">
                     <bt:Override Locale="fr-fr" Value="Ouvrir le panneau pour voir les personnes de l'intranet"/>
                 </bt:String>
                 <!--  Compose mode  -->

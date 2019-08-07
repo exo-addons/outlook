@@ -47,6 +47,14 @@ public class IdentityInfo {
         return identity.getProfile().getEmail().toLowerCase();
     }
 
+    public String getId() {
+        return identity.getId();
+    }
+
+    public String getRemoteId() {
+        return identity.getRemoteId();
+    }
+
     public List<String> getLinks() {
         List<String> links = new ArrayList<>();
         List<Map<String,String>> urls = (List<Map<String,String>>)identity.getProfile().getProperty("urls");

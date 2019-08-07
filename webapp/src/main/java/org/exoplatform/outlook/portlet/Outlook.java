@@ -18,52 +18,14 @@
  */
 package org.exoplatform.outlook.portlet;
 
-import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.stream.Collectors;
-
-import javax.annotation.security.PermitAll;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.portlet.PortletPreferences;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.gatein.wci.ServletContainer;
-import org.gatein.wci.ServletContainerFactory;
-import org.gatein.wci.security.Credentials;
-
+import juzu.*;
+import juzu.request.HttpContext;
+import juzu.request.RequestContext;
+import juzu.template.TemplateExecutionException;
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.forum.service.Topic;
-import org.exoplatform.outlook.AccessException;
-import org.exoplatform.outlook.BadParameterException;
-import org.exoplatform.outlook.OutlookEmail;
-import org.exoplatform.outlook.OutlookException;
-import org.exoplatform.outlook.OutlookMessage;
-import org.exoplatform.outlook.OutlookService;
-import org.exoplatform.outlook.OutlookSpace;
-import org.exoplatform.outlook.OutlookUser;
+import org.exoplatform.outlook.*;
 import org.exoplatform.outlook.common.ResourceBundleSerializer;
 import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.jcr.File;
@@ -94,15 +56,26 @@ import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.wiki.mow.api.Page;
+import org.gatein.wci.ServletContainer;
+import org.gatein.wci.ServletContainerFactory;
+import org.gatein.wci.security.Credentials;
 
-import juzu.Path;
-import juzu.Resource;
-import juzu.Response;
-import juzu.SessionScoped;
-import juzu.View;
-import juzu.request.HttpContext;
-import juzu.request.RequestContext;
-import juzu.template.TemplateExecutionException;
+import javax.annotation.security.PermitAll;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.portlet.PortletPreferences;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
 
 /**
  * Juzu controller for Outlook read pane app.<br>
@@ -298,8 +271,13 @@ public class Outlook {
    * The add Addressee.
    */
   @Inject
-  @Path("addAddressee.gtmpl")
-  org.exoplatform.outlook.portlet.templates.addAddressee        addAddressee;
+  @Path("userInfoCompose.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoCompose        userInfoCompose;
+
+
+  @Inject
+  @Path("someform.gtmpl")
+  org.exoplatform.outlook.portlet.templates.someform        someform;
 
   /**
    * The posted status.
@@ -437,7 +415,8 @@ public class Outlook {
     // TODO features for 1.1+ version
     // addRootMenuItem(new MenuItem("search"));
     addRootMenuItem(new MenuItem("userInfo"));
-    addRootMenuItem(new MenuItem("addAddressee"));
+    addRootMenuItem(new MenuItem("userInfoCompose"));
+
   }
 
   /**
@@ -1145,6 +1124,22 @@ public class Outlook {
     }
   }
 
+  /**
+   * UserInfoCompose info form.
+   *
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response userInfoComposeForm() {
+    try {
+      return userInfo.ok();
+    } catch (Throwable e) {
+      LOG.error("Error showing search form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
   // *************** OutlookUser info command ***********
 
   /**
@@ -1197,25 +1192,27 @@ public class Outlook {
                                                               }
                                                             })
                                                             .collect(Collectors.toSet());
-
           for (String email : byEmail.split(",")) {
             User user = findUserByEmail(email.toLowerCase());
             if (user != null) {
               String username = user.getUserName();
               Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
+
+
               if (userIdentity != null) {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
                   List<ActivityInfo> activities = new ArrayList<>();
-                  List<IdentityInfo> connectionList = new ArrayList<>();
+//                  List<IdentityInfo> connectionList = new ArrayList<>();
+                  List<IdentityInfo> connectionList = getConnectionsList(username);
                   List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
-                  for (Relationship relationship : getRelationships(username)) {
-                    if (!relationship.getSender().getRemoteId().equals(username)) {
-                      connectionList.add(new IdentityInfo(relationship.getSender()));
-                    } else {
-                      connectionList.add(new IdentityInfo(relationship.getReceiver()));
-                    }
-                  }
+//                  for (Relationship relationship : getRelationships(username)) {
+//                    if (!relationship.getSender().getRemoteId().equals(username)) {
+//                      connectionList.add(new IdentityInfo(relationship.getSender()));
+//                    } else {
+//                      connectionList.add(new IdentityInfo(relationship.getReceiver()));
+//                    }
+//                  }
                   activity.forEach(a -> {
                     // Show only activities current user can see
                     String streamId = a.getStreamOwner();
@@ -1233,6 +1230,9 @@ public class Outlook {
               } else {
                 LOG.warn("Cannot find user identity: {}[{}]", username, email);
               }
+
+
+
             } else {
               LOG.warn("Cannot find user with email: {}", email);
             }
@@ -1347,49 +1347,106 @@ public class Outlook {
     }
   }
 
+//  /**
+//   * Convert to add Addressee form.
+//   *
+//   * @return the response
+//   */
+//  @Ajax
+//  @Resource
+//  public Response addAddresseeForm() {
+//    try {
+//      return /*addAddressee*/userInfo.ok();
+//    } catch (Throwable e) {
+//      LOG.error("Fuck! Fuck! Fu-u-u-u-u-u-uck!!!!!!!", e);
+//      return errorMessage(e.getMessage(), 500);
+//    }
+//  }
+
+
   /**
-   * Convert to add Addressee form.
+   * userInfoCompose info response.
    *
    * @return the response
    */
   @Ajax
   @Resource
-  public Response addAddresseeForm() {
+  public Response userInfoCompose(RequestContext context) {
     try {
-      return /*addAddressee*/userInfo.ok();
-    } catch (Throwable e) {
-      LOG.error("Fuck! Fuck! Fu-u-u-u-u-u-uck!!!!!!!", e);
+    String currentUsername = context.getSecurityContext().getRemoteUser();
+      List<IdentityInfo> connectionList = getConnectionsList(currentUsername);
+      return userInfoCompose.with().addressee(connectionList).ok();
+    } catch (Exception e) {
+      LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
     }
   }
 
 
   /**
-   * addAddressee info response.
+   * userDetails info response.
    *
-   * @param byEmail Array of emails to search in eXoplatform
+   * @param user in eXoplatform
    * @return the response
    */
   @Ajax
   @Resource
-  public Response addAddressee(RequestContext context) {
-    List<IdentityInfo> connectionList = new ArrayList<>();
+  public Response userDetails(String user, RequestContext context) {
     try {
-    String currentUsername = context.getSecurityContext().getRemoteUser();
+      String currentUsername = context.getSecurityContext().getRemoteUser();
+      Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+              currentUsername,
+              true);
+      Set<String> currentUserGroupIds = organization.getMembershipHandler()
+              .findMembershipsByUser(currentUsername)
+              .stream()
+              .map(m -> m.getGroupId())
+              .collect(Collectors.toSet());
+      Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
+              .stream()
+              .map(r -> {
+                if (!r.getSender().getRemoteId().equals(currentUsername)) {
+                  return r.getSender().getRemoteId();
+                } else {
+                  return r.getReceiver().getRemoteId();
+                }
+              })
+              .collect(Collectors.toSet());
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
+      List<ActivityInfo> activities = new ArrayList<>();
+      List<IdentityInfo> connectionList = getConnectionsList(user);
+      List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
 
-      for (Relationship relationship : getRelationships(currentUsername)) {
-        if (!relationship.getSender().getRemoteId().equals(currentUsername)) {
-          connectionList.add(new IdentityInfo(relationship.getSender()));
-        } else {
-          connectionList.add(new IdentityInfo(relationship.getReceiver()));
+      activity.forEach(a -> {
+        String streamId = a.getStreamOwner();
+        if (streamId != null) {
+          if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
+            activities.add(new ActivityInfo(a.getTitle(),
+                    a.getType(),
+                    LinkProvider.getSingleActivityUrl(a.getId()),
+                    a.getPostedTime()));
+          }
         }
-      }
+      });
+      UserInfo1 userDet = new UserInfo1(userIdentity, activities, connectionList);
+      return someform.with().userDet(userDet).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
     }
-//    String[] presentEmail = byEmail.split(",");
-    return addAddressee.with().addressee(connectionList).ok();
+  }
+
+
+  private List<IdentityInfo> getConnectionsList(String name) throws Exception {
+    List<IdentityInfo> connectionList = new ArrayList<>();
+    for (Relationship relationship : getRelationships(name)) {
+      if (!relationship.getSender().getRemoteId().equals(name)) {
+        connectionList.add(new IdentityInfo(relationship.getSender()));
+      } else {
+        connectionList.add(new IdentityInfo(relationship.getReceiver()));
+      }
+    }
+    return connectionList;
   }
 
   /**

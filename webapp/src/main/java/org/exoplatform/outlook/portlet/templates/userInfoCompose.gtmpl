@@ -3,7 +3,7 @@
   <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
     <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
       <div class="text-centered">
-        <h4>&{Outlook.command.addAddressee}</h4>
+        <h4>&{Outlook.command.userInfoCompose}</h4>
       </div>
       <div class="outlook-userInfo-person for-addressee">
         <div class="ms-PersonaCard">
@@ -14,7 +14,7 @@
                   <div class="ms-OrgChart-group">
                     <ul class="ms-OrgChart-list">
                       <% for (conn in addressee) { %>
-                        <li class="ms-OrgChart-listItem">
+                        <li class="ms-OrgChart-listItem compose" id="line-${conn.remoteId}">
                           <div class="ms-Persona">
                             <div class="ms-Persona-imageArea">
                               <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
@@ -42,10 +42,16 @@
                                 </div>
                               <% } %>
                             </div>
-                            <button class="ms-Button ms-Button--hero" id="${conn.email}">
-                              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-                            </button>
+                            <div clas="button-panel">
+                              <button class="ms-Button ms-Button--hero" id="${conn.email}">
+                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                              </button>
+                              <button class="ms-Button ms-Button--hero colapse-button" id="${conn.remoteId}">
+                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+                              </button>
+                            </div>
                           </div>
+                          <div id="user-details-${conn.remoteId}"></div>
                         </li>
                       <% } %>
                     </ul>
