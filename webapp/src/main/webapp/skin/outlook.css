@@ -159,7 +159,7 @@ body {
 #outlook-menu-container .ms-Grid {
   padding: 0px;
 }
- 
+
 #outlook-menu-container .ms-Grid .ms-Grid-col {
   padding-left: 0px;
   padding-right: 0px;
@@ -167,7 +167,7 @@ body {
 
 /*
 @media (min-width : 480px) {
-  
+
 }*/
 
 span[disabled] {
@@ -698,3 +698,85 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   min-width: 0;
   padding: 0 0 0 5px;
 }
+
+.button-panel {
+  display: inline-flex;
+}
+
+.ms-PersonaCard-action.is-active:after, .is-active.ms-PersonaCard-overflow:after {
+  left: 9px;
+}
+
+.content-det {
+  max-height: 0;
+  transition: max-height 0.5s ease-out;
+  overflow: hidden;
+}
+
+.menu-btn, .add-btn {
+  display: block;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: relative;
+  transition: 0.5s;
+  border-style: inset;
+  border-width: 1px;
+  margin: 0 5px;
+}
+
+.menu-btn span, .add-btn span {
+  position: absolute;
+  top: 50%; margin-top: -7px;
+  left: 50%; margin-left: -1px;
+  width: 2px;
+  height: 14px;
+  background-color: #0000CD;
+  transition: 0.5s;
+}
+
+.menu-btn span::before,
+.menu-btn span::after {
+  background-color: #0000CD;
+  width: 2px;
+  position: absolute;
+  content: '';
+  top: 6px;
+  display: block;
+  height: 7px;
+}
+
+.add-btn span::before{
+  background-color: #0000CD;
+  width: 2px;
+  position: absolute;
+  content: '';
+  display: block;
+  height: 14px;
+  transform: rotate(90deg);
+}
+
+.menu-btn span::before {
+  transform: rotate(-35deg);
+  transform-origin: bottom;
+}
+
+.menu-btn span::after {
+  transform: rotate(35deg);
+  transform-origin: bottom;
+}
+
+.menu-btn_active {
+  transform: rotate(180deg);
+}
+
+.add-btn_active span {
+  transform: rotate(90deg);
+}
+
+.add-btn_active span::before {
+  transform: rotate(0deg);
+}
+
+

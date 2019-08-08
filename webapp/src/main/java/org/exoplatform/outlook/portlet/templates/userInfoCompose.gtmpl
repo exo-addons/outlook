@@ -42,16 +42,27 @@
                                 </div>
                               <% } %>
                             </div>
-                            <div clas="button-panel">
-                              <button class="ms-Button ms-Button--hero" id="${conn.email}">
-                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-                              </button>
-                              <button class="ms-Button ms-Button--hero colapse-button" id="${conn.remoteId}">
-                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-                              </button>
+                            <div class="button-panel">
+
+
+<!--                              <button class="ms-Button ms-Button&#45;&#45;hero" id="${conn.email}">-->
+<!--                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon&#45;&#45;plus"></i></span>-->
+<!--                              </button>-->
+
+                              <a href="#" class="menu-btn" id="${conn.remoteId}">
+                                <span></span>
+                              </a>
+
+                              <a href="#" class="add-btn" id="${conn.email}">
+                                <span></span>
+                              </a>
+
+<!--                              <button class="ms-Button ms-Button&#45;&#45;hero colapse-button" id="${conn.remoteId}">-->
+<!--                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon&#45;&#45;plus"></i></span>-->
+<!--                              </button>-->
                             </div>
                           </div>
-                          <div id="user-details-${conn.remoteId}"></div>
+                          <div id="user-details-${conn.remoteId}" class="content-det"></div>
                         </li>
                       <% } %>
                     </ul>

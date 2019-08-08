@@ -324,8 +324,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 				function userInfoComposeInit(){
 
-					console.log("<<<<<<<<<StartInit userInfoCompose()>>>>>>>>>");
-
 					var item = Office.context.mailbox.item;
 
 					function loadAddAddressee() {
@@ -337,20 +335,32 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							} else {
 								clearError();
 								$(function () {
+
 									var $userDetails;
+
 									if ($.fn.PersonaCard) {
 										$addressee.find(".ms-PersonaCard").PersonaCard();
 									}
 
 									checkRecipients();
 
-									$('button').on('click',function () {
-										addRecipients($(this).attr('id'));
+									$('.add-btn').on('click',function () {
+										if ($(this).hasClass('add-btn_active')){
+											removeRecipients($(this).attr('id'));
+										} else {
+											addRecipients($(this).attr('id'));
+										}
 									});
 
-									$('.colapse-button').on('click',function () {
+									$('.menu-btn').on('click',function () {
 										$userDetails = $(document.getElementById('user-details-'+$(this).attr('id')));
 										showUserDetails($(this).attr('id'));
+                                        $(this).toggleClass('menu-btn_active');
+                                        if (document.getElementById('user-details-'+$(this).attr('id')).style.maxHeight){
+											document.getElementById('user-details-'+$(this).attr('id')).style.maxHeight = null;
+                                        }else{
+											document.getElementById('user-details-'+$(this).attr('id')).style.maxHeight = '359px';
+                                        }
 									});
 
 									function showUserDetails(user) {
@@ -383,6 +393,34 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 										}
 									}
 
+									function removeRecipients(emailAddress) {
+										var toRecipients = item.to;
+										toRecipients.getAsync(function (asyncResult) {
+											if (asyncResult.status === Office.AsyncResultStatus.Failed){
+												write(asyncResult.error.message);
+											}
+											else {
+												var list = [];
+												for (var i=0; i<asyncResult.value.length; i++){
+													if (emailAddress === asyncResult.value[i].emailAddress){
+														asyncResult.value.splice(i, 1);
+													} else {
+														list.push({"displayName":asyncResult.value[i].emailAddress,
+															"emailAddress":asyncResult.value[i].emailAddress});
+													}
+												}
+												toRecipients.setAsync(list,	function (asyncResult) {
+														if (asyncResult.status === Office.AsyncResultStatus.Failed){
+															write(asyncResult.error.message);
+														}
+														else {
+															$(document.getElementById(emailAddress)).removeClass('add-btn_active');
+														}
+													}); // End cc setAsync.
+											}
+										});
+									}
+
 									function checkRecipients() {
 										var toRecipients = item.to;
 										toRecipients.getAsync(function (asyncResult) {
@@ -392,8 +430,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 											else {
 												for (var i=0; i<asyncResult.value.length; i++){
 													var id = asyncResult.value[i].emailAddress.toLowerCase();
-													$(document.getElementById(id)).attr("disabled", "true");
+													$(document.getElementById(id)).addClass('add-btn_active');
 												}
+												var lis = document.getElementsByClassName('add-btn_active');
+												// if (lis.length > asyncResult.value.length){
+												// }
 											}
 										}); // End getAsync for bcc-recipients.
 									}
@@ -401,21 +442,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 							}
 						});
 					}
-
-					// if (internetMessageId) {
-					// 	if (from.emailAddress != userEmail) {
-					// 		recipientEmails += from.emailAddress + ",";
-					// 	}
-					// 	addEmailsIfNotUser(from);
-					// 	var toCopy = Office.context.mailbox.item.to;
-					// 	addEmailsIfNotUser(toCopy);
-					// 	var carbonCopy = Office.context.mailbox.item.cc;
-					// 	addEmailsIfNotUser(carbonCopy);
-					// 	loadUserInfo(recipientEmails);
-					// } else {
-
-						loadAddAddressee();
-					// }
+					loadAddAddressee();
 				}
 
 				function userInfoInit() {
