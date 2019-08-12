@@ -782,3 +782,6 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   display: contents;
 }
 
+#detailList {
+  display: flex;
+}
