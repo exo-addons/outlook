@@ -151,8 +151,8 @@
 										showError(signinFailMessage);
 										$welcome.show();
 									} else {
-										// XXX try approach for Community site
-										signinFailMessage = $data.find(".register-container .alert-error").text();
+										// XXX try approach for Community site (this will catch both warnings and errors)
+										signinFailMessage = $data.find(".register-container .alert").text();
 										if (signinFailMessage) {
 											showError(signinFailMessage);
 										} else {
