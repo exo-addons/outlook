@@ -1,21 +1,39 @@
 #{param name=addressee/}
 <div id="addAddresseeForm" class="ms-Grid-row">
   <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-    <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
-      <div class="text-centered">
-        <h4>&{Outlook.command.userInfoCompose}</h4>
+  <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+    <div class="text-centered">
+      <h4>&{Outlook.command.userInfoCompose}</h4>
+    </div>
+    <div class="ms-CommandBar">
+      <div class="ms-CommandBarSearch">
+        <input class="ms-CommandBarSearch-input" type="text" placeholder="Search" tabindex="1"/>
+        <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconSearchWrapper">
+          <i class="ms-Icon ms-Icon--search"></i>
+        </div>
+        <div class="ms-CommandBarSearch-iconWrapper ms-CommandBarSearch-iconClearWrapper ms-font-s">
+          <i class="ms-Icon ms-Icon--x"></i>
+        </div>
       </div>
-      <div class="outlook-userInfo-person for-addressee">
-        <div class="ms-PersonaCard">
-          <div class="ms-PersonaCard-actionDetailBox">
-            <ul id="detailList" class="ms-PersonaCard-detailChat">
-              <li class="ms-PersonaCard-actionDetails detail-6">
-                <div class="ms-OrgChart">
-                  <div class="ms-OrgChart-group">
-                    <ul class="ms-OrgChart-list">
-                      <% for (conn in addressee) { %>
-                        <li class="ms-OrgChart-listItem compose" id="line-${conn.remoteId}">
-                          <div class="ms-Persona">
+    </div>
+    <div class="outlook-userInfo-person for-addressee">
+      <div class="ms-PersonaCard">
+        <div class="ms-PersonaCard-actionDetailBox">
+          <ul id="detailList" class="ms-PersonaCard-detailChat">
+            <li class="ms-PersonaCard-actionDetails detail-6">
+              <div class="ms-OrgChart">
+                <div class="ms-OrgChart-group">
+                  <ul class="ms-OrgChart-list">
+                    <% for (conn in addressee) { %>
+                    <li class="ms-OrgChart-listItem compose" id="line-${conn.remoteId}">
+                      <div class="compose-Persona" id="${conn.firstName},${conn.lastName},${conn.email}">
+                        <div class="ms-Persona">
+                          <div class="button-panel">
+                            <a href="#" class="menu-btn" id="${conn.remoteId}">
+                              <i class="ms-Icon ms-Icon--chevronUp" aria-hidden="true"></i>
+                            </a>
+                          </div>
+                          <div class="ms-Persona-compase">
                             <div class="ms-Persona-imageArea">
                               <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
                                 <font style="vertical-align: inherit;">
@@ -35,43 +53,62 @@
                                 </font>
                               </div>
                               <% if (conn.aboutMe) { %>
-                                <div class="ms-Persona-secondaryText">
-                                  <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">${conn.aboutMe}</font>
-                                  </font>
-                                </div>
+                              <div class="ms-Persona-secondaryText">
+                                <font style="vertical-align: inherit;">
+                                  <font style="vertical-align: inherit;">${conn.aboutMe}</font>
+                                </font>
+                              </div>
                               <% } %>
                             </div>
-                            <div class="button-panel">
-
-
-<!--                              <button class="ms-Button ms-Button&#45;&#45;hero" id="${conn.email}">-->
-<!--                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon&#45;&#45;plus"></i></span>-->
-<!--                              </button>-->
-
-                              <a href="#" class="menu-btn" id="${conn.remoteId}">
-                                <span></span>
-                              </a>
-
-                              <a href="#" class="add-btn" id="${conn.email}">
-                                <span></span>
-                              </a>
-
-<!--                              <button class="ms-Button ms-Button&#45;&#45;hero colapse-button" id="${conn.remoteId}">-->
-<!--                                <span class="ms-Button-icon"><i class="ms-Icon ms-Icon&#45;&#45;plus"></i></span>-->
-<!--                              </button>-->
-                            </div>
                           </div>
-                          <div id="user-details-${conn.remoteId}" class="content-det"></div>
-                        </li>
-                      <% } %>
-                    </ul>
-                  </div>
+                          <div class="button-panel">
+                            <a href="#" class="add-btn" id="${conn.email}">
+                              <span></span>
+                            </a>
+                          </div>
+                        </div>
+                        <div id="user-details-${conn.remoteId}" class="content-det"></div>
+                      </div>
+                    </li>
+                    <% } %>
+                  </ul>
                 </div>
-              </li>
-            </ul>
-          </div>
+              </div>
+            </li>
+          </ul>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="ms-Dialog ms-Dialog--multiline ms-Sialog-Compose">
+  <div class="ms-Overlay ms-Overlay--dark ms-DialogAction--close js-DialogAction--close"></div>
+  <div class="ms-Dialog-main">
+    <button class="ms-Dialog-button ms-Dialog-button--close js-DialogAction--close">
+      <i class="ms-Icon ms-Icon--x"></i>
+    </button>
+    <div class="ms-Dialog-header">
+      <p class="ms-Dialog-title">Create message</p>
+    </div>
+    <div class="ms-Dialog-inner">
+      <div class="ms-Dialog-content">
+        <button class="ms-Button ms-Button--compound" id="to">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">to</span>
+          <span class="ms-Button-description">Create message "to" type.</span>
+        </button>
+        <button class="ms-Button ms-Button--compound" id="cc">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">cc</span>
+          <span class="ms-Button-description">Create message "cc" type.</span>
+        </button>
+        <button class="ms-Button ms-Button--compound" id="bcc">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">bcc</span>
+          <span class="ms-Button-description">Create message "bcc" type.</span>
+        </button>
       </div>
     </div>
   </div>

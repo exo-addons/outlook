@@ -1,0 +1,264 @@
+#{param name=userDet/}
+<div class="ms-Grid-row">
+  <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+  <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
+    <div class="ms-PersonaCard">
+      <ul class="ms-PersonaCard-actions">
+        <li id="chat" class="ms-PersonaCard-action is-active"><i class="ms-Icon ms-Icon--panel"></i></li>
+        <li id="org" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--people"></i></li>
+        <li id="phone" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--phone"></i></li>
+        <li id="video" class="ms-PersonaCard-action "><i class="ms-Icon ms-Icon--chat"></i></li>
+        <li id="mail" class="ms-PersonaCard-action"><i class="ms-Icon ms-Icon--mail"></i></li>
+        <li class="ms-PersonaCard-overflow" alt="View profile in eXo" title="&{Outlook.openProfileInIntranet}">
+          <a href="${userDet.profileLink}" class="ms-Link" target="_blank">&{Outlook.inexo}</a>
+        </li>
+      </ul>
+      <div class="ms-PersonaCard-actionDetailBox">
+        <ul id="detailList" class="ms-PersonaCard-detailChat">
+          <li class="ms-PersonaCard-actionDetails detail-6 is-active">
+            <h5 style="font-weight: bolder">&{Outlook.activityInfo}</h5>
+            <div class="activities-list">
+              <% for (activity in userDet.activities) { %>
+              <div class="ms-depth-8 activity">
+                <ul class="ms--list">
+                  <% if (activity.title) { %>
+                  <li class="activity-title">
+                    <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link"
+                       target="_blank">
+                      ${activity.title}</a>
+                  </li>
+                  <% } %>
+                  <% if (activity.postedDate) { %>
+                  <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                  <% } %>
+                </ul>
+              </div>
+              <% } %>
+            </div>
+          </li>
+          <li class="ms-PersonaCard-actionDetails detail-6">
+            <div class="ms-OrgChart">
+              <div class="ms-OrgChart-group">
+                <ul class="ms-OrgChart-list">
+                  <% for (conn in userDet.connections) { %>
+                  <li class="ms-OrgChart-listItem">
+                    <div class="ms-Persona">
+                      <div class="ms-Persona-imageArea">
+                        <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                          <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
+                            ${conn.firstName}${conn.lastName}</font>
+                          </font>
+                        </div>
+                        <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                      </div>
+                      <div class="ms-Persona-details">
+                        <div class="ms-Persona-primaryText">
+                          <font style="vertical-align: inherit;">
+                            <a href="${conn.profileLink}" class="ms-Link" target="_blank">
+                              ${conn.fullName}
+                            </a>
+                          </font>
+                        </div>
+                        <% if (conn.aboutMe) { %>
+                        <div class="ms-Persona-secondaryText">
+                          <font style="vertical-align: inherit;">
+                            <font style="vertical-align: inherit;">${conn.aboutMe}</font>
+                          </font>
+                        </div>
+                        <% } %>
+                      </div>
+                    </div>
+                  </li>
+                  <% } %>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalPhones">
+            <% if (userDet.isPhoneNumberPresent()) { %>
+            <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
+            <% userDet.getPhones().each { phName, phNumber -> %>
+            <% if(phName.equals("work")) { %>
+            <table class="map-table">
+              <col class="map-table-title">
+              <col class="map-table-value">
+              <tr>
+                <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.workPhone}:</td>
+                <td>
+                  <% for (phone in phNumber) { %>
+                  <div class="ms-PersonaCard-detailLine-phone">
+                    <span class="ms-phone">${phone}</span>
+                  </div>
+                  <% } %>
+                </td>
+              </tr>
+            </table>
+            <% } else { %>
+            <% if(phName.equals("home")) { %>
+            <table class="map-table">
+              <col class="map-table-title">
+              <col class="map-table-value">
+              <tr>
+                <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.homePhone}:</td>
+                <td>
+                  <% for (phone in phNumber) { %>
+                  <div class="ms-PersonaCard-detailLine-phone">
+                    <span class="ms-phone">${phone}</span>
+                  </div>
+                  <% } %>
+                </td>
+              </tr>
+            </table>
+            <% } else { %>
+            <table class="map-table">
+              <col class="map-table-title">
+              <col class="map-table-value">
+              <tr>
+                <td><i class="ms-Icon ms-Icon--phone"></i>&{Outlook.otherPhone}:</td>
+                <td>
+                  <% for (phone in phNumber) { %>
+                  <div class="ms-PersonaCard-detailLine-phone">
+                    <span class="ms-phone">${phone}</span>
+                  </div>
+                  <% } %>
+                </td>
+              </tr>
+            </table>
+            <% } %>
+            <% } %>
+            <% } %>
+            <% } else { %>
+            <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
+            <% } %>
+          </li>
+          <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalIms">
+            <div class="ms-PersonaCard-detailLine">
+              <% if (userDet.getIms()) { %>
+              <% userDet.getIms().each { imName, imValue -> %>
+              <% if (imName.equals("skype")) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <i class="uiIconSocSkype uiIconSocLightGray"></i>&nbsp;&{Outlook.imsSkype}:
+                  </td>
+                  <td>
+                    <% for (im in imValue) { %>
+                    <div>
+                      <a class="ms-Link" href="skype:${imName}">
+                        ${im}
+                      </a>
+                    </div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+              <% if (imName.equals("gtalk")) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <i class="uiIconSocGtalk uiIconSocLightGray"></i>&nbsp;&{Outlook.imsGtalk}:
+                  </td>
+                  <td>
+                    <% for (im in imValue) { %>
+                    <div>${im}</div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+              <% if (imName.equals("yahoo")) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <i class="uiIconSocYahoo uiIconSocLightGray"></i>&nbsp;&{Outlook.imsYahoo}:
+                  </td>
+                  <td>
+                    <% for (im in imValue) { %>
+                    <div>${im}</div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+              <% if (imName.equals("other")) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:
+                  <td>
+                  <td>
+                    <% for (im in imValue) { %>
+                    <div>${im}</div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+              <% if (imName.equals("msn")) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <i class="uiIconSocMsn uiIconSocLightGray"></i>&nbsp;&{Outlook.imsMsn}:
+                  </td>
+                  <td>
+                    <% for (im in imValue) { %>
+                    <div>${im}</div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+              <% } %>
+              <% } else { %>
+              <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
+              <% } %>
+              <% if (userDet.links) { %>
+              <table class="map-table">
+                <col class="map-table-title">
+                <col class="map-table-value">
+                <tr>
+                  <td>
+                    <span><i class="ms-Icon ms-Icon--onlineJoin"></i>&nbsp;&nbsp;URL:</span>
+                  </td>
+                  <td>
+                    <% for (link in userDet.links) { %>
+                    <div>
+                      <a class="ms-Link" href="${link}" target="_blank">
+                        <span class="ms-Icon">${link}</span>
+                      </a>
+                    </div>
+                    <% } %>
+                  </td>
+                </tr>
+              </table>
+              <% } %>
+            </div>
+          </li>
+          <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
+            <div class="ms-PersonaCard-detailLine">
+              <span class="ms-PersonaCard-detailLabel">&{Outlook.email}:</span>
+              <% if (userDet.email) { %>
+              <p>
+                <i class="uiIconMail uiIconLightGray"></i>
+                <a class="ms-Link" href="mailto:${userDet.email}">${userDet.email}</a>
+              </p>
+              <% } %>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class=" ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
+  </div>
+</div>
