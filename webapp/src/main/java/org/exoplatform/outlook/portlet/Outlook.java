@@ -276,8 +276,8 @@ public class Outlook {
 
 
   @Inject
-  @Path("userInfoDet4Compose.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoDet4Compose userInfoDet4Compose;
+  @Path("userInfoDetailsCompose.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoDetailsCompose userInfoDetailsCompose;
 
   /**
    * The posted status.
@@ -1401,7 +1401,7 @@ public class Outlook {
         }
       });
       UserInfo1 userDet = new UserInfo1(userIdentity, activities, connectionList);
-      return userInfoDet4Compose.with().userDet(userDet).ok();
+      return userInfoDetailsCompose.with().userDet(userDet).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
