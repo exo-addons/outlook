@@ -210,9 +210,10 @@
                         <col class="map-table-title">
                         <col class="map-table-value">
                         <tr>
-                          <td><i class="uiIconSocYahoo uiIconSocLightGray"></i>&nbsp;&{Outlook.imsYahoo}:<td>
+                          <td><i class="uiIconSocYahoo uiIconSocLightGray"></i>&nbsp;&{Outlook.imsYahoo}:</td>
+                          <td>
                             <% for (im in imValue) { %>
-                            <div>${im}</div>
+                              <div>${im}</div>
                             <% } %>
                           </td>
                         </tr>
@@ -223,11 +224,12 @@
                         <col class="map-table-title">
                         <col class="map-table-value">
                         <tr>
-                          <td><i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:<td>
-                          <% for (im in imValue) { %>
-                          <div>${im}</div>
-                          <% } %>
-                        </td>
+                          <td><i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:</td>
+                          <td>
+                            <% for (im in imValue) { %>
+                              <div>${im}</div>
+                            <% } %>
+                          </td>
                         </tr>
                       </table>
                     <% } %>
@@ -236,7 +238,8 @@
                         <col class="map-table-title">
                         <col class="map-table-value">
                         <tr>
-                          <td><i class="uiIconSocMsn uiIconSocLightGray"></i>&nbsp;&{Outlook.imsMsn}:<td>
+                          <td><i class="uiIconSocMsn uiIconSocLightGray"></i>&nbsp;&{Outlook.imsMsn}:</td>
+                          <td>
                           <% for (im in imValue) { %>
                           <div>${im}</div>
                           <% } %>

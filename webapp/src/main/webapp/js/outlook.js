@@ -323,121 +323,178 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         function userInfoComposeInit() {
+          console.log(" userInfoComposeInit START");
           var item = Office.context.mailbox.item;
 
-          function loadAddAddressee() {
+          var presentEmail = "";
+          var typeOfMessage = [];
+
+          var to = item.to;
+          var cc = item.cc;
+          var bcc = item.bcc;
+
+          to.getAsync(function (asyncResult) {
+            if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+              console.log(asyncResult.error.message);
+            } else {
+              if (asyncResult.value.length > 0) {
+                typeOfMessage.push(to);
+                for (var i = 0; i < asyncResult.value.length; i++) {
+                  if (!presentEmail.includes(asyncResult.value[i].emailAddress.toLowerCase())) {
+                    presentEmail += asyncResult.value[i].emailAddress.toLowerCase() + ",";
+                  }
+                }
+              }
+              cc.getAsync(function (asyncResult) {
+                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                  console.log(asyncResult.error.message);
+                } else {
+                  if (asyncResult.value.length > 0) {
+                    typeOfMessage.push(cc);
+                    for (var i = 0; i < asyncResult.value.length; i++) {
+                      if (!presentEmail.includes(asyncResult.value[i].emailAddress.toLowerCase())) {
+                        presentEmail += asyncResult.value[i].emailAddress.toLowerCase() + ",";
+                      }
+                    }
+                  }
+                  bcc.getAsync(function (asyncResult) {
+                    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                      console.log(asyncResult.error.message);
+                    } else {
+                      if (asyncResult.value.length > 0) {
+                        typeOfMessage.push(bcc);
+                        for (var i = 0; i < asyncResult.value.length; i++) {
+                          if (!presentEmail.includes(asyncResult.value[i].emailAddress.toLowerCase())) {
+                            presentEmail += asyncResult.value[i].emailAddress.toLowerCase() + ",";
+                          }
+                        }
+                      }
+                      if (typeOfMessage.length > 1) {
+                        typeOfMessage[0] = item.to;
+                      }
+                      loadAddAddressee(presentEmail,typeOfMessage[0]);
+                    }
+                  });
+                }
+              });
+            }
+          });
+
+          function loadAddAddressee(presentEmail,messageType) {
             var $addressee = $("#outlook-userInfo");
-            $addressee.jzLoad("Outlook.userInfoCompose()", {},
+            $addressee.jzLoad("Outlook.userInfoCompose()", {
+                presentEmail:presentEmail
+              },
               function (response, status, jqXHR) {
                 if (status === "error") {
                   showError(jqXHR);
                 } else {
                   clearError();
                   $(function () {
-
                     var $userDetails;
-                    var $searchInput = $(".ms-CommandBarSearch-input");
-                    var $xIcon = $(".ms-CommandBarSearch-iconClearWrapper");
-                    var $modal = $(".ms-Sialog-Compose");
-                    var toRecipients = null;
+                    // var $modal = $(".ms-Sialog-Compose");
+                    $(".createMessage-btn").hide();
 
-                    var to, cc, bcc;
-                    to = item.to;
-                    cc = item.cc;
-                    bcc = item.bcc;
-
-                    to.getAsync(function (asyncResult) {
-                      if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                        console.log(asyncResult.error.message);
-                      } else {
-                        if (asyncResult.value.length > 0) {
-                          toRecipients = item.to;
-                          checkRecipients();
-                        }
-                      }
-                    });
-                    cc.getAsync(function (asyncResult) {
-                      if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                        console.log(asyncResult.error.message);
-                      } else {
-                        if (asyncResult.value.length > 0) {
-                          toRecipients = item.cc;
-                          checkRecipients();
-                        }
-                      }
-                    });
-                    bcc.getAsync(function (asyncResult) {
-                      if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                        console.log(asyncResult.error.message);
-                      } else {
-                        if (asyncResult.value.length > 0) {
-                          toRecipients = item.bcc;
-                          checkRecipients();
-                        }
-                      }
-                    });
-
-                    $modal.hide();
+                    // $modal.hide();
 
                     if ($.fn.PersonaCard) {
                       $addressee.find(".ms-PersonaCard").PersonaCard();
                     }
 
-                    $(".add-btn").on("click", function () {
-                      if ($(this).hasClass("add-btn_active")) {
-                        removeRecipients($(this).attr("id"));
+                    $("#bigPlus").on("click", function () {
+                      getConnections();
+                      $(this).toggleClass("bigPlus_active");
+                      $("#addAddresseeForm").toggleClass("addAddresseeForm_active");
+                      var top = $("#otherConnection").offset().top;
+                      if ($(this).hasClass("bigPlus_active")) {
+                        $("#otherConnection").offset({top: top - $("#addAddresseeForm").height()+20});
                       } else {
-                        addRecipients($(this).attr("id"));
-                      }
-                      if ($(this).val() !== "") {
-                        $xIcon.show();
-                      } else {
-                        $xIcon.hide();
+                        // $("#otherConnection").offset({top: top + $("#addAddresseeForm").height()-20});
+                        $("#otherConnection").empty();
+                        userInfoComposeInit();
                       }
                     });
 
-                    $searchInput.on("keyup", function () {
+                    function getConnections() {
                       var $users = $(".compose-Persona");
+                      var presentUsers = "";
+                      var $overlay = $("#otherConnection");
                       for (var i = 0; i < $users.length; i++) {
                         var names = $users[i].getAttribute("id").split(",");
-                        if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                          names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                          names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
-                          $($users[i]).show();
-                        } else {
-                          $($users[i]).hide();
-                        }
+                        presentUsers += names[2] + ","
                       }
-                      if ($(this).val() !== "") {
-                        $xIcon.show();
-                      } else {
-                        $xIcon.hide();
-                      }
-                    });
+                      $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
+                        function (response, status, jqXHR) {
+                          if (status === "error") {
+                            showError(jqXHR);
+                          } else {
+                            if ($.fn.PersonaCard) {
+                              $addressee.find(".ms-PersonaCard").PersonaCard();
+                            }
+                            $(".letter-btn").hide();
+                            $xIcon = $(".ms-Icon--x");
+                            $searchInput = $(".ms-CommandBarSearch-input");
+                            $(".menu-btn").on("click", function () {
+                              $(this).toggleClass("menu-btn_active");
+                              if ($(this).hasClass("menu-btn_active")){
+                                $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                                showUserDetails($(this).attr("id"), $userDetails);
+                                document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                              } else {
+                                document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
+                              }
+                            });
+                            $(".add-btn").on("click", function () {
+                              addRecipients($(this).attr("id"));
+                              $(this).closest(".compose-Persona").hide();
+                            });
+                            $searchInput.on("keyup", function () {
+                              var $users = $(".compose-Persona");
+                              for (var i = 0; i < $users.length; i++) {
+                                var names = $users[i].getAttribute("id").split(",");
+                                if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                                  names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                                  names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                                  $($users[i]).show();
+                                } else {
+                                  $($users[i]).hide();
+                                }
+                              }
+                              if ($(this).val() !== "") {
+                                $xIcon.show();
+                              } else {
+                                $xIcon.hide();
+                              }
+                            });
+                            $xIcon.on("click", function () {
+                              $searchInput.val("");
+                              $searchInput.dispatchEvent(new Event("keyup"));
+                            });
+                          }
+                        });
+                    }
 
-                    $xIcon.on("click", function () {
-                      $searchInput.val(null);
-                      $xIcon.hide();
-                    });
-
-                    $(".ms-Button--compound").on("click", function () {
-                      eval("toRecipients = item." + $(this).attr("id"));
-                      $(".ms-Dialog").hide();
+                    $(".remove-btn").on("click", function () {
+                      removeRecipients($(this).attr("id"));
+                      $(this).closest(".compose-Persona").hide();
                     });
 
                     $(".menu-btn").on("click", function () {
-                      $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
-                      showUserDetails($(this).attr("id"));
+                      console.log(".menu-btn Clicked");
                       $(this).toggleClass("menu-btn_active");
-                      if (document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight) {
-                        document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
-                      } else {
+                      if ($(this).hasClass("menu-btn_active")){
+                        $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                        showUserDetails($(this).attr("id"), $userDetails);
                         document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                      } else {
+                        document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
                       }
                     });
 
-                    function showUserDetails(user) {
-                      $userDetails.jzLoad("Outlook.userDetails()", {user: user},
+                    function showUserDetails(user, $ob) {
+                      console.log("showUserDetails(user)");
+                      console.log($ob);
+                      $ob.jzLoad("Outlook.userDetails()", {user: user},
                         function (response, status, jqXHR) {
                           if (status === "error") {
                             showError(jqXHR);
@@ -445,43 +502,40 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           }
                         });
                     }
-
                     function addRecipients(emailAddress) {
-                      if (toRecipients) {
-                        toRecipients.addAsync(
-                          [{
-                            "displayName": emailAddress,
-                            "emailAddress": emailAddress
-                          }],
-                          function (asyncResult) {
-                            if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                              write(asyncResult.error.message);
-                            } else {
-                              checkRecipients();
-                            }
-                          });
-                      } else {
-                        $modal.show();
+                      console.log(messageType);
+                      if(!messageType){
+                        messageType = item.to;
                       }
+                      console.log(messageType);
+                      messageType.addAsync(
+                        [{
+                          "displayName": emailAddress,
+                          "emailAddress": emailAddress
+                        }],
+                        function (asyncResult) {
+                          if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                            write(asyncResult.error.message);
+                          } else {
+                          }
+                        });
                     }
-
                     function removeRecipients(emailAddress) {
-                      toRecipients.getAsync(function (asyncResult) {
+                      messageType.getAsync(function (asyncResult) {
                         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                           write(asyncResult.error.message);
                         } else {
                           var list = [];
                           for (var i = 0; i < asyncResult.value.length; i++) {
-                            if (emailAddress === asyncResult.value[i].emailAddress) {
-                              asyncResult.value.splice(i, 1);
+                            if (emailAddress === asyncResult.value[i].emailAddress.toLowerCase()) {
                             } else {
                               list.push({
-                                "displayName": asyncResult.value[i].emailAddress,
-                                "emailAddress": asyncResult.value[i].emailAddress
+                                "displayName": asyncResult.value[i].emailAddress.toLowerCase(),
+                                "emailAddress": asyncResult.value[i].emailAddress.toLowerCase()
                               });
                             }
                           }
-                          toRecipients.setAsync(list, function (asyncResult) {
+                          messageType.setAsync(list, function (asyncResult) {
                             if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                               write(asyncResult.error.message);
                             } else {
@@ -491,27 +545,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                         }
                       });
                     }
-
-                    function checkRecipients() {
-                      if (toRecipients) {
-                        toRecipients.getAsync(function (asyncResult) {
-                          if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                            write(asyncResult.error.message);
-                          } else {
-                            for (var i = 0; i < asyncResult.value.length; i++) {
-                              var id = asyncResult.value[i].emailAddress.toLowerCase();
-                              $(document.getElementById(id)).addClass("add-btn_active");
-                            }
-                          }
-                        });
-                      }
-                    }
                   });
                 }
               });
           }
-
-          loadAddAddressee();
         }
 
         function userInfoInit() {
@@ -519,8 +556,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           function loadUserInfo(byEmail) {
             var $userInfo = $("#outlook-userInfo");
-            $userInfo.jzLoad("Outlook.userInfo()", {
-              byEmail: byEmail
+            $userInfo.jzLoad("Outlook.userInfoCompose()", {
+              presentEmail: byEmail
             }, function (response, status, jqXHR) {
               if (status == "error") {
                 showError(jqXHR);
@@ -529,6 +566,111 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 $(function () {
                   if ($.fn.PersonaCard) {
                     $userInfo.find(".ms-PersonaCard").PersonaCard();
+                  }
+                  $(".remove-btn").parent().hide();
+
+                  $("#bigPlus").on("click", function () {
+                    getConnections();
+                    $(this).toggleClass("bigPlus_active");
+                    $("#addAddresseeForm").toggleClass("addAddresseeForm_active");
+                    var top = $("#otherConnection").offset().top;
+                    if ($(this).hasClass("bigPlus_active")) {
+                      $("#otherConnection").offset({top: top - $("#addAddresseeForm").height()+20});
+                    } else {
+                      $("#otherConnection").empty();
+                      userInfoInit();
+                    }
+                  });
+
+                  function getConnections() {
+                    var $users = $(".compose-Persona");
+                    var presentUsers = "";
+                    var $overlay = $("#otherConnection");
+
+                    for (var i = 0; i < $users.length; i++) {
+                      var names = $users[i].getAttribute("id").split(",");
+                      presentUsers += names[2] + ","
+                    }
+
+                    $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
+                      function (response, status, jqXHR) {
+                        if (status === "error") {
+                          showError(jqXHR);
+                        } else {
+                          $searchInput = $(".ms-CommandBarSearch-input");
+                          $xIcon = $(".ms-Icon--x");
+                          if ($.fn.PersonaCard) {
+                            $userInfo.find(".ms-PersonaCard").PersonaCard();
+                          }
+                          $(".letter-btn").hide();
+                          $(".menu-btn").on("click", function () {
+                            $(this).toggleClass("menu-btn_active");
+                            if ($(this).hasClass("menu-btn_active")){
+                              $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                              showUserDetails($(this).attr("id"), $userDetails);
+                              document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                            } else {
+                              document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
+                            }
+                          });
+
+                          $(".add-btn").on("click", function () {
+                            console.log("THIS IS NEW LETTER!!");
+                          });
+
+                          $searchInput.on("keyup", function () {
+                            var $users = $(".compose-Persona");
+                            for (var i = 0; i < $users.length; i++) {
+                              var names = $users[i].getAttribute("id").split(",");
+                              if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                                names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                                names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                                $($users[i]).show();
+                              } else {
+                                $($users[i]).hide();
+                              }
+                            }
+                            if ($(this).val() !== "") {
+                              $xIcon.show();
+                            } else {
+                              $xIcon.hide();
+                            }
+                          });
+
+                          $xIcon.on("click", function () {
+                            $searchInput.val("");
+                            $searchInput.dispatchEvent(new Event("keyup"));
+
+                          });
+                        }
+                      });
+                  }
+
+                  $(".createMessage-btn").on("click", function () {
+                    console.log("THIS IS NEW LETTER!!");
+                  });
+
+                  $(".menu-btn").on("click", function () {
+                    $(this).toggleClass("menu-btn_active");
+                    if ($(this).hasClass("menu-btn_active")){
+                      $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                      showUserDetails($(this).attr("id"), $userDetails);
+                      document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                    } else {
+                      document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
+                    }
+                  });
+
+                  function showUserDetails(user, $ob) {
+                    console.log("showUserDetails(user)");
+                    console.log($ob);
+                    $ob.jzLoad("Outlook.userDetails()", {user: user},
+                      function (response, status, jqXHR) {
+                        if (status === "error") {
+                          showError(jqXHR);
+                        } else {
+                        }
+                      });
                   }
                 });
               }
@@ -558,7 +700,72 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             addEmailsIfNotUser(carbonCopy);
             loadUserInfo(recipientEmails);
           } else {
-            loadAddAddressee();
+            var $userInfo = $("#outlook-userInfo");
+            $userInfo.jzLoad("Outlook.getConnections()", {
+              presentEmail: ""
+            }, function (response, status, jqXHR) {
+              if (status == "error") {
+                showError(jqXHR);
+              } else {
+                $(".add-btn").hide();
+                if ($.fn.PersonaCard) {
+                  $userInfo.find(".ms-PersonaCard").PersonaCard();
+                }
+                $(".letter-btn").on("click", function () {
+                  console.log("THIS IS NEW LETTER");
+                });
+
+                $xIcon = $(".ms-Icon--x");
+                $searchInput = $(".ms-CommandBarSearch-input");
+                $searchInput.on("keyup", function () {
+                  var $users = $(".compose-Persona");
+                  for (var i = 0; i < $users.length; i++) {
+                    var names = $users[i].getAttribute("id").split(",");
+                    if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                      names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                      names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                      $($users[i]).show();
+                    } else {
+                      $($users[i]).hide();
+                    }
+                  }
+                  if ($(this).val() !== "") {
+                    $xIcon.show();
+                  } else {
+                    $xIcon.hide();
+                  }
+                });
+
+                $xIcon.on("click", function () {
+                  $searchInput.val("");
+                  $searchInput.dispatchEvent(new Event("keyup"));
+                });
+
+                $(".menu-btn").on("click", function () {
+                  console.log(".menu-btn Clicked");
+                  $(this).toggleClass("menu-btn_active");
+                  if ($(this).hasClass("menu-btn_active")){
+                    $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                    showUserDetails($(this).attr("id"), $userDetails);
+                    document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                  } else {
+                    document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
+                  }
+                });
+
+                function showUserDetails(user, $ob) {
+                  console.log("showUserDetails(user)");
+                  console.log($ob);
+                  $ob.jzLoad("Outlook.userDetails()", {user: user},
+                    function (response, status, jqXHR) {
+                      if (status === "error") {
+                        showError(jqXHR);
+                      } else {
+                      }
+                    });
+                }
+              }
+            });
           }
         }
 

@@ -684,10 +684,15 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 
 .less-details .ms-Persona-primaryText, .less-details .ms-Persona-secondaryText {
   width: 180px;
+  text-align: left;
 }
 
 .compose {
   display: contents;
+}
+
+.compose ul {
+  text-align: left;
 }
 
 .compose .ms-Persona {
@@ -727,8 +732,9 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   margin: 0 5px;
 }
 
-.menu-btn {
+.menu-btn, .plus-btn, .menu-btn-overlay {
   transition: 0.5s;
+  font-size: x-large;
 }
 
 .add-btn span {
@@ -749,10 +755,6 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   display: block;
   height: 14px;
   transform: rotate(90deg);
-}
-
-.menu-btn {
-  font-size: x-large;
 }
 
 .menu-btn_active {
@@ -784,4 +786,43 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 
 #detailList {
   display: flex;
+}
+
+.bigPlus_active {
+  transform: rotate(45deg);
+}
+
+.userinfo-title {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.userinfo-title .button-panel {
+  margin: 0 10px;
+  border: ridge;
+  border-radius: 50%;
+}
+
+.ms-Overlay--dark {
+  top: 125px;
+}
+
+#outlook-userInfo .ms-CommandBar {
+  margin: 15px 0;
+}
+
+#addAddresseeForm {
+  transition: 0.5s;
+}
+
+.addAddresseeForm_active {
+  opacity: 0.2;
+  pointer-events: none;
+  background: #CCC;
+}
+
+#otherConnection {
+    position: relative;
+    transition: 2s;
 }

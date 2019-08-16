@@ -194,7 +194,7 @@
                 <tr>
                   <td>
                     <i class="uiIconSocOther uiIconSocLightGray"></i>&nbsp;&{Outlook.imsOther}:
-                  <td>
+                  </td>
                   <td>
                     <% for (im in imValue) { %>
                     <div>${im}</div>
@@ -247,10 +247,8 @@
           </li>
           <li class="ms-PersonaCard-actionDetails detail-6 contact-detail">
             <div class="ms-PersonaCard-detailLine">
-              <span class="ms-PersonaCard-detailLabel">&{Outlook.email}:</span>
               <% if (userDet.email) { %>
               <p>
-                <i class="uiIconMail uiIconLightGray"></i>
                 <a class="ms-Link" href="mailto:${userDet.email}">${userDet.email}</a>
               </p>
               <% } %>

@@ -267,17 +267,29 @@ public class Outlook {
   @Path("postStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postStatus postStatus;
 
+//  /**
+//   * The add Addressee.
+//   */
+//  @Inject
+//  @Path("userInfoCompose.gtmpl")
+//  org.exoplatform.outlook.portlet.templates.userInfoCompose userInfoCompose;
+
   /**
    * The add Addressee.
    */
   @Inject
-  @Path("userInfoCompose.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoCompose userInfoCompose;
+  @Path("userInfo1.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfo1 userInfo1;
 
 
   @Inject
   @Path("userInfoDetailsCompose.gtmpl")
   org.exoplatform.outlook.portlet.templates.userInfoDetailsCompose userInfoDetailsCompose;
+
+
+  @Inject
+  @Path("userInfoOverlay.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoOverlay userInfoOverlay;
 
   /**
    * The posted status.
@@ -1110,22 +1122,6 @@ public class Outlook {
   }
 
   /**
-   * UserInfo info form.
-   *
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response userInfoForm() {
-    try {
-      return userInfo.ok();
-    } catch (Throwable e) {
-      LOG.error("Error showing search form", e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  /**
    * UserInfoCompose info form.
    *
    * @return the response
@@ -1160,6 +1156,22 @@ public class Outlook {
   }
 
   // *************** Convert To UserStatus command ***********
+
+  /**
+   * UserInfo info form.
+   *
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response userInfoForm() {
+    try {
+      return userInfo.ok();
+    } catch (Throwable e) {
+      LOG.error("Error showing search form", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
 
   /**
    * UserInfo info response.
@@ -1198,8 +1210,6 @@ public class Outlook {
             if (user != null) {
               String username = user.getUserName();
               Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
-
-
               if (userIdentity != null) {
                 // We don't need current user here
                 if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
@@ -1239,6 +1249,151 @@ public class Outlook {
     } else {
       return errorMessage("Valid email(s) required", 400);
     }
+  }
+
+//  /**
+//   * userInfoCompose info response.
+//   *
+//   * @return the response
+//   */
+//  @Ajax
+//  @Resource
+//  public Response userInfoCompose(RequestContext context) {
+//    try {
+//      String currentUsername = context.getSecurityContext().getRemoteUser();
+//      List<IdentityInfo> connectionList = getConnectionsList(currentUsername);
+//      return userInfoCompose.with().addressee(connectionList).ok();
+//    } catch (Exception e) {
+//      LOG.error("Error showing UserInfo Info by email ", e);
+//      return errorMessage(e.getMessage(), 500);
+//    }
+//  }
+
+  /**
+   * userInfoCompose info response.
+   *
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response userInfoCompose(String presentEmail, RequestContext context) {
+    try {
+      String currentUsername = context.getSecurityContext().getRemoteUser();
+      List<IdentityInfo> presentConnections = new ArrayList<>();
+      for (String email : presentEmail.split(",")) {
+
+        User user = findUserByEmail(email.toLowerCase());
+        if (user != null) {
+          Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+                  user.getUserName(), true);
+          if (!currentUsername.equals(userIdentity.getRemoteId())){
+            presentConnections.add(new IdentityInfo(userIdentity));
+          }
+        } else {
+          LOG.warn("Cannot find user with email: {}", email);
+        }
+
+      }
+      return userInfo1.with().presentConnections(presentConnections).ok();
+    } catch (Exception e) {
+      LOG.error("Error showing UserInfo Info by email ", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+  /**
+   * userDetails info response.
+   *
+   * @param presentUsers in outlook
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response getConnections(String presentUsers, RequestContext context) {
+    String currentUsername = context.getSecurityContext().getRemoteUser();
+    try {
+      List<IdentityInfo> connections =  getConnectionsList(currentUsername);
+      List<IdentityInfo> epsentConnections = new ArrayList<>();
+      if(presentUsers != null) {
+        epsentConnections = connections.stream()
+                .filter(con -> !presentUsers.toLowerCase().contains(con.getEmail().toLowerCase()))
+                .collect(Collectors.toList());
+      } else {
+        epsentConnections = connections;
+      }
+      return userInfoOverlay.with().epsentConnections(epsentConnections).ok();
+    } catch (Exception e) {
+      e.printStackTrace();
+      LOG.error("Cannot find any connections of current user: {}", currentUsername);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+
+  /**
+   * userDetails info response.
+   *
+   * @param user in eXoplatform
+   * @return the response
+   */
+  @Ajax
+  @Resource
+  public Response userDetails(String user, RequestContext context) {
+    try {
+      String currentUsername = context.getSecurityContext().getRemoteUser();
+      Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
+              currentUsername,
+              true);
+      Set<String> currentUserGroupIds = organization.getMembershipHandler()
+              .findMembershipsByUser(currentUsername)
+              .stream()
+              .map(m -> m.getGroupId())
+              .collect(Collectors.toSet());
+      Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
+              .stream()
+              .map(r -> {
+                if (!r.getSender().getRemoteId().equals(currentUsername)) {
+                  return r.getSender().getRemoteId();
+                } else {
+                  return r.getReceiver().getRemoteId();
+                }
+              })
+              .collect(Collectors.toSet());
+      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
+      List<ActivityInfo> activities = new ArrayList<>();
+      List<IdentityInfo> connectionList = getConnectionsList(user);
+      List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
+
+      activity.forEach(a -> {
+        String streamId = a.getStreamOwner();
+        if (streamId != null) {
+          if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
+            activities.add(new ActivityInfo(a.getTitle(),
+                    a.getType(),
+                    LinkProvider.getSingleActivityUrl(a.getId()),
+                    a.getPostedTime()));
+          }
+        }
+      });
+      UserInfo1 userDet = new UserInfo1(userIdentity, activities, connectionList);
+      return userInfoDetailsCompose.with().userDet(userDet).ok();
+    } catch (Exception e) {
+      LOG.error("Error showing UserInfo Info by email ", e);
+      return errorMessage(e.getMessage(), 500);
+    }
+  }
+
+
+  private List<IdentityInfo> getConnectionsList(String name) throws Exception {
+    List<IdentityInfo> connectionList = new ArrayList<>();
+    for (Relationship relationship : getRelationships(name)) {
+      if (!relationship.getSender().getRemoteId().equals(name)) {
+        connectionList.add(new IdentityInfo(relationship.getSender()));
+      } else {
+        connectionList.add(new IdentityInfo(relationship.getReceiver()));
+      }
+    }
+    return connectionList;
   }
 
   /**
@@ -1335,90 +1490,6 @@ public class Outlook {
       }
       return errorMessage("Message ID and user parameters required", 400);
     }
-  }
-
-  /**
-   * userInfoCompose info response.
-   *
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response userInfoCompose(RequestContext context) {
-    try {
-      String currentUsername = context.getSecurityContext().getRemoteUser();
-      List<IdentityInfo> connectionList = getConnectionsList(currentUsername);
-      return userInfoCompose.with().addressee(connectionList).ok();
-    } catch (Exception e) {
-      LOG.error("Error showing UserInfo Info by email ", e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  /**
-   * userDetails info response.
-   *
-   * @param user in eXoplatform
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response userDetails(String user, RequestContext context) {
-    try {
-      String currentUsername = context.getSecurityContext().getRemoteUser();
-      Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-              currentUsername,
-              true);
-      Set<String> currentUserGroupIds = organization.getMembershipHandler()
-              .findMembershipsByUser(currentUsername)
-              .stream()
-              .map(m -> m.getGroupId())
-              .collect(Collectors.toSet());
-      Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
-              .stream()
-              .map(r -> {
-                if (!r.getSender().getRemoteId().equals(currentUsername)) {
-                  return r.getSender().getRemoteId();
-                } else {
-                  return r.getReceiver().getRemoteId();
-                }
-              })
-              .collect(Collectors.toSet());
-      Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      List<ActivityInfo> activities = new ArrayList<>();
-      List<IdentityInfo> connectionList = getConnectionsList(user);
-      List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
-
-      activity.forEach(a -> {
-        String streamId = a.getStreamOwner();
-        if (streamId != null) {
-          if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
-            activities.add(new ActivityInfo(a.getTitle(),
-                    a.getType(),
-                    LinkProvider.getSingleActivityUrl(a.getId()),
-                    a.getPostedTime()));
-          }
-        }
-      });
-      UserInfo1 userDet = new UserInfo1(userIdentity, activities, connectionList);
-      return userInfoDetailsCompose.with().userDet(userDet).ok();
-    } catch (Exception e) {
-      LOG.error("Error showing UserInfo Info by email ", e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-
-  private List<IdentityInfo> getConnectionsList(String name) throws Exception {
-    List<IdentityInfo> connectionList = new ArrayList<>();
-    for (Relationship relationship : getRelationships(name)) {
-      if (!relationship.getSender().getRemoteId().equals(name)) {
-        connectionList.add(new IdentityInfo(relationship.getSender()));
-      } else {
-        connectionList.add(new IdentityInfo(relationship.getReceiver()));
-      }
-    }
-    return connectionList;
   }
 
   /**
