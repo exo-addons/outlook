@@ -392,10 +392,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   clearError();
                   $(function () {
                     var $userDetails;
-                    // var $modal = $(".ms-Sialog-Compose");
                     $(".createMessage-btn").hide();
-
-                    // $modal.hide();
 
                     if ($.fn.PersonaCard) {
                       $addressee.find(".ms-PersonaCard").PersonaCard();
@@ -409,11 +406,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       if ($(this).hasClass("bigPlus_active")) {
                         $("#otherConnection").offset({top: top - $("#addAddresseeForm").height()+20});
                       } else {
-                        // $("#otherConnection").offset({top: top + $("#addAddresseeForm").height()-20});
                         $("#otherConnection").empty();
                         userInfoComposeInit();
                       }
                     });
+
+
+                    if(presentEmail.length < 5){
+                      $("#bigPlus").trigger("click");
+                    }
 
                     function getConnections() {
                       var $users = $(".compose-Persona");
