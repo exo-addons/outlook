@@ -267,24 +267,17 @@ public class Outlook {
   @Path("postStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.postStatus postStatus;
 
-//  /**
-//   * The add Addressee.
-//   */
-//  @Inject
-//  @Path("userInfoCompose.gtmpl")
-//  org.exoplatform.outlook.portlet.templates.userInfoCompose userInfoCompose;
-
   /**
    * The add Addressee.
    */
   @Inject
-  @Path("userInfo1.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfo1 userInfo1;
+  @Path("userInfo.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfo userInfo;
 
 
   @Inject
-  @Path("userInfoDetailsCompose.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoDetailsCompose userInfoDetailsCompose;
+  @Path("userInfoDetails.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoDetails userInfoDetails;
 
 
   @Inject
@@ -323,15 +316,8 @@ public class Outlook {
    * The user info.
    */
   @Inject
-  @Path("userInfo.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfo userInfo;
-
-  /**
-   * The user info.
-   */
-  @Inject
-  @Path("userInfoDetails.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoDetails userInfoDetails;
+  @Path("userInfoForm.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoForm userInfoForm;
 
   /**
    * The convert to status.
@@ -426,7 +412,7 @@ public class Outlook {
 
     // TODO features for 1.1+ version
     // addRootMenuItem(new MenuItem("search"));
-    addRootMenuItem(new MenuItem("userInfo"));
+    addRootMenuItem(new MenuItem("userInfoRead"));
     addRootMenuItem(new MenuItem("userInfoCompose"));
 
   }
@@ -1130,7 +1116,7 @@ public class Outlook {
   @Resource
   public Response userInfoComposeForm() {
     try {
-      return userInfo.ok();
+      return userInfoForm.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
@@ -1164,110 +1150,14 @@ public class Outlook {
    */
   @Ajax
   @Resource
-  public Response userInfoForm() {
+  public Response userInfoReadForm() {
     try {
-      return userInfo.ok();
+      return userInfoForm.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
     }
   }
-
-  /**
-   * UserInfo info response.
-   *
-   * @param byEmail Array of emails to search in eXoplatform
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response userInfo(String byEmail, RequestContext context) {
-    if (byEmail != null && byEmail.length() > 2) {
-      String currentUsername = context.getSecurityContext().getRemoteUser();
-      List<UserInfo> users = new LinkedList<>();
-      try {
-        Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                currentUsername,
-                true);
-        if (currentUserIdentity != null) {
-          Set<String> currentUserGroupIds = organization.getMembershipHandler()
-                  .findMembershipsByUser(currentUsername)
-                  .stream()
-                  .map(m -> m.getGroupId())
-                  .collect(Collectors.toSet());
-          Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
-                  .stream()
-                  .map(r -> {
-                    if (!r.getSender().getRemoteId().equals(currentUsername)) {
-                      return r.getSender().getRemoteId();
-                    } else {
-                      return r.getReceiver().getRemoteId();
-                    }
-                  })
-                  .collect(Collectors.toSet());
-          for (String email : byEmail.split(",")) {
-            User user = findUserByEmail(email.toLowerCase());
-            if (user != null) {
-              String username = user.getUserName();
-              Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, username, true);
-              if (userIdentity != null) {
-                // We don't need current user here
-                if (!user.getEmail().equals(currentUserIdentity.getProfile().getProperty("email"))) {
-                  List<ActivityInfo> activities = new ArrayList<>();
-                  List<IdentityInfo> connectionList = getConnectionsList(username);
-                  List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
-                  activity.forEach(a -> {
-                    // Show only activities current user can see
-                    String streamId = a.getStreamOwner();
-                    if (streamId != null) {
-                      if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
-                        activities.add(new ActivityInfo(a.getTitle(),
-                                a.getType(),
-                                LinkProvider.getSingleActivityUrl(a.getId()),
-                                a.getPostedTime()));
-                      }
-                    }
-                  });
-                  users.add(new UserInfo(user, userIdentity, activities, connectionList));
-                }
-              } else {
-                LOG.warn("Cannot find user identity: {}[{}]", username, email);
-              }
-            } else {
-              LOG.warn("Cannot find user with email: {}", email);
-            }
-          }
-          return userInfoDetails.with().users(users).ok();
-        } else {
-          LOG.error("Cannot find current user indentity in Social: {}", currentUsername);
-          return errorMessage("Cannot find current user indentity", 500);
-        }
-      } catch (Exception e) {
-        LOG.error("Error showing UserInfo Info by email " + byEmail, e);
-        return errorMessage(e.getMessage(), 500);
-      }
-    } else {
-      return errorMessage("Valid email(s) required", 400);
-    }
-  }
-
-//  /**
-//   * userInfoCompose info response.
-//   *
-//   * @return the response
-//   */
-//  @Ajax
-//  @Resource
-//  public Response userInfoCompose(RequestContext context) {
-//    try {
-//      String currentUsername = context.getSecurityContext().getRemoteUser();
-//      List<IdentityInfo> connectionList = getConnectionsList(currentUsername);
-//      return userInfoCompose.with().addressee(connectionList).ok();
-//    } catch (Exception e) {
-//      LOG.error("Error showing UserInfo Info by email ", e);
-//      return errorMessage(e.getMessage(), 500);
-//    }
-//  }
 
   /**
    * userInfoCompose info response.
@@ -1294,7 +1184,7 @@ public class Outlook {
         }
 
       }
-      return userInfo1.with().presentConnections(presentConnections).ok();
+      return userInfo.with().presentConnections(presentConnections).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
@@ -1375,8 +1265,8 @@ public class Outlook {
           }
         }
       });
-      UserInfo1 userDet = new UserInfo1(userIdentity, activities, connectionList);
-      return userInfoDetailsCompose.with().userDet(userDet).ok();
+      UserInfo userDet = new UserInfo(userIdentity, activities, connectionList);
+      return userInfoDetails.with().userDet(userDet).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);

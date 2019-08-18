@@ -443,7 +443,7 @@
 
         <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/intranet/outlook"/>
         <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=search"/>
-        <bt:Url id="userInfoReadUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfo"/>
+        <bt:Url id="userInfoReadUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfoRead"/>
         <bt:Url id="userInfoComposeUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfoCompose"/>
 
         <bt:Url id="postStatusUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=postStatus"/>

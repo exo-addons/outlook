@@ -21,22 +21,9 @@ package org.exoplatform.outlook.portlet;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.social.core.identity.model.Identity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- * User info acts as a facade on top of eXo organization user and its data in
- * Social.<br>
- * Created by The eXo Platform SAS.
- * 
- * @author <a href="mailto:pnedonosko@exoplatform.com">Peter Nedonosko</a>
- * @version $Id: UserInfo.java 00000 Jul 16, 2019 pnedonosko $
- */
 public class UserInfo extends IdentityInfo {
-
-  private final User               orgUser;
 
   private final Identity           identity;
 
@@ -44,40 +31,15 @@ public class UserInfo extends IdentityInfo {
 
   private final List<IdentityInfo> connections;
 
-  /**
-   * Instantiates a new user info.
-   * @param orgUser the org user
-   * @param identity the identity
-   * @param activities list of social activities of the user that includes the
-   * @param connections list of social connections of the user that includes the
-   */
-
-  public UserInfo(User orgUser, Identity identity, List<ActivityInfo> activities, List<IdentityInfo> connections) {
+  public UserInfo(Identity identity, List<ActivityInfo> activities, List<IdentityInfo> connections) {
     super(identity);
-    this.orgUser = orgUser;
     this.identity = identity;
     this.activities = activities;
     this.connections = connections;
   }
 
-  public String getFirstName() {
-    return orgUser.getFirstName();
-  }
-
-  public String getLastName() {
-    return orgUser.getLastName();
-  }
-
-  public String getDisplayName() {
-    return orgUser.getDisplayName();
-  }
-
   public List<ActivityInfo> getActivities() {
     return activities;
-  }
-
-  public String getEmail() {
-    return orgUser.getEmail().toLowerCase();
   }
 
   public List<IdentityInfo> getConnections() {

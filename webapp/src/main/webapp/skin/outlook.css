@@ -583,8 +583,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 #outlook-userInfo .ms-PersonaCard-detailChat .detail-6, #outlook-userInfo .ms-PersonaCard-detailOrg .detail-6 {
   /*max-height: 320px;*/
   transition: max-height 0.25s ease;
-  padding: 9px 20px 9px 0;
-  width: 21%; /* TODO solve this crap better */
+  padding: 9px 2px 9px 0;
+  width: 22%; /* TODO solve this crap better */
 }
 
 #outlook-userInfo .ms-PersonaCard-actionDetailBox {
@@ -696,9 +696,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .compose .ms-Persona {
-  padding: 5px 0;
+  /*padding: 5px 0;*/
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -757,21 +756,21 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   transform: rotate(90deg);
 }
 
-.menu-btn_active {
+.activeMenu-btn {
   transform: rotate(180deg);
 }
 
-.add-btn_active span {
+.activeAdd-btn span {
   transform: rotate(90deg);
 }
 
-.add-btn_active span::before {
+.activeAdd-btn span::before {
   transform: rotate(0deg);
 }
 
 .ms-CommandBarSearch {
-  max-width: 280px;
-  width: 280px;
+  max-width: 270px;
+  width: 270px;
 }
 
 .ms-CommandBarSearch input {
@@ -788,7 +787,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   display: flex;
 }
 
-.bigPlus_active {
+.activeBigPlus {
   transform: rotate(45deg);
 }
 
@@ -796,12 +795,13 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   display: flex;
   align-items: center;
   padding: 0 10px;
+  text-align: left;
 }
 
 .userinfo-title .button-panel {
   margin: 0 10px;
-  border: ridge;
   border-radius: 50%;
+  border: 2px solid #0078d7;
 }
 
 .ms-Overlay--dark {
@@ -812,11 +812,11 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   margin: 15px 0;
 }
 
-#addAddresseeForm {
+#recipientForm {
   transition: 0.5s;
 }
 
-.addAddresseeForm_active {
+.activeRecipient {
   opacity: 0.2;
   pointer-events: none;
   background: #CCC;
@@ -825,4 +825,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 #otherConnection {
     position: relative;
     transition: 2s;
+}
+
+.compose-Persona {
+  margin: 10px 15px 10px 0;
 }

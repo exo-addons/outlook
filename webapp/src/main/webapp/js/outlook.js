@@ -322,8 +322,102 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           // TODO something?
         }
 
+// These are common features for userInfo in compose and read mode
+        function getConnections(messageType = Office.context.mailbox.item.to) {
+          var $users = $(".compose-Persona");
+          var presentUsers = "";
+          var $overlay = $("#otherConnection");
+          for (var i = 0; i < $users.length; i++) {
+            var names = $users[i].getAttribute("id").split(",");
+            presentUsers += names[2] + ","
+          }
+          $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
+            function (response, status, jqXHR) {
+              if (status === "error") {
+                showError(jqXHR);
+              } else {
+                if ($.fn.PersonaCard) {
+                  $("#outlook-userInfo").find(".ms-PersonaCard").PersonaCard();
+                }
+                $(".letter-btn").hide();
+                $xIcon = $(".ms-Icon--x");
+                $searchInput = $(".ms-CommandBarSearch-input");
+                $(".menu-btn").on("click", function () {
+                  console.log("Start .menu-btn click");
+                  $(this).toggleClass("activeMenu-btn");
+                  if ($(this).hasClass("activeMenu-btn")){
+                    $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
+                    showUserDetails($(this).attr("id"), $userDetails);
+                    document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
+                  } else {
+                    document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
+                  }
+                });
+
+                $(".add-btn").on("click", function () {
+                  var conversationId = Office.context.mailbox.item.conversationId;
+                  if (conversationId){
+                    console.log("This is new leter from other function");
+                  } else {
+                    addRecipients($(this).attr("id"),messageType);
+                    $(this).closest(".compose-Persona").hide();
+                  }
+                });
+
+                $searchInput.on("keyup", function () {
+                  var $users = $(".compose-Persona");
+                  for (var i = 0; i < $users.length; i++) {
+                    var names = $users[i].getAttribute("id").split(",");
+                    if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                      names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
+                      names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                      $($users[i]).show();
+                    } else {
+                      $($users[i]).hide();
+                    }
+                  }
+                  if ($(this).val() !== "") {
+                    $xIcon.show();
+                  } else {
+                    $xIcon.hide();
+                  }
+                });
+                $xIcon.on("click", function () {
+                  $searchInput.val("");
+                  $searchInput.dispatchEvent(new Event("keyup"));
+                });
+              }
+            });
+        }
+
+        function showUserDetails(user, $ob) {
+          $ob.jzLoad("Outlook.userDetails()", {user: user},
+            function (response, status, jqXHR) {
+              if (status === "error") {
+                showError(jqXHR);
+              } else {
+              }
+            });
+        }
+
+        function addRecipients(emailAddress,messageType) {
+          if(!messageType){
+            messageType = item.to;
+          }
+          messageType.addAsync(
+            [{
+              "displayName": emailAddress,
+              "emailAddress": emailAddress
+            }],
+            function (asyncResult) {
+              if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                write(asyncResult.error.message);
+              } else {
+              }
+            });
+        }
+
         function userInfoComposeInit() {
-          console.log(" userInfoComposeInit START");
           var item = Office.context.mailbox.item;
 
           var presentEmail = "";
@@ -372,7 +466,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       if (typeOfMessage.length > 1) {
                         typeOfMessage[0] = item.to;
                       }
-                      loadAddAddressee(presentEmail,typeOfMessage[0]);
+                      loadRecipients(presentEmail,typeOfMessage[0]);
                     }
                   });
                 }
@@ -380,7 +474,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             }
           });
 
-          function loadAddAddressee(presentEmail,messageType) {
+          function loadRecipients(presentEmail,messageType) {
             var $addressee = $("#outlook-userInfo");
             $addressee.jzLoad("Outlook.userInfoCompose()", {
                 presentEmail:presentEmail
@@ -398,13 +492,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       $addressee.find(".ms-PersonaCard").PersonaCard();
                     }
 
-                    $("#bigPlus").on("click", function () {
-                      getConnections();
-                      $(this).toggleClass("bigPlus_active");
-                      $("#addAddresseeForm").toggleClass("addAddresseeForm_active");
+                    $(".bigPlus").on("click", function () {
+                      getConnections(messageType);
+                      $(this).toggleClass("activeBigPlus");
+                      $("#recipientForm").toggleClass("activeRecipient");
                       var top = $("#otherConnection").offset().top;
-                      if ($(this).hasClass("bigPlus_active")) {
-                        $("#otherConnection").offset({top: top - $("#addAddresseeForm").height()+20});
+                      if ($(this).hasClass("activeBigPlus")) {
+                        $("#otherConnection").offset({top: top - $("#recipientForm").height()+20});
                       } else {
                         $("#otherConnection").empty();
                         userInfoComposeInit();
@@ -413,66 +507,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 
                     if(presentEmail.length < 5){
-                      $("#bigPlus").trigger("click");
-                    }
-
-                    function getConnections() {
-                      var $users = $(".compose-Persona");
-                      var presentUsers = "";
-                      var $overlay = $("#otherConnection");
-                      for (var i = 0; i < $users.length; i++) {
-                        var names = $users[i].getAttribute("id").split(",");
-                        presentUsers += names[2] + ","
-                      }
-                      $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
-                        function (response, status, jqXHR) {
-                          if (status === "error") {
-                            showError(jqXHR);
-                          } else {
-                            if ($.fn.PersonaCard) {
-                              $addressee.find(".ms-PersonaCard").PersonaCard();
-                            }
-                            $(".letter-btn").hide();
-                            $xIcon = $(".ms-Icon--x");
-                            $searchInput = $(".ms-CommandBarSearch-input");
-                            $(".menu-btn").on("click", function () {
-                              $(this).toggleClass("menu-btn_active");
-                              if ($(this).hasClass("menu-btn_active")){
-                                $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
-                                showUserDetails($(this).attr("id"), $userDetails);
-                                document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
-                              } else {
-                                document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
-                              }
-                            });
-                            $(".add-btn").on("click", function () {
-                              addRecipients($(this).attr("id"));
-                              $(this).closest(".compose-Persona").hide();
-                            });
-                            $searchInput.on("keyup", function () {
-                              var $users = $(".compose-Persona");
-                              for (var i = 0; i < $users.length; i++) {
-                                var names = $users[i].getAttribute("id").split(",");
-                                if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                                  names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                                  names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
-                                  $($users[i]).show();
-                                } else {
-                                  $($users[i]).hide();
-                                }
-                              }
-                              if ($(this).val() !== "") {
-                                $xIcon.show();
-                              } else {
-                                $xIcon.hide();
-                              }
-                            });
-                            $xIcon.on("click", function () {
-                              $searchInput.val("");
-                              $searchInput.dispatchEvent(new Event("keyup"));
-                            });
-                          }
-                        });
+                      $(".bigPlus").trigger("click");
                     }
 
                     $(".remove-btn").on("click", function () {
@@ -482,8 +517,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                     $(".menu-btn").on("click", function () {
                       console.log(".menu-btn Clicked");
-                      $(this).toggleClass("menu-btn_active");
-                      if ($(this).hasClass("menu-btn_active")){
+                      $(this).toggleClass("activeMenu-btn");
+                      if ($(this).hasClass("activeMenu-btn")){
                         $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
                         showUserDetails($(this).attr("id"), $userDetails);
                         document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
@@ -492,35 +527,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       }
                     });
 
-                    function showUserDetails(user, $ob) {
-                      console.log("showUserDetails(user)");
-                      console.log($ob);
-                      $ob.jzLoad("Outlook.userDetails()", {user: user},
-                        function (response, status, jqXHR) {
-                          if (status === "error") {
-                            showError(jqXHR);
-                          } else {
-                          }
-                        });
-                    }
-                    function addRecipients(emailAddress) {
-                      console.log(messageType);
-                      if(!messageType){
-                        messageType = item.to;
-                      }
-                      console.log(messageType);
-                      messageType.addAsync(
-                        [{
-                          "displayName": emailAddress,
-                          "emailAddress": emailAddress
-                        }],
-                        function (asyncResult) {
-                          if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                            write(asyncResult.error.message);
-                          } else {
-                          }
-                        });
-                    }
                     function removeRecipients(emailAddress) {
                       messageType.getAsync(function (asyncResult) {
                         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
@@ -536,11 +542,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                               });
                             }
                           }
+
                           messageType.setAsync(list, function (asyncResult) {
                             if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                               write(asyncResult.error.message);
                             } else {
-                              $(document.getElementById(emailAddress)).removeClass("add-btn_active");
+                              $(document.getElementById(emailAddress)).removeClass("activeAdd-btn");
                             }
                           });
                         }
@@ -552,7 +559,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function userInfoInit() {
+        function userInfoReadInit() {
           var item = Office.context.mailbox.item;
 
           function loadUserInfo(byEmail) {
@@ -570,90 +577,26 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
                   $(".remove-btn").parent().hide();
 
-                  $("#bigPlus").on("click", function () {
+                  $(".bigPlus").on("click", function () {
                     getConnections();
-                    $(this).toggleClass("bigPlus_active");
-                    $("#addAddresseeForm").toggleClass("addAddresseeForm_active");
+                    $(this).toggleClass("activeBigPlus");
+                    $("#recipientForm").toggleClass("activeRecipient");
                     var top = $("#otherConnection").offset().top;
-                    if ($(this).hasClass("bigPlus_active")) {
-                      $("#otherConnection").offset({top: top - $("#addAddresseeForm").height()+20});
+                    if ($(this).hasClass("activeBigPlus")) {
+                      $("#otherConnection").offset({top: top - $("#recipientForm").height()+20});
                     } else {
                       $("#otherConnection").empty();
-                      userInfoInit();
+                      userInfoReadInit();
                     }
                   });
-
-                  function getConnections() {
-                    var $users = $(".compose-Persona");
-                    var presentUsers = "";
-                    var $overlay = $("#otherConnection");
-
-                    for (var i = 0; i < $users.length; i++) {
-                      var names = $users[i].getAttribute("id").split(",");
-                      presentUsers += names[2] + ","
-                    }
-
-                    $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
-                      function (response, status, jqXHR) {
-                        if (status === "error") {
-                          showError(jqXHR);
-                        } else {
-                          $searchInput = $(".ms-CommandBarSearch-input");
-                          $xIcon = $(".ms-Icon--x");
-                          if ($.fn.PersonaCard) {
-                            $userInfo.find(".ms-PersonaCard").PersonaCard();
-                          }
-                          $(".letter-btn").hide();
-                          $(".menu-btn").on("click", function () {
-                            $(this).toggleClass("menu-btn_active");
-                            if ($(this).hasClass("menu-btn_active")){
-                              $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
-                              showUserDetails($(this).attr("id"), $userDetails);
-                              document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
-                            } else {
-                              document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
-                            }
-                          });
-
-                          $(".add-btn").on("click", function () {
-                            console.log("THIS IS NEW LETTER!!");
-                          });
-
-                          $searchInput.on("keyup", function () {
-                            var $users = $(".compose-Persona");
-                            for (var i = 0; i < $users.length; i++) {
-                              var names = $users[i].getAttribute("id").split(",");
-                              if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                                names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                                names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
-                                $($users[i]).show();
-                              } else {
-                                $($users[i]).hide();
-                              }
-                            }
-                            if ($(this).val() !== "") {
-                              $xIcon.show();
-                            } else {
-                              $xIcon.hide();
-                            }
-                          });
-
-                          $xIcon.on("click", function () {
-                            $searchInput.val("");
-                            $searchInput.dispatchEvent(new Event("keyup"));
-
-                          });
-                        }
-                      });
-                  }
 
                   $(".createMessage-btn").on("click", function () {
                     console.log("THIS IS NEW LETTER!!");
                   });
 
                   $(".menu-btn").on("click", function () {
-                    $(this).toggleClass("menu-btn_active");
-                    if ($(this).hasClass("menu-btn_active")){
+                    $(this).toggleClass("activeMenu-btn");
+                    if ($(this).hasClass("activeMenu-btn")){
                       $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
                       showUserDetails($(this).attr("id"), $userDetails);
                       document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
@@ -661,18 +604,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
                     }
                   });
-
-                  function showUserDetails(user, $ob) {
-                    console.log("showUserDetails(user)");
-                    console.log($ob);
-                    $ob.jzLoad("Outlook.userDetails()", {user: user},
-                      function (response, status, jqXHR) {
-                        if (status === "error") {
-                          showError(jqXHR);
-                        } else {
-                        }
-                      });
-                  }
                 });
               }
             });
@@ -690,8 +621,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             }
           }
 
-          if (internetMessageId) {
-            if (from.emailAddress != userEmail) {
+          if (Office.context.mailbox.item.conversationId) {
+            if (from.emailAddress !== userEmail) {
               recipientEmails += from.emailAddress + ",";
             }
             addEmailsIfNotUser(from);
@@ -705,7 +636,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             $userInfo.jzLoad("Outlook.getConnections()", {
               presentEmail: ""
             }, function (response, status, jqXHR) {
-              if (status == "error") {
+              if (status === "error") {
                 showError(jqXHR);
               } else {
                 $(".add-btn").hide();
@@ -744,8 +675,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                 $(".menu-btn").on("click", function () {
                   console.log(".menu-btn Clicked");
-                  $(this).toggleClass("menu-btn_active");
-                  if ($(this).hasClass("menu-btn_active")){
+                  $(this).toggleClass("activeMenu-btn");
+                  if ($(this).hasClass("activeMenu-btn")){
                     $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
                     showUserDetails($(this).attr("id"), $userDetails);
                     document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = "359px";
@@ -753,18 +684,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     document.getElementById("user-details-" + $(this).attr("id")).style.maxHeight = null;
                   }
                 });
-
-                function showUserDetails(user, $ob) {
-                  console.log("showUserDetails(user)");
-                  console.log($ob);
-                  $ob.jzLoad("Outlook.userDetails()", {user: user},
-                    function (response, status, jqXHR) {
-                      if (status === "error") {
-                        showError(jqXHR);
-                      } else {
-                      }
-                    });
-                }
               }
             });
           }

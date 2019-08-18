@@ -20,7 +20,7 @@
       <create>Create</create>
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
-      <userInfo>People</userInfo>
+      <userInfoRead>People</userInfoRead>
       <userInfoCompose>Find addressee</userInfoCompose>
       <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
