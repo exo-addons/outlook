@@ -322,7 +322,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           // TODO something?
         }
 
-// These are common features for userInfo in compose and read mode
+        // These are common features for userInfo in compose and read mode
         function getConnections(messageType = Office.context.mailbox.item.to) {
           var $users = $(".compose-Persona");
           var presentUsers = "";
@@ -331,7 +331,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             var names = $users[i].getAttribute("id").split(",");
             presentUsers += names[2] + ","
           }
-          $overlay.jzLoad("Outlook.getUserInfoConnections()", {presentUsers:presentUsers},
+          $overlay.jzLoad("Outlook.userInfoConnections()", {presentUsers:presentUsers},
             function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -354,20 +354,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
                 });
 
-                $(".add-btn").on("click", function () {
+                $(".add-btn").click(function() {
                   var conversationId = Office.context.mailbox.item.conversationId;
-                  if (conversationId){
+                  if (conversationId) {
+                    addRecipients($(this).attr("id"),messageType);
+                    $(this).closest(".compose-Persona").hide();                    
+                  } else {
                     var recipient = $(this).attr("id");
                     console.log(recipient);
                     Office.context.mailbox.displayNewMessageForm(
                       {
                         toRecipients: [recipient],
-                        subject: "Outlook add-ins are cool!",
-                        htmlBody: "Hello!!!",
+                        subject: "New message",
+                        htmlBody: "",
                       });
-                  } else {
-                    addRecipients($(this).attr("id"),messageType);
-                    $(this).closest(".compose-Persona").hide();
                   }
                 });
 
@@ -584,7 +584,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
                   $(".remove-btn").parent().hide();
 
-                  $(".bigPlus").on("click", function () {
+                  $(".bigPlus").click(function() {
                     getConnections();
                     $(this).toggleClass("activeBigPlus");
                     $("#recipientForm").toggleClass("activeRecipient");
@@ -602,12 +602,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     Office.context.mailbox.displayNewMessageForm(
                       {
                         toRecipients: [recipient],
-                        subject: "Outlook add-ins are cool!",
-                        htmlBody: "Hello!!!",
+                        subject: "New message",
+                        htmlBody: "",
                       });
                   });
 
-                  $(".menu-btn").on("click", function () {
+                  $(".menu-btn").click(function() {
                     $(this).toggleClass("activeMenu-btn");
                     if ($(this).hasClass("activeMenu-btn")){
                       $userDetails = $(document.getElementById("user-details-" + $(this).attr("id")));
@@ -646,7 +646,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             loadUserInfo(recipientEmails);
           } else {
             var $userInfo = $("#outlook-userInfo");
-            $userInfo.jzLoad("Outlook.getUserInfoConnections()", {
+            $userInfo.jzLoad("Outlook.userInfoConnections()", {
               presentEmail: ""
             }, function (response, status, jqXHR) {
               if (status === "error") {
@@ -656,13 +656,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 if ($.fn.PersonaCard) {
                   $userInfo.find(".ms-PersonaCard").PersonaCard();
                 }
-                $(".letter-btn").on("click", function () {
+                $(".letter-btn").click(function() {
                   var recipient = $(this).attr("id");
                   Office.context.mailbox.displayNewMessageForm(
                     {
                       toRecipients: [recipient],
-                      subject: "Outlook add-ins are cool!",
-                      htmlBody: "Hello!!!",
+                      subject: "New message",
+                      htmlBody: "",
                     });
                 });
 
@@ -2192,7 +2192,16 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           if ($convertTo.length > 0 && !internetMessageId) {
             $convertTo.parent().remove();
           }
-
+          // keep only single userInfo* menu
+          var $userInfoCompose = $menuItems.filter(".userInfoCompose");
+          if ($userInfoCompose.length > 0 && internetMessageId) {
+            $userInfoCompose.parent().remove();
+          }
+          var $userInfoRead = $menuItems.filter(".userInfoRead");
+          if ($userInfoRead.length > 0 && !internetMessageId) {
+            $userInfoRead.parent().remove();
+          }
+          
           $menuItems.each(function (i, m) {
             var $m = $(m);
             $m.click(function () {
