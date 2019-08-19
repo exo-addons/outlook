@@ -271,8 +271,8 @@ public class Outlook {
    * The add Addressee.
    */
   @Inject
-  @Path("userInfo.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfo userInfo;
+  @Path("userInfoRecipients.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoRecipients userInfoRecipients;
 
 
   @Inject
@@ -281,8 +281,8 @@ public class Outlook {
 
 
   @Inject
-  @Path("userInfoOverlay.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoOverlay userInfoOverlay;
+  @Path("userInfoConnections.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoConnections userInfoConnections;
 
   /**
    * The posted status.
@@ -316,8 +316,8 @@ public class Outlook {
    * The user info.
    */
   @Inject
-  @Path("userInfoForm.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoForm userInfoForm;
+  @Path("userInfo.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfo userInfo;
 
   /**
    * The convert to status.
@@ -1116,7 +1116,7 @@ public class Outlook {
   @Resource
   public Response userInfoComposeForm() {
     try {
-      return userInfoForm.ok();
+      return userInfo.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
@@ -1152,7 +1152,7 @@ public class Outlook {
   @Resource
   public Response userInfoReadForm() {
     try {
-      return userInfoForm.ok();
+      return userInfo.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
@@ -1166,7 +1166,7 @@ public class Outlook {
    */
   @Ajax
   @Resource
-  public Response userInfoCompose(String presentEmail, RequestContext context) {
+  public Response userInfoRecipients(String presentEmail, RequestContext context) {
     try {
       String currentUsername = context.getSecurityContext().getRemoteUser();
       List<IdentityInfo> presentConnections = new ArrayList<>();
@@ -1184,7 +1184,7 @@ public class Outlook {
         }
 
       }
-      return userInfo.with().presentConnections(presentConnections).ok();
+      return userInfoRecipients.with().presentConnections(presentConnections).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
@@ -1199,7 +1199,7 @@ public class Outlook {
    */
   @Ajax
   @Resource
-  public Response getConnections(String presentUsers, RequestContext context) {
+  public Response getUserInfoConnections(String presentUsers, RequestContext context) {
     String currentUsername = context.getSecurityContext().getRemoteUser();
     try {
       List<IdentityInfo> connections =  getConnectionsList(currentUsername);
@@ -1211,7 +1211,7 @@ public class Outlook {
       } else {
         epsentConnections = connections;
       }
-      return userInfoOverlay.with().epsentConnections(epsentConnections).ok();
+      return userInfoConnections.with().epsentConnections(epsentConnections).ok();
     } catch (Exception e) {
       e.printStackTrace();
       LOG.error("Cannot find any connections of current user: {}", currentUsername);
@@ -1228,7 +1228,7 @@ public class Outlook {
    */
   @Ajax
   @Resource
-  public Response userDetails(String user, RequestContext context) {
+  public Response userInfoDetails(String user, RequestContext context) {
     try {
       String currentUsername = context.getSecurityContext().getRemoteUser();
       Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,

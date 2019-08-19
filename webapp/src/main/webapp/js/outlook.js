@@ -331,7 +331,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             var names = $users[i].getAttribute("id").split(",");
             presentUsers += names[2] + ","
           }
-          $overlay.jzLoad("Outlook.getConnections()", {presentUsers:presentUsers},
+          $overlay.jzLoad("Outlook.getUserInfoConnections()", {presentUsers:presentUsers},
             function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -398,7 +398,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         function showUserDetails(user, $ob) {
-          $ob.jzLoad("Outlook.userDetails()", {user: user},
+          $ob.jzLoad("Outlook.userInfoDetails()", {user: user},
             function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -483,7 +483,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           function loadRecipients(presentEmail,messageType) {
             var $addressee = $("#outlook-userInfo");
-            $addressee.jzLoad("Outlook.userInfoCompose()", {
+            $addressee.jzLoad("Outlook.userInfoRecipients()", {
                 presentEmail:presentEmail
               },
               function (response, status, jqXHR) {
@@ -571,7 +571,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           function loadUserInfo(byEmail) {
             var $userInfo = $("#outlook-userInfo");
-            $userInfo.jzLoad("Outlook.userInfoCompose()", {
+            $userInfo.jzLoad("Outlook.userInfoRecipients()", {
               presentEmail: byEmail
             }, function (response, status, jqXHR) {
               if (status == "error") {
@@ -646,7 +646,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             loadUserInfo(recipientEmails);
           } else {
             var $userInfo = $("#outlook-userInfo");
-            $userInfo.jzLoad("Outlook.getConnections()", {
+            $userInfo.jzLoad("Outlook.getUserInfoConnections()", {
               presentEmail: ""
             }, function (response, status, jqXHR) {
               if (status === "error") {

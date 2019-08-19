@@ -2,10 +2,8 @@
 <bundle>
   <Outlook>
     <userinfo>
-      <title>
-        <compose>Create a new email message with one or several your connections in eXo</compose>
-        <noInfo>No information to display</noInfo>
-      </title>
+      <description>Create a new email message with one or several your connections in eXo</description>
+      <noInfo>No information to display</noInfo>
     </userinfo>
 
     <label>
@@ -21,7 +19,7 @@
       <convertTo>Convert</convertTo>
       <addAttachment>Attach Document</addAttachment>
       <userInfoRead>People</userInfoRead>
-      <userInfoCompose>Find addressee</userInfoCompose>
+      <userInfoCompose>People</userInfoCompose>
       <postStatus>Post a Status Update</postStatus>
       <startDiscussion>Start a Discussion</startDiscussion>
       <convertToStatus>Convert to Activity</convertToStatus>
