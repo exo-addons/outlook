@@ -331,7 +331,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             var names = $users[i].getAttribute("id").split(",");
             presentUsers += names[2] + ","
           }
-          $overlay.jzLoad("Outlook.getUserInfoConnections()", {presentUsers:presentUsers},
+          $overlay.jzLoad("Outlook.userInfoConnections()", {presentUsers:presentUsers},
             function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
