@@ -414,7 +414,6 @@ public class Outlook {
     // addRootMenuItem(new MenuItem("search"));
     addRootMenuItem(new MenuItem("userInfoRead"));
     addRootMenuItem(new MenuItem("userInfoCompose"));
-
   }
 
 
@@ -1192,33 +1191,31 @@ public class Outlook {
   }
 
   /**
-   * userDetails info response.
+   * User connections for infoInfo panel.
    *
    * @param presentUsers in outlook
    * @return the response
    */
   @Ajax
   @Resource
-  public Response getUserInfoConnections(String presentUsers, RequestContext context) {
+  public Response userInfoConnections(String presentUsers, RequestContext context) {
     String currentUsername = context.getSecurityContext().getRemoteUser();
     try {
-      List<IdentityInfo> connections =  getConnectionsList(currentUsername);
+      List<IdentityInfo> connections = getConnectionsList(currentUsername);
       List<IdentityInfo> epsentConnections = new ArrayList<>();
-      if(presentUsers != null) {
+      if (presentUsers != null) {
         epsentConnections = connections.stream()
-                .filter(con -> !presentUsers.toLowerCase().contains(con.getEmail().toLowerCase()))
-                .collect(Collectors.toList());
+                                       .filter(con -> !presentUsers.toLowerCase().contains(con.getEmail().toLowerCase()))
+                                       .collect(Collectors.toList());
       } else {
         epsentConnections = connections;
       }
       return userInfoConnections.with().epsentConnections(epsentConnections).ok();
     } catch (Exception e) {
-      e.printStackTrace();
-      LOG.error("Cannot find any connections of current user: {}", currentUsername);
+      LOG.error("Cannot find any connections of current user: {}", currentUsername, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
-
 
   /**
    * userDetails info response.
@@ -1253,7 +1250,6 @@ public class Outlook {
       List<ActivityInfo> activities = new ArrayList<>();
       List<IdentityInfo> connectionList = getConnectionsList(user);
       List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
-
       activity.forEach(a -> {
         String streamId = a.getStreamOwner();
         if (streamId != null) {
@@ -1265,8 +1261,8 @@ public class Outlook {
           }
         }
       });
-      UserInfo userDet = new UserInfo(userIdentity, activities, connectionList);
-      return userInfoDetails.with().userDet(userDet).ok();
+      UserInfo userInfo = new UserInfo(userIdentity, activities, connectionList);
+      return userInfoDetails.with().userDet(userInfo).ok();
     } catch (Exception e) {
       LOG.error("Error showing UserInfo Info by email ", e);
       return errorMessage(e.getMessage(), 500);
