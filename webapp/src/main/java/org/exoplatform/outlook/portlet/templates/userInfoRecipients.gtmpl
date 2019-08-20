@@ -68,11 +68,11 @@
                                     <i class="ms-Icon ms-Icon--minus" aria-hidden="true"></i>
                                   </a>
                                 </div>
-                                <div class="button-panel createMessage-btn" id="${conn.email}">
-                                  <a href="#">
-                                    <i class="ms-Icon ms-Icon--plus" aria-hidden="true"></i>
-                                  </a>
-                                </div>
+<!--                                <div class="button-panel createMessage-btn" id="${conn.email}">-->
+<!--                                  <a href="#">-->
+<!--                                    <i class="ms-Icon ms-Icon&#45;&#45;plus" aria-hidden="true"></i>-->
+<!--                                  </a>-->
+<!--                                </div>-->
                               </div>
                               <div id="user-details-${conn.remoteId}" class="content-det"></div>
                             </div>

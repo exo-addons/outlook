@@ -323,7 +323,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
 // These are common features for userInfo in compose and read mode
-        function getConnections(messageType = Office.context.mailbox.item.to) {
+        function getConnections(messageType = Office.context.mailbox.item.to, isComposeMode = false) {
           var $users = $(".compose-Persona");
           var presentUsers = "";
           var $overlay = $("#otherConnection");
@@ -355,19 +355,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 });
 
                 $(".add-btn").on("click", function () {
-                  var conversationId = Office.context.mailbox.item.conversationId;
-                  if (conversationId){
+                  // var conversationId = Office.context.mailbox.item.conversationId;
+                  // console.log("conversationId = "+conversationId);
+                  if (isComposeMode){
+                    addRecipients($(this).attr("id"),messageType);
+                    $(this).closest(".compose-Persona").hide();
+                  } else {
                     var recipient = $(this).attr("id");
                     console.log(recipient);
                     Office.context.mailbox.displayNewMessageForm(
                       {
                         toRecipients: [recipient],
-                        subject: "Outlook add-ins are cool!",
-                        htmlBody: "Hello!!!",
+                        // subject: "Outlook add-ins are cool!",
+                        // htmlBody: "Hello!!!",
                       });
-                  } else {
-                    addRecipients($(this).attr("id"),messageType);
-                    $(this).closest(".compose-Persona").hide();
                   }
                 });
 
@@ -500,7 +501,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
 
                     $(".bigPlus").on("click", function () {
-                      getConnections(messageType);
+                      getConnections(messageType, true);
                       $(this).toggleClass("activeBigPlus");
                       $("#recipientForm").toggleClass("activeRecipient");
                       var top = $("#otherConnection").offset().top;
@@ -582,7 +583,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   if ($.fn.PersonaCard) {
                     $userInfo.find(".ms-PersonaCard").PersonaCard();
                   }
-                  $(".remove-btn").parent().hide();
+                  // $(".remove-btn").parent().hide();
 
                   $(".bigPlus").on("click", function () {
                     getConnections();
@@ -597,14 +598,60 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
                   });
 
-                  $(".createMessage-btn").on("click", function () {
-                    var recipient = $(this).attr("id");
-                    Office.context.mailbox.displayNewMessageForm(
-                      {
-                        toRecipients: [recipient],
-                        subject: "Outlook add-ins are cool!",
-                        htmlBody: "Hello!!!",
+                  $(".remove-btn").on("click", function () {
+                    var recipients = byEmail.split(",");
+                    recipients.splice(recipients.indexOf($(this).attr("id")),1);
+
+                    console.log(Office.context.mailbox.item.to);
+
+                    console.log("recipients - "+recipients);
+
+                    var list = [];
+                    for (i = 0; i<recipients.length; i++) {
+                      list.push({
+                        "displayName": recipients[i].toLowerCase(),
+                        "emailAddress": recipients[i].toLowerCase()
                       });
+                    }
+
+                    function set(list){
+                      console.log("SET START");
+                      Office.context.mailbox.item.to.setAsync(list, function (asyncResult) {
+                        if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                          write(asyncResult.error.message);
+                        } else {
+                          $(document.getElementById(emailAddress)).removeClass("activeAdd-btn");
+                        }
+                      });
+                    }
+
+                    Office.context.mailbox.item.displayReplyAllForm(
+                      { 'callback' : function (asyncResult) {
+                          console.log("REZULT");
+                          console.log(asyncResult);
+                          console.log(Office.context.mailbox.item.to);
+                          // var list = [];
+                          // for (i = 0; i<recipients.length; i++) {
+                          //   list.push({
+                          //     "displayName": recipients[i].toLowerCase(),
+                          //     "emailAddress": recipients[i].toLowerCase()
+                          //   });
+                          // }
+                          console.log(list);
+                          console.log(item.to);
+
+                          set(list);
+
+                          // Office.context.mailbox.item.to.setAsync(list, function (asyncResult) {
+                          //   if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                          //     write(asyncResult.error.message);
+                          //   } else {
+                          //     $(document.getElementById(emailAddress)).removeClass("activeAdd-btn");
+                          //   }
+                          // });
+
+                        }},
+                      );
                   });
 
                   $(".menu-btn").on("click", function () {
@@ -633,7 +680,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               }
             }
           }
-
           if (Office.context.mailbox.item.conversationId) {
             if (from.emailAddress !== userEmail) {
               recipientEmails += from.emailAddress + ",";
@@ -643,7 +689,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             addEmailsIfNotUser(toCopy);
             var carbonCopy = Office.context.mailbox.item.cc;
             addEmailsIfNotUser(carbonCopy);
-            loadUserInfo(recipientEmails);
+            loadUserInfo(recipientEmails.toLowerCase());
           } else {
             var $userInfo = $("#outlook-userInfo");
             $userInfo.jzLoad("Outlook.getUserInfoConnections()", {
@@ -661,8 +707,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   Office.context.mailbox.displayNewMessageForm(
                     {
                       toRecipients: [recipient],
-                      subject: "Outlook add-ins are cool!",
-                      htmlBody: "Hello!!!",
+                      // subject: "Outlook add-ins are cool!",
+                      // htmlBody: "Hello!!!",
                     });
                 });
 
