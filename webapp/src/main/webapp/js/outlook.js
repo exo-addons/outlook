@@ -322,6 +322,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           // TODO something?
         }
 
+
 // These are common features for userInfo in compose and read mode
         function getConnections(messageType = Office.context.mailbox.item.to, isComposeMode = false) {
           var $userInfo = $("#outlook-userInfo");
@@ -333,7 +334,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             var names = $users[i].getAttribute("id").split(",");
             presentUsers += names[2] + ","
           }
-          console.log("Prezent user in compose mode - "+presentUsers);
+
           $overlay.jzLoad("Outlook.userInfoConnections()", {presentUsers:presentUsers},
             function (response, status, jqXHR) {
               if (status === "error") {
@@ -590,6 +591,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
                   });
 
+<<<<<<< HEAD
                   $userInfo.find(".remove-btn").click( function () {
                     var recipients = byEmail.split(",");
                     recipients.splice(recipients.indexOf($(this).attr("id")),1);
@@ -2217,7 +2219,16 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           if ($convertTo.length > 0 && !internetMessageId) {
             $convertTo.parent().remove();
           }
-
+          // keep only single userInfo* menu
+          var $userInfoCompose = $menuItems.filter(".userInfoCompose");
+          if ($userInfoCompose.length > 0 && internetMessageId) {
+            $userInfoCompose.parent().remove();
+          }
+          var $userInfoRead = $menuItems.filter(".userInfoRead");
+          if ($userInfoRead.length > 0 && !internetMessageId) {
+            $userInfoRead.parent().remove();
+          }
+          
           $menuItems.each(function (i, m) {
             var $m = $(m);
             $m.click(function () {
