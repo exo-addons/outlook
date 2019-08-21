@@ -591,7 +591,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
                   });
 
-<<<<<<< HEAD
                   $userInfo.find(".remove-btn").click( function () {
                     var recipients = byEmail.split(",");
                     recipients.splice(recipients.indexOf($(this).attr("id")),1);
