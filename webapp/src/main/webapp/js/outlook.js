@@ -346,10 +346,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 $searchInput = $overlay.find(".ms-CommandBarSearch-input");
 
                 $overlay.find(".menu-btn").click(function () {
-                  $(this).toggleClass("activeMenu-btn");
-                  if ($(this).hasClass("activeMenu-btn")){
-                    $userDetails = $overlay.find("#user-details-" + $(this).attr("id"));
-                    showUserDetails($(this).attr("id"), $userDetails);
+                  var $this = $(this);
+                  $this.toggleClass("activeMenu-btn");
+                  if ($this.hasClass("activeMenu-btn")){
+                    $userDetails = $overlay.find("#user-details-" + $this.attr("id"));
+                    showUserDetails($this.attr("id"), $userDetails);
                     $userDetails.css("max-height","none");
                   } else {
                     $userDetails.css("max-height","0");
@@ -357,11 +358,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 });
 
                 $overlay.find(".add-btn").click(function () {
+                  var $this = $(this);
                   if (isComposeMode){
-                    addRecipients($(this).attr("id"),messageType);
-                    $(this).closest(".compose-Persona").hide();
+                    addRecipients($this.attr("id"),messageType);
+                    $this.closest(".compose-Persona").hide();
                   } else {
-                    var recipient = $(this).attr("id");
+                    var recipient = $this.attr("id");
                     Office.context.mailbox.displayNewMessageForm(
                       {
                         toRecipients: [recipient],
@@ -371,12 +373,12 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                 $searchInput.change(function () {
                   var $users = $overlay.find(".compose-Persona");
-                  console.log($users);
+                  var $this = $(this);
                   for (var i = 0; i < $users.length; i++) {
                     var names = $users[i].getAttribute("id").split(",");
-                    if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                      names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                      names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                    if (names[0].toLowerCase().startsWith($this.val().toLowerCase()) ||
+                      names[1].toLowerCase().startsWith($this.val().toLowerCase()) ||
+                      names[2].toLowerCase().startsWith($this.val().toLowerCase())) {
                       $($users[i]).show();
                     } else {
                       $($users[i]).hide();
@@ -491,8 +493,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
 
                     $bigPlus.click(function () {
-                      $(this).toggleClass("activeBigPlus");
-                      if ($(this).hasClass("activeBigPlus")){
+                      var $this = $(this);
+                      $this.toggleClass("activeBigPlus");
+                      if ($this.hasClass("activeBigPlus")){
                         getConnections(messageType, true);
                         $("#recipientForm").hide();
                       } else {
@@ -508,15 +511,17 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
 
                     $userInfo.find(".remove-btn").click(function () {
-                      removeRecipients($(this).attr("id"));
-                      $(this).closest(".compose-Persona").remove();
+                      var $this = $(this);
+                      removeRecipients($this.attr("id"));
+                      $this.closest(".compose-Persona").remove();
                     });
 
                     $userInfo.find(".menu-btn").click(function () {
-                      $(this).toggleClass("activeMenu-btn");
-                      if ($(this).hasClass("activeMenu-btn")){
-                        $userDetails = $userInfo.find("#user-details-" + $(this).attr("id"));
-                        showUserDetails($(this).attr("id"), $userDetails);
+                      var $this = $(this);
+                      $this.toggleClass("activeMenu-btn");
+                      if ($this.hasClass("activeMenu-btn")){
+                        $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
+                        showUserDetails($this.attr("id"), $userDetails);
                         $userDetails.css("max-height","none");
                       } else {
                         $userDetails.css("max-height","0");
@@ -573,9 +578,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
 
                   var $bigPlus = $userInfo.find(".bigPlus");
+                  var $this = $(this);
                   $bigPlus.click(function () {
-                    $(this).toggleClass("activeBigPlus");
-                    if ($(this).hasClass("activeBigPlus")){
+                    $this.toggleClass("activeBigPlus");
+                    if ($this.hasClass("activeBigPlus")){
                       getConnections();
                       $("#recipientForm").hide();
                     } else {
@@ -636,10 +642,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   });
 
                   $userInfo.find(".menu-btn").click(function () {
-                    $(this).toggleClass("activeMenu-btn");
-                    if ($(this).hasClass("activeMenu-btn")){
-                      $userDetails = $userInfo.find("#user-details-" + $(this).attr("id"));
-                      showUserDetails($(this).attr("id"), $userDetails);
+                    var $this = $(this);
+                    $this.toggleClass("activeMenu-btn");
+                    if ($this.hasClass("activeMenu-btn")){
+                      $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
+                      showUserDetails($this.attr("id"), $userDetails);
                       $userDetails.css("max-height","none");
                     } else {
                       $userDetails.css("max-height","0");
@@ -694,13 +701,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                 $searchInput =  $userInfo.find(".ms-CommandBarSearch-input");
                 $searchInput.change(function () {
+                  var $this = $(this);
                   var $users = $overlay.find(".compose-Persona");
                   console.log($users);
                   for (var i = 0; i < $users.length; i++) {
                     var names = $users[i].getAttribute("id").split(",");
-                    if (names[0].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                      names[1].toLowerCase().startsWith($(this).val().toLowerCase()) ||
-                      names[2].toLowerCase().startsWith($(this).val().toLowerCase())) {
+                    if (names[0].toLowerCase().startsWith($this.val().toLowerCase()) ||
+                      names[1].toLowerCase().startsWith($this.val().toLowerCase()) ||
+                      names[2].toLowerCase().startsWith($this.val().toLowerCase())) {
                       $($users[i]).show();
                     } else {
                       $($users[i]).hide();
@@ -709,10 +717,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 });
 
                 $userInfo.find(".menu-btn").click(function () {
-                  $(this).toggleClass("activeMenu-btn");
-                  if ($(this).hasClass("activeMenu-btn")){
-                    $userDetails = $userInfo.find("#user-details-" + $(this).attr("id"));
-                    showUserDetails($(this).attr("id"), $userDetails);
+                  var $this = $(this);
+                  $this.toggleClass("activeMenu-btn");
+                  if ($this.hasClass("activeMenu-btn")){
+                    $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
+                    showUserDetails($this.attr("id"), $userDetails);
                     $userDetails.css("max-height","none");
                   } else {
                     $userDetails.css("max-height","0");
