@@ -372,7 +372,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
                 });
 
-                $searchInput.change(function () {
+                $searchInput.keyup(function () {
+                  console.log($(this).val());
                   var $users = $overlay.find(".compose-Persona");
                   var $this = $(this);
                   for (var i = 0; i < $users.length; i++) {
@@ -579,8 +580,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   }
 
                   var $bigPlus = $userInfo.find(".bigPlus");
-                  var $this = $(this);
                   $bigPlus.click(function () {
+                    var $this = $(this);
                     $this.toggleClass("activeBigPlus");
                     if ($this.hasClass("activeBigPlus")){
                       getConnections();
@@ -701,7 +702,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 });
 
                 $searchInput =  $userInfo.find(".ms-CommandBarSearch-input");
-                $searchInput.change(function () {
+                $searchInput.keyup(function () {
                   var $this = $(this);
                   var $users = $overlay.find(".compose-Persona");
                   console.log($users);
