@@ -769,8 +769,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .ms-CommandBarSearch {
-  max-width: 270px;
-  width: 270px;
+  max-width: 280px;
+  width: 280px;
 }
 
 .ms-CommandBarSearch input {
