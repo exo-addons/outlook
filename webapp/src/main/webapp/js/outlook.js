@@ -324,6 +324,25 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 
 // These are common features for userInfo in compose and read mode
+        Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
+        var flag = true;
+        function myHandlerFunction() {
+          var $userInfo = $("#outlook-userInfo");
+            if (flag) {
+              Office.context.mailbox.item.to.getAsync(function (asyncResult) {
+                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                } else {
+                  if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
+                    userInfoComposeInit();
+                    flag = true;
+                  }
+                }
+              });
+            } else {
+              flag = true;
+            }
+        }
+
         function showWriteLetterPanel() {
           var $userInfo = $("#outlook-userInfo");
           $userInfo.jzLoad("Outlook.userInfoConnections()", {
@@ -413,6 +432,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 $overlay.find(".add-btn").click(function () {
                   var $this = $(this);
                   if (isComposeMode){
+                    flag = false;
                     // console.log($this.closest(".compose-Persona").attr("id"));
                     // addRecipients($this.attr("id"),messageType);
                     addRecipients($this.closest(".compose-Persona").attr("id"),messageType);
@@ -547,32 +567,33 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     if ($.fn.PersonaCard) {
                       $userInfo.find(".ms-PersonaCard").PersonaCard();
                     }
-                    function myHandlerFunction(eventarg) {
-                      var flag = true;
-                      console.log("SOME CHANGE IN RECIPIENTS");
-                      if (!$bigPlus.hasClass("activeBigPlus")) {
-                        if (flag) {
-                          try {
-                            messageType.getAsync(function (asyncResult) {
-                              if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                                console.log(asyncResult.error.message);
-                              } else {
-                                if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
-                                  console.log("DO SOMETHING WITH PANEL");
-                                  console.log(eventarg.changedRecipientFields.getOwnPropertyNames);
-                                  console.log(eventarg.changedRecipientFields.to);
-                                  flag = true;
-                                }
-                              }
-                            });
-                          } finally {
-                            flag = false;
-                          }
-                        }
-                      }
-                    }
 
-                    item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
+                    // var flag = true;
+                    // function myHandlerFunction(eventarg) {
+                    //   console.log("SOME CHANGE IN RECIPIENTS");
+                    //   if (!$bigPlus.hasClass("activeBigPlus")) {
+                    //     if (flag) {
+                    //       try {
+                    //         messageType.getAsync(function (asyncResult) {
+                    //           if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                    //             console.log(asyncResult.error.message);
+                    //           } else {
+                    //             if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
+                    //               console.log("DO SOMETHING WITH PANEL");
+                    //               console.log(eventarg.changedRecipientFields.getOwnPropertyNames);
+                    //               console.log(eventarg.changedRecipientFields.to);
+                    //               flag = true;
+                    //             }
+                    //           }
+                    //         });
+                    //       } finally {
+                    //         flag = false;
+                    //       }
+                    //     }
+                    //   }
+                    // }
+
+                    // item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
 
                     $bigPlus.click(function () {
                       var $this = $(this);
@@ -593,6 +614,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
 
                     $userInfo.find(".remove-btn").click(function () {
+                      flag = false;
                       var $this = $(this);
                       removeRecipients($this.attr("id"));
                       $this.closest(".compose-Persona").remove();
