@@ -322,26 +322,30 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           // TODO something?
         }
 
-
-// These are common features for userInfo in compose and read mode
-        Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
+        // These are common features for userInfo in compose and read mode
         var flag = true;
-        function myHandlerFunction() {
+        Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, function() {
           var $userInfo = $("#outlook-userInfo");
-            if (flag) {
-              Office.context.mailbox.item.to.getAsync(function (asyncResult) {
-                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+          if (flag) {
+            Office.context.mailbox.item.to.getAsync(function (asyncResult) {
+              if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                var err = result.error;
+                if (err) {
+                  console.log("> RecipientsChanged event error " + err.name + ": " + err.message);
                 } else {
-                  if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
-                    userInfoComposeInit();
-                    flag = true;
-                  }
+                  console.log("> RecipientsChanged event error: " + JSON.stringify(result));                  
                 }
-              });
-            } else {
-              flag = true;
-            }
-        }
+              } else {
+                if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
+                  userInfoComposeInit();
+                  flag = true;
+                }
+              }
+            });
+          } else {
+            flag = true;
+          }
+        });
 
         function showWriteLetterPanel() {
           var $userInfo = $("#outlook-userInfo");
