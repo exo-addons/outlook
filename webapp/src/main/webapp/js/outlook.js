@@ -324,7 +324,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
 
 // These are common features for userInfo in compose and read mode
-        function someFunction() {
+        function showWriteLetterPanel() {
           var $userInfo = $("#outlook-userInfo");
           $userInfo.jzLoad("Outlook.userInfoConnections()", {
             presentEmail: ""
@@ -529,7 +529,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             }
           });
 
-          function loadRecipients(presentEmail,messageType) {
+          function loadRecipients(presentEmail,messageType = Office.context.mailbox.item.to) {
             var $userInfo = $("#outlook-userInfo");
             $userInfo.jzLoad("Outlook.userInfoRecipients()", {
                 presentEmail:presentEmail
@@ -547,10 +547,29 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     if ($.fn.PersonaCard) {
                       $userInfo.find(".ms-PersonaCard").PersonaCard();
                     }
-
                     function myHandlerFunction(eventarg) {
-                        console.log("SOME CHANGE IN RECIPIENTS");
-                      // }
+                      var flag = true;
+                      console.log("SOME CHANGE IN RECIPIENTS");
+                      if (!$bigPlus.hasClass("activeBigPlus")) {
+                        if (flag) {
+                          try {
+                            messageType.getAsync(function (asyncResult) {
+                              if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                                console.log(asyncResult.error.message);
+                              } else {
+                                if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
+                                  console.log("DO SOMETHING WITH PANEL");
+                                  console.log(eventarg.changedRecipientFields.getOwnPropertyNames);
+                                  console.log(eventarg.changedRecipientFields.to);
+                                  flag = true;
+                                }
+                              }
+                            });
+                          } finally {
+                            flag = false;
+                          }
+                        }
+                      }
                     }
 
                     item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
@@ -635,7 +654,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               } else {
                 clearError();
                 if ($userInfo.find(".compose").length < 1){
-                  someFunction();
+                  showWriteLetterPanel();
                 }
                 $(function () {
                   if ($.fn.PersonaCard) {
@@ -745,7 +764,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             addEmailsIfNotUser(carbonCopy);
             loadUserInfo(recipientEmails.toLowerCase());
           } else {
-            someFunction();
+            showWriteLetterPanel();
             // var $userInfo = $("#outlook-userInfo");
             // $userInfo.jzLoad("Outlook.userInfoConnections()", {
             //   presentEmail: ""
