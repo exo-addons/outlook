@@ -323,10 +323,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         // These are common features for userInfo in compose and read mode
-        var flag = true;
+        var isPanelBtnClicked = false;
         Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, function() {
           var $userInfo = $("#outlook-userInfo");
-          if (flag) {
+          if (!isPanelBtnClicked) {
             Office.context.mailbox.item.to.getAsync(function (asyncResult) {
               if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                 var err = result.error;
@@ -338,12 +338,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               } else {
                 if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
                   userInfoComposeInit();
-                  flag = true;
                 }
               }
             });
-          } else {
-            flag = true;
           }
         });
 
@@ -436,11 +433,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 $overlay.find(".add-btn").click(function () {
                   var $this = $(this);
                   if (isComposeMode){
-                    flag = false;
-                    // console.log($this.closest(".compose-Persona").attr("id"));
-                    // addRecipients($this.attr("id"),messageType);
-                    addRecipients($this.closest(".compose-Persona").attr("id"),messageType);
-                    $this.closest(".compose-Persona").hide();
+                      addRecipients($this.closest(".compose-Persona").attr("id"),messageType);
+                      $this.closest(".compose-Persona").hide();
                   } else {
                     var recipient = $this.attr("id");
                     Office.context.mailbox.displayNewMessageForm(
@@ -483,6 +477,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             messageType = item.to;
           }
           var buf = nameAndEmail.split(",");
+          isPanelBtnClicked = true;
           messageType.addAsync(
             [{
               "displayName": buf[0] + " " + buf[1],
@@ -491,7 +486,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             function (asyncResult) {
               if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                 console.log(asyncResult.error.message);
+                isPanelBtnClicked = false;
               } else {
+                isPanelBtnClicked = false;
               }
             });
         }
@@ -572,33 +569,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       $userInfo.find(".ms-PersonaCard").PersonaCard();
                     }
 
-                    // var flag = true;
-                    // function myHandlerFunction(eventarg) {
-                    //   console.log("SOME CHANGE IN RECIPIENTS");
-                    //   if (!$bigPlus.hasClass("activeBigPlus")) {
-                    //     if (flag) {
-                    //       try {
-                    //         messageType.getAsync(function (asyncResult) {
-                    //           if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                    //             console.log(asyncResult.error.message);
-                    //           } else {
-                    //             if (asyncResult.value.length !== $userInfo.find(".compose-Persona").length) {
-                    //               console.log("DO SOMETHING WITH PANEL");
-                    //               console.log(eventarg.changedRecipientFields.getOwnPropertyNames);
-                    //               console.log(eventarg.changedRecipientFields.to);
-                    //               flag = true;
-                    //             }
-                    //           }
-                    //         });
-                    //       } finally {
-                    //         flag = false;
-                    //       }
-                    //     }
-                    //   }
-                    // }
-
-                    // item.addHandlerAsync(Office.EventType.RecipientsChanged, myHandlerFunction);
-
                     $bigPlus.click(function () {
                       var $this = $(this);
                       $this.toggleClass("activeBigPlus");
@@ -618,10 +588,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     }
 
                     $userInfo.find(".remove-btn").click(function () {
-                      flag = false;
-                      var $this = $(this);
-                      removeRecipients($this.attr("id"));
-                      $this.closest(".compose-Persona").remove();
+                      // try {
+                      //   isPanelBtnClicked = true;
+                        var $this = $(this);
+                        removeRecipients($this.attr("id"));
+                        $this.closest(".compose-Persona").remove();
+                      // }finally {
+                      //   isPanelBtnClicked = false;
+                      // }
                     });
 
                     $userInfo.find(".menu-btn").click(function () {
@@ -637,9 +611,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     });
 
                     function removeRecipients(emailAddress) {
+                      isPanelBtnClicked = true;
                       messageType.getAsync(function (asyncResult) {
                         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                           console.log(asyncResult.error.message);
+                          isPanelBtnClicked = false;
                         } else {
                           var list = [];
                           for (var i = 0; i < asyncResult.value.length; i++) {
@@ -655,7 +631,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           messageType.setAsync(list, function (asyncResult) {
                             if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                               console.log(asyncResult.error.message);
+                              isPanelBtnClicked = false;
                             } else {
+                              isPanelBtnClicked = false;
                             }
                           });
                         }
