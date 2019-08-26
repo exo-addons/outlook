@@ -1,10 +1,10 @@
-#{param name=epsentConnections/}
+#{param name=connections/}
 <div class="ms-Grid">
   <div class="text-centered">
     <div class="ms-Grid-row">
       <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
       <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
-        <% if (epsentConnections) { %>
+        <% if (connections) { %>
         <div class="ms-CommandBar">
           <div class="ms-CommandBarSearch">
             <input class="ms-CommandBarSearch-input" type="text" placeholder="Search" tabindex="1"/>
@@ -24,7 +24,7 @@
                   <div class="ms-OrgChart">
                     <div class="ms-OrgChart-group">
                       <ul class="ms-OrgChart-list">
-                        <% for (conn in epsentConnections) { %>
+                        <% for (conn in connections) { %>
                         <li class="ms-OrgChart-listItem compose" id="line-${conn.remoteId}">
                           <div class="compose-Persona" id="${conn.firstName},${conn.lastName},${conn.email}">
                             <div class="ms-Persona">

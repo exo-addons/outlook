@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bundle>
   <Outlook>
-    <userinfo>
-      <description>Create a new email message with one or several your connections in eXo</description>
-      <noInfo>No information to display</noInfo>
-    </userinfo>
-
     <label>
       <hasSavedFile>has saved file:</hasSavedFile>
       <hasSavedNFiles>has saved {N} files:</hasSavedNFiles>
@@ -177,6 +172,12 @@
     <chat>Chat</chat>
     <vchat>Video chat</vchat>
     <linkConnexions>Self searching people</linkConnexions>
+    <userinfo>
+      <newMessageDescription>Create a new email message with one or several your connections in Intranet</newMessageDescription>
+      <readDescription>Intranet users present in this email message</readDescription>
+      <composeDescription>Intranet users present in this email message. You can add more from your connections or remove existing</composeDescription>
+      <noInfo>No more people to display</noInfo>
+    </userinfo>
 
     <messages>
       <folderHasNoPath>Error selecting the folder: path not found. Try refreshing the page.</folderHasNoPath>

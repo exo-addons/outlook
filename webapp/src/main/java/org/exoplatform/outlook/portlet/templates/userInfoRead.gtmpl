@@ -1,0 +1,23 @@
+<div class="ms-Grid">
+	<div class="text-centered">
+		<h4>&{Outlook.command.userInfoRead}</h4>
+	</div>
+	<div id="outlook-userInfo">
+    <div class="userinfo-title">
+      <div>
+        <p class="ms-Dialog-subText">
+          &{Outlook.userinfo.readDescription}
+        </p>
+      </div>
+      <div class="button-panel">
+        <a href="#" class="plus-btn bigPlus">
+          <i class="ms-Icon ms-Icon--plus" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+    <div class="recipients-panel">
+    </div>
+  </div>
+</div>
+
+

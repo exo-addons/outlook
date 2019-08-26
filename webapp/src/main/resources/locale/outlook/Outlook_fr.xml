@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bundle>
   <Outlook>
-    <userinfo>
-      <description>Create a new email message with one or several your connections in eXo</description>
-      <noInfo>No information to display</noInfo>
-    </userinfo>
     <!-- TODO -->
     <label>
       <hasSavedFile>a enregistré le fichier:</hasSavedFile>

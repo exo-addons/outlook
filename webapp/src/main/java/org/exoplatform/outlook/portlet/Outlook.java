@@ -92,193 +92,191 @@ public class Outlook {
   /**
    * .
    */
-  public final static String SOURCE_ID_ALL_SPACES = "*";
+  public final static String                                    SOURCE_ID_ALL_SPACES      = "*";
 
   /**
    * The Constant SOURCE_ID_PERSONAL.
    */
-  public final static String SOURCE_ID_PERSONAL = "PERSONAL_DOCUMENTS";
+  public final static String                                    SOURCE_ID_PERSONAL        = "PERSONAL_DOCUMENTS";
 
   /**
    * .
    */
-  private final static String GMT_TIME_ZONE_ID = "GMT";
+  private final static String                                   GMT_TIME_ZONE_ID          = "GMT";
 
   /**
    * .
    */
-  private final static String COOKIE_DATE_FORMAT_STRING = "EEE, dd-MMM-yyyy HH:mm:ss z";
+  private final static String                                   COOKIE_DATE_FORMAT_STRING = "EEE, dd-MMM-yyyy HH:mm:ss z";
 
   /**
    * .
    */
-  private final static String NAME_VALUE_DELIMITER = "=";
+  private final static String                                   NAME_VALUE_DELIMITER      = "=";
 
   /**
    * .
    */
-  private final static String ATTRIBUTE_DELIMITER = "; ";
+  private final static String                                   ATTRIBUTE_DELIMITER       = "; ";
 
   /**
    * .
    */
-  private final static String COOKIE_HEADER_NAME = "Set-Cookie";
+  private final static String                                   COOKIE_HEADER_NAME        = "Set-Cookie";
 
   /**
    * .
    */
-  private final static String PATH_ATTRIBUTE_NAME = "Path";
+  private final static String                                   PATH_ATTRIBUTE_NAME       = "Path";
 
   /**
    * .
    */
-  private final static String EXPIRES_ATTRIBUTE_NAME = "Expires";
+  private final static String                                   EXPIRES_ATTRIBUTE_NAME    = "Expires";
 
   /**
    * .
    */
-  private final static String MAXAGE_ATTRIBUTE_NAME = "Max-Age";
+  private final static String                                   MAXAGE_ATTRIBUTE_NAME     = "Max-Age";
 
   /**
    * .
    */
-  private final static String DOMAIN_ATTRIBUTE_NAME = "Domain";
+  private final static String                                   DOMAIN_ATTRIBUTE_NAME     = "Domain";
 
   /**
    * The Constant LOG.
    */
-  private static final Log LOG = ExoLogger.getLogger(Outlook.class);
+  private static final Log                                      LOG                       = ExoLogger.getLogger(Outlook.class);
 
   /**
    * The all menu items.
    */
-  private final Map<String, MenuItem> allMenuItems = new LinkedHashMap<String, MenuItem>();
+  private final Map<String, MenuItem>                           allMenuItems              = new LinkedHashMap<String, MenuItem>();
 
   /**
    * The root menu items.
    */
-  private final Set<MenuItem> rootMenuItems = new LinkedHashSet<MenuItem>();
+  private final Set<MenuItem>                                   rootMenuItems             = new LinkedHashSet<MenuItem>();
 
   /**
    * The preferences.
    */
   @Inject
-  Provider<PortletPreferences> preferences;
+  Provider<PortletPreferences>                                  preferences;
 
   /**
    * The outlook.
    */
   @Inject
-  OutlookService outlook;
+  OutlookService                                                outlook;
 
   @Inject
-  IdentityManager identityManager;
+  IdentityManager                                               identityManager;
 
   @Inject
-  ActivityManager activityManager;
+  ActivityManager                                               activityManager;
 
   @Inject
-  RelationshipManager relationshipManager;
+  RelationshipManager                                           relationshipManager;
 
   @Inject
-  SpaceService spaceService;
+  SpaceService                                                  spaceService;
 
   @Inject
-  OrganizationService organization;
+  OrganizationService                                           organization;
 
   /**
    * The remember me tokens.
    */
   @Inject
-  CookieTokenService rememberMeTokens;
+  CookieTokenService                                            rememberMeTokens;
 
   /**
    * The outlook tokens.
    */
   @Inject
-  OutlookTokenService outlookTokens;
+  OutlookTokenService                                           outlookTokens;
 
   /**
    * The content link.
    */
   @Inject
-  ContentLink contentLink;
+  ContentLink                                                   contentLink;
 
   /**
    * The index.
    */
   @Inject
   @Path("index.gtmpl")
-  org.exoplatform.outlook.portlet.templates.index index;
+  org.exoplatform.outlook.portlet.templates.index               index;
 
   /**
    * The save attachment.
    */
   @Inject
   @Path("saveAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.saveAttachment saveAttachment;
+  org.exoplatform.outlook.portlet.templates.saveAttachment      saveAttachment;
 
   /**
    * The saved attachment.
    */
   @Inject
   @Path("savedAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.savedAttachment savedAttachment;
+  org.exoplatform.outlook.portlet.templates.savedAttachment     savedAttachment;
 
   /**
    * The folders.
    */
   @Inject
   @Path("folders.gtmpl")
-  org.exoplatform.outlook.portlet.templates.folders folders;
+  org.exoplatform.outlook.portlet.templates.folders             folders;
 
   /**
    * The files explorer.
    */
   @Inject
   @Path("filesExplorer.gtmpl")
-  org.exoplatform.outlook.portlet.templates.filesExplorer filesExplorer;
+  org.exoplatform.outlook.portlet.templates.filesExplorer       filesExplorer;
 
   /**
    * The files search.
    */
   @Inject
   @Path("filesSearch.gtmpl")
-  org.exoplatform.outlook.portlet.templates.filesSearch filesSearch;
+  org.exoplatform.outlook.portlet.templates.filesSearch         filesSearch;
 
   /**
    * The add folder dialog.
    */
   @Inject
   @Path("addFolderDialog.gtmpl")
-  org.exoplatform.outlook.portlet.templates.addFolderDialog addFolderDialog;
+  org.exoplatform.outlook.portlet.templates.addFolderDialog     addFolderDialog;
 
   /**
    * The add attachment.
    */
   @Inject
   @Path("addAttachment.gtmpl")
-  org.exoplatform.outlook.portlet.templates.addAttachment addAttachment;
+  org.exoplatform.outlook.portlet.templates.addAttachment       addAttachment;
 
   /**
    * The post status.
    */
   @Inject
   @Path("postStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.postStatus postStatus;
+  org.exoplatform.outlook.portlet.templates.postStatus          postStatus;
 
   /**
    * The add Addressee.
    */
   @Inject
   @Path("userInfoRecipients.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoRecipients userInfoRecipients;
-
+  org.exoplatform.outlook.portlet.templates.userInfoRecipients  userInfoRecipients;
 
   @Inject
   @Path("userInfoDetails.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfoDetails userInfoDetails;
-
+  org.exoplatform.outlook.portlet.templates.userInfoDetails     userInfoDetails;
 
   @Inject
   @Path("userInfoConnections.gtmpl")
@@ -289,107 +287,114 @@ public class Outlook {
    */
   @Inject
   @Path("postedStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.postedStatus postedStatus;
+  org.exoplatform.outlook.portlet.templates.postedStatus        postedStatus;
 
   /**
    * The start discussion.
    */
   @Inject
   @Path("startDiscussion.gtmpl")
-  org.exoplatform.outlook.portlet.templates.startDiscussion startDiscussion;
+  org.exoplatform.outlook.portlet.templates.startDiscussion     startDiscussion;
 
   /**
    * The started discussion.
    */
   @Inject
   @Path("startedDiscussion.gtmpl")
-  org.exoplatform.outlook.portlet.templates.startedDiscussion startedDiscussion;
+  org.exoplatform.outlook.portlet.templates.startedDiscussion   startedDiscussion;
 
   /**
    * The unified search.
    */
   @Inject
   @Path("unifiedSearch.gtmpl")
-  org.exoplatform.outlook.portlet.templates.unifiedSearch unifiedSearch;
+  org.exoplatform.outlook.portlet.templates.unifiedSearch       unifiedSearch;
 
   /**
-   * The user info.
+   * The user info for Read mode.
    */
   @Inject
-  @Path("userInfo.gtmpl")
-  org.exoplatform.outlook.portlet.templates.userInfo userInfo;
+  @Path("userInfoRead.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoRead            userInfoRead;
+  
+  /**
+   * The user info for Compose mode.
+   */
+  @Inject
+  @Path("userInfoCompose.gtmpl")
+  org.exoplatform.outlook.portlet.templates.userInfoCompose            userInfoCompose;
 
   /**
    * The convert to status.
    */
   @Inject
   @Path("convertToStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToStatus convertToStatus;
+  org.exoplatform.outlook.portlet.templates.convertToStatus     convertToStatus;
 
   /**
    * The converted status.
    */
   @Inject
   @Path("convertedStatus.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedStatus convertedStatus;
+  org.exoplatform.outlook.portlet.templates.convertedStatus     convertedStatus;
 
   /**
    * The convert to wiki.
    */
   @Inject
   @Path("convertToWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToWiki convertToWiki;
+  org.exoplatform.outlook.portlet.templates.convertToWiki       convertToWiki;
 
   /**
    * The converted wiki.
    */
   @Inject
   @Path("convertedWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedWiki convertedWiki;
+  org.exoplatform.outlook.portlet.templates.convertedWiki       convertedWiki;
 
   /**
    * The convert to forum.
    */
   @Inject
   @Path("convertToForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToForum convertToForum;
+  org.exoplatform.outlook.portlet.templates.convertToForum      convertToForum;
 
   /**
    * The converted forum.
    */
   @Inject
   @Path("convertedForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedForum convertedForum;
+  org.exoplatform.outlook.portlet.templates.convertedForum      convertedForum;
 
   @Inject
   @Path("spacesDropdown.gtmpl")
-  org.exoplatform.outlook.portlet.templates.spacesDropdown spaces;
+  org.exoplatform.outlook.portlet.templates.spacesDropdown      spaces;
 
   /**
    * The home.
    */
   @Inject
   @Path("home.gtmpl")
-  org.exoplatform.outlook.portlet.templates.home home;
+  org.exoplatform.outlook.portlet.templates.home                home;
 
   /**
    * The error.
    */
   @Inject
   @Path("error.gtmpl")
-  org.exoplatform.outlook.portlet.templates.error error;
+  org.exoplatform.outlook.portlet.templates.error               error;
 
   /**
    * The i18n.
    */
   @Inject
-  ResourceBundle i18n;
+  ResourceBundle                                                i18n;
 
   /**
    * The i18n JSON.
    */
   @Inject
-  ResourceBundleSerializer i18nJSON;
+  ResourceBundleSerializer                                      i18nJSON;
 
   /**
    * Instantiates a new outlook.
@@ -416,14 +421,13 @@ public class Outlook {
     addRootMenuItem(new MenuItem("userInfoCompose"));
   }
 
-
   /**
    * Builds the cookie value.
    *
-   * @param name   the name
-   * @param value  the value
+   * @param name the name
+   * @param value the value
    * @param domain the domain
-   * @param path   the path
+   * @param path the path
    * @param maxAge the max age
    * @return the string
    */
@@ -496,7 +500,7 @@ public class Outlook {
   /**
    * Index.
    *
-   * @param command         the command
+   * @param command the command
    * @param resourceContext the resource context
    * @return the response
    */
@@ -523,7 +527,7 @@ public class Outlook {
           menu.add(userMenuItem(m));
         } else {
           LOG.warn("Skipping not defined menu name '" + mn + "' for user '" + resourceContext.getSecurityContext().getRemoteUser()
-                  + "'");
+              + "'");
         }
       }
     }
@@ -616,7 +620,7 @@ public class Outlook {
    * Folders.
    *
    * @param groupId the group id
-   * @param path    the path
+   * @param path the path
    * @return the response
    */
   @Ajax
@@ -655,8 +659,8 @@ public class Outlook {
    * Adds the folder.
    *
    * @param groupId the group id
-   * @param path    the path
-   * @param name    the name
+   * @param path the path
+   * @param name the name
    * @return the response
    */
   @Ajax
@@ -687,16 +691,16 @@ public class Outlook {
   /**
    * Save attachment.
    *
-   * @param groupId         the group id
-   * @param path            the path
-   * @param comment         the comment
-   * @param ewsUrl          the ews url
-   * @param userEmail       the user email
-   * @param userName        the user name
-   * @param messageId       the message id
+   * @param groupId the group id
+   * @param path the path
+   * @param comment the comment
+   * @param ewsUrl the ews url
+   * @param userEmail the user email
+   * @param userName the user name
+   * @param messageId the message id
    * @param attachmentToken the attachment token
-   * @param attachmentIds   the attachment ids
-   * @param context         the context
+   * @param attachmentIds the attachment ids
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -712,7 +716,7 @@ public class Outlook {
                                  String attachmentIds,
                                  RequestContext context) {
     if (groupId != null && path != null && ewsUrl != null && userEmail != null && messageId != null && attachmentToken != null
-            && attachmentIds != null) {
+        && attachmentIds != null) {
       try {
         OutlookSpace space = outlook.getSpace(groupId);
         if (space != null) {
@@ -728,12 +732,12 @@ public class Outlook {
             Folder folder = space.getFolder(path);
             OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
             List<File> files = outlook.saveAttachment(space,
-                    folder,
-                    user,
-                    comment,
-                    messageId,
-                    attachmentToken,
-                    attachments.toArray(new String[attachments.size()]));
+                                                      folder,
+                                                      user,
+                                                      comment,
+                                                      messageId,
+                                                      attachmentToken,
+                                                      attachments.toArray(new String[attachments.size()]));
             return savedAttachment.with().files(files).ok();
           } else {
             // TODO return client error?
@@ -752,8 +756,8 @@ public class Outlook {
     } else {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Error in saving attachment request: spaceName='" + groupId + "' path=" + path + " ewsUrl='" + ewsUrl
-                + "' userEmail='" + userEmail + "' messageId='" + messageId + "' attachmentToken(size)='"
-                + (attachmentToken != null ? attachmentToken.length() : "null") + "' attachmentIds='" + attachmentIds + "'");
+            + "' userEmail='" + userEmail + "' messageId='" + messageId + "' attachmentToken(size)='"
+            + (attachmentToken != null ? attachmentToken.length() : "null") + "' attachmentIds='" + attachmentIds + "'");
       }
       return errorMessage("Error in saving attachment request. Please reload the page.", 400);
     }
@@ -772,15 +776,15 @@ public class Outlook {
       sources.add(new AttachmentSource(SOURCE_ID_ALL_SPACES, i18n.getString("Outlook.allSpaces")));
       Folder userFolder = outlook.getUserDocuments().getRootFolder();
       sources.add(new AttachmentSource(SOURCE_ID_PERSONAL,
-              i18n.getString("Outlook.personalDocuments"),
-              userFolder.getFullPath(),
-              userFolder.getPathLabel()));
+                                       i18n.getString("Outlook.personalDocuments"),
+                                       userFolder.getFullPath(),
+                                       userFolder.getPathLabel()));
       for (OutlookSpace space : outlook.getUserSpaces()) {
         Folder spaceFolder = space.getRootFolder();
         sources.add(new AttachmentSource(space.getGroupId(),
-                space.getTitle(),
-                spaceFolder.getFullPath(),
-                spaceFolder.getPathLabel()));
+                                         space.getTitle(),
+                                         spaceFolder.getFullPath(),
+                                         spaceFolder.getPathLabel()));
       }
       return addAttachment.with().sources(sources).ok();
     } catch (AccessException e) {
@@ -804,7 +808,7 @@ public class Outlook {
    * Explore files.
    *
    * @param sourceId the source id
-   * @param path     the path
+   * @param path the path
    * @return the response
    */
   @Ajax
@@ -838,7 +842,7 @@ public class Outlook {
    * Search files.
    *
    * @param sourceId the source id
-   * @param text     the text
+   * @param text the text
    * @return the response
    */
   @Ajax
@@ -878,7 +882,7 @@ public class Outlook {
    * File link.
    *
    * @param nodePath the node path
-   * @param context  the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -906,8 +910,8 @@ public class Outlook {
         LinkResource res = contentLink.createUrl(userId, nodePath, prefix.toString());
 
         return Response.ok()
-                .content("{\"link\":\"" + res.getLink() + "\", \"name\":\"" + res.getName() + "\"}")
-                .withMimeType("application/json");
+                       .content("{\"link\":\"" + res.getLink() + "\", \"name\":\"" + res.getName() + "\"}")
+                       .withMimeType("application/json");
       } catch (Throwable e) {
         LOG.error("Error creating link for node " + nodePath, e);
         return errorMessage(e.getMessage(), 500);
@@ -941,11 +945,11 @@ public class Outlook {
   /**
    * Post status.
    *
-   * @param groupId   the group id
-   * @param message   the message
-   * @param userName  the user name
+   * @param groupId the group id
+   * @param message the message
+   * @param userName the user name
    * @param userEmail the user email
-   * @param context   the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -1001,12 +1005,12 @@ public class Outlook {
   /**
    * Start discussion.
    *
-   * @param groupId   the group id
-   * @param name      the name
-   * @param text      the text
-   * @param userName  the user name
+   * @param groupId the group id
+   * @param name the name
+   * @param text the text
+   * @param userName the user name
    * @param userEmail the user email
-   * @param context   the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -1025,11 +1029,11 @@ public class Outlook {
         if (space != null) {
           Topic topic = space.addForumTopic(user, name, text);
           return startedDiscussion.with()
-                  .topic(new UserForumTopic(topic.getId(),
-                          topic.getTopicName(),
-                          topic.getLink(),
-                          space.getTitle()))
-                  .ok();
+                                  .topic(new UserForumTopic(topic.getId(),
+                                                            topic.getTopicName(),
+                                                            topic.getLink(),
+                                                            space.getTitle()))
+                                  .ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error starting discussion: space not found " + groupId + ". OutlookUser " + userEmail);
@@ -1070,7 +1074,7 @@ public class Outlook {
    * Search.
    *
    * @param sourceId the source id
-   * @param text     the text
+   * @param text the text
    * @return the response
    */
   @Ajax
@@ -1107,7 +1111,7 @@ public class Outlook {
   }
 
   /**
-   * UserInfoCompose info form.
+   * UserInfoCompose form.
    *
    * @return the response
    */
@@ -1115,7 +1119,7 @@ public class Outlook {
   @Resource
   public Response userInfoComposeForm() {
     try {
-      return userInfo.ok();
+      return userInfoCompose.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
@@ -1143,7 +1147,7 @@ public class Outlook {
   // *************** Convert To UserStatus command ***********
 
   /**
-   * UserInfo info form.
+   * UserInfoRead form.
    *
    * @return the response
    */
@@ -1151,7 +1155,7 @@ public class Outlook {
   @Resource
   public Response userInfoReadForm() {
     try {
-      return userInfo.ok();
+      return userInfoRead.ok();
     } catch (Throwable e) {
       LOG.error("Error showing search form", e);
       return errorMessage(e.getMessage(), 500);
@@ -1159,39 +1163,24 @@ public class Outlook {
   }
 
   /**
-   * userInfoCompose info response.
+   * Return eXo users found by given email addresses (array joined by comma into a string) and return them as .
    *
    * @return the response
    */
   @Ajax
   @Resource
-  public Response userInfoRecipients(String presentEmail, RequestContext context) {
+  public Response userInfoRecipients(String emails, RequestContext context) {
     try {
-      String currentUsername = context.getSecurityContext().getRemoteUser();
-      List<IdentityInfo> presentConnections = new ArrayList<>();
-      for (String email : presentEmail.split(",")) {
-
-        User user = findUserByEmail(email.toLowerCase());
-        if (user != null) {
-          Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-                  user.getUserName(), true);
-          if (!currentUsername.equals(userIdentity.getRemoteId())){
-            presentConnections.add(new IdentityInfo(userIdentity));
-          }
-        } else {
-          LOG.warn("Cannot find user with email: {}", email);
-        }
-
-      }
-      return userInfoRecipients.with().presentConnections(presentConnections).ok();
+      List<IdentityInfo> list = findUsersByEmail(emails, context.getSecurityContext().getRemoteUser());
+      return userInfoRecipients.with().recipients(list).ok();
     } catch (Exception e) {
-      LOG.error("Error showing UserInfo Info by email ", e);
+      LOG.error("Error showing UserInfo recipients by emails: {} ", emails, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
 
   /**
-   * User connections for infoInfo panel.
+   * User's connections for userInfo panels.
    *
    * @param presentUsers in outlook
    * @return the response
@@ -1202,15 +1191,12 @@ public class Outlook {
     String currentUsername = context.getSecurityContext().getRemoteUser();
     try {
       List<IdentityInfo> connections = getConnectionsList(currentUsername);
-      List<IdentityInfo> epsentConnections = new ArrayList<>();
       if (presentUsers != null) {
-        epsentConnections = connections.stream()
+        connections = connections.stream()
                                        .filter(con -> !presentUsers.toLowerCase().contains(con.getEmail().toLowerCase()))
                                        .collect(Collectors.toList());
-      } else {
-        epsentConnections = connections;
       }
-      return userInfoConnections.with().epsentConnections(epsentConnections).ok();
+      return userInfoConnections.with().connections(connections).ok();
     } catch (Exception e) {
       LOG.error("Cannot find any connections of current user: {}", currentUsername, e);
       return errorMessage(e.getMessage(), 500);
@@ -1228,24 +1214,23 @@ public class Outlook {
   public Response userInfoDetails(String user, RequestContext context) {
     try {
       String currentUsername = context.getSecurityContext().getRemoteUser();
-      Identity currentUserIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME,
-              currentUsername,
-              true);
+      Identity currentUserIdentity =
+                                   identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
       Set<String> currentUserGroupIds = organization.getMembershipHandler()
-              .findMembershipsByUser(currentUsername)
-              .stream()
-              .map(m -> m.getGroupId())
-              .collect(Collectors.toSet());
+                                                    .findMembershipsByUser(currentUsername)
+                                                    .stream()
+                                                    .map(m -> m.getGroupId())
+                                                    .collect(Collectors.toSet());
       Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
-              .stream()
-              .map(r -> {
-                if (!r.getSender().getRemoteId().equals(currentUsername)) {
-                  return r.getSender().getRemoteId();
-                } else {
-                  return r.getReceiver().getRemoteId();
-                }
-              })
-              .collect(Collectors.toSet());
+                                                        .stream()
+                                                        .map(r -> {
+                                                          if (!r.getSender().getRemoteId().equals(currentUsername)) {
+                                                            return r.getSender().getRemoteId();
+                                                          } else {
+                                                            return r.getReceiver().getRemoteId();
+                                                          }
+                                                        })
+                                                        .collect(Collectors.toSet());
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
       List<ActivityInfo> activities = new ArrayList<>();
       List<IdentityInfo> connectionList = getConnectionsList(user);
@@ -1255,9 +1240,9 @@ public class Outlook {
         if (streamId != null) {
           if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
             activities.add(new ActivityInfo(a.getTitle(),
-                    a.getType(),
-                    LinkProvider.getSingleActivityUrl(a.getId()),
-                    a.getPostedTime()));
+                                            a.getType(),
+                                            LinkProvider.getSingleActivityUrl(a.getId()),
+                                            a.getPostedTime()));
           }
         }
       });
@@ -1269,34 +1254,21 @@ public class Outlook {
     }
   }
 
-
-  private List<IdentityInfo> getConnectionsList(String name) throws Exception {
-    List<IdentityInfo> connectionList = new ArrayList<>();
-    for (Relationship relationship : getRelationships(name)) {
-      if (!relationship.getSender().getRemoteId().equals(name)) {
-        connectionList.add(new IdentityInfo(relationship.getSender()));
-      } else {
-        connectionList.add(new IdentityInfo(relationship.getReceiver()));
-      }
-    }
-    return connectionList;
-  }
-
   /**
    * Convert to status.
    *
-   * @param groupId   the group id
+   * @param groupId the group id
    * @param messageId the message id
-   * @param title     the user message to the activity
-   * @param subject   the subject
-   * @param body      the body
-   * @param created   the created
-   * @param modified  the modified
-   * @param userName  the user name
+   * @param title the user message to the activity
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
    * @param userEmail the user email
-   * @param fromName  the from name
+   * @param fromName the from name
    * @param fromEmail the from email
-   * @param context   the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -1343,10 +1315,10 @@ public class Outlook {
   /**
    * Gets the message.
    *
-   * @param ewsUrl       the ews url
-   * @param userEmail    the user email
-   * @param userName     the user name
-   * @param messageId    the message id
+   * @param ewsUrl the ews url
+   * @param userEmail the user email
+   * @param userName the user name
+   * @param messageId the message id
    * @param messageToken the message token
    * @return the message
    */
@@ -1359,8 +1331,8 @@ public class Outlook {
         OutlookUser user = outlook.getUser(userEmail, userName, ewsUrl);
         OutlookMessage message = outlook.getMessage(user, messageId, messageToken);
         return Response.ok(message.getBody())
-                .withHeader("X-MessageBodyContentType", message.getType())
-                .withCharset(Charset.forName("UTF-8"));
+                       .withHeader("X-MessageBodyContentType", message.getType())
+                       .withCharset(Charset.forName("UTF-8"));
       } catch (BadParameterException e) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Error reading message " + messageId + ". " + e.getMessage());
@@ -1399,17 +1371,17 @@ public class Outlook {
   /**
    * Convert to wiki.
    *
-   * @param groupId   the group id
+   * @param groupId the group id
    * @param messageId the message id
-   * @param subject   the subject
-   * @param body      the body
-   * @param created   the created
-   * @param modified  the modified
-   * @param userName  the user name
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
    * @param userEmail the user email
-   * @param fromName  the from name
+   * @param fromName the from name
    * @param fromEmail the from email
-   * @param context   the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -1473,17 +1445,17 @@ public class Outlook {
   /**
    * Convert to forum.
    *
-   * @param groupId   the group id
+   * @param groupId the group id
    * @param messageId the message id
-   * @param subject   the subject
-   * @param body      the body
-   * @param created   the created
-   * @param modified  the modified
-   * @param userName  the user name
+   * @param subject the subject
+   * @param body the body
+   * @param created the created
+   * @param modified the modified
+   * @param userName the user name
    * @param userEmail the user email
-   * @param fromName  the from name
+   * @param fromName the from name
    * @param fromEmail the from email
-   * @param context   the context
+   * @param context the context
    * @return the response
    */
   @Ajax
@@ -1509,8 +1481,8 @@ public class Outlook {
         if (space != null) {
           Topic topic = space.addForumTopic(message);
           return convertedForum.with()
-                  .topic(new UserForumTopic(topic.getId(), topic.getTopicName(), topic.getLink(), space.getTitle()))
-                  .ok();
+                               .topic(new UserForumTopic(topic.getId(), topic.getTopicName(), topic.getLink(), space.getTitle()))
+                               .ok();
         } else {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Error converting message to forum post: space not found " + groupId + ". OutlookUser " + userEmail);
@@ -1558,7 +1530,7 @@ public class Outlook {
             String rememberMeOutlook = outlookTokens.createToken(credentials);
             if (LOG.isDebugEnabled()) {
               LOG.debug("Found a remembermeoutlook request parameter, created a persistent token " + rememberMeOutlook
-                      + " for it and set it up in the next response");
+                  + " for it and set it up in the next response");
             }
 
             ServletContainer servletContainer = ServletContainerFactory.getServletContainer();
@@ -1566,10 +1538,10 @@ public class Outlook {
 
             // set cookie "remembermeoutlook"
             String cookie = buildCookieValue(OutlookTokenService.COOKIE_NAME,
-                    rememberMeOutlook,
-                    portalRequest.getRequest().getServerName(),
-                    portalRequest.getPortalContextPath(),
-                    (int) outlookTokens.getValidityTime());
+                                             rememberMeOutlook,
+                                             portalRequest.getRequest().getServerName(),
+                                             portalRequest.getPortalContextPath(),
+                                             (int) outlookTokens.getValidityTime());
 
             return Response.ok().withHeader(COOKIE_HEADER_NAME, cookie);
           } else {
@@ -1620,7 +1592,7 @@ public class Outlook {
   /**
    * Error message.
    *
-   * @param text   the text
+   * @param text the text
    * @param status the status
    * @return the response
    */
@@ -1697,18 +1669,18 @@ public class Outlook {
   /**
    * Message.
    *
-   * @param user      the user
+   * @param user the user
    * @param messageId the message id
    * @param fromEmail the from email
-   * @param fromName  the from name
-   * @param created   the created
-   * @param modified  the modified
-   * @param title     the title
-   * @param subject   the subject
-   * @param body      the body
+   * @param fromName the from name
+   * @param created the created
+   * @param modified the modified
+   * @param title the title
+   * @param subject the subject
+   * @param body the body
    * @return the outlook message
    * @throws OutlookException the outlook exception
-   * @throws ParseException   the parse exception
+   * @throws ParseException the parse exception
    */
   private OutlookMessage message(OutlookUser user,
                                  String messageId,
@@ -1752,7 +1724,7 @@ public class Outlook {
      *
      * @param userTitle the user title
      * @param spaceName the space name
-     * @param link      the link
+     * @param link the link
      */
     protected UserStatus(String userTitle, String spaceName, String link) {
       super(userTitle, spaceName, link);
@@ -1782,9 +1754,9 @@ public class Outlook {
     /**
      * Instantiates a new user wiki page.
      *
-     * @param id        the id
-     * @param title     the title
-     * @param link      the link
+     * @param id the id
+     * @param title the title
+     * @param link the link
      * @param spaceName the space name
      */
     protected UserWikiPage(String id, String title, String link, String spaceName) {
@@ -1795,9 +1767,9 @@ public class Outlook {
     /**
      * Instantiates a new user wiki page.
      *
-     * @param id    the id
+     * @param id the id
      * @param title the title
-     * @param link  the link
+     * @param link the link
      */
     protected UserWikiPage(String id, String title, String link) {
       this(id, title, link, null);
@@ -1836,9 +1808,9 @@ public class Outlook {
     /**
      * Instantiates a new user forum topic.
      *
-     * @param id        the id
-     * @param title     the title
-     * @param link      the link
+     * @param id the id
+     * @param title the title
+     * @param link the link
      * @param spaceName the space name
      */
     protected UserForumTopic(String id, String title, String link, String spaceName) {
@@ -1849,9 +1821,9 @@ public class Outlook {
     /**
      * Instantiates a new user forum topic.
      *
-     * @param id    the id
+     * @param id the id
      * @param title the title
-     * @param link  the link
+     * @param link the link
      */
     protected UserForumTopic(String id, String title, String link) {
       this(id, title, link, null);
@@ -1908,14 +1880,43 @@ public class Outlook {
     return space != null ? space.getGroupId() : "".intern();
   }
 
+  private List<IdentityInfo> getConnectionsList(String name) throws Exception {
+    List<IdentityInfo> connectionList = new ArrayList<>();
+    // TODO get rid of deprecated
+    for (Relationship relationship : getRelationships(name)) {
+      if (!relationship.getSender().getRemoteId().equals(name)) {
+        connectionList.add(new IdentityInfo(relationship.getSender()));
+      } else {
+        connectionList.add(new IdentityInfo(relationship.getReceiver()));
+      }
+    }
+    return connectionList;
+  }
+
   private User findUserByEmail(String email) throws Exception {
     org.exoplatform.services.organization.Query query = new org.exoplatform.services.organization.Query();
     query.setEmail(email);
     ListAccess<User> res = organization.getUserHandler()
-            .findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ENABLED);
+                                       .findUsersByQuery(query, org.exoplatform.services.organization.UserStatus.ENABLED);
     if (res.getSize() > 0) {
       return res.load(0, 1)[0];
     }
     return null;
+  }
+
+  private List<IdentityInfo> findUsersByEmail(String emails, String excludeOne) throws Exception {
+    List<IdentityInfo> list = new ArrayList<>();
+    for (String email : emails.split(",")) {
+      User user = findUserByEmail(email.toLowerCase());
+      if (user != null) {
+        Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user.getUserName(), false);
+        if (userIdentity != null && (excludeOne != null ? !excludeOne.equals(userIdentity.getRemoteId()) : true)) {
+          list.add(new IdentityInfo(userIdentity));
+        }
+      } else if (LOG.isDebugEnabled()) {
+        LOG.debug("Cannot find user with email: {}", email);
+      }
+    }
+    return list;
   }
 }
