@@ -1,8 +1,8 @@
 <div class="ms-Grid">
-	<div class="text-centered">
-		<h4>&{Outlook.command.userInfoRead}</h4>
-	</div>
-	<div id="outlook-userInfo">
+  <div class="text-centered">
+    <h4>&{Outlook.command.userInfoRead}</h4>
+  </div>
+  <div id="outlook-userInfo">
     <div class="userinfo-title">
       <div>
         <p class="ms-Dialog-subText">
@@ -15,8 +15,8 @@
         </a>
       </div>
     </div>
-    <div class="recipients-panel">
-    </div>
+    <div class="recipients-panel"></div>
+    <div class="connections"></div>
   </div>
 </div>
 

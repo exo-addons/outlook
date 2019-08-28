@@ -51,15 +51,15 @@
                             </div>
                           </div>
                           <div class="button-panel">
-                            <a href="#" class="remove-btn" id="${rec.email}">
+                            <a href="#" class="remove-btn" data-email="${rec.email}">
                               <i class="ms-Icon ms-Icon--minus" aria-hidden="true"></i>
                             </a>
                           </div>
-<!--                                <div class="button-panel createMessage-btn" id="${rec.email}">-->
-<!--                                  <a href="#">-->
-<!--                                    <i class="ms-Icon ms-Icon&#45;&#45;plus" aria-hidden="true"></i>-->
-<!--                                  </a>-->
-<!--                                </div>-->
+                          <div class="button-panel letter-btn" data-email="${rec.email}">
+                            <a href="#" >
+                              <i class="ms-Icon ms-Icon--mailEmpty" aria-hidden="true"></i>
+                            </a>
+                          </div>
                         </div>
                         <div id="user-details-${rec.remoteId}" class="content-det"></div>
                       </div>
@@ -75,4 +75,4 @@
     </div>
   </div>
 </div>
-<div class="connections"></div>
+<!--<div class="connections"></div>-->

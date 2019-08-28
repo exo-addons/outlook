@@ -61,7 +61,7 @@
                                   <% } %>
                                 </div>
                               </div>
-                              <div class="button-panel add-btn">
+                              <div class="button-panel add-btn" data-email="${conn.email}">
                                 <a href="#">
                                   <i class="ms-Icon ms-Icon--plus" aria-hidden="true"></i>
                                 </a>

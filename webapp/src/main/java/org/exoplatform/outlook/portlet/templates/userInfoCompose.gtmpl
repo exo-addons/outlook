@@ -16,6 +16,7 @@
       </div>
     </div>
     <div class="recipients-panel"></div>
+    <div class="connections"></div>
   </div>
 </div>
 
