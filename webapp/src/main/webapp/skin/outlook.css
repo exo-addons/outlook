@@ -812,7 +812,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   margin: 15px 0;
 }
 
-#recipientForm {
+.recipientForm {
   transition: 0.5s;
 }
 
@@ -822,7 +822,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   background: #CCC;
 }
 
-#otherConnection {
+.connections {
     position: relative;
     transition: 2s;
 }

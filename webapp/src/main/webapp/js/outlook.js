@@ -339,17 +339,18 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         function getConnections(messageType = Office.context.mailbox.item.to, isComposeMode = false) {
+
           var $userInfo = $("#outlook-userInfo");
           var $users = $userInfo.find(".compose-Persona");
           var presentUsers = "";
-          var $overlay = $("#otherConnection"); // TODO NO ID, use class connections!! change var name to connections
+          var $connections = $userInfo.find(".connections"); // TODO NO ID, use class connections!! change var name to connections
+
 
           for (var i = 0; i < $users.length; i++) {
-            var names = $users[i].getAttribute("id").split(",");
-            presentUsers += names[2] + ","
+            var userEmail = $users[i].getAttribute("data-email");
+            presentUsers += userEmail + ","
           }
-
-          $overlay.jzLoad("Outlook.userInfoConnections()", {
+          $connections.jzLoad("Outlook.userInfoConnections()", {
               presentUsers: presentUsers
             }, function (response, status, jqXHR) {
               if (status === "error") {
@@ -358,9 +359,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 if ($.fn.PersonaCard) {
                   $userInfo.find(".ms-PersonaCard").PersonaCard();
                 }
-                $overlay.find(".letter-btn").hide();
-                $overlay.find(".menu-btn").click(function () {
+                $connections.find(".letter-btn").hide();
+                $connections.find(".menu-btn").click(function () {
                   var $this = $(this);
+                  var $userDetails = $connections.find("#user-details-" + $this.attr("data-remoteId"));
                   $this.toggleClass("activeMenu-btn");
                   if ($this.hasClass("activeMenu-btn")){
                     // where is $userDetails variable defined??
@@ -368,17 +370,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     // outlook.js:367 Uncaught ReferenceError: $userDetails is not defined
                     // at HTMLAnchorElement.<anonymous> (outlook.js:367)
                     // at HTMLAnchorElement.dispatch (jquery-.js:5212)
-                    $userDetails = $overlay.find("#user-details-" + $this.attr("id"));
-                    showUserDetails($this.attr("id"), $userDetails);
+                    showUserDetails($this.attr("data-remoteId"), $userDetails);
                     $userDetails.css("max-height","none");
                   } else {
                     $userDetails.css("max-height","0"); // undefined or wrong context?
                   }
                 });
-                $overlay.find(".add-btn").click(function () {
+                $connections.find(".add-btn").click(function () {
                   var $this = $(this);
                   if (isComposeMode){
-                    addRecipients($this.closest(".compose-Persona").attr("id"),messageType);
+                    var $user = $this.closest(".compose-Persona");
+                    addRecipients($user.attr("data-firstName"),
+                      $user.attr("data-lastName"),
+                      $user.attr("data-email"),
+                      messageType);
                     $this.closest(".compose-Persona").hide();
                   } else {
                     var recipient = $this.attr("id");
@@ -388,15 +393,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       });
                   }
                 });
-                $overlay.find(".ms-CommandBarSearch-input").keyup(function () {
-                  var $users = $overlay.find(".compose-Persona");
+                $connections.find(".ms-CommandBarSearch-input").keyup(function () {
+                  var $users = $connections.find(".compose-Persona");
                   var $this = $(this);
                   var name = $this.val().toLowerCase();
                   for (var i = 0; i < $users.length; i++) {
-                    var names = $users[i].getAttribute("id").split(",");
-                    if (names[0].toLowerCase().startsWith(name) ||
-                      names[1].toLowerCase().startsWith(name) ||
-                      names[2].toLowerCase().startsWith(name)) {
+                    // var names = $users[i].getAttribute("id").split(",");
+                    if ($users[i].getAttribute("data-firstName").toLowerCase().startsWith(name) ||
+                      $users[i].getAttribute("data-lastName").toLowerCase().startsWith(name) ||
+                      $users[i].getAttribute("data-email").toLowerCase().startsWith(name)) {
                       $($users[i]).show();
                     } else {
                       $($users[i]).hide();
@@ -408,6 +413,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         function showUserDetails(user, $ob) {
+          console.log(user);
+          console.log($ob);
           $ob.jzLoad("Outlook.userInfoDetails()", {user: user},
             function (response, status, jqXHR) {
               if (status === "error") {
@@ -416,16 +423,16 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
         }
 
-        function addRecipients(nameAndEmail,messageType) {
+        function addRecipients(firstName,lastName,email,messageType) {
           if(!messageType) { // TODO messageType!!!
             messageType = item.to;
           }
-          var buf = nameAndEmail.split(",");
+          // var buf = nameAndEmail.split(",");
           isRecipientsUpdating = true;
           messageType.addAsync(
             [{
-              "displayName": buf[0] + " " + buf[1],
-              "emailAddress": buf[2]
+              "displayName": firstName + " " + lastName,
+              "emailAddress": email
             }], function (asyncResult) {
               if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                 console.log(">> addRecipients failed: " + asyncResult.error.message);
@@ -450,10 +457,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             $this.toggleClass("activeBigPlus");
             if ($this.hasClass("activeBigPlus")) {
               getConnections(typeOfMessage.length > 0 ? typeOfMessage[0] : item.to, true);
-              $("#recipientForm").hide();
+              $(".recipientForm").hide();
             } else {
-              $("#otherConnection").empty();
-              $("#recipientForm").show();
+              $(".connections").empty();
+              $(".recipientForm").show();
               initRecipients();
             }
           });
@@ -501,11 +508,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                         if (typeOfMessage.length > 1) {
                           typeOfMessage[0] = item.to;
                         }
+                        loadRecipients(presentEmail,typeOfMessage[0]);
+
                         if(presentEmail.length < 5) { // TODO why 5?
                           $bigPlus.click();
-                        } else {
-                          loadRecipients(presentEmail,typeOfMessage[0]);                          
                         }
+                        // else {
+
+                        // }
                       }
                     });
                   }
@@ -515,6 +525,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
 
           function loadRecipients(presentEmail, messageType = Office.context.mailbox.item.to) {
+            console.log("loadRecipients()");
+            console.log(messageType);
+            console.log(presentEmail);
+
             // TODO messageType!!!
             var $recipients = $userInfo.find(".recipients-panel");
             $recipients.jzLoad("Outlook.userInfoRecipients()", {
@@ -583,8 +597,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       if ($this.hasClass("activeMenu-btn")) {
                         // TODO can it lead to a bad user experience by changing context
                         // better get locally and use inplace only
-                        $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
-                        showUserDetails($this.attr("id"), $userDetails);
+                        $userDetails = $userInfo.find("#user-details-" + $this.attr("data-remoteId"));
+                        // showUserDetails($this.attr("id"), $userDetails);
+                        showUserDetails($this.attr("data-remoteId"), $userDetails);
                         $userDetails.css("max-height","none");
                       } else {
                         $userDetails.css("max-height","0"); // wrong context possible?
@@ -642,7 +657,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $userInfo.find(".ms-PersonaCard").PersonaCard();
                 }
                 $userInfo.find(".letter-btn").click( function () {
-                  var recipient = $(this).attr("id");
+                  var recipient = $(this).attr("data-email");
                   Office.context.mailbox.displayNewMessageForm(
                     {
                       toRecipients: [recipient],
@@ -651,13 +666,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                 $userInfo.find(".ms-CommandBarSearch-input").keyup(function () {
                   var $this = $(this);
-                  var $users = $overlay.find(".compose-Persona");
+                  var $users = $connections.find(".compose-Persona");
                   console.log($users);
                   for (var i = 0; i < $users.length; i++) {
-                    var names = $users[i].getAttribute("id").split(",");
-                    if (names[0].toLowerCase().startsWith($this.val().toLowerCase()) ||
-                      names[1].toLowerCase().startsWith($this.val().toLowerCase()) ||
-                      names[2].toLowerCase().startsWith($this.val().toLowerCase())) {
+                    // var names = $users[i].getAttribute("id").split(",");
+                    if ($users[i].getAttribute("data-firstName").toLowerCase().startsWith(name) ||
+                      $users[i].getAttribute("data-lastName").toLowerCase().startsWith(name) ||
+                      $users[i].getAttribute("data-email").toLowerCase().startsWith(name)) {
                       $($users[i]).show();
                     } else {
                       $($users[i]).hide();
@@ -671,8 +686,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $this.toggleClass("activeMenu-btn");
                   if ($this.hasClass("activeMenu-btn")) {
                     // TODO where variable $userDetails defined 
-                    $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
-                    showUserDetails($this.attr("id"), $userDetails);
+                    var $userDetails = $userInfo.find("#user-details-" + $this.attr("data-remoteId"));
+                    showUserDetails($this.attr("data-remoteId"), $userDetails);
                     $userDetails.css("max-height","none");
                   } else {
                     $userDetails.css("max-height","0"); // undefined or wrong context?
@@ -739,8 +754,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     $this.toggleClass("activeMenu-btn");
                     if ($this.hasClass("activeMenu-btn")) {
                       // TODO where variable $userDetails defined
-                      $userDetails = $userInfo.find("#user-details-" + $this.attr("id"));
-                      showUserDetails($this.attr("id"), $userDetails);
+                      var $userDetails = $userInfo.find("#user-details-" + $this.attr("data-remoteId"));
+                      showUserDetails( $this.attr("data-remoteId"), $userDetails);
                       $userDetails.css("max-height","none");
                     } else {
                       $userDetails.css("max-height","0"); // TODO $userDetails is undefined here?
@@ -778,10 +793,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               $this.toggleClass("activeBigPlus");
               if ($this.hasClass("activeBigPlus")){
                 getConnections();
-                $("#recipientForm").hide();
+                $(".recipientForm").hide();
               } else {
-                $("#otherConnection").empty();
-                $("#recipientForm").show();
+                $(".connections").empty();
+                $(".recipientForm").show();
               }
             });
             

@@ -25,11 +25,11 @@
                     <div class="ms-OrgChart-group">
                       <ul class="ms-OrgChart-list">
                         <% for (conn in connections) { %>
-                        <li class="ms-OrgChart-listItem compose" id="line-${conn.remoteId}">
-                          <div class="compose-Persona" id="${conn.firstName},${conn.lastName},${conn.email}">
+                        <li class="ms-OrgChart-listItem compose">
+                          <div class="compose-Persona" data-firstName="${conn.firstName}" data-lastName="${conn.lastName}" data-email="${conn.email}">
                             <div class="ms-Persona">
                               <div class="button-panel">
-                                <a href="#" class="menu-btn" id="${conn.remoteId}">
+                                <a href="#" class="menu-btn" data-remoteId="${conn.remoteId}">
                                   <i class="ms-Icon ms-Icon--chevronDown" aria-hidden="true"></i>
                                 </a>
                               </div>
@@ -61,12 +61,12 @@
                                   <% } %>
                                 </div>
                               </div>
-                              <div class="button-panel add-btn" id="${conn.email}">
+                              <div class="button-panel add-btn">
                                 <a href="#">
                                   <i class="ms-Icon ms-Icon--plus" aria-hidden="true"></i>
                                 </a>
                               </div>
-                              <div class="button-panel letter-btn" id="${conn.email}">
+                              <div class="button-panel letter-btn" data-email="${conn.email}">
                                 <a href="#" >
                                   <i class="ms-Icon ms-Icon--mailEmpty" aria-hidden="true"></i>
                                 </a>

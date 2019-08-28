@@ -1,5 +1,5 @@
 #{param name=recipients/}
-<div id="recipientForm" class="ms-Grid-row"><!-- TODO no ID, use class -->
+<div class="ms-Grid-row recipientForm"><!-- TODO no ID, use class -->
   <div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
   <div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8">
     <div class="outlook-userInfo-person for-addressee">
@@ -12,13 +12,13 @@
                   <ul class="ms-OrgChart-list">
                     <% for (rec in recipients) { %>
                     <!-- TODO no ID, use class -->
-                    <li class="ms-OrgChart-listItem compose" id="line-${rec.remoteId}">
+                    <li class="ms-OrgChart-listItem compose">
                       <!-- TODO no ID, use data -->
-                      <div class="compose-Persona" id="${rec.firstName},${rec.lastName},${rec.email}">
+                      <div class="compose-Persona" data-firstName="${rec.firstName}" data-lastName="${rec.lastName}" data-email="${rec.email}">
                         <div class="ms-Persona">
                           <div class="button-panel">
                             <!-- TODO no ID, use data -->
-                            <a href="#" class="menu-btn" id="${rec.remoteId}">
+                            <a href="#" class="menu-btn" data-remoteId="${rec.remoteId}">
                               <i class="ms-Icon ms-Icon--chevronDown" aria-hidden="true"></i>
                             </a>
                           </div>
@@ -75,4 +75,4 @@
     </div>
   </div>
 </div>
-<div id="otherConnection"></div>
+<div class="connections"></div>
