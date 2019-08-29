@@ -326,7 +326,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         // Common listener to handle message recipients updates (in compose mode)
         var isRecipientsUpdating = false;
 
-        function initRecipientsChangedListener(onChangedHandler) {
+        function initRecipientsChangedListener (onChangedHandler) {
           console.log("> init RecipientsChanged listener");
           Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, function (event) {
             if (!isRecipientsUpdating) {
@@ -338,7 +338,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           });
         }
 
-        function searchPeople(str, $searchPlace) {
+        function searchPeople (str, $searchPlace) {
           var $users = $searchPlace.find(".compose-Persona");
           for (var i = 0; i < $users.length; i++) {
             if ($users[i].getAttribute("data-firstName").toLowerCase().startsWith(str) ||
@@ -351,30 +351,32 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function showConnection(btn, isComposeMode) {
+        function showConnection (btn, isComposeMode) {
           var item = Office.context.mailbox.item;
+          var $userInfo = $("#outlook-userInfo");
+          var $recipientsPanel = $userInfo.find(".recipients-panel");
+          var $connections = $userInfo.find(".connections");
           var $this = $(btn);
           $this.toggleClass("activeBigPlus");
           if ($this.hasClass("activeBigPlus")) {
             getConnections(item.to, isComposeMode);
-            $(".recipients-panel").hide();
-            $(".connections").show();
+            $recipientsPanel.hide();
+            $connections.show();
           } else {
-            $(".connections").empty().hide();
-            $(".recipients-panel").show();
+            $connections.empty().hide();
+            $recipientsPanel.show();
             return true;
           }
         }
 
-        function createNewLetter(recipient){
-          console.log(recipient);
+        function createNewLetter (recipient) {
           Office.context.mailbox.displayNewMessageForm(
             {
-              toRecipients: [recipient],
+              toRecipients: [recipient]
             });
         }
 
-        function openConnectionDetails() {
+        function openConnectionDetails () {
           $(this).toggleClass("activeMenu-btn");
           var $userDetails = $("#outlook-userInfo").find("#user-details-" + $(this).attr("data-remoteId"));
           if ($(this).hasClass("activeMenu-btn")) {
@@ -385,12 +387,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function getConnections(messageType = Office.context.mailbox.item.to, isComposeMode = false) {
+        function getConnections (messageType = Office.context.mailbox.item.to, isComposeMode = false) {
           var $userInfo = $("#outlook-userInfo");
           var $users = $userInfo.find(".compose-Persona");
           var presentUsers = "";
           var $connections = $userInfo.find(".connections"); // TODO NO ID, use class connections!! change var name to connections
-
 
           for (var i = 0; i < $users.length; i++) {
             var userEmail = $users[i].getAttribute("data-email");
@@ -409,28 +410,24 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 var $this = $(this);
                 if (isComposeMode) {
                   var $user = $this.closest(".compose-Persona");
-                  addRecipients($user.attr("data-firstName"),
+                  addRecipients ($user.attr("data-firstName"),
                     $user.attr("data-lastName"),
                     $user.attr("data-email"),
                     messageType);
                   $this.closest(".compose-Persona").remove();
                 } else {
-                  var recipient = $this.attr("data-email");
-                  Office.context.mailbox.displayNewMessageForm(
-                    {
-                      toRecipients: [recipient],
-                    });
+                  createNewLetter($this.attr("data-email"));
                 }
               });
 
               $connections.find(".ms-CommandBarSearch-input").keyup(function () {
-                searchPeople($(this).val().toLowerCase(), $connections)
+                searchPeople ($(this).val().toLowerCase(), $connections)
               })
             }
           });
         }
 
-        function showUserDetails(user, $placeToLoad) {
+        function showUserDetails (user, $placeToLoad) {
           $placeToLoad.jzLoad("Outlook.userInfoDetails()", {user: user},
             function (response, status, jqXHR) {
               if (status === "error") {
@@ -439,9 +436,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
         }
 
-        function addRecipients(firstName, lastName, email, messageType) {
+        function addRecipients (firstName, lastName, email, messageType) {
           if (!messageType) { // TODO messageType!!!
-            messageType = item.to;
+            messageType = Office.context.mailbox.item;
           }
           isRecipientsUpdating = true;
           messageType.addAsync(
@@ -458,29 +455,29 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
         }
 
-        function userInfoComposeInit() {
+        function userInfoComposeInit () {
           var $userInfo = $("#outlook-userInfo");
           var item = Office.context.mailbox.item;
 
           // TODO copy-pasted code with Read mode
           var $bigPlus = $userInfo.find(".bigPlus");
           $bigPlus.click(function () {
-            if (showConnection(this, true)) {
-              initRecipients();
+            if (showConnection (this, true)) {
+              initRecipients ();
             }
           });
 
-          function initRecipients() {
+          function initRecipients () {
             var presentEmail = "";
 
-            function addPresentEmail(email) {
+            function addPresentEmail (email) {
               var emailAddress = email.emailAddress.toLowerCase();
               if (!presentEmail.includes(emailAddress)) {
                 presentEmail += emailAddress + ",";
               }
             }
 
-            function addPresentEmails(emails) {
+            function addPresentEmails (emails) {
               if (Array.isArray(emails)) {
                 emails.forEach(addPresentEmail);
               } else {
@@ -509,8 +506,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                         if (asyncResult.value.length > 0) {
                           addPresentEmails(asyncResult.value);
                         }
-                        loadRecipients(presentEmail);
-
+                        loadRecipients (presentEmail);
                         if (presentEmail.length < 1) { // TODO why 5?
                           $bigPlus.click();
                         }
@@ -522,7 +518,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
           }
 
-          function loadRecipients(presentEmail, messageType = Office.context.mailbox.item.to) {
+          function loadRecipients (presentEmail, messageType = Office.context.mailbox.item.to) {
             // TODO messageType!!!
             var $recipients = $userInfo.find(".recipients-panel");
             $recipients.empty().show();
@@ -538,7 +534,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $recipients.find(".letter-btn").hide();
                   // TODO copy-pasted code with Read mode
                   $recipients.find(".ms-PersonaCard").PersonaCard();
-                  function logResultError(opName, result) {
+                  function logResultError (opName, result) {
                     var err = result.error;
                     if (err) {
                       console.log("> Recipients " + opName + " error " + err.name + ": " + err.message);
@@ -549,10 +545,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
                   $recipients.find(".remove-btn").click(function () {
                     var $this = $(this);
-                    //removeRecipients($this.attr("id"));
                     var emailAddress = $this.attr("data-email");
-                    // Keep code in place for better readability when its size allows
-                    // function removeRecipients(emailAddress) {
                     isRecipientsUpdating = true;
                     messageType.getAsync(function (asyncResult) {
                       if (asyncResult.status === Office.AsyncResultStatus.Failed) {
@@ -580,7 +573,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     });
                     $this.closest(".compose-Persona").remove();
                   });
-
                   // TODO copy-pasted code with Read mode
                   $recipients.find(".menu-btn").click(openConnectionDetails);
                 });
@@ -606,7 +598,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           var item = Office.context.mailbox.item;
           var $userInfo = $("#outlook-userInfo");
 
-          function showAllConnections() {
+          function showAllConnections () {
             // TODO load into a dedicated element, like allConnections
             $userInfo.jzLoad("Outlook.userInfoConnections()", {
               presentEmail: ""
@@ -617,7 +609,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 $userInfo.find(".add-btn").hide();
                 // TODO copy-pasted code with Compose mode
                 $userInfo.find(".ms-PersonaCard").PersonaCard();
-
                 $userInfo.find(".letter-btn").click(function () {
                   createNewLetter($(this).attr("data-email"));
                   }
@@ -651,7 +642,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $recipients.find(".letter-btn").click(function () {
                     createNewLetter($(this).attr("data-email"));
                   });
-
                   $recipients.find(".menu-btn").click(openConnectionDetails);
                 });
               }
@@ -660,7 +650,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           if (item.conversationId) {
             var recipientEmails = "";
-
             function addEmailsIfNotUser(recipients) {
               if (recipients != null) {
                 for (var i = 0; i < recipients.length; i++) {
@@ -670,7 +659,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 }
               }
             }
-
             // TODO need this if-block?
             if (from.emailAddress !== userEmail) {
               recipientEmails += from.emailAddress + ",";
@@ -679,12 +667,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             addEmailsIfNotUser(item.to);
             addEmailsIfNotUser(item.cc);
             loadRecipients(recipientEmails.toLowerCase());
-
             // TODO copy-pasted code with Compose mode
             $userInfo.find(".bigPlus").click(function () {
               showConnection(this, false);
             });
-
             // Listener to update the message people
             initRecipientsChangedListener(function (event) {
               // TODO update the people list in Read form?
