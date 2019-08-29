@@ -1,5 +1,5 @@
 <div class="ms-Grid">
-  <div class="text-centered">
+  <div class="ms-Grid-row text-centered">
     <h4>&{Outlook.command.userInfoCompose}</h4>
   </div>
   <div id="outlook-userInfo">

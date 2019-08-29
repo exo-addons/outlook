@@ -14,11 +14,11 @@
                     <!-- TODO no ID, use class -->
                     <li class="ms-OrgChart-listItem compose">
                       <!-- TODO no ID, use data -->
-                      <div class="compose-Persona" data-firstName="${rec.firstName}" data-lastName="${rec.lastName}" data-email="${rec.email}">
+                      <div class="compose-Persona" data-full-name="${rec.fullName}" data-email="${rec.email}">
                         <div class="ms-Persona">
                           <div class="button-panel">
                             <!-- TODO no ID, use data -->
-                            <a href="#" class="menu-btn" data-remoteId="${rec.remoteId}">
+                            <a href="#" class="menu-btn" data-remote-id="${rec.remoteId}">
                               <i class="ms-Icon ms-Icon--chevronDown" aria-hidden="true"></i>
                             </a>
                           </div>
@@ -61,7 +61,7 @@
                             </a>
                           </div>
                         </div>
-                        <div id="user-details-${rec.remoteId}" class="content-det"></div>
+                        <div  class="content-det user-details-${rec.remoteId}"></div>
                       </div>
                     </li>
                     <% } %>
