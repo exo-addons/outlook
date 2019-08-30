@@ -1121,7 +1121,7 @@ public class Outlook {
     try {
       return userInfoCompose.ok();
     } catch (Throwable e) {
-      LOG.error("Error showing search form", e);
+      LOG.error("Error showing userInfoCompose form", e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -1157,7 +1157,7 @@ public class Outlook {
     try {
       return userInfoRead.ok();
     } catch (Throwable e) {
-      LOG.error("Error showing search form", e);
+      LOG.error("Error showing userInfoRead form", e);
       return errorMessage(e.getMessage(), 500);
     }
   }
@@ -1249,7 +1249,7 @@ public class Outlook {
       UserInfo userInfo = new UserInfo(userIdentity, activities, connectionList);
       return userInfoDetails.with().userDet(userInfo).ok();
     } catch (Exception e) {
-      LOG.error("Error showing UserInfo Info by email ", e);
+      LOG.error("Cannot find details of user: {}", user, e);
       return errorMessage(e.getMessage(), 500);
     }
   }
