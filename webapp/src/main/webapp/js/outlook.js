@@ -399,7 +399,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             presentUsers: presentUsers
           }, function (response, status, jqXHR) {
             if (status === "error") {
-              showError("Outlook.userInfoConnections() : Can not get connections ");
+              showError(jqXHR);
             } else {
               $userInfo.find(".ms-PersonaCard").PersonaCard();
               $connections.find(".letter-btn").hide();
@@ -431,7 +431,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           $placeToLoad.jzLoad("Outlook.userInfoDetails()", {user: user},
             function (response, status, jqXHR) {
               if (status === "error") {
-                showError("Outlook.userInfoDetails() : Can not load user details.");
+                showError(jqXHR);
               }
             });
         }
@@ -453,6 +453,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 isRecipientsUpdating = false;
               }
             });
+        }
+
+        function logResultError (opName, result) {
+          var err = result.error;
+          if (err) {
+            console.log("> Recipients " + opName + " error " + err.name + ": " + err.message);
+          } else {
+            console.log("> Recipients " + opName + " error: " + JSON.stringify(result));
+          }
         }
 
         function removeRecipient(email){
@@ -504,15 +513,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       }
                       item.to.setAsync(toRecipient, function (asyncResult) {
                         if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                          console.log(">> error set TO recipients: " + asyncResult.error.message);
+                          logResultError("updating", result);
                         } else {
                           item.cc.setAsync(ccRecipient, function (asyncResult) {
                             if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                              console.log(">> error set CC recipients: " + asyncResult.error.message);
+                              logResultError("updating", result);
                             } else {
                               item.bcc.setAsync(bccRecipient, function (asyncResult) {
                                 if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                                  console.log(">> error set BCC recipients: " + asyncResult.error.message);
+                                  logResultError("updating", result);
                                   isRecipientsUpdating = false;
                                 } else {
                                   isRecipientsUpdating = false;
@@ -610,22 +619,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               emails: presentEmail
             }, function (response, status, jqXHR) {
               if (status === "error") {
-                showError("Outlook.userInfoRecipients() : Can not load recipients.");
+                showError(jqXHR);
               } else {
                 clearError();
                 $(function () {
                   $recipients.find(".letter-btn").hide();
                   // TODO copy-pasted code with Read mode
                   $recipients.find(".ms-PersonaCard").PersonaCard();
-                  // function logResultError (opName, result) {
-                  //   var err = result.error;
-                  //   if (err) {
-                  //     console.log("> Recipients " + opName + " error " + err.name + ": " + err.message);
-                  //   } else {
-                  //     console.log("> Recipients " + opName + " error: " + JSON.stringify(result));
-                  //   }
-                  // }
-
                   $recipients.find(".remove-btn").click(function () {
                     var $this = $(this);
                     var emailAddress = $this.data("email");
@@ -664,7 +664,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               presentEmail: ""
             }, function (response, status, jqXHR) {
               if (status === "error") {
-                showError("Outlook.userInfoConnections() : Can not load connections.");
+                showError(jqXHR);
               } else {
                 $userInfo.find(".add-btn").hide();
                 // TODO copy-pasted code with Compose mode
@@ -692,7 +692,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               emails: byEmail
             }, function (response, status, jqXHR) {
               if (status === "error") {
-                showError("Outlook.userInfoRecipients() : Can not load recipients.");
+                showError(jqXHR);
               } else {
                 clearError();
                 if ($userInfo.find(".compose").length < 1) {
