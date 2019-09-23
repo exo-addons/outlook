@@ -18,14 +18,62 @@
  */
 package org.exoplatform.outlook.portlet;
 
-import juzu.*;
-import juzu.request.HttpContext;
-import juzu.request.RequestContext;
-import juzu.template.TemplateExecutionException;
+import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.stream.Collectors;
+
+import javax.annotation.security.PermitAll;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.portlet.PortletPreferences;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.html.HtmlParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.gatein.wci.ServletContainer;
+import org.gatein.wci.ServletContainerFactory;
+import org.gatein.wci.security.Credentials;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.forum.service.Topic;
-import org.exoplatform.outlook.*;
+import org.exoplatform.outlook.AccessException;
+import org.exoplatform.outlook.BadParameterException;
+import org.exoplatform.outlook.OutlookEmail;
+import org.exoplatform.outlook.OutlookException;
+import org.exoplatform.outlook.OutlookMessage;
+import org.exoplatform.outlook.OutlookService;
+import org.exoplatform.outlook.OutlookSpace;
+import org.exoplatform.outlook.OutlookUser;
 import org.exoplatform.outlook.common.ResourceBundleSerializer;
 import org.exoplatform.outlook.jcr.ContentLink;
 import org.exoplatform.outlook.jcr.File;
@@ -56,26 +104,15 @@ import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.wiki.mow.api.Page;
-import org.gatein.wci.ServletContainer;
-import org.gatein.wci.ServletContainerFactory;
-import org.gatein.wci.security.Credentials;
 
-import javax.annotation.security.PermitAll;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.portlet.PortletPreferences;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
+import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
+import juzu.SessionScoped;
+import juzu.View;
+import juzu.request.HttpContext;
+import juzu.request.RequestContext;
+import juzu.template.TemplateExecutionException;
 
 /**
  * Juzu controller for Outlook read pane app.<br>
@@ -395,7 +432,7 @@ public class Outlook {
    */
   @Inject
   ResourceBundleSerializer                                      i18nJSON;
-
+  
   /**
    * Instantiates a new outlook.
    */
@@ -1213,15 +1250,19 @@ public class Outlook {
   @Resource
   public Response userInfoDetails(String user, RequestContext context) {
     try {
+      String clientEnc = context.getClientContext().getCharacterEncoding();
+      final Charset clientCs = loadEncoding(clientEnc);
+      
       String currentUsername = context.getSecurityContext().getRemoteUser();
-      Identity currentUserIdentity =
-                                   identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
       Set<String> currentUserGroupIds = organization.getMembershipHandler()
                                                     .findMembershipsByUser(currentUsername)
                                                     .stream()
                                                     .map(m -> m.getGroupId())
                                                     .collect(Collectors.toSet());
-      Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
+      // TODO cleanup
+      //Identity currentUserIdentity =
+      //                             identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
+      /*Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
                                                         .stream()
                                                         .map(r -> {
                                                           if (!r.getSender().getRemoteId().equals(currentUsername)) {
@@ -1230,22 +1271,42 @@ public class Outlook {
                                                             return r.getReceiver().getRemoteId();
                                                           }
                                                         })
-                                                        .collect(Collectors.toSet());
+                                                        .collect(Collectors.toSet());*/
+      
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
-      List<ActivityInfo> activities = new ArrayList<>();
       List<IdentityInfo> connectionList = getConnectionsList(user);
-      List<ExoSocialActivity> activity = activityManager.getActivitiesWithListAccess(userIdentity).loadAsList(0, 20);
-      activity.forEach(a -> {
+      
+      // TODO cleanup
+      //List<ExoSocialActivity> top20visible = activityManager.getActivitiesWithListAccess(userIdentity, currentUserIdentity)
+      //                                                      .loadAsList(0, 20);
+      List<ExoSocialActivity> top20 = activityManager.getActivitiesByPoster(userIdentity).loadAsList(0, 20);
+      
+      // Use Apache Tika to parse activity title w/o HTML
+      HtmlParser htmlParser = new HtmlParser();
+      
+      List<ActivityInfo> activities = top20.stream().filter(a -> {
         String streamId = a.getStreamOwner();
-        if (streamId != null) {
-          if (currentUserConns.contains(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId))) {
-            activities.add(new ActivityInfo(a.getTitle(),
-                                            a.getType(),
-                                            LinkProvider.getSingleActivityUrl(a.getId()),
-                                            a.getPostedTime()));
+        return streamId != null
+            && (userIdentity.getRemoteId().equals(streamId) || currentUserGroupIds.contains(findSpaceGroupId(streamId)));
+      }).map(a -> {
+        // We want activity title in text (not HTML)
+        ParseContext pcontext = new ParseContext();
+        ContentHandler contentHandler = new BodyContentHandler();
+        Metadata metadata = new Metadata();
+        InputStream content = new ByteArrayInputStream(a.getTitle().getBytes(clientCs));
+        String titleText;
+        try {
+          htmlParser.parse(content, contentHandler, metadata, pcontext);
+          titleText = cutText(contentHandler.toString(), 100);
+        } catch (Exception e) {
+          String rawTitle = cutText(a.getTitle(), 100);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Cannot parse activity title: '{}...'", rawTitle, e);
           }
+          titleText = rawTitle;
         }
-      });
+        return new ActivityInfo(titleText, a.getType(), LinkProvider.getSingleActivityUrl(a.getId()), a.getPostedTime());
+      }).collect(Collectors.toList());
       UserInfo userInfo = new UserInfo(userIdentity, activities, connectionList);
       return userInfoDetails.with().userDet(userInfo).ok();
     } catch (Exception e) {
@@ -1918,5 +1979,21 @@ public class Outlook {
       }
     }
     return list;
+  }
+  
+  private Charset loadEncoding(String name) {
+    if (name == null || name.length() == 0) {
+      name = "UTF8";
+    }
+    try {
+      return Charset.forName(name);
+    } catch(IllegalCharsetNameException | UnsupportedCharsetException e) {
+      LOG.warn("Error loading client encoding charset {}: {}", name, e.toString());
+      return Charset.defaultCharset();
+    }
+  }
+  
+  private String cutText(String text, int limit) {
+    return text.length() > limit ? text.substring(0,  limit) : text; 
   }
 }
