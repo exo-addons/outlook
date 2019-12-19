@@ -37,13 +37,13 @@
     <key>org.exoplatform.outlook.jcr.ContentLink</key>
     <type>org.exoplatform.outlook.jcr.ContentLink</type>
     <!-- Use below configuration to introduce explicit settings for content link URLs -->
-    <!-- init-params>
+    <init-params>
       <properties-param>
         <name>link-configuration</name>
-        <property name="server-host" value="${outlook.exo.server.host:}" />
-        <property name="server-schema" value="${outlook.exo.server.schema:http}" />
+        <property name="server-host" value="${outlook.exo.server.host:nik.exoplatform.com.ua}" />
+        <property name="server-schema" value="${outlook.exo.server.schema:https}" />
       </properties-param>
-    </init-params -->
+    </init-params>
   </component>
 
   <component>
