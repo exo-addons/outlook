@@ -3,7 +3,7 @@ body {
   padding: 0;
 }
 
-.logoIcon* {
+.logoIcon * {
   display: inline-block;
 }
 
@@ -36,7 +36,7 @@ body {
 }
 
 /* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
-@media ( min-width : 280px) {
+@media ( min-width: 280px) {
   #outlook-pane .ms-Dropdown-items {
     top: auto;
     right: auto;
@@ -44,13 +44,14 @@ body {
     left: auto;
     max-width: 100%;
   }
+
   #outlook-pane .ms-Dropdown.ms-Dropdown--open .ms-Dropdown-items, #outlook-pane .ms-Dropdown.is-open .ms-Dropdown-items {
     position: absolute;
   }
 }
 
 /* Error banner (common) */
-.error-message>.ms-MessageBanner {
+.error-message > .ms-MessageBanner {
   min-width: 290px;
   background-color: #fde7e9;
   color: #a80000;
@@ -230,7 +231,7 @@ span[disabled] {
   display: block !important;
 }
 
-#path-info>.ms-ListItem {
+#path-info > .ms-ListItem {
   padding-left: 0px;
   padding-right: 0px;
 }
@@ -364,17 +365,17 @@ div.form-buttons {
   background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 25px, white);
 }
 
-.messageEditor, .messageEditorContainer>.messageText, .statusText, .topicText {
+.messageEditor, .messageEditorContainer > .messageText, .statusText, .topicText {
   height: 200px;
   overflow: hidden;
   padding: 0px;
 }
 
-.messageEditor, .messageEditorContainer>.messageText {
+.messageEditor, .messageEditorContainer > .messageText {
   max-height: 250px;
 }
 
-.messageSubject, .messageEditorContainer>input[name='messageSubject'] {
+.messageSubject, .messageEditorContainer > input[name='messageSubject'] {
   margin-bottom: -1px !important;
 }
 
@@ -477,7 +478,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   /*padding: 5px;*/
   text-overflow: ellipsis;
   font-family: "wf_segoe-ui_semilight", "Segoe UI Semilight", "Segoe WP Semilight", "Segoe UI", "Segoe WP", Tahoma, Arial,
-    sans-serif;
+  sans-serif;
 }
 
 .activity {
@@ -591,7 +592,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   height: max-content;
 }
 
-@media ( min-width : 480px) {
+@media ( min-width: 480px) {
   #outlook-userInfo .ms-PersonaCard {
     /*max-width: 90%;*/
     /*width: 80%;*/
@@ -599,9 +600,9 @@ textarea[name='activityTitle'], textarea[name='comment'] {
   }
 }
 
-@media ( max-width : 480px) {
+@media ( max-width: 480px) {
   #outlook-userInfo .ms-Persona-imageArea, #outlook-userInfo .ms-Persona-image, #outlook-userInfo .ms-Persona-imageArea,
-    #outlook-userInfo .ms-Persona-image {
+  #outlook-userInfo .ms-Persona-image {
     /*min-height: 48px;*/
     /*min-width: 48px;*/
     /*width: 100%;*/
@@ -738,15 +739,17 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 
 .add-btn span {
   position: absolute;
-  top: 50%; margin-top: -4px;
-  left: 50%; margin-left: -1px;
+  top: 50%;
+  margin-top: -4px;
+  left: 50%;
+  margin-left: -1px;
   width: 3px;
   height: 14px;
   background-color: #0078d7;
   transition: 0.5s;
 }
 
-.add-btn span::before{
+.add-btn span::before {
   background-color: #0078d7;
   width: 3px;
   position: absolute;
@@ -776,9 +779,11 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .ms-CommandBarSearch input {
   padding: 0 0 0 40px;
 }
+
 .ms-Sialog-Compose {
   display: flex;
 }
+
 .ms-Persona-compase {
   display: contents;
 }
@@ -823,10 +828,14 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 }
 
 .connections {
-    position: relative;
-    transition: 2s;
+  position: relative;
+  transition: 2s;
 }
 
 .compose-Persona {
   margin: 10px 15px 10px 0;
+}
+
+.currentFolder .pathControls .ms-ListItem-action .ms-Icon {
+  vertical-align: middle;
 }

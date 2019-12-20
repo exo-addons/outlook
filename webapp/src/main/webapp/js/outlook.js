@@ -834,7 +834,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           var item = Office.context.mailbox.item;
           if (item.attachments.length > 0) {
-            for (i = 0; i < item.attachments.length; i++) {
+            for (var i = 0; i < item.attachments.length; i++) {
               var att = item.attachments[i];
               var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>"
                 + att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" //
