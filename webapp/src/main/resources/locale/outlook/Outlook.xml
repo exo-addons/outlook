@@ -58,7 +58,7 @@
     <pathAddDescription>Create a new folder</pathAddDescription>
     <pathOpenDescription>Open in new window</pathOpenDescription>
     <savingAttachment>Saving your files...</savingAttachment>
-    <savedAttachment>Your files were successfully saved</savedAttachment>
+    <savedAttachment>Your files were successfully saved in</savedAttachment>
     <savedClickToOpen>Click a file in the list below to open it inside the intranet</savedClickToOpen>
     <addingNewFolder>Adding new folder</addingNewFolder>
     <enterFolderNameAndCreate>Provide a name for this new folder and then click "Add".</enterFolderNameAndCreate>
