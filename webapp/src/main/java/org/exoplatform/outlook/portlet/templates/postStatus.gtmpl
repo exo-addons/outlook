@@ -52,7 +52,7 @@
 
 	<div id="posting" class="ms-Grid-row centered" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-		<div class="ms-Grid-col ms-u-sm8 text-centered">
+		<div class="ms-Grid-col ms-u-sm10 text-centered">
 			<div>&{Outlook.postingStatus}</div>
 			<div class="ms-Spinner" style="display: inline-block;"></div>
 		</div>
@@ -60,7 +60,7 @@
 	</div>
 	<div id="posted" class="ms-Grid-row" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-		<div class="ms-Grid-col ms-u-sm8">
+		<div class="ms-Grid-col ms-u-sm10">
 			<div class="postedInfo"></div>
 		</div>
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
