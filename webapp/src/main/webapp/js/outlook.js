@@ -1065,7 +1065,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable=\"true\"></div>");
             $editorText.append($content.children());
             $content.append($editorText);
@@ -1303,7 +1303,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable='true'></div>");
             $editorText.append($content.children());
             $content.append($editorText);
@@ -1469,7 +1469,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin" : "0px", "padding" : "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable='true'></div>");
             $editorText.append($content.children());
             $content.append($editorText);
