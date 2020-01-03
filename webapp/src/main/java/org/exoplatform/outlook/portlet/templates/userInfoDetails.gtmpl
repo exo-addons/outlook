@@ -49,7 +49,11 @@
                             ${conn.firstName}${conn.lastName}</font>
                           </font>
                         </div>
-                        <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                        <% if (conn.avatarUrl) { %>
+                          <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                        <% } else { %>
+                          <img class="ms-Persona-image" src="/outlook/images/outlook-user-img.png">
+                        <% } %>
                       </div>
                       <div class="ms-Persona-details">
                         <div class="ms-Persona-primaryText">
