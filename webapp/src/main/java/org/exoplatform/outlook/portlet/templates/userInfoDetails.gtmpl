@@ -23,13 +23,15 @@
                 <ul class="ms--list">
                   <% if (activity.title) { %>
                   <li class="activity-title">
-                    <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link"
-                       target="_blank">
-                      ${activity.title}</a>
+                    <div class="activity-link-shell">
+                      <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link"
+                         target="_blank">
+                        ${activity.title}</a>
+                    </div>
                   </li>
-                  <% } %>
                   <% if (activity.postedDate) { %>
-                  <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                    <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                  <% } %>
                   <% } %>
                 </ul>
               </div>
