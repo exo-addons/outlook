@@ -47,14 +47,13 @@
                     <div class="ms-Persona">
                       <div class="ms-Persona-imageArea">
                         <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                          <i class="ms-Icon ms-Icon--person default-user-icon"></i>
                           <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                             ${conn.firstName}${conn.lastName}</font>
                           </font>
                         </div>
                         <% if (conn.avatarUrl) { %>
                           <img class="ms-Persona-image" src="${conn.avatarUrl}">
-                        <% } else { %>
-                          <img class="ms-Persona-image" src="/outlook/images/outlook-user-img.png">
                         <% } %>
                       </div>
                       <div class="ms-Persona-details">
@@ -81,6 +80,7 @@
             </div>
           </li>
           <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalPhones">
+            <div class="ms-PersonaCard-detailLine">
             <% if (userDet.isPhoneNumberPresent()) { %>
             <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
             <% userDet.getPhones().each { phName, phNumber -> %>
@@ -136,6 +136,7 @@
             <% } else { %>
             <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
             <% } %>
+            </div>
           </li>
           <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalIms">
             <div class="ms-PersonaCard-detailLine">

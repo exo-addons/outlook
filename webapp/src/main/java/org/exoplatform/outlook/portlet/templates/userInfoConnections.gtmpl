@@ -36,6 +36,7 @@
                               <div class="ms-Persona-compase">
                                 <div class="ms-Persona-imageArea">
                                   <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                                    <i class="ms-Icon ms-Icon--person default-user-icon"></i>
                                     <font style="vertical-align: inherit;">
                                       <font style="vertical-align: inherit;">
                                         ${conn.firstName}${conn.lastName}
@@ -44,8 +45,6 @@
                                   </div>
                                   <% if (conn.avatarUrl) { %>
                                     <img class="ms-Persona-image" src="${conn.avatarUrl}">
-                                  <% } else { %>
-                                    <img class="ms-Persona-image" src="/outlook/images/outlook-user-img.png">
                                   <% } %>
                                 </div>
                                 <div class="ms-Persona-details less-details">
