@@ -24,7 +24,7 @@
   <parent>
     <artifactId>exo-outlook</artifactId>
     <groupId>org.exoplatform.addons.outlook</groupId>
-    <version>2.2.x-SNAPSHOT</version>
+    <version>3.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>exo-outlook-packaging</artifactId>
   <packaging>pom</packaging>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2019 eXo Platform SAS.
+    Copyright (C) 2020 eXo Platform SAS.
     
     This is free software; you can redistribute it and/or modify it
     under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,11 @@
   <parent>
     <artifactId>addons-parent-pom</artifactId>
     <groupId>org.exoplatform.addons</groupId>
-    <version>10</version>
+    <version>11</version>
   </parent>
   <groupId>org.exoplatform.addons.outlook</groupId>
   <artifactId>exo-outlook</artifactId>
-  <version>2.2.x-SNAPSHOT</version>
+  <version>3.0.x-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Outlook</name>
   <description>eXo Outlook extension</description>
@@ -50,7 +50,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
     <org.exoplatform.depmgt.version>15</org.exoplatform.depmgt.version>
-    <org.exoplatform.platform.version>6.0.x-SNAPSHOT</org.exoplatform.platform.version>
+    <org.exoplatform.platform.version>6.0.0-M16</org.exoplatform.platform.version>
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <org.mockito.version>2.2.11</org.mockito.version>
