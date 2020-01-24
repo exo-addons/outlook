@@ -19,9 +19,9 @@
  */
 package org.exoplatform.outlook.security;
 
-//import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.web.login.LoginServlet;
+import org.exoplatform.web.security.GateInTokenStore;
 import org.exoplatform.web.security.codec.CodecInitializer;
 import org.exoplatform.web.security.security.CookieTokenService;
 import org.exoplatform.web.security.security.TokenServiceInitializationException;
@@ -44,9 +44,9 @@ public class OutlookTokenService extends CookieTokenService {
    * @param codecInitializer {@link CodecInitializer}
    * @throws TokenServiceInitializationException when initialization failed
    */
-  public OutlookTokenService(InitParams initParams, CodecInitializer codecInitializer)
+  public OutlookTokenService(InitParams initParams, GateInTokenStore tokenStore, CodecInitializer codecInitializer)
       throws TokenServiceInitializationException {
-    super(initParams, null, codecInitializer);
+    super(initParams, tokenStore, codecInitializer);
   }
   
   /**

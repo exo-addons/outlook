@@ -50,7 +50,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
     <org.exoplatform.depmgt.version>15</org.exoplatform.depmgt.version>
-    <org.exoplatform.platform.version>5.2.0</org.exoplatform.platform.version>
+    <org.exoplatform.platform.version>6.0.x-SNAPSHOT</org.exoplatform.platform.version>
     <!-- for tests -->
     <junit.version>4.12</junit.version>
     <org.mockito.version>2.2.11</org.mockito.version>
