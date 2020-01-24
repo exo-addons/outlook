@@ -19,7 +19,7 @@
  */
 package org.exoplatform.outlook.security;
 
-import org.exoplatform.commons.chromattic.ChromatticManager;
+//import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.web.login.LoginServlet;
 import org.exoplatform.web.security.codec.CodecInitializer;
@@ -41,13 +41,12 @@ public class OutlookTokenService extends CookieTokenService {
    * Instantiates a new outlook token service.
    *
    * @param initParams {@link InitParams}
-   * @param chromatticManager {@link ChromatticManager}
    * @param codecInitializer {@link CodecInitializer}
    * @throws TokenServiceInitializationException when initialization failed
    */
-  public OutlookTokenService(InitParams initParams, ChromatticManager chromatticManager, CodecInitializer codecInitializer)
+  public OutlookTokenService(InitParams initParams, CodecInitializer codecInitializer)
       throws TokenServiceInitializationException {
-    super(initParams, chromatticManager, codecInitializer);
+    super(initParams, null, codecInitializer);
   }
   
   /**

@@ -119,7 +119,7 @@
     </component-plugin>
   </external-component-plugins>
 
-  <external-component-plugins>
+  <!--<external-component-plugins>
     <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
     <component-plugin>
       <name>chromattic</name>
@@ -142,7 +142,7 @@
         </values-param>
       </init-params>
     </component-plugin>
-  </external-component-plugins>
+  </external-component-plugins>-->
 
   <external-component-plugins>
     <target-component>org.exoplatform.web.filter.ExtensibleFilter</target-component>
