@@ -24,7 +24,7 @@
   <parent>
     <artifactId>exo-outlook</artifactId>
     <groupId>org.exoplatform.addons.outlook</groupId>
-    <version>2.2.x-SNAPSHOT</version>
+    <version>3.0.0-M01</version>
   </parent>
   <artifactId>exo-outlook-services</artifactId>
   <packaging>jar</packaging>

@@ -28,7 +28,7 @@
   </parent>
   <groupId>org.exoplatform.addons.outlook</groupId>
   <artifactId>exo-outlook</artifactId>
-  <version>2.2.x-SNAPSHOT</version>
+  <version>3.0.0-M01</version>
   <packaging>pom</packaging>
   <name>eXo Outlook</name>
   <description>eXo Outlook extension</description>
@@ -40,7 +40,7 @@
   <scm>
     <connection>scm:git:git://github.com:exo-addons/outlook.git</connection>
     <developerConnection>scm:git:git@github.com:exo-addons/outlook.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>3.0.0-M01</tag>
     <url>https://github.com/exo-addons/outlook/</url>
   </scm>
   <properties>
