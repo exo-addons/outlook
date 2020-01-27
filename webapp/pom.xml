@@ -24,7 +24,7 @@
   <parent>
     <artifactId>exo-outlook</artifactId>
     <groupId>org.exoplatform.addons.outlook</groupId>
-    <version>3.0.x-SNAPSHOT</version>
+    <version>3.0.0-M02</version>
   </parent>
   <artifactId>exo-outlook-webapp</artifactId>
   <packaging>war</packaging>
