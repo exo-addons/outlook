@@ -1932,7 +1932,7 @@ public class Outlook {
   @Deprecated
   private List<Relationship> getRelationships(String name) throws Exception {
     Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, name, true);
-    List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(userIdentity, CONFIRMED, 0, 0);
+    List<Relationship> relationships = relationshipManager.getRelationshipsByStatus(userIdentity, CONFIRMED, 0, 50);
     return relationships;
   }
 
