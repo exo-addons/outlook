@@ -41,6 +41,7 @@ public class OutlookTokenService extends CookieTokenService {
    * Instantiates a new outlook token service.
    *
    * @param initParams {@link InitParams}
+   * @param tokenStore {@link GateInTokenStore}
    * @param codecInitializer {@link CodecInitializer}
    * @throws TokenServiceInitializationException when initialization failed
    */
