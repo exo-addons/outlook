@@ -46,31 +46,42 @@
   <properties>
     <!-- Defaut compiler settings -->
     <maven.compiler.optimize>true</maven.compiler.optimize>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <!-- eXo Modules -->
-    <org.exoplatform.depmgt.version>15</org.exoplatform.depmgt.version>
-    <org.exoplatform.platform.version>6.0.0-M16</org.exoplatform.platform.version>
+    <org.exoplatform.social.version>6.0.0-M18</org.exoplatform.social.version>
+    <org.exoplatform.forum.version>6.0.0-M18</org.exoplatform.forum.version>
+    <org.exoplatform.wiki.version>6.0.0-M18</org.exoplatform.wiki.version>
+    <org.exoplatform.ecms.version>6.0.0-M18</org.exoplatform.ecms.version>
     <!-- for tests -->
-    <junit.version>4.12</junit.version>
-    <org.mockito.version>2.2.11</org.mockito.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
   <dependencyManagement>
     <dependencies>
-      <!-- Import versions of external dependencies to use -->
+      <!-- Import versions from platform project FIRST!!! -->
       <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>maven-depmgt-pom</artifactId>
-        <version>${org.exoplatform.depmgt.version}</version>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social</artifactId>
+        <version>${org.exoplatform.social.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Import versions from platform project FIRST!!! -->
       <dependency>
-        <groupId>org.exoplatform.platform</groupId>
-        <artifactId>platform</artifactId>
-        <version>${org.exoplatform.platform.version}</version>
+        <groupId>org.exoplatform.forum</groupId>
+        <artifactId>forum</artifactId>
+        <version>${org.exoplatform.forum.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki</artifactId>
+        <version>${org.exoplatform.wiki.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ecms</groupId>
+        <artifactId>ecms</artifactId>
+        <version>${org.exoplatform.ecms.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -87,26 +98,7 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <!-- For tests -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${org.mockito.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>exo-jcr-services</artifactId>
-        <version>${org.exoplatform.platform.version}</version>
-        <type>jar</type>
-        <scope>test</scope>
-      </dependency>
+      <!-- Test  -->
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
