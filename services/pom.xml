@@ -92,11 +92,6 @@
       <artifactId>forum-social-integration</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- dependency>
-      <groupId>org.exoplatform.forum</groupId>
-      <artifactId>forum-component-bbcode</artifactId>
-      <scope>provided</scope>
-    </dependency -->
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>

@@ -394,7 +394,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           } else {
             presentUsers = "";
           }
-
+          // TODO we need lazy-loading fetch here, user may have too many connections 
+          // but we show only visible and fetch on scrolling
           $connections.jzLoad("Outlook.userInfoConnections()", {
             presentUsers : presentUsers
           }, function (response, status, jqXHR) {
