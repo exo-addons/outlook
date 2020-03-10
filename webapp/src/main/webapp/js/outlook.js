@@ -352,7 +352,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function showConnection(recipients = Office.context.mailbox.item.to, btn, isComposeMode) {
+        function showConnection(recipients, btn, isComposeMode) {
           var $userInfo = $("#outlook-userInfo");
           var $recipientsPanel = $userInfo.find(".recipients-panel");
           var $connections = $userInfo.find(".connections");
@@ -380,7 +380,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function getConnections(recipients = Office.context.mailbox.item.to, isComposeMode = false) {
+        function getConnections(recipients, isComposeMode) {
+          if (!recipients) {
+            recipients = Office.context.mailbox.item.to;
+          }
+          if (typeof isComposeMode === "undefined" || isComposeMode === null) {
+            isComposeMode = false;
+          }
+          
           var $userInfo = $("#outlook-userInfo");
           var $users = $userInfo.find(".compose-Persona");
           var presentUsers = "";
@@ -2095,22 +2102,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               }
             }
 
-            // TODO not used, see commented code below
-            function outlookSiteUrl(url) {
-              if (outlookSiteName) {
-                var portalPath;
-                if (portalName.indexOf("/") != 0) {
-                  portalPath = "/" + portalName;
-                } else {
-                  portalPath = portalName;
-                }
-                var outlookPath = "/" + outlookSiteName;
-                return url.replace(portalPath, outlookPath);
-              } else {
-                return url;
-              }
-            }
-
             // load CSS to align the search UI to Outlook add-in style
             var searchDocument = searchWindow.document;
             loadStyle("/outlook/skin/fabric.min.css", searchDocument);
@@ -2133,15 +2124,6 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $a.attr("target", "_blank");
                   $a.attr("href", fixPortalName($a.attr("href")));
                 });
-                // TODO do we want show unified (full) search in the add-in?
-                // $table.find("td.message>a").each(function() {
-                // var $a = $(this);
-                // //$a.attr("href", outlookSiteUrl($a.attr("href")));
-                // $(searchWindow.document).on("click", $a.attr("id"), function() {
-                // window.location.href = generateAllResultsURL(); //open the main search page
-                // //$(quickSearchResult_id).hide();
-                // });
-                // });
                 return true;
               });
             } else {
