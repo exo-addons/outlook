@@ -850,3 +850,24 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .ms-Persona-primaryText {
   width: unset;
 }
+
+#outlook-error .ms-MessageBanner-content {
+  padding-left: 3px;
+}
+
+#outlook-error .ms-MessageBanner-text {
+  width: 60%;
+}
+
+#outlook-error .ms-MessageBanner-clipper {
+  width: 100% !important;
+}
+
+#outlook-error .ms-MessageBanner-expand {
+  margin-top: 2px;
+  margin-left: 4px;
+}
+
+#outlook-error .ms-MessageBanner-content .ms-MessageBanner-clipper span {
+  word-wrap: break-word;
+}
