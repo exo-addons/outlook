@@ -114,7 +114,7 @@
                   </Action>
                 </Control -->
                 <!-- Create status, discussion etc: Menu (dropdown) button -->
-                <!--<Control xsi:type="Menu" id="composeCreateMenuButton">
+                <Control xsi:type="Menu" id="composeCreateMenuButton">
                   <Label resid="createMenuLabel" />
                   <Supertip>
                     <Title resid="createMenuTipTitle" />
@@ -163,9 +163,9 @@
                       </Action>
                     </Item>
                   </Items>
-                </Control>-->
+                </Control>
                 <!-- User Info: task pane button -->
-                <!--<Control xsi:type="Button" id="composeUserInfoButton">
+                <Control xsi:type="Button" id="composeUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -181,7 +181,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoComposeUrl" />
                   </Action>
-                </Control>-->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -191,8 +191,8 @@
             <OfficeTab id="TabDefault">
               <Group id="readGroup">
                 <Label resid="groupLabel" />
-                <!-- Convert to status: task pane button -->
-                <Control xsi:type="Button" id="readConvertMenuButton">
+                <!-- Convert to: Menu (dropdown) button -->
+                <Control xsi:type="Menu" id="readConvertMenuButton">
                   <Label resid="convertMenuLabel" />
                   <Supertip>
                     <Title resid="convertMenuTipTitle" />
@@ -205,10 +205,7 @@
                     <bt:Image size="64" resid="convert-64" />
                     <bt:Image size="80" resid="convert-80" />
                   </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="convertToStatusUrl" />
-                  </Action>
-                  <!--<Items>
+                  <Items>
                     <Item id="readConvertToStatus">
                       <Label resid="convertToStatusLabel" />
                       <Supertip>
@@ -225,8 +222,8 @@
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="convertToStatusUrl" />
                       </Action>
-                    </Item>-->
-                    <!--<Item id="readConvertToWiki">
+                    </Item>
+                    <Item id="readConvertToWiki">
                       <Label resid="convertToWikiLabel" />
                       <Supertip>
                         <Title resid="convertToWikiTipTitle" />
@@ -259,8 +256,8 @@
                       <Action xsi:type="ShowTaskpane">
                         <SourceLocation resid="convertToForumUrl" />
                       </Action>
-                    </Item>-->
-                  <!--</Items>-->
+                    </Item>
+                  </Items>
                 </Control>
                 <!-- Search: task pane button -->
                 <!-- Control xsi:type="Button" id="readSearchButton">
@@ -281,7 +278,7 @@
                   </Action>
                 </Control -->
                 <!-- Create status, discussion etc: Menu (dropdown) button -->
-                <!--<Control xsi:type="Menu" id="readCreateMenuButton">
+                <Control xsi:type="Menu" id="readCreateMenuButton">
                   <Label resid="createMenuLabel" />
                   <Supertip>
                     <Title resid="createMenuTipTitle" />
@@ -330,7 +327,7 @@
                       </Action>
                     </Item>
                   </Items>
-                </Control>-->
+                </Control>
                 <!-- Save attachments: task pane button -->
                 <Control xsi:type="Button" id="saveAttachmentButton">
                   <Label resid="saveAttachmentLabel" />
@@ -350,7 +347,7 @@
                   </Action>
                 </Control>
                 <!-- User Info: task pane button -->
-                <!--<Control xsi:type="Button" id="readUserInfoButton">
+                <Control xsi:type="Button" id="readUserInfoButton">
                   <Label resid="userInfoLabel" />
                   <Supertip>
                     <Title resid="userInfoTipTitle" />
@@ -366,7 +363,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="userInfoReadUrl" />
                   </Action>
-                </Control>-->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -513,8 +510,8 @@
         <bt:String id="saveAttachmentTipTitle" DefaultValue="Save attachments in eXo">
             <bt:Override Locale="fr-fr" Value="Enregistrer les pièces jointes dans eXo" />
         </bt:String>
-        <bt:String id="convertMenuLabel" DefaultValue="Convert to Activity">
-          <bt:Override Locale="fr-fr" Value="Convertir en Activité" />
+        <bt:String id="convertMenuLabel" DefaultValue="Convert">
+          <bt:Override Locale="fr-fr" Value="Convertir" />
         </bt:String>
         <bt:String id="convertMenuTipTitle" DefaultValue="Convert a message">
           <bt:Override Locale="fr-fr" Value="Convertir un message" />
