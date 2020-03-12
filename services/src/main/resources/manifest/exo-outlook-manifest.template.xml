@@ -95,23 +95,6 @@
                     <SourceLocation resid="addAttachmentUrl" />
                   </Action>
                 </Control>
-                <Control xsi:type="Button" id="postActivityButton">
-                  <Label resid="postStatusLabel"/>
-                  <Supertip>
-                    <Title resid="postStatusTipTitle"/>
-                    <Description resid="postStatusTipDescription"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="create-activity-16"/>
-                    <bt:Image size="24" resid="create-activity-24"/>
-                    <bt:Image size="32" resid="create-activity-32"/>
-                    <bt:Image size="64" resid="create-activity-64"/>
-                    <bt:Image size="80" resid="create-activity-80"/>
-                  </Icon>
-                  <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="postStatusUrl"/>
-                  </Action>
-                </Control>
                 <!-- Search: task pane button -->
                 <!-- Control xsi:type="Button" id="composeSearchButton">
                   <Label resid="searchLabel" />
