@@ -63,7 +63,6 @@ import org.xml.sax.ContentHandler;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.AccessException;
 import org.exoplatform.outlook.BadParameterException;
 import org.exoplatform.outlook.OutlookEmail;
@@ -372,20 +371,6 @@ public class Outlook {
   @Path("convertedStatus.gtmpl")
   org.exoplatform.outlook.portlet.templates.convertedStatus     convertedStatus;
 
-  /**
-   * The convert to forum.
-   */
-  @Inject
-  @Path("convertToForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToForum      convertToForum;
-
-  /**
-   * The converted forum.
-   */
-  @Inject
-  @Path("convertedForum.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedForum      convertedForum;
-
   @Inject
   @Path("spacesDropdown.gtmpl")
   org.exoplatform.outlook.portlet.templates.spacesDropdown      spaces;
@@ -426,7 +411,6 @@ public class Outlook {
 
     MenuItem convertTo = new MenuItem("convertTo");
     convertTo.addSubmenu("convertToStatus");
-    convertTo.addSubmenu("convertToForum");
     addRootMenuItem(convertTo);
 
     MenuItem create = new MenuItem("create");
@@ -1019,55 +1003,6 @@ public class Outlook {
     }
   }
 
-  // *************** Start Discussion command ***********
-
-  /**
-   * Start discussion.
-   *
-   * @param groupId the group id
-   * @param name the name
-   * @param text the text
-   * @param userName the user name
-   * @param userEmail the user email
-   * @param context the context
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response startDiscussion(String groupId,
-                                  String name,
-                                  String text,
-                                  String userName,
-                                  String userEmail,
-                                  RequestContext context) {
-    try {
-      OutlookUser user = outlook.getUser(userEmail, userName, null);
-      if (groupId != null && groupId.length() > 0) {
-        // space forum requested
-        OutlookSpace space = outlook.getSpace(groupId);
-        if (space != null) {
-          Topic topic = space.addForumTopic(user, name, text);
-          return startedDiscussion.with()
-                                  .topic(new UserForumTopic(topic.getId(),
-                                                            topic.getTopicName(),
-                                                            topic.getLink(),
-                                                            space.getTitle()))
-                                  .ok();
-        } else {
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Error starting discussion: space not found " + groupId + ". OutlookUser " + userEmail);
-          }
-          return errorMessage("Error starting discussion: space not found " + groupId, 404);
-        }
-      } else {
-        return errorMessage("Error starting discussion: space not selected", 400);
-      }
-    } catch (Throwable e) {
-      LOG.error("Error starting discussion for " + userEmail, e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
   /**
    * Search form.
    *
@@ -1394,80 +1329,6 @@ public class Outlook {
   }
 
   /**
-   * Convert to forum form.
-   *
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response convertToForumForm() {
-    try {
-      return convertToForum.with().spaces(outlook.getUserSpaces()).ok();
-    } catch (Throwable e) {
-      LOG.error("Error showing conversion to forum form", e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  // *************** Convert To Forum command ***********
-
-  /**
-   * Convert to forum.
-   *
-   * @param groupId the group id
-   * @param messageId the message id
-   * @param subject the subject
-   * @param body the body
-   * @param created the created
-   * @param modified the modified
-   * @param userName the user name
-   * @param userEmail the user email
-   * @param fromName the from name
-   * @param fromEmail the from email
-   * @param context the context
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response convertToForum(String groupId,
-                                 String messageId,
-                                 String subject,
-                                 String body,
-                                 String created,
-                                 String modified,
-                                 String userName,
-                                 String userEmail,
-                                 String fromName,
-                                 String fromEmail,
-                                 RequestContext context) {
-    try {
-      OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, null, subject, body);
-
-      if (groupId != null && groupId.length() > 0) {
-        // space forum requested
-        OutlookSpace space = outlook.getSpace(groupId);
-        if (space != null) {
-          Topic topic = space.addForumTopic(message);
-          return convertedForum.with()
-                               .topic(new UserForumTopic(topic.getId(), topic.getTopicName(), topic.getLink(), space.getTitle()))
-                               .ok();
-        } else {
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Error converting message to forum post: space not found " + groupId + ". OutlookUser " + userEmail);
-          }
-          return errorMessage("Error converting message to forum post: space not found " + groupId, 404);
-        }
-      } else {
-        return errorMessage("Error creating forum topic: space not selected", 400);
-      }
-    } catch (Throwable e) {
-      LOG.error("Error converting message to forum post for " + userEmail, e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  /**
    * Rememberme.
    *
    * @param context the context
@@ -1707,70 +1568,6 @@ public class Outlook {
     public String getConvertedToSpaceActivity() {
       String msg = i18n.getString("Outlook.convertedToSpaceActivity");
       return msg.replace("{SPACE_NAME}", spaceName);
-    }
-  }
-
-  /**
-   * The Class UserForumTopic.
-   */
-  public class UserForumTopic extends ForumTopic {
-
-    /**
-     * The space name.
-     */
-    final String spaceName;
-
-    /**
-     * Instantiates a new user forum topic.
-     *
-     * @param id the id
-     * @param title the title
-     * @param link the link
-     * @param spaceName the space name
-     */
-    protected UserForumTopic(String id, String title, String link, String spaceName) {
-      super(id, title, link);
-      this.spaceName = spaceName;
-    }
-
-    /**
-     * Instantiates a new user forum topic.
-     *
-     * @param id the id
-     * @param title the title
-     * @param link the link
-     */
-    protected UserForumTopic(String id, String title, String link) {
-      this(id, title, link, null);
-    }
-
-    /**
-     * Gets the converted to space forum.
-     *
-     * @return the converted to space forum
-     */
-    public String getConvertedToSpaceForum() {
-      String msg = i18n.getString("Outlook.convertedToSpaceForum");
-      return msg.replace("{SPACE_NAME}", spaceName);
-    }
-
-    /**
-     * Gets the started topic in space forum.
-     *
-     * @return the started topic in space forum
-     */
-    public String getStartedTopicInSpaceForum() {
-      String msg = i18n.getString("Outlook.startedTopicInSpaceForum");
-      return msg.replace("{SPACE_NAME}", spaceName);
-    }
-
-    /**
-     * Checks if is in space.
-     *
-     * @return the isSpace
-     */
-    public boolean isInSpace() {
-      return spaceName != null;
     }
   }
 

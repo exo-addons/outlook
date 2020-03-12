@@ -21,7 +21,6 @@ package org.exoplatform.outlook;
 
 import java.net.URI;
 
-import org.exoplatform.forum.service.Topic;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
 
@@ -111,17 +110,6 @@ public abstract class OutlookUser extends OutlookEmail {
    * @throws Exception the exception
    */
   public abstract ExoSocialActivity postActivity(String text) throws Exception;
-
-  /**
-   * Adds the forum topic.
-   *
-   * @param categoryId the category id
-   * @param forumId the forum id
-   * @param message the message
-   * @return the topic
-   * @throws Exception the exception
-   */
-  public abstract Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception;
   
   /**
    * Gets eXo Social identity object of this user.

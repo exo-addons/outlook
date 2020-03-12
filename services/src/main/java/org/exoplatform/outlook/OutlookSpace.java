@@ -19,7 +19,6 @@
  */
 package org.exoplatform.outlook;
 
-import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
@@ -147,26 +146,6 @@ public abstract class OutlookSpace {
    * @throws Exception the exception
    */
   public abstract ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception;
-
-  /**
-   * Adds the forum topic.
-   *
-   * @param message the message
-   * @return the topic
-   * @throws Exception the exception
-   */
-  public abstract Topic addForumTopic(OutlookMessage message) throws Exception;
-  
-  /**
-   * Adds the forum topic.
-   *
-   * @param user the user
-   * @param name the name
-   * @param text the text
-   * @return the topic
-   * @throws Exception the exception
-   */
-  public abstract Topic addForumTopic(OutlookUser user, String name, String text) throws Exception;
 
   /**
    * Find last documents.
