@@ -34,15 +34,10 @@
 	<% 	} else { %>
 	<div id="outlook-no-menu">&{Outlook.homeNoActionsAvailable}</div>
 	<%	} %>
-	<div id="outlook-brand-bar" class="ms-bgColor-themePrimary ms-borderColor-themePrimary">
+	<div id="outlook-brand-bar" class="ms-bgColor-white ms-borderColor-white">
 		<ul class="brandBar ms-font-m">
-			<li class="brand">
-				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover brandLink" href="/portal" target="_blank">
-					<img src="/outlook/images/exo-icon-24.png"><span class="brandTitle">eXo Platform</span>
-				</a>
-			</li>
 			<li class="showLogout">
-				<a class="ms-Link ms-fontColor-yellow ms-fontColor-yellow--hover showLogoutLink" href="javascript:void(0);" target="_self">
+				<a class="ms-Link ms-fontColor-black ms-fontColor-black--hover showLogoutLink" href="javascript:void(0);" target="_self">
 					<img src="/outlook/images/16x16/logout-gray-yellow.png" class="showLogoutIcon"><span class="showLogoutTitle">&{Outlook.logout}</span>
 				</a>
 			</li>

@@ -99,10 +99,6 @@ body {
   vertical-align: middle;
 }
 
-.showLogoutTitle, .brandTitle {
-  color: #ffb900;
-}
-
 .showLogout {
   float: right;
   margin-top: 2px;
