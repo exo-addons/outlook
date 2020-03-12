@@ -24,7 +24,6 @@ import java.net.URI;
 import org.exoplatform.forum.service.Topic;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
 import org.exoplatform.social.core.identity.model.Identity;
-import org.exoplatform.wiki.mow.api.Page;
 
 /**
  * Office user API. Created by The eXo Platform SAS
@@ -112,15 +111,6 @@ public abstract class OutlookUser extends OutlookEmail {
    * @throws Exception the exception
    */
   public abstract ExoSocialActivity postActivity(String text) throws Exception;
-
-  /**
-   * Adds the wiki page.
-   *
-   * @param message the message
-   * @return the page
-   * @throws Exception the exception
-   */
-  public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 
   /**
    * Adds the forum topic.

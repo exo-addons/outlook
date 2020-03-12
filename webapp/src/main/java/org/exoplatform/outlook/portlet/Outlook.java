@@ -52,7 +52,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
@@ -61,7 +60,6 @@ import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 import org.exoplatform.commons.juzu.ajax.Ajax;
 import org.exoplatform.commons.utils.ListAccess;
@@ -103,7 +101,6 @@ import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.web.security.GateInToken;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
-import org.exoplatform.wiki.mow.api.Page;
 
 import juzu.Path;
 import juzu.Resource;
@@ -376,20 +373,6 @@ public class Outlook {
   org.exoplatform.outlook.portlet.templates.convertedStatus     convertedStatus;
 
   /**
-   * The convert to wiki.
-   */
-  @Inject
-  @Path("convertToWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertToWiki       convertToWiki;
-
-  /**
-   * The converted wiki.
-   */
-  @Inject
-  @Path("convertedWiki.gtmpl")
-  org.exoplatform.outlook.portlet.templates.convertedWiki       convertedWiki;
-
-  /**
    * The convert to forum.
    */
   @Inject
@@ -443,7 +426,6 @@ public class Outlook {
 
     MenuItem convertTo = new MenuItem("convertTo");
     convertTo.addSubmenu("convertToStatus");
-    convertTo.addSubmenu("convertToWiki");
     convertTo.addSubmenu("convertToForum");
     addRootMenuItem(convertTo);
 
@@ -1412,80 +1394,6 @@ public class Outlook {
   }
 
   /**
-   * Convert to wiki form.
-   *
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response convertToWikiForm() {
-    try {
-      return convertToWiki.with().spaces(outlook.getUserSpaces()).ok();
-    } catch (Throwable e) {
-      LOG.error("Error showing conversion to wiki form", e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  // *************** Convert To Wiki command ***********
-
-  /**
-   * Convert to wiki.
-   *
-   * @param groupId the group id
-   * @param messageId the message id
-   * @param subject the subject
-   * @param body the body
-   * @param created the created
-   * @param modified the modified
-   * @param userName the user name
-   * @param userEmail the user email
-   * @param fromName the from name
-   * @param fromEmail the from email
-   * @param context the context
-   * @return the response
-   */
-  @Ajax
-  @Resource
-  public Response convertToWiki(String groupId,
-                                String messageId,
-                                String subject,
-                                String body,
-                                String created,
-                                String modified,
-                                String userName,
-                                String userEmail,
-                                String fromName,
-                                String fromEmail,
-                                RequestContext context) {
-    try {
-      OutlookUser user = outlook.getUser(userEmail, userName, null);
-      OutlookMessage message = message(user, messageId, fromEmail, fromName, created, modified, null, subject, body);
-
-      if (groupId != null && groupId.length() > 0) {
-        // space wiki requested
-        OutlookSpace space = outlook.getSpace(groupId);
-        if (space != null) {
-          Page page = space.addWikiPage(message);
-          return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(), page.getUrl(), space.getTitle())).ok();
-        } else {
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Error converting message to wiki page: space not found " + groupId + ". OutlookUser " + userEmail);
-          }
-          return errorMessage("Error converting message to wiki page: space not found " + groupId, 404);
-        }
-      } else {
-        // user portal wiki requested
-        Page page = user.addWikiPage(message);
-        return convertedWiki.with().page(new UserWikiPage(page.getId(), page.getTitle(), page.getUrl())).ok();
-      }
-    } catch (Throwable e) {
-      LOG.error("Error converting message to wiki page for " + userEmail, e);
-      return errorMessage(e.getMessage(), 500);
-    }
-  }
-
-  /**
    * Convert to forum form.
    *
    * @return the response
@@ -1799,60 +1707,6 @@ public class Outlook {
     public String getConvertedToSpaceActivity() {
       String msg = i18n.getString("Outlook.convertedToSpaceActivity");
       return msg.replace("{SPACE_NAME}", spaceName);
-    }
-  }
-
-  /**
-   * The Class UserWikiPage.
-   */
-  public class UserWikiPage extends WikiPage {
-
-    /**
-     * The space name.
-     */
-    final String spaceName;
-
-    /**
-     * Instantiates a new user wiki page.
-     *
-     * @param id the id
-     * @param title the title
-     * @param link the link
-     * @param spaceName the space name
-     */
-    protected UserWikiPage(String id, String title, String link, String spaceName) {
-      super(id, title, link);
-      this.spaceName = spaceName;
-    }
-
-    /**
-     * Instantiates a new user wiki page.
-     *
-     * @param id the id
-     * @param title the title
-     * @param link the link
-     */
-    protected UserWikiPage(String id, String title, String link) {
-      this(id, title, link, null);
-    }
-
-    /**
-     * Gets the converted to space wiki.
-     *
-     * @return the converted to space wiki
-     */
-    public String getConvertedToSpaceWiki() {
-      String msg = i18n.getString("Outlook.convertedToSpaceWiki");
-      return msg.replace("{SPACE_NAME}", spaceName);
-    }
-
-    /**
-     * Checks if is in space.
-     *
-     * @return the isSpace
-     */
-    public boolean isInSpace() {
-      return spaceName != null;
     }
   }
 

@@ -23,7 +23,6 @@ import org.exoplatform.forum.service.Topic;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.social.core.activity.model.ExoSocialActivity;
-import org.exoplatform.wiki.mow.api.Page;
 
 import java.util.Collection;
 
@@ -148,15 +147,6 @@ public abstract class OutlookSpace {
    * @throws Exception the exception
    */
   public abstract ExoSocialActivity postActivity(OutlookUser user, String text) throws Exception;
-
-  /**
-   * Adds the wiki page.
-   *
-   * @param message the message
-   * @return the page
-   * @throws Exception the exception
-   */
-  public abstract Page addWikiPage(OutlookMessage message) throws Exception;
 
   /**
    * Adds the forum topic.

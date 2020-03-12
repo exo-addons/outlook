@@ -72,7 +72,6 @@ import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.picocontainer.Startable;
-import org.xwiki.rendering.syntax.Syntax;
 
 import com.ibm.icu.text.Transliterator;
 
@@ -155,15 +154,6 @@ import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.PermissionEntry;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
 
 /**
@@ -186,9 +176,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   /** The Constant OUTLOOK_MESSAGES_NAME. */
   protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
-
-  /** The Constant WIKI_PERMISSION_ANY. */
-  protected static final String         WIKI_PERMISSION_ANY    = "any";
 
   /** The Constant UPLAODS_FOLDER_TITLE. */
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
@@ -615,25 +602,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Page addWikiPage(OutlookMessage message) throws Exception {
-      String wikiType = PortalConfig.PORTAL_TYPE;
-      String creator = message.getUser().getLocalUser();
-      List<String> users = new ArrayList<String>();
-      users.add(creator);
-      // TODO add space group to users?
-      return createWikiPage(wikiType,
-                            "intranet",
-                            creator,
-                            message.getSubject(),
-                            messageSummary(message),
-                            message.getBody(),
-                            users);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception {
       return createForumTopic(categoryId,
                               forumId,
@@ -953,25 +921,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Page addWikiPage(OutlookMessage message) throws Exception {
-      String wikiType = PortalConfig.GROUP_TYPE;
-      String creator = message.getUser().getLocalUser();
-      List<String> users = new ArrayList<String>();
-      users.add(creator);
-      // TODO add space group to users?
-      return createWikiPage(wikiType,
-                            getGroupId(),
-                            creator,
-                            message.getSubject(),
-                            messageSummary(message),
-                            message.getBody(),
-                            users);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Topic addForumTopic(OutlookMessage message) throws Exception {
       String creator = message.getUser().getLocalUser();
 
@@ -1035,17 +984,12 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /** The listener service. */
   protected final ListenerService                             listenerService;
 
-  /** The wiki service. */
-  protected final WikiService                                 wikiService;
 
   /** The forum service. */
   protected final ForumService                                forumService;
 
   /** The trash service. */
   protected final TrashService                                trashService;
-
-  /** The wiki rendering service. */
-  protected final RenderingService                            wikiRenderingService;
 
   /** The resource bundle service. */
   protected final ResourceBundleService                       resourceBundleService;
@@ -1175,9 +1119,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @param listenerService {@link ListenerService}
    * @param driveService {@link ManageDriveService}
    * @param trashService {@link TrashService}
-   * @param wikiService {@link WikiService}
    * @param forumService {@link ForumService}
-   * @param wikiRenderingService {@link RenderingService}
    * @param resourceBundleService {@link ResourceBundleService}
    * @param params {@link InitParams}
    * @throws ConfigurationException when parameters configuration error
@@ -1191,9 +1133,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             ListenerService listenerService,
                             ManageDriveService driveService,
                             TrashService trashService,
-                            WikiService wikiService,
                             ForumService forumService,
-                            RenderingService wikiRenderingService,
                             ResourceBundleService resourceBundleService,
                             InitParams params,
                             DocumentService documentService)
@@ -1207,10 +1147,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.organization = organization;
     this.driveService = driveService;
     this.listenerService = listenerService;
-    this.wikiService = wikiService;
     this.forumService = forumService;
     this.trashService = trashService;
-    this.wikiRenderingService = wikiRenderingService;
     this.resourceBundleService = resourceBundleService;
     this.documentService = documentService;
 
@@ -2522,144 +2460,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Method adapted from eXo Chat's WikiService.createOrEditPage().
-   * 
-   * @param wikiType {@link String}
-   * @param wikiOwner {@link String}
-   * @param creator {@link String}
-   * @param title {@link String}
-   * @param summary {@link String}
-   * @param content {@link String}
-   * @param users list of {@link String}
-   * @return {@link Page}
-   * @throws Exception when error
-   */
-  protected Page createWikiPage(String wikiType,
-                                String wikiOwner,
-                                String creator,
-                                String title,
-                                String summary,
-                                String content,
-                                List<String> users) throws Exception {
-    final String parentTitle = OUTLOOK_MESSAGES_TITLE;
-    final String parentId = TitleResolver.getId(parentTitle, false);
-
-    final String defaultSyntax = wikiService.getDefaultWikiSyntaxId(); // Syntax.XWIKI_2_0.toIdString()
-    final String xhtmlSyntax = Syntax.XHTML_1_0.toIdString();
-
-    synchronized (wikiService) {
-      Page parentPage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, parentId);
-      if (parentPage == null) {
-        parentPage = new Page();
-        parentPage.setTitle(parentTitle);
-        parentPage.setContent("= " + parentTitle + " =\n");
-        parentPage.setSyntax(defaultSyntax);
-        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
-        if (wiki == null) {
-          wiki = wikiService.createWiki(wikiType, wikiOwner);
-        }
-        Page wikiHome = wiki.getWikiHome();
-        setPermissionForWikiPage(Collections.<String> emptyList(), parentPage, wikiHome);
-        List<PermissionEntry> permissions = parentPage.getPermissions();
-        permissions.add(new PermissionEntry(WIKI_PERMISSION_ANY,
-                                            "",
-                                            IDType.USER,
-                                            new Permission[] {
-                                                new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true) }));
-        parentPage.setPermissions(permissions);
-        Wiki pwiki = new Wiki();
-        pwiki.setOwner(wikiOwner);
-        pwiki.setType(wikiType);
-        parentPage = wikiService.createPage(pwiki, "WikiHome", parentPage);
-      }
-
-      Wiki wiki = new Wiki();
-      wiki.setOwner(wikiOwner);
-      wiki.setType(wikiType);
-
-      Page page = new Page();
-
-      if (isHTML(content) && !defaultSyntax.equals(xhtmlSyntax)) {
-        // we use xWiki syntax for a page and convert incoming HTML to xWiki
-        // format
-        page.setSyntax(defaultSyntax);
-        StringBuilder quotedContent = new StringBuilder();
-        if (summary != null) {
-          // page also contains message summary (US_003_07)
-          quotedContent.append("(% style='word-wrap: break-word; min-height: 30px;' %)(((\r");
-          String xwikiMarkup = wikiRenderingService.render(summary, xhtmlSyntax, defaultSyntax, false);
-          quotedContent.append(xwikiMarkup);
-          quotedContent.append("\r)))\r");
-        }
-        // message content should look like a quoted in email client (vertical
-        // gray bar on the left)
-        // in xWiki syntax it's a table with customized style
-        // table header:
-        quotedContent.append("|=(% style='background-color: #999999; border-style: hidden;' %)");
-        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)");
-        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)\r");
-        // table row:
-        quotedContent.append("|(% style='background-color: #999999; border-style: hidden;' %) ");
-        quotedContent.append("|(% style='border-style: hidden;' %) ");
-        quotedContent.append("|(% style='border-style: hidden;' %) (((\r");
-        String xwikiMarkup = wikiRenderingService.render(safeHtml(content), xhtmlSyntax, defaultSyntax, false);
-        quotedContent.append(xwikiMarkup);
-        quotedContent.append("\r)))\r");
-        page.setContent(quotedContent.toString());
-      } else {
-        page.setSyntax(defaultSyntax);
-        page.setContent(content);
-      }
-
-      setPermissionForWikiPage(users, page, parentPage);
-      page.setOwner(creator);
-      page.setAuthor(creator);
-      page.setMinorEdit(false);
-
-      //
-      title = safeText(title);
-      String baseTitle = title;
-
-      int siblingNumber = 0;
-      do {
-        String pageId = TitleResolver.getId(title, false);
-        page.setTitle(title);
-        String path = "";
-        if (wikiType.equals(PortalConfig.GROUP_TYPE)) {
-          // http://demo.exoplatform.net/portal/intranet/wiki/group/spaces/bank_project/Meeting_06-11-2013
-          path = "/portal/intranet/wiki/" + wikiType + wikiOwner + "/" + pageId;
-        } else if (wikiType.equals(PortalConfig.PORTAL_TYPE)) {
-          // http://demo.exoplatform.net/portal/intranet/wiki/Sales_Meetings_Meeting_06-11-2013
-          path = "/portal/intranet/wiki/" + pageId;
-        }
-        page.setUrl(path);
-
-        if (!wikiService.isExisting(wikiType, wikiOwner, pageId)) {
-          try {
-            page = wikiService.createPage(wiki, parentId, page);
-            break;
-          } catch (WikiException e) {
-            LOG.warn("Error creating wiki page " + title + " (" + pageId + "). " + e.getMessage());
-            try {
-              wikiService.getPageById(pageId);
-            } catch (WikiException ge) {
-              // if we caught error here - we thrown a first one of the creation
-              throw e;
-            }
-          }
-        }
-
-        // such page already exists - find new name for it (by adding sibling
-        // index to the end)
-        siblingNumber++;
-        title = new StringBuilder(baseTitle).append(" (").append(siblingNumber).append(')').toString();
-      } while (true);
-
-      return page;
-    }
-  }
-
-  /**
    * Generate message summary text.
    * 
    * @param message {@link String}
@@ -2840,37 +2640,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       sb.append(text.substring(pos));
     }
     return sb.toString();
-  }
-
-  /**
-   * Method adapted from eXo Chat's WikiService.setPermissionForReportAsWiki().
-   * 
-   * @param users list of {@link String}
-   * @param page {@link Page}
-   * @param parentPage {@link Page}
-   */
-  protected void setPermissionForWikiPage(List<String> users, Page page, Page parentPage) {
-    Permission[] allPermissions = new Permission[] { new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true),
-        new Permission(org.exoplatform.wiki.mow.api.PermissionType.EDITPAGE, true), };
-    List<PermissionEntry> permissions = parentPage.getPermissions();
-    if (permissions != null) {
-      // remove any permission
-      int anyIndex = -1;
-      for (int i = 0; i < permissions.size(); i++) {
-        PermissionEntry any = permissions.get(i);
-        if (WIKI_PERMISSION_ANY.equals(any.getId()))
-          anyIndex = i;
-      }
-      if (anyIndex > -1) {
-        permissions.remove(anyIndex);
-      }
-      for (int i = 0; i < users.size(); i++) {
-        String strUser = users.get(i).toString();
-        PermissionEntry userPermission = new PermissionEntry(strUser, strUser, IDType.USER, allPermissions);
-        permissions.add(userPermission);
-      }
-      page.setPermissions(permissions);
-    }
   }
 
   /**
