@@ -34,6 +34,7 @@ body {
   position: fixed;
   bottom: 0px;
   width: 100%;
+  z-index: 70;
 }
 
 /* It is a workaround to do not show dropdown in right-upper corner in task pane of Outlook for Windows/Web */
