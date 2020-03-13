@@ -62,16 +62,6 @@
 		<Hosts>
 			<Host xsi:type="MailHost">
 				<DesktopFormFactor>
-          <!-- Custom pane in add-ins bar, only applies to read form -->
-          <ExtensionPoint xsi:type="CustomPane">
-            <RequestedHeight>450</RequestedHeight>
-            <SourceLocation resid="readUrl"/>
-            <Rule xsi:type="RuleCollection" Mode="Or">
-              <Rule xsi:type="ItemIs" ItemType="Message"/>
-              <Rule xsi:type="ItemIs" ItemType="AppointmentAttendee"/>
-            </Rule>
-          </ExtensionPoint>
-
           <!-- Message compose form -->
           <ExtensionPoint xsi:type="MessageComposeCommandSurface">
             <OfficeTab id="TabDefault">
