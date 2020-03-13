@@ -54,7 +54,7 @@
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		<div class="ms-Grid-col ms-u-sm10 text-centered">
 			<div>&{Outlook.postingStatus}</div>
-			<div class="ms-Spinner" style="display: inline-block;"></div>
+			<div class="ms-Spinner progressSpinner" style="display: inline-block;"></div>
 		</div>
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 	</div>

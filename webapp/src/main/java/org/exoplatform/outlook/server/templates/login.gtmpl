@@ -157,20 +157,20 @@
 		</div>
 	</div>
 	
-	<div id="signInProgress" class="ms-Grid ms-bgColor-themePrimary ms-borderColor-themePrimary" style="display: none;">
+	<div id="signInProgress" class="ms-Grid ms-bgColor-white ms-borderColor-white" style="display: none;">
 		<div class="text-centered signingIn">
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered">
 					<img src="images/exo-icon-64.png" class="welcomeIcon">
 					<div class="ms-Dialog-header">
-						<p class="ms-Dialog-title ms-font-xxl ms-fontColor-yellow">eXo Platform</p>
+						<p class="ms-Dialog-title ms-font-xxl">eXo Platform</p>
 					</div>
 				</div>
 			</div>
 			<div class="ms-Grid-row"> <!-- ms-bgColor-themeDarkAlt ms-borderColor-themeDark -->
 				<div class="ms-Grid-col ms-u-sm12 ms-u-md12 ms-u-lg12 text-centered ms-font-m-plus ">
 					<div class="ms-Spinner ms-Spinner--large ms-fontColor-themeLighterAlt progressSpinner" style="display: inline-block;"></div>
-					<div class="ms-fontColor-themeLight">&{Outlook.login.signingIn}</div>
+					<div class="ms-fontColor-neutralPrimary">&{Outlook.login.signingIn}</div>
 				</div>
 			</div>
 		</div>	
