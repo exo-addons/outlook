@@ -868,3 +868,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 #outlook-error .ms-MessageBanner-content .ms-MessageBanner-clipper span {
   word-wrap: break-word;
 }
+
+.dialogShadow {
+  top: 0;
+}

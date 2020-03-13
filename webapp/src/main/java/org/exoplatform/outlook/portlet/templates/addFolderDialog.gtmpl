@@ -1,5 +1,5 @@
 <div class="ms-Dialog addFolderDialog">
-	<div class="ms-Overlay ms-Overlay--dark js-DialogAction--close"></div>
+	<div class="ms-Overlay ms-Overlay--dark js-DialogAction--close dialogShadow"></div>
 	<div class="ms-Dialog-main">
 		<button class="ms-Dialog-button ms-Dialog-button--close js-DialogAction--close">
 			<i class="ms-Icon ms-Icon--x"></i>
