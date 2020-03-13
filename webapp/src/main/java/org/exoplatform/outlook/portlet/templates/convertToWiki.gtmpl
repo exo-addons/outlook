@@ -64,7 +64,7 @@
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 		<div class="ms-Grid-col ms-u-sm10 text-centered">
 			<div>&{Outlook.convertingToWiki}</div>
-			<div class="ms-Spinner progressSpinner" style="display: inline-block;"></div>
+			<div class="ms-Spinner ms-Spinner--large ms-fontColor-themeLighterAlt progressSpinner" style="display: inline-block;"></div>
 		</div>
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
 	</div>
