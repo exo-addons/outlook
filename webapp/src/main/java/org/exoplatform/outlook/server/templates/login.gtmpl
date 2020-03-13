@@ -20,21 +20,21 @@
 	
 	<!-- Welcome screen -->
 	<div id="welcomePage" class="ms-Grid">
-		<div class="ms-Grid-row ms-bgColor-themePrimary ms-borderColor-themePrimary">
+		<div class="ms-Grid-row ms-bgColor-white ms-borderColor-white">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6 text-centered">
 				<img src="images/exo-icon-64.png" class="welcomeIcon">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-xl ms-fontColor-yellow">&{Outlook.welcome.title}</p>
+					<p class="ms-Dialog-title ms-font-xl ms-fontWeight-semibold">&{Outlook.welcome.title}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 		</div>
-		<div class="ms-Grid-row ms-bgColor-themePrimary ms-borderColor-themePrimary">
+		<div class="ms-Grid-row ms-bgColor-white ms-borderColor-white">
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg6">
 				<div class="ms-Dialog-header welcomeHeader">
-					<p class="ms-Dialog-title ms-font-m ms-fontColor-themeLight">&{Outlook.welcome.aboutAddin}</p>
+					<p class="ms-Dialog-title ms-font-m">&{Outlook.welcome.aboutAddin}</p>
 				</div>
 			</div>
 			<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg3"></div>
