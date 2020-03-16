@@ -207,15 +207,7 @@ span[disabled] {
 }
 
 #outlook-saveAttachment fieldset {
-  min-inline-size: 95%;
-}
-
-#outlook-saveAttachment .ms-Grid-col {
-  padding: 0px;
-}
-
-#outlook-saveAttachment {
-  padding: 0px;
+  min-width: initial;
 }
 
 .selectableItem:hover {
