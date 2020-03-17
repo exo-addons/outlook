@@ -67,8 +67,44 @@
             <OfficeTab id="TabDefault">
               <Group id="composeGroup">
                 <Label resid="groupLabel" />
+
                 <!-- Add Attachment: task pane button -->
-                <Control xsi:type="Button" id="composeAddAttachmentButton">
+                <Control xsi:type="Menu" id="composeCreateMenuButton">
+                  <Label resid="addAttachmentLabel" />
+                  <Supertip>
+                    <Title resid="addAttachmentTipTitle" />
+                    <Description resid="addAttachmentTipDescription" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="create-16" />
+                    <bt:Image size="24" resid="create-24" />
+                    <bt:Image size="32" resid="create-32" />
+                    <bt:Image size="64" resid="create-64" />
+                    <bt:Image size="80" resid="create-80" />
+                  </Icon>
+                  <Items>
+                    <Item id="composePostStatus">
+                      <Label resid="addAttachmentLabel" />
+                      <Supertip>
+                        <Title resid="addAttachmentTipTitle" />
+                        <Description resid="addAttachmentTipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="attachment-16" />
+                        <bt:Image size="24" resid="attachment-24" />
+                        <bt:Image size="32" resid="attachment-32" />
+                        <bt:Image size="64" resid="attachment-64" />
+                        <bt:Image size="80" resid="attachment-80" />
+                      </Icon>
+                      <Action xsi:type="ShowTaskpane">
+                        <SourceLocation resid="addAttachmentUrl" />
+                      </Action>
+                    </Item>
+                  </Items>
+                </Control>
+
+                <!-- Add Attachment: task pane button -->
+                <!-- <Control xsi:type="Button" id="composeAddAttachmentButton">
                   <Label resid="addAttachmentLabel" />
                   <Supertip>
                     <Title resid="addAttachmentTipTitle" />
@@ -101,7 +137,7 @@
                   <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="postStatusUrl"/>
                   </Action>
-                </Control>
+                </Control> -->
                 <!-- Search: task pane button -->
                 <!-- Control xsi:type="Button" id="composeSearchButton">
                   <Label resid="searchLabel" />
