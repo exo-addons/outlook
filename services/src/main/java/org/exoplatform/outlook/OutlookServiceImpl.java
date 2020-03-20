@@ -72,30 +72,14 @@ import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.picocontainer.Startable;
-import org.xwiki.rendering.syntax.Syntax;
 
 import com.ibm.icu.text.Transliterator;
 
 import org.exoplatform.commons.utils.ISO8601;
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationException;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.forum.bbcode.core.ExtendedBBCodeProvider;
-import org.exoplatform.forum.common.CommonUtils;
-import org.exoplatform.forum.common.TransformHTML;
-import org.exoplatform.forum.common.webui.WebUIUtils;
-import org.exoplatform.forum.ext.activity.BuildLinkUtils;
-import org.exoplatform.forum.ext.activity.BuildLinkUtils.PORTLET_INFO;
-import org.exoplatform.forum.service.Category;
-import org.exoplatform.forum.service.Forum;
-import org.exoplatform.forum.service.ForumAdministration;
-import org.exoplatform.forum.service.ForumService;
-import org.exoplatform.forum.service.ForumServiceUtils;
-import org.exoplatform.forum.service.MessageBuilder;
-import org.exoplatform.forum.service.Topic;
-import org.exoplatform.outlook.forum.ForumUtils;
 import org.exoplatform.outlook.jcr.File;
 import org.exoplatform.outlook.jcr.Folder;
 import org.exoplatform.outlook.jcr.HierarchyNode;
@@ -155,15 +139,6 @@ import org.exoplatform.wcm.webui.reader.ContentReader;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.PermissionEntry;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.ws.frameworks.json.value.JsonValue;
 
 /**
@@ -186,9 +161,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
 
   /** The Constant OUTLOOK_MESSAGES_NAME. */
   protected static final String         OUTLOOK_MESSAGES_NAME  = "outlook-messages";
-
-  /** The Constant WIKI_PERMISSION_ANY. */
-  protected static final String         WIKI_PERMISSION_ANY    = "any";
 
   /** The Constant UPLAODS_FOLDER_TITLE. */
   protected static final String         UPLAODS_FOLDER_TITLE   = "Uploads";
@@ -615,38 +587,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Page addWikiPage(OutlookMessage message) throws Exception {
-      String wikiType = PortalConfig.PORTAL_TYPE;
-      String creator = message.getUser().getLocalUser();
-      List<String> users = new ArrayList<String>();
-      users.add(creator);
-      // TODO add space group to users?
-      return createWikiPage(wikiType,
-                            "intranet",
-                            creator,
-                            message.getSubject(),
-                            messageSummary(message),
-                            message.getBody(),
-                            users);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Topic addForumTopic(String categoryId, String forumId, OutlookMessage message) throws Exception {
-      return createForumTopic(categoryId,
-                              forumId,
-                              message.getUser().getLocalUser(),
-                              message.getSubject(),
-                              messageSummary(message),
-                              message.getBody());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Identity getSocialIdentity() throws Exception {
       return socialIdentityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, getLocalUser(), true);
     }
@@ -949,69 +889,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       return activity;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page addWikiPage(OutlookMessage message) throws Exception {
-      String wikiType = PortalConfig.GROUP_TYPE;
-      String creator = message.getUser().getLocalUser();
-      List<String> users = new ArrayList<String>();
-      users.add(creator);
-      // TODO add space group to users?
-      return createWikiPage(wikiType,
-                            getGroupId(),
-                            creator,
-                            message.getSubject(),
-                            messageSummary(message),
-                            message.getBody(),
-                            users);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Topic addForumTopic(OutlookMessage message) throws Exception {
-      String creator = message.getUser().getLocalUser();
-
-      //
-      Group group = organization.getGroupHandler().findGroupById(getGroupId());
-      String parentGrId = group.getParentId();
-
-      // Category must exists as we are running against existing space
-      String categoryId = org.exoplatform.forum.service.Utils.CATEGORY
-          + parentGrId.replaceAll(CommonUtils.SLASH, CommonUtils.EMPTY_STR);
-
-      // Forum must exists as we are running against existing space
-      String forumId = org.exoplatform.forum.service.Utils.FORUM_SPACE_ID_PREFIX + group.getGroupName();
-
-      //
-      return createForumTopic(categoryId, forumId, creator, message.getSubject(), messageSummary(message), message.getBody());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Topic addForumTopic(OutlookUser user, String name, String text) throws Exception {
-      String creator = user.getLocalUser();
-
-      //
-      Group group = organization.getGroupHandler().findGroupById(getGroupId());
-      String parentGrId = group.getParentId();
-
-      // Category must exists as we are running against existing space
-      String categoryId = org.exoplatform.forum.service.Utils.CATEGORY
-          + parentGrId.replaceAll(CommonUtils.SLASH, CommonUtils.EMPTY_STR);
-
-      // Forum must exists as we are running against existing space
-      String forumId = org.exoplatform.forum.service.Utils.FORUM_SPACE_ID_PREFIX + group.getGroupName();
-
-      //
-      return createForumTopic(categoryId, forumId, creator, name, null, text);
-    }
-
   }
 
   /** The jcr service. */
@@ -1035,17 +912,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   /** The listener service. */
   protected final ListenerService                             listenerService;
 
-  /** The wiki service. */
-  protected final WikiService                                 wikiService;
-
-  /** The forum service. */
-  protected final ForumService                                forumService;
-
   /** The trash service. */
   protected final TrashService                                trashService;
-
-  /** The wiki rendering service. */
-  protected final RenderingService                            wikiRenderingService;
 
   /** The resource bundle service. */
   protected final ResourceBundleService                       resourceBundleService;
@@ -1175,9 +1043,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @param listenerService {@link ListenerService}
    * @param driveService {@link ManageDriveService}
    * @param trashService {@link TrashService}
-   * @param wikiService {@link WikiService}
-   * @param forumService {@link ForumService}
-   * @param wikiRenderingService {@link RenderingService}
    * @param resourceBundleService {@link ResourceBundleService}
    * @param params {@link InitParams}
    * @throws ConfigurationException when parameters configuration error
@@ -1191,9 +1056,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
                             ListenerService listenerService,
                             ManageDriveService driveService,
                             TrashService trashService,
-                            WikiService wikiService,
-                            ForumService forumService,
-                            RenderingService wikiRenderingService,
                             ResourceBundleService resourceBundleService,
                             InitParams params,
                             DocumentService documentService)
@@ -1207,10 +1069,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     this.organization = organization;
     this.driveService = driveService;
     this.listenerService = listenerService;
-    this.wikiService = wikiService;
-    this.forumService = forumService;
     this.trashService = trashService;
-    this.wikiRenderingService = wikiRenderingService;
     this.resourceBundleService = resourceBundleService;
     this.documentService = documentService;
 
@@ -2522,144 +2381,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * Method adapted from eXo Chat's WikiService.createOrEditPage().
-   * 
-   * @param wikiType {@link String}
-   * @param wikiOwner {@link String}
-   * @param creator {@link String}
-   * @param title {@link String}
-   * @param summary {@link String}
-   * @param content {@link String}
-   * @param users list of {@link String}
-   * @return {@link Page}
-   * @throws Exception when error
-   */
-  protected Page createWikiPage(String wikiType,
-                                String wikiOwner,
-                                String creator,
-                                String title,
-                                String summary,
-                                String content,
-                                List<String> users) throws Exception {
-    final String parentTitle = OUTLOOK_MESSAGES_TITLE;
-    final String parentId = TitleResolver.getId(parentTitle, false);
-
-    final String defaultSyntax = wikiService.getDefaultWikiSyntaxId(); // Syntax.XWIKI_2_0.toIdString()
-    final String xhtmlSyntax = Syntax.XHTML_1_0.toIdString();
-
-    synchronized (wikiService) {
-      Page parentPage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, parentId);
-      if (parentPage == null) {
-        parentPage = new Page();
-        parentPage.setTitle(parentTitle);
-        parentPage.setContent("= " + parentTitle + " =\n");
-        parentPage.setSyntax(defaultSyntax);
-        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
-        if (wiki == null) {
-          wiki = wikiService.createWiki(wikiType, wikiOwner);
-        }
-        Page wikiHome = wiki.getWikiHome();
-        setPermissionForWikiPage(Collections.<String> emptyList(), parentPage, wikiHome);
-        List<PermissionEntry> permissions = parentPage.getPermissions();
-        permissions.add(new PermissionEntry(WIKI_PERMISSION_ANY,
-                                            "",
-                                            IDType.USER,
-                                            new Permission[] {
-                                                new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true) }));
-        parentPage.setPermissions(permissions);
-        Wiki pwiki = new Wiki();
-        pwiki.setOwner(wikiOwner);
-        pwiki.setType(wikiType);
-        parentPage = wikiService.createPage(pwiki, "WikiHome", parentPage);
-      }
-
-      Wiki wiki = new Wiki();
-      wiki.setOwner(wikiOwner);
-      wiki.setType(wikiType);
-
-      Page page = new Page();
-
-      if (isHTML(content) && !defaultSyntax.equals(xhtmlSyntax)) {
-        // we use xWiki syntax for a page and convert incoming HTML to xWiki
-        // format
-        page.setSyntax(defaultSyntax);
-        StringBuilder quotedContent = new StringBuilder();
-        if (summary != null) {
-          // page also contains message summary (US_003_07)
-          quotedContent.append("(% style='word-wrap: break-word; min-height: 30px;' %)(((\r");
-          String xwikiMarkup = wikiRenderingService.render(summary, xhtmlSyntax, defaultSyntax, false);
-          quotedContent.append(xwikiMarkup);
-          quotedContent.append("\r)))\r");
-        }
-        // message content should look like a quoted in email client (vertical
-        // gray bar on the left)
-        // in xWiki syntax it's a table with customized style
-        // table header:
-        quotedContent.append("|=(% style='background-color: #999999; border-style: hidden;' %)");
-        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)");
-        quotedContent.append("|=(% style='background-color: inherit; border-style: hidden;' %)\r");
-        // table row:
-        quotedContent.append("|(% style='background-color: #999999; border-style: hidden;' %) ");
-        quotedContent.append("|(% style='border-style: hidden;' %) ");
-        quotedContent.append("|(% style='border-style: hidden;' %) (((\r");
-        String xwikiMarkup = wikiRenderingService.render(safeHtml(content), xhtmlSyntax, defaultSyntax, false);
-        quotedContent.append(xwikiMarkup);
-        quotedContent.append("\r)))\r");
-        page.setContent(quotedContent.toString());
-      } else {
-        page.setSyntax(defaultSyntax);
-        page.setContent(content);
-      }
-
-      setPermissionForWikiPage(users, page, parentPage);
-      page.setOwner(creator);
-      page.setAuthor(creator);
-      page.setMinorEdit(false);
-
-      //
-      title = safeText(title);
-      String baseTitle = title;
-
-      int siblingNumber = 0;
-      do {
-        String pageId = TitleResolver.getId(title, false);
-        page.setTitle(title);
-        String path = "";
-        if (wikiType.equals(PortalConfig.GROUP_TYPE)) {
-          // http://demo.exoplatform.net/portal/intranet/wiki/group/spaces/bank_project/Meeting_06-11-2013
-          path = "/portal/intranet/wiki/" + wikiType + wikiOwner + "/" + pageId;
-        } else if (wikiType.equals(PortalConfig.PORTAL_TYPE)) {
-          // http://demo.exoplatform.net/portal/intranet/wiki/Sales_Meetings_Meeting_06-11-2013
-          path = "/portal/intranet/wiki/" + pageId;
-        }
-        page.setUrl(path);
-
-        if (!wikiService.isExisting(wikiType, wikiOwner, pageId)) {
-          try {
-            page = wikiService.createPage(wiki, parentId, page);
-            break;
-          } catch (WikiException e) {
-            LOG.warn("Error creating wiki page " + title + " (" + pageId + "). " + e.getMessage());
-            try {
-              wikiService.getPageById(pageId);
-            } catch (WikiException ge) {
-              // if we caught error here - we thrown a first one of the creation
-              throw e;
-            }
-          }
-        }
-
-        // such page already exists - find new name for it (by adding sibling
-        // index to the end)
-        siblingNumber++;
-        title = new StringBuilder(baseTitle).append(" (").append(siblingNumber).append(')').toString();
-      } while (true);
-
-      return page;
-    }
-  }
-
-  /**
    * Generate message summary text.
    * 
    * @param message {@link String}
@@ -2840,302 +2561,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       sb.append(text.substring(pos));
     }
     return sb.toString();
-  }
-
-  /**
-   * Method adapted from eXo Chat's WikiService.setPermissionForReportAsWiki().
-   * 
-   * @param users list of {@link String}
-   * @param page {@link Page}
-   * @param parentPage {@link Page}
-   */
-  protected void setPermissionForWikiPage(List<String> users, Page page, Page parentPage) {
-    Permission[] allPermissions = new Permission[] { new Permission(org.exoplatform.wiki.mow.api.PermissionType.VIEWPAGE, true),
-        new Permission(org.exoplatform.wiki.mow.api.PermissionType.EDITPAGE, true), };
-    List<PermissionEntry> permissions = parentPage.getPermissions();
-    if (permissions != null) {
-      // remove any permission
-      int anyIndex = -1;
-      for (int i = 0; i < permissions.size(); i++) {
-        PermissionEntry any = permissions.get(i);
-        if (WIKI_PERMISSION_ANY.equals(any.getId()))
-          anyIndex = i;
-      }
-      if (anyIndex > -1) {
-        permissions.remove(anyIndex);
-      }
-      for (int i = 0; i < users.size(); i++) {
-        String strUser = users.get(i).toString();
-        PermissionEntry userPermission = new PermissionEntry(strUser, strUser, IDType.USER, allPermissions);
-        permissions.add(userPermission);
-      }
-      page.setPermissions(permissions);
-    }
-  }
-
-  /**
-   * Method inspired by code of UIPostForm.
-   * 
-   * @param categoryId {@link String}
-   * @param forumId {@link String}
-   * @param creator {@link String}
-   * @param title {@link String}
-   * @param summary {@link String}
-   * @param content {@link String}
-   * @return {@link Topic} created topic
-   * @throws Exception when error
-   */
-  protected Topic createForumTopic(String categoryId,
-                                   String forumId,
-                                   String creator,
-                                   String title,
-                                   String summary,
-                                   String content) throws Exception {
-    // save topic in ForumService
-    org.exoplatform.forum.service.UserProfile userProfile = forumService.getUserSettingProfile(creator);
-    if (checkForumHasAddTopic(userProfile, categoryId, forumId)) {
-      Topic topic = new Topic();
-
-      String message;
-      if (isHTML(content)) {
-        message = safeHtml(content);
-      } else {
-        message = content;
-      }
-
-      String safeTitle = safeText(title);
-      // check if title not empty
-      if (safeTitle.length() <= 0 || safeTitle.equals("null")) {
-        if (summary != null) {
-          safeTitle = safeText(summary);
-        } else {
-          safeTitle = safeText(message.substring(0, ForumUtils.MAXTITLE - 5) + "...");
-        }
-      }
-      if (safeTitle.length() > ForumUtils.MAXTITLE) {
-        // TODO throw an exception to user to ask for shorten title
-        safeTitle = new StringBuilder(safeTitle.substring(0, ForumUtils.MAXTITLE - 3)).append("...").toString();
-      }
-
-      String checksms = TransformHTML.cleanHtmlCode(message,
-                                                    new ArrayList<String>((new ExtendedBBCodeProvider()).getSupportedBBCodes()));
-      checksms = checksms.replaceAll("&nbsp;", " ");
-      int t = checksms.trim().length();
-      if (t > 0 && !checksms.equals("null")) {
-        // TODO in else block handle too short or offending texts
-      }
-      Date currentDate = CommonUtils.getGreenwichMeanTime().getTime();
-      message = StringCommonUtils.encodeSpecialCharInSearchTerm(message);
-      message = TransformHTML.fixAddBBcodeAction(message);
-      // TODO do we need this when using safe HTML?
-      // message = message.replaceAll("<script",
-      // "&lt;script").replaceAll("<link",
-      // "&lt;link").replaceAll("</script>",
-      // "&lt;/script>");
-      // remove any meta tags explicitly existing in the content
-      // message = message.replaceAll("<meta.*?>", "");
-      // remove all embedded global styles
-      // message = message.replaceAll("<style.*?>[.\\s\\w\\W]*?<\\/style>", "");
-
-      boolean isOffend = false;
-      ForumAdministration forumAdministration = forumService.getForumAdministration();
-      String[] censoredKeyword = ForumUtils.getCensoredKeyword(forumAdministration.getCensoredKeyword());
-      checksms = checksms.toLowerCase();
-      for (String string : censoredKeyword) {
-        if (checksms.indexOf(string.trim()) >= 0) {
-          isOffend = true;
-          break;
-        }
-        if (safeTitle.toLowerCase().indexOf(string.trim()) >= 0) {
-          isOffend = true;
-          break;
-        }
-      }
-
-      boolean topicClosed = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATE_SELECTBOX).isChecked();
-      boolean topicLocked = false; // uiForm.getUIForumCheckBoxInput(FIELD_TOPICSTATUS_SELECTBOX).isChecked();
-      boolean sticky = false; // uiForm.getUIForumCheckBoxInput(FIELD_STICKY_CHECKBOX).isChecked();
-      boolean moderatePost = true; // uiForm.getUIForumCheckBoxInput(FIELD_MODERATEPOST_CHECKBOX).isChecked();
-      boolean whenNewPost = true; // uiForm.getUIForumCheckBoxInput(FIELD_NOTIFYWHENADDPOST_CHECKBOX).isChecked();
-
-      // TODO permissions?
-      // UIPermissionPanel permissionTab = uiForm.getChildById(PERMISSION_TAB);
-      String canPost = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANPOST);
-      String canView = ForumUtils.EMPTY_STR; // permissionTab.getOwnersByPermission(CANVIEW);
-
-      // set link
-      // FYI this original Forum code will use current "outlook" portlet path to
-      // build the link
-      // ForumUtils.createdForumLink(ForumUtils.TOPIC, topic.getId(), false)
-      String link = BuildLinkUtils.buildLink(forumId, topic.getId(), PORTLET_INFO.FORUM);
-      // finally escape the title
-      safeTitle = StringCommonUtils.encodeSpecialCharForSimpleInput(safeTitle);
-      topic.setTopicName(safeTitle);
-      topic.setModifiedBy(creator);
-      topic.setModifiedDate(currentDate);
-
-      if (summary != null) {
-        // if summary given then we assume need quote the message content
-        StringBuilder topicContent = new StringBuilder();
-        if (summary != null) {
-          // HTML also contains message summary
-          topicContent.append("<div class='messageSummary' style='word-wrap: break-word; min-height: 30px;'>");
-          topicContent.append(summary);
-          topicContent.append("</div>");
-        }
-        topicContent.append("<div class='messageQuote' style='overflow:auto;'><div class='messageContent' style='position: relative; float: left;"
-            + "box-sizing: border-box; padding-left: 7px; min-width: 100%; max-height: 100%;"
-            + "border-width: 0px 0px 0px 12px; border-style: solid; border-color: #999999; background-color: white;'>");
-        topicContent.append(message);
-        topicContent.append("</div></div>");
-        message = topicContent.toString();
-      } // otherwise message content will be a content of the topic post
-
-      topic.setDescription(message);
-      topic.setLink(link);
-      if (whenNewPost) {
-        String email = userProfile.getEmail();
-        if (email == null || email.length() <= 0) {
-          try {
-            email = organization.getUserHandler().findUserByName(creator).getEmail();
-          } catch (Exception e) {
-            email = "true";
-          }
-        }
-        topic.setIsNotifyWhenAddPost(email);
-      } else {
-        topic.setIsNotifyWhenAddPost(ForumUtils.EMPTY_STR);
-      }
-      topic.setIsWaiting(isOffend);
-      topic.setIsClosed(topicClosed);
-      topic.setIsLock(topicLocked);
-      topic.setIsModeratePost(moderatePost);
-      topic.setIsSticky(sticky);
-
-      topic.setIcon("uiIconForumTopic uiIconForumLightGray");
-      String[] canPosts = ForumUtils.splitForForum(canPost);
-      String[] canViews = ForumUtils.splitForForum(canView);
-
-      topic.setCanView(canViews);
-      topic.setCanPost(canPosts);
-      topic.setIsApproved(true); // !hasForumMod
-
-      MessageBuilder messageBuilder = new MessageBuilder();
-      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-      ResourceBundle res = resourceBundleService.getResourceBundle("locale.portlet.forum.ForumPortlet", context.getLocale());
-      if (res != null) {
-        // TODO this will not work as resources aren't reachable here - it's
-        // DEAD CODE in fact
-        try {
-          messageBuilder.setContent(res.getString("UINotificationForm.label.notifyEmailContentDefault"));
-          String header = res.getString("UINotificationForm.label.notifyEmailHeaderSubjectDefault");
-          messageBuilder.setHeaderSubject(header == null || header.trim().length() == 0 ? ForumUtils.EMPTY_STR : header);
-          messageBuilder.setTypes(res.getString("UIForumPortlet.label.category"),
-                                  res.getString("UIForumPortlet.label.forum"),
-                                  res.getString("UIForumPortlet.label.topic"),
-                                  res.getString("UIForumPortlet.label.post"));
-        } catch (Exception e) {
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Failed to get resource bundle for Forum default content email notification", e);
-          }
-        }
-      } else {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Locale resource bundle cannot be found for Forum default content email notification");
-        }
-      }
-
-      messageBuilder.setLink(link);
-
-      topic.setOwner(creator);
-      topic.setCreatedDate(currentDate);
-      topic.setLastPostBy(creator);
-      topic.setLastPostDate(currentDate);
-      topic.setVoteRating(0.0);
-      topic.setUserVoteRating(new String[] {});
-      try {
-        String remoteAddr = ForumUtils.EMPTY_STR;
-        remoteAddr = WebUIUtils.getRemoteIP();
-        topic.setRemoteAddr(remoteAddr);
-        forumService.saveTopic(categoryId, forumId, topic, true, false, messageBuilder);
-        if (userProfile.getIsAutoWatchMyTopics()) {
-          List<String> values = new ArrayList<String>();
-          values.add(userProfile.getEmail());
-          String path = new StringBuilder(categoryId).append(ForumUtils.SLASH)
-                                                     .append(forumId)
-                                                     .append(ForumUtils.SLASH)
-                                                     .append(topic.getId())
-                                                     .toString();
-          forumService.addWatch(1, path, values, creator);
-        }
-      } catch (PathNotFoundException e) {
-        throw new OutlookException("Error saving forum topic '" + title + "'", e);
-      }
-      return topic;
-    } else {
-      throw new BadParameterException("Cannot add forum topic. Check user permissions or forum settings.");
-    }
-  }
-
-  /**
-   * Check forum has add topic.
-   *
-   * @param userProfile the user profile
-   * @param categoryId the category id
-   * @param forumId the forum id
-   * @return true, if successful
-   * @throws Exception the exception
-   */
-  protected boolean checkForumHasAddTopic(org.exoplatform.forum.service.UserProfile userProfile,
-                                          String categoryId,
-                                          String forumId) throws Exception {
-    // FYI Adapted code from UIForumPortlet.
-
-    // is guest or banned
-    if (userProfile.getUserRole() == org.exoplatform.forum.service.UserProfile.GUEST || userProfile.getIsBanned()
-        || userProfile.isDisabled()) {
-      return false;
-    }
-    try {
-      Category cate = forumService.getCategory(categoryId);
-      Forum forum = forumService.getForum(categoryId, forumId);
-      if (forum == null) {
-        return false;
-      }
-      // forum close or lock
-      if (forum.getIsClosed() || forum.getIsLock()) {
-        return false;
-      }
-      // isAdmin
-      if (userProfile.getUserRole() == 0) {
-        return true;
-      }
-      // is moderator
-      if (userProfile.getUserRole() == 1) {
-        String[] morderators = ForumUtils.arraysMerge(cate.getModerators(), forum.getModerators());
-        //
-        if (ForumServiceUtils.isModerator(morderators, userProfile.getUserId())) {
-          return true;
-        }
-      }
-      // FYI it's possible to ban IP of forum
-      // check access category
-      if (!ForumServiceUtils.hasPermission(cate.getUserPrivate(), userProfile.getUserId())) {
-        return false;
-      }
-      // can add topic on category/forum
-      String[] canCreadTopic = ForumUtils.arraysMerge(forum.getCreateTopicRole(), cate.getCreateTopicRole());
-      if (!ForumServiceUtils.hasPermission(canCreadTopic, userProfile.getUserId())) {
-        return false;
-      }
-    } catch (Exception e) {
-      LOG.warn(String.format("Check permission to add topic of category %s, forum %s unsuccessfully.", categoryId, forumId));
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(e);
-      }
-      return false;
-    }
-    return true;
   }
 
   /**
