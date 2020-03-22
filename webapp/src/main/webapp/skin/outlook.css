@@ -19,6 +19,7 @@ body {
   min-height: 450px;
   position: relative;
   height: 100vh;
+  background-color: white;
 }
 
 #outlook-pane input {
@@ -864,4 +865,8 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 
 .dialogShadow {
   top: 0;
+}
+
+#UITopBarContainerParent {
+  display: none;
 }
