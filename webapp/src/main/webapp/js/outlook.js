@@ -244,8 +244,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         var initNoSpacesLink = function ($message) {
           if ($message.length > 0) {
             var $noSpacesLink = $message.find(".ms-MessageBar-text a.joinSpacesLink");
-            // should replace /portal/intranet/outlook to /portal/intranet/all-spaces
-            var allSpacesPath = location.pathname.replace(/\/[^\/]*$/, "/all-spaces");
+            // should replace /portal/intranet/outlook to /portal/dw/all-spaces
+            var allSpacesPath = location.pathname.replace(/\/[^\/]*\/[^\/]*$/, "/dw/all-spaces");
             $noSpacesLink.attr("href", allSpacesPath);
           }
         };
