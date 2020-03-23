@@ -48,6 +48,12 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
   /** The Constant LOG. */
   protected static final Log           LOG             = ExoLogger.getLogger(OutlookLifecycle.class);
 
+  /** The Constant NAVBAR_COMPONENT_ID. */
+  protected static final String TOPBAR_COMPONENT_ID = "UITopBarContainerParent";
+  
+  /** The Constant TOOLBAR_COMPONENT_ID. */
+  protected static final String TOOLBAR_COMPONENT_ID = "UIToolbarContainer";
+  
   /** The toolbar rendered. */
   protected final ThreadLocal<Boolean> toolbarRendered = new ThreadLocal<Boolean>();
 
@@ -71,10 +77,10 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onStartRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIComponent toolbar = findToolbarComponent(app, context);
-    if (toolbar != null && toolbar.isRendered()) {
+    UIComponent navbar = findNavbarComponent(app, context);
+    if (navbar != null && navbar.isRendered()) {
       toolbarRendered.set(true);
-      toolbar.setRendered(false);
+      navbar.setRendered(false);
     }
     // XXX add WCMUtils and Bootsrap-Dropdown Javascript which is required by UnifiedSearch portlet (it
     // doesn't depend on WCMUtils as QuicksearchPortlet does)
@@ -89,12 +95,12 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
    */
   @Override
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
-    UIComponent toolbar = findToolbarComponent(app, context);
-    if (toolbar != null) {
+    UIComponent navbar = findNavbarComponent(app, context);
+    if (navbar != null) {
       Boolean render = toolbarRendered.get();
       if (render != null && render.booleanValue()) {
         // restore rendered if was rendered and set hidden explicitly
-        toolbar.setRendered(true);
+        navbar.setRendered(true);
       }
     }
   }
@@ -118,14 +124,14 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
   // ******* internals ******
 
   /**
-   * Find toolbar component.
+   * Find navbar component.
    *
    * @param app the app
    * @param context the context
    * @return the UI component
    * @throws Exception the exception
    */
-  protected UIComponent findToolbarComponent(Application app, WebuiRequestContext context) throws Exception {
+  protected UIComponent findNavbarComponent(Application app, WebuiRequestContext context) throws Exception {
     ExoContainer container = app.getApplicationServiceContainer();
     if (container != null) {
       UIApplication uiApp = context.getUIApplication();
@@ -133,26 +139,18 @@ public class OutlookLifecycle implements ApplicationLifecycle<WebuiRequestContex
       if (uiViewWS != null) {
         UIContainer viewContainer = (UIContainer) uiViewWS.getUIComponent();
         if (viewContainer != null) {
-          UIContainer navContainer = viewContainer.getChildById("NavigationPortlet");
-          if (navContainer == null) {
-            navContainer = viewContainer;
-          }
-          // Since Platform 5.0.0 toolbar lies inside UIPinToolbarContainer.gtmpl container (in HTML #PlatformAdminToolbarContainer)
+          // Platform navbar lies inside UIPinToolbarContainer.gtmpl container (in HTML #PlatformAdminToolbarContainer)
           // and all this managed by sharedlayout.xml of PLF extension. Thus we need return a parent of found toolbar.
-          for (UIComponent child : navContainer.getChildren()) {
-            if (UIContainer.class.isAssignableFrom(child.getClass())) {
-              UIContainer childContainer = UIContainer.class.cast(child);
-              UIComponent toolbar = childContainer.getChildById("UIToolbarContainer");
-              if (toolbar != null) {
-                // attempt #1
-                return childContainer;
-              }
-            }
-          }
           // attempt #2
-          UIComponent toolbar = navContainer.findComponentById("UIToolbarContainer");
-          if (toolbar != null) {
-            return toolbar.getParent();
+          UIComponent navbar = viewContainer.findComponentById(TOPBAR_COMPONENT_ID);
+          if (navbar != null) {
+            // for Platform 6.0.0-M24 and later
+            return navbar;
+          }
+          navbar = viewContainer.findComponentById(TOOLBAR_COMPONENT_ID);
+          if (navbar != null) {
+            // for Platform 6.0.0-M23 and older
+            return navbar.getParent();
           }
         }
       }
