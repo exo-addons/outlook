@@ -866,3 +866,7 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 .dialogShadow {
   top: 0;
 }
+
+#NavigationPortlet, #UITopBarContainerParent {
+  display: none;
+}
