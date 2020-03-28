@@ -123,9 +123,6 @@ public class OutlookAttachmentActivity extends FileUIActivity {
   /** The Constant DOCPATH. */
   public static final String DOCPATH        = "DOCPATH";
 
-  /** The Constant DOCPATH. */
-  public static final String PATH        = "docPath";
-
   /** The Constant DOCNAME. */
   public static final String DOCNAME        = "DOCNAME";
 

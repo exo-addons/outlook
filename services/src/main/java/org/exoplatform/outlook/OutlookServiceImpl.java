@@ -2208,7 +2208,6 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       activityParams.put(OutlookAttachmentActivity.DOCLINK, doclink);
       activityParams.put(OutlookAttachmentActivity.DOCNAME, fileName);
       activityParams.put(OutlookAttachmentActivity.DOCPATH, docpath);
-      activityParams.put(OutlookAttachmentActivity.PATH, docpath);
       activityParams.put(OutlookAttachmentActivity.AUTHOR, owner);
       activityParams.put(OutlookAttachmentActivity.DATE_CREATED, dateString);
       activityParams.put(OutlookAttachmentActivity.DATE_LAST_MODIFIED, dateString);
