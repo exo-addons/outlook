@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -90,7 +89,6 @@ import org.exoplatform.outlook.mail.MailServerException;
 import org.exoplatform.outlook.social.OutlookAttachmentActivity;
 import org.exoplatform.outlook.social.OutlookMessageActivity;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.cms.BasePath;
@@ -109,7 +107,6 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.Membership;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
@@ -284,9 +281,54 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   }
 
   /**
-   * The Class PersonalDocumentsFolder.
+   * The Class PersonalDocuments.
    */
-  protected class PersonalDocumentsFolder extends UserFolder implements UserDocuments {
+  protected class PersonalDocuments implements UserDocuments {
+
+    /**
+     * The Class PersonalFolder.
+     */
+    class PersonalFolder extends UserFolder {
+    
+      /**
+       * Instantiates a new Personal Documents folder (root).
+       *
+       * @param node the root node of Personal Documents drive
+       * @throws RepositoryException the repository exception
+       * @throws OutlookException the outlook exception
+       */
+      protected PersonalFolder(Node node) throws RepositoryException, OutlookException {
+        super(node);
+      }
+    
+      /**
+       * Instantiates a new personal folder.
+       *
+       * @param rootPath the root path
+       * @param node the node
+       * @throws RepositoryException the repository exception
+       * @throws OutlookException the outlook exception
+       */
+      protected PersonalFolder(String rootPath, Node node) throws RepositoryException, OutlookException {
+        super(rootPath, node);
+      }
+    
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      protected void readChildNodes() throws RepositoryException, OutlookException {
+        super.readChildNodes();
+        for (Folder sf : this.subfolders.get()) {
+          initDocumentLink(PersonalDocuments.this, sf);
+        }
+        for (File f : this.files.get()) {
+          initDocumentLink(PersonalDocuments.this, f);
+        }
+      }
+    }
+    
+    protected final Node driveNode;
 
     /**
      * Instantiates a new personal documents folder.
@@ -295,16 +337,16 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * @throws RepositoryException the repository exception
      * @throws OutlookException the outlook exception
      */
-    protected PersonalDocumentsFolder(Node node) throws RepositoryException, OutlookException {
-      super(node);
+    protected PersonalDocuments(Node node) throws RepositoryException, OutlookException {
+      this.driveNode = node;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Folder getRootFolder() throws OutlookException {
-      return this;
+    public PersonalFolder getRootFolder() throws OutlookException, RepositoryException {
+      return new PersonalFolder(driveNode);
     }
 
     /**
@@ -312,14 +354,15 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      */
     @Override
     public Folder getFolder(String path) throws OutlookException, RepositoryException {
-      String rootPath = getPath();
+      PersonalFolder theRoot = getRootFolder();
+      String rootPath = theRoot.getPath();
       Folder folder;
       String folderPath = HierarchyNode.getPath(path);
       if (rootPath.equals(folderPath)) {
-        folder = this;
+        folder = theRoot;
       } else if (folderPath.startsWith(rootPath)) {
         Node node = node(folderPath);
-        folder = new UserFolder(node.getParent().getPath(), node);
+        folder = new PersonalFolder(node.getParent().getPath(), node);
       } else {
         throw new BadParameterException("Path does not belong to space documents: " + path);
       }
@@ -332,7 +375,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      */
     @Override
     public Collection<File> findAllLastDocuments(String text) throws RepositoryException, OutlookException {
-      QueryManager qm = getNode().getSession().getWorkspace().getQueryManager();
+      QueryManager qm = driveNode.getSession().getWorkspace().getQueryManager();
 
       Set<File> res = new LinkedHashSet<File>();
 
@@ -372,13 +415,14 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           }
         });
       } else {
+        String drivePath = driveNode.getPath();
         Query qOwn = qm.createQuery("SELECT * FROM nt:file WHERE exo:lastModifier='" + currentUserId() + "' AND jcr:path LIKE '"
-            + getPath() + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
+            + drivePath + "/%' AND exo:title LIKE '%" + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC", Query.SQL);
         // fetch first three modified by this user only
         fetchQuery(qOwn.execute(), 3, res);
         // and add all others up to total 20 files
         Query qOthers = qm.createQuery(
-                                       "SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%"
+                                       "SELECT * FROM nt:file WHERE jcr:path LIKE '" + drivePath + "/%' AND exo:title LIKE '%"
                                            + text + "%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
                                        Query.SQL);
         fetchQuery(qOthers.execute(), 20 - res.size(), res);
@@ -407,19 +451,21 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      */
     @Override
     public Collection<File> findLastDocuments(String text) throws RepositoryException, OutlookException {
-      QueryManager qm = getNode().getSession().getWorkspace().getQueryManager();
+      QueryManager qm = driveNode.getSession().getWorkspace().getQueryManager();
 
       Set<File> res = new LinkedHashSet<File>();
-
+      
+      String drivePath = driveNode.getPath();
+      
       // TODO this search will not include files from user's Public folder
       Query q;
       if (text == null || text.length() == 0) {
         q = qm.createQuery(
-                           "SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath()
+                           "SELECT * FROM nt:file WHERE jcr:path LIKE '" + drivePath
                                + "/%' ORDER BY exo:lastModifiedDate DESC, exo:title ASC",
                            Query.SQL);
       } else {
-        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + getPath() + "/%' AND exo:title LIKE '%" + text + "%'",
+        q = qm.createQuery("SELECT * FROM nt:file WHERE jcr:path LIKE '" + drivePath + "/%' AND exo:title LIKE '%" + text + "%'",
                            Query.SQL);
       }
       fetchQuery(q.execute(), 20, res);
@@ -598,7 +644,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
   protected class OutlookSpaceImpl extends OutlookSpace {
 
     /**
-     * The Class SpaceFolder.
+     * The Class PersonalFolder.
      */
     class SpaceFolder extends UserFolder {
 
@@ -702,11 +748,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
               }
               LOG.debug("Error creating " + UPLAODS_FOLDER_TITLE + " folder in " + getPath() + ". User: " + userInfo.toString()
                   + ". Parent node: " + node, e);
-              // TODO we don't want throw Access error here, it should be thrown
-              // where actually will affect an
-              // user
-              // throw new AccessException("Access denied to " +
-              // OutlookSpaceImpl.this.getTitle(), e);
+              // TODO we don't want throw Access error here, it should be thrown where actually will affect an user 
+              // throw new AccessException("Access denied to " + OutlookSpaceImpl.this.getTitle(), e);
             }
             defaultSubfolder = null;
           }
@@ -745,9 +788,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Folder getFolder(String path) throws OutlookException, RepositoryException {
-      Folder parent = getRootFolder();
-      Folder folder;
+    public SpaceFolder getFolder(String path) throws OutlookException, RepositoryException {
+      SpaceFolder parent = getRootFolder();
+      SpaceFolder folder;
       String folderPath = HierarchyNode.getPath(path);
       if (rootPath.equals(folderPath)) {
         folder = parent;
@@ -764,7 +807,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
      * {@inheritDoc}
      */
     @Override
-    public Folder getRootFolder() throws OutlookException, RepositoryException {
+    public RootFolder getRootFolder() throws OutlookException, RepositoryException {
       RootFolder root = rootFolder.get();
       if (root != null) {
         // ensure folder's node valid
@@ -1364,9 +1407,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     String userName = currentUserId();
     try {
       Node userDocsNode = userDocumentsNode(userName);
-      PersonalDocumentsFolder folder = new PersonalDocumentsFolder(userDocsNode);
-      initDocumentLink(folder, folder);
-      return folder;
+      PersonalDocuments personalDocs = new PersonalDocuments(userDocsNode);
+      return personalDocs;
     } catch (Exception e) {
       throw new OutlookException("Error reading user's Personal Documents node for " + userName, e);
     }
@@ -1963,7 +2005,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
    * @param file the file
    * @throws OutlookException the outlook exception
    */
-  protected void initDocumentLink(PersonalDocumentsFolder personalDocuments, HierarchyNode file) throws OutlookException {
+  protected void initDocumentLink(PersonalDocuments personalDocuments, HierarchyNode file) throws OutlookException {
     // WebDAV URL
     initWebDAVLink(file);
 
@@ -1972,8 +2014,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     // https://peter.exoplatform.com.ua:8443/portal/intranet/documents?path=Personal%20Documents/Users/j___/jo___/joh___/john/Private/Documents
     initDocumentLink(SiteType.PORTAL, // PORTAL
                      personalDocuments.getDriveName(),
-                     "intranet", // intranet
-                     "documents", // documents
+                     Util.getPortalRequestContext().getPortalOwner(), // intranet or dw will be
+                     "drives", // documents or drives will be
                      file);
   }
 
@@ -2363,8 +2405,8 @@ public class OutlookServiceImpl implements OutlookService, Startable {
           } else {
             initDocumentLink(SiteType.PORTAL, // PORTAL
                              PERSONAL_DOCUMENTS,
-                             "intranet", // intranet
-                             "documents", // documents
+                             Util.getPortalRequestContext().getPortalOwner(), // intranet or dw will be
+                             "drives", // documents or drives will be
                              file);
           }
           res.add(file);

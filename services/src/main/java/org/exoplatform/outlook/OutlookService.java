@@ -169,7 +169,7 @@ public interface OutlookService {
   List<OutlookSpace> getUserSpaces() throws OutlookSpaceException, RepositoryException, OutlookException;
 
   /**
-   * Gets the user documents.
+   * Gets current user Personal Documents.
    *
    * @return the user documents
    * @throws RepositoryException the repository exception

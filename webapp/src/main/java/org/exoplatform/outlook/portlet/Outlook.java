@@ -1176,9 +1176,11 @@ public class Outlook {
                                                     .stream()
                                                     .map(m -> m.getGroupId())
                                                     .collect(Collectors.toSet());
+      Identity currentUserIdentity =
+                                   identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
+      
+      // We show all connections of the user (incl. ones the current user doesn't have)
       // TODO cleanup
-      //Identity currentUserIdentity =
-      //                             identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, currentUsername, true);
       /*Set<String> currentUserConns = relationshipManager.getRelationshipsByStatus(currentUserIdentity, CONFIRMED, 0, 0)
                                                         .stream()
                                                         .map(r -> {
@@ -1193,10 +1195,11 @@ public class Outlook {
       Identity userIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, user, true);
       List<IdentityInfo> connectionList = getConnectionsList(user);
       
+      // We want show only those activites that the current user can sees.
+      List<ExoSocialActivity> top20 = activityManager.getActivitiesWithListAccess(userIdentity, currentUserIdentity)
+                                                     .loadAsList(0, 20);
       // TODO cleanup
-      //List<ExoSocialActivity> top20visible = activityManager.getActivitiesWithListAccess(userIdentity, currentUserIdentity)
-      //                                                      .loadAsList(0, 20);
-      List<ExoSocialActivity> top20 = activityManager.getActivitiesByPoster(userIdentity).loadAsList(0, 20);
+      //List<ExoSocialActivity> top20 = activityManager.getActivitiesByPoster(userIdentity).loadAsList(0, 20);
       
       // Use Apache Tika to parse activity title w/o HTML
       HtmlParser htmlParser = new HtmlParser();
