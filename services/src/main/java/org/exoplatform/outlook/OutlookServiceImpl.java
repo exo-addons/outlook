@@ -1895,7 +1895,7 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       node(rootPath);
       exists = true;
     } catch (PathNotFoundException ex) {
-      LOG.warn("The root folder for the rootPath: " + rootPath + " doesn't exist");
+      LOG.warn(socialSpace.getDisplayName() + " doesn’t have Documents node " + rootPath);
     }
     return exists;
   }
