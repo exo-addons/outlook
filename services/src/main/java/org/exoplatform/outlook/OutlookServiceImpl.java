@@ -1868,6 +1868,9 @@ public class OutlookServiceImpl implements OutlookService, Startable {
     ListAccess<Space> list = spaceService().getMemberSpaces(userId);
     try {
       for (Space socialSpace : list.load(0, list.getSize())) {
+        if (!checkRootFolderExistence(socialSpace)) {
+          continue;
+        }
         spaces.add(new OutlookSpaceImpl(socialSpace));
       }
       return spaces;
@@ -1877,6 +1880,24 @@ public class OutlookServiceImpl implements OutlookService, Startable {
       }
       throw new OutlookSpaceException("Error loading user spaces", e);
     }
+  }
+
+  /**
+   * Checks the root folder existence.
+   *
+   * @param socialSpace the social space
+   * @return the boolean - 'true' if the root folder exists
+   */
+  protected boolean checkRootFolderExistence(Space socialSpace) throws RepositoryException, BadParameterException {
+    boolean exists = false;
+    String rootPath = groupDocsPath(socialSpace.getGroupId());
+    try {
+      node(rootPath);
+      exists = true;
+    } catch (PathNotFoundException ex) {
+      LOG.warn("The root folder for the rootPath: " + rootPath + " doesn't exist");
+    }
+    return exists;
   }
 
   /**
