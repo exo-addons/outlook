@@ -2,6 +2,18 @@
  * Outlook Login and Welcome screen.
  */
 (function() {
+
+	// checks third-party cookie for blocking
+	var receiveMessage = function (evt) {
+		if (evt.data === 'MM:3PCunsupported') {
+			console.log("Cookies had failed to be set. Blocked. Please, allow third-party cookies for this site in order " +
+				"to work correctly. You won't be able to login without them.");
+		} else if (evt.data === 'MM:3PCsupported') {
+			console.log("Third-party cookies aren't blocked.");
+		}
+	};
+
+	window.addEventListener("message", receiveMessage, false);
 	Office.initialize = function(reason) {
 		function getRequestParameter(name) {
 			var url = window.location.href;

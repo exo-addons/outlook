@@ -120,6 +120,8 @@
 			<div class="ms-Grid-col ms-u-sm3 ms-u-md4 ms-u-lg4"></div>
 		</div>
 	</div>
+
+    <iframe id="iframeCookies" src="html/3rdpartycookiecheck/ThirdPartyCookies2.html" style="display:none"></iframe>
 	
 	<!-- Login dialog -->
 	<div id="signInDialog" class="ms-Dialog" style="display: none;">
