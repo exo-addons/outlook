@@ -121,7 +121,7 @@
 		</div>
 	</div>
 
-    <iframe id="iframeCookies" src="html/3rdpartycookiecheck/ThirdPartyCookies2.html" style="display:none"></iframe>
+    <iframe id="iframeCookies" src="static/cookiecheck/page2.html" style="display:none"></iframe>
 	
 	<!-- Login dialog -->
 	<div id="signInDialog" class="ms-Dialog" style="display: none;">

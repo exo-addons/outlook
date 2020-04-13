@@ -5,10 +5,10 @@
 
 	// checks third-party cookie for blocking
 	var receiveMessage = function (evt) {
-		if (evt.data === 'MM:3PCunsupported') {
+		if (evt.data === 'Third-party cookies are not supported') {
 			console.log("Cookies had failed to be set. Blocked. Please, allow third-party cookies for this site in order " +
 				"to work correctly. You won't be able to login without them.");
-		} else if (evt.data === 'MM:3PCsupported') {
+		} else if (evt.data === 'Third-party cookies supported') {
 			console.log("Third-party cookies aren't blocked.");
 		}
 	};

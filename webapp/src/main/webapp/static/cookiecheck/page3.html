@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ThirdPartyCookies3</title>
+  <title>Page3</title>
 </head>
 <body>
 <script>
   if (window.parent) {
     if (/thirdparty=yes/.test(document.cookie)) {
-      window.parent.postMessage('MM:3PCsupported', '*');
+      window.parent.postMessage('Third-party cookies supported', '*');
     } else {
-      window.parent.postMessage('MM:3PCunsupported', '*');
+      window.parent.postMessage('Third-party cookies are not supported', '*');
     }
   }
 </script>
