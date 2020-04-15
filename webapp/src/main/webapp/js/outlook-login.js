@@ -53,7 +53,7 @@
 				expires = "";
 			}
 			(toDocument ? toDocument : document).cookie = name + "=" + encodeURIComponent(value) + expires + "; path=" + (toPath ? toPath : "/")
-			    + (toDomain ? "; domain=" + toDomain : "");
+			    + (toDomain ? "; domain=" + toDomain : "") + "; SameSite=None; Secure";
 		}
 
 		var $welcome = $("#welcomePage");

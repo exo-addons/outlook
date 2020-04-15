@@ -149,7 +149,8 @@ public class OutlookRememberMeFilter implements Filter {
           Cookie cookie = new Cookie(OutlookTokenService.COOKIE_NAME, rememberMeOutlook);
           cookie.setPath(uri);
           cookie.setMaxAge((int) outlookTokens.getValidityTime());
-          httpRes.addCookie(cookie);
+          cookie.setSecure(true);
+          OutlookTokenService.addCookie(httpRes, cookie, OutlookTokenService.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
           if (LOG.isDebugEnabled()) {
             LOG.debug("Cookie " + OutlookTokenService.COOKIE_NAME + " initialized with user (" + credentials.getUsername()
@@ -164,7 +165,8 @@ public class OutlookRememberMeFilter implements Filter {
       Cookie cookie = new Cookie(OutlookTokenService.COOKIE_NAME, "");
       cookie.setPath(uri);
       cookie.setMaxAge(0);
-      httpRes.addCookie(cookie);
+      cookie.setSecure(true);
+      OutlookTokenService.addCookie(httpRes, cookie, OutlookTokenService.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
       // If user still not authenticated, we escape query in URL like the following one
       // /portal/intranet/outlook?et=&_host_Info=Outlook|Web|16.01|en-US|376949ab-551f-da42-aa10-448870701915|

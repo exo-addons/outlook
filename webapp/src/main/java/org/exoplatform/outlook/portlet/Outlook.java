@@ -18,6 +18,7 @@
  */
 package org.exoplatform.outlook.portlet;
 
+import static org.exoplatform.outlook.security.OutlookTokenService.*;
 import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
 
 import java.io.ByteArrayInputStream;
@@ -459,6 +460,14 @@ public class Outlook {
       Date expires = cal.getTime();
       String formatted = toCookieDate(expires);
       sb.append(EXPIRES_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(formatted);
+
+      // 'SameSite' attribute
+      sb.append(ATTRIBUTE_DELIMITER);
+      sb.append(SAME_SITE_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(SAME_SITE_NONE_ATTRIBUTE_VALUE);
+
+      // 'Secure' attribute; transfer only via https
+      sb.append(ATTRIBUTE_DELIMITER);
+      sb.append(SECURE_ATTRIBUTE_NAME);
     }
     return sb.toString();
   }
