@@ -74,8 +74,7 @@
     <documentSource>Source</documentSource>
     <documentSearch>Rechercher</documentSearch>
     <documentExplorer>Parcourir</documentExplorer>
-    <searchSourceByName>Rechercher la source par nom</searchSourceByName>
-    <searchDocumentByName>Rechercher le document par nom</searchDocumentByName>
+    <searchDocumentByName>Rechercher un document par nom</searchDocumentByName>
     <currentFolder>Dossier courant</currentFolder>
     <attach>Attacher</attach>
     <addingAttachment>Attachement en cours...</addingAttachment>

@@ -17,9 +17,6 @@
 				<label for="source" class="ms-Label">&{Outlook.documentSource}</label>
                 <div class="ms-SearchBox dropdownSearch">
                     <input class="ms-SearchBox-field" autofocus="autofocus">
-                    <label class="ms-SearchBox-label">
-                        <i class="ms-SearchBox-icon ms-Icon ms-Icon--search"></i>&{Outlook.searchSourceByName}
-                    </label>
                     <button class="ms-SearchBox-closeButton">
                         <i class="ms-Icon ms-Icon--x"></i>
                     </button>
