@@ -294,6 +294,16 @@ div.form-buttons {
   border: none;
   height: 30px;
   margin-left: 1px;
+  border-right: 1px solid silver;
+}
+
+.searchableDropdownBox .sourceDropdown .ms-Dropdown-caretDown {
+  margin-right: -1px;
+}
+
+.searchableDropdownBox .sourceDropdown ul {
+  box-shadow: none;
+  border: 1px solid silver;
 }
 
 .searchableDropdownBox .ms-Dropdown-items:before {
