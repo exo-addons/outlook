@@ -261,6 +261,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
         var initSpacesDropdown = function ($form, value, onChangeFunc) {
           function createDropdown(value) {
+            var $dropdownWrapper = $("#spacesSearchableDropdownWrapper");
             var $dropdown = $form.find(".ms-Dropdown");
             var $select = $dropdown.find("select[name='groupId']");
             var inOptions = false;
@@ -285,6 +286,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               selected = $space.val();
               onChangeFunc($space, $select);
             });
+
+            initDropdownSearch($dropdownWrapper, "groupId");
+
             var $description = $form.find(".spaceDescription");
             var $message = $form.find(".noSpacesMessage");
             if ($dropdown.data("spacesnumber") > 0) {
@@ -1892,8 +1896,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             }
             $explorerTab.prop("disabled", sourceId == "*");
           });
-          $sourceDropdown.Dropdown();
+
+          var dropdown = $sourceDropdown.Dropdown();
           setDropdownSize($sourceDropdown);
+          initDropdownSearch($documentSelector, "source");
 
           // init Search Tab
           $searchTab.click(function () {
@@ -2200,6 +2206,97 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             process.resolve();
           }
           return process.promise();
+        }
+
+        function initDropdownSearch($dropdownWrapper, selectName) {
+          var $searchableDropdownBox = $dropdownWrapper.find(".searchableDropdownBox");
+          var $sourceDropdown = $searchableDropdownBox.find(".sourceDropdown");
+          var $source = $sourceDropdown.find("select[name='" + selectName + "']");
+          var $dropdownSearchData = $source.find("option");
+
+          // Init dropdown search.
+          var $dropdownSearch = $searchableDropdownBox.find(".dropdownSearch");
+          $dropdownSearch.SearchBox();
+          var $dropdownSearchInput = $dropdownSearch.find("input");
+
+          // Handle search.
+          $dropdownSearchInput.keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == "13") {
+              event.preventDefault();
+              searchDropdownValues($dropdownSearchInput.val());
+              selectFirstDropdownElement();
+              openDropdown();
+            }
+          });
+
+          // Handle search input blur.
+          $dropdownSearchInput.blur(function () {
+            // Clear input value.
+            $dropdownSearchInput.val("");
+          });
+
+          // Handle search clearing.
+          $dropdownSearch.find(".ms-SearchBox-closeButton").on("mousedown", function () {
+            // Clear search.
+            $dropdownSearch.find(".ms-SearchBox-field").trigger("blur");
+            // Find all possible values and update the dropdown.
+            searchDropdownValues("");
+            selectFirstDropdownElement();
+          });
+
+          // Search dropdown values (update current dropdown).
+          function searchDropdownValues(searchValue) {
+            // Clear dropdown options.
+            $source.empty();
+
+            searchValue = searchValue.toLowerCase();
+            var optionValue;
+            var searchResult;
+            $dropdownSearchData.each(function () {
+              optionValue = this.text.toLowerCase();
+              searchResult = optionValue.includes(searchValue);
+              if (!searchValue || searchResult) {
+                $source.append(this);
+              }
+            });
+            $sourceDropdown.find("span").remove();
+            $sourceDropdown.find("ul").remove();
+
+            var $originalDropdown = $sourceDropdown.children(".ms-Dropdown-select"),
+              $originalDropdownOptions = $originalDropdown.children("option"),
+              newDropdownTitle = "",
+              newDropdownItems = "",
+              newDropdownSource = "";
+
+            // Go through the options to fill up newDropdownTitle and newDropdownItems.
+            $originalDropdownOptions.each(function (index, option) {
+
+              // If the option is selected, it should be the new dropdown's title.
+              if (option.selected) {
+                newDropdownTitle = option.text;
+              }
+
+              // Add this option to the list of items.
+              newDropdownItems += "<li class='ms-Dropdown-item" + ((option.disabled) ? " is-disabled'" : "'") + ">" + option.text + "</li>";
+            });
+
+            // Insert the replacement dropdown.
+            newDropdownSource = "<span class='ms-Dropdown-title'>" + newDropdownTitle + "</span><ul class='ms-Dropdown-items'>" + newDropdownItems + "</ul>";
+            $sourceDropdown.append(newDropdownSource);
+
+            setDropdownSize($sourceDropdown);
+          }
+
+          // Select the first result.
+          function selectFirstDropdownElement() {
+            $sourceDropdown.find(".ms-Dropdown-item").first().trigger("click");
+          }
+
+          // Open the dropdown if it's not opened.
+          function openDropdown() {
+            $sourceDropdown.not(".is-open").find(".ms-Dropdown-title").trigger("click");
+          }
         }
 
         // init menu if it found

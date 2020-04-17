@@ -73,7 +73,8 @@
     <documentSource>Source</documentSource>
     <documentSearch>Search</documentSearch>
     <documentExplorer>Explore</documentExplorer>
-    <searchName>Search by name</searchName>
+    <searchSourceByName>Search for the source by name</searchSourceByName>
+    <searchDocumentByName>Search for the document by name</searchDocumentByName>
     <currentFolder>Current folder</currentFolder>
     <attach>Attach</attach>
     <addingAttachment>Attaching documents...</addingAttachment>
