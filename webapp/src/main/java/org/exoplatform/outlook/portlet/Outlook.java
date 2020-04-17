@@ -57,6 +57,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.exoplatform.outlook.web.ResponseUtils;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
@@ -177,6 +178,16 @@ public class Outlook {
    * .
    */
   private final static String                                   DOMAIN_ATTRIBUTE_NAME     = "Domain";
+
+  /**
+   * The Constant SAME_SITE_ATTRIBUTE_NAME
+   */
+  private final static String                                   SAME_SITE_ATTRIBUTE_NAME  = "SameSite";
+
+  /**
+   * The Constant SECURE_ATTRIBUTE_NAME
+   */
+  private final static String                                   SECURE_ATTRIBUTE_NAME     = "Secure";
 
   /**
    * The Constant LOG.
@@ -463,7 +474,7 @@ public class Outlook {
 
       // 'SameSite' attribute
       sb.append(ATTRIBUTE_DELIMITER);
-      sb.append(SAME_SITE_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(SAME_SITE_NONE_ATTRIBUTE_VALUE);
+      sb.append(SAME_SITE_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(ResponseUtils.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
       // 'Secure' attribute; transfer only via https
       sb.append(ATTRIBUTE_DELIMITER);

@@ -21,6 +21,7 @@ package org.exoplatform.outlook.server.filter;
 
 import org.exoplatform.outlook.security.OutlookTokenService;
 import org.exoplatform.outlook.web.RequestUtils;
+import org.exoplatform.outlook.web.ResponseUtils;
 import org.exoplatform.web.filter.Filter;
 import org.exoplatform.web.security.security.AbstractTokenService;
 import org.exoplatform.web.security.security.CookieTokenService;
@@ -150,7 +151,7 @@ public class OutlookRememberMeFilter implements Filter {
           cookie.setPath(uri);
           cookie.setMaxAge((int) outlookTokens.getValidityTime());
           cookie.setSecure(true);
-          OutlookTokenService.addCookie(httpRes, cookie, OutlookTokenService.SAME_SITE_NONE_ATTRIBUTE_VALUE);
+          ResponseUtils.addCookie(httpRes, cookie, ResponseUtils.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
           if (LOG.isDebugEnabled()) {
             LOG.debug("Cookie " + OutlookTokenService.COOKIE_NAME + " initialized with user (" + credentials.getUsername()
@@ -166,7 +167,7 @@ public class OutlookRememberMeFilter implements Filter {
       cookie.setPath(uri);
       cookie.setMaxAge(0);
       cookie.setSecure(true);
-      OutlookTokenService.addCookie(httpRes, cookie, OutlookTokenService.SAME_SITE_NONE_ATTRIBUTE_VALUE);
+      ResponseUtils.addCookie(httpRes, cookie, ResponseUtils.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
       // If user still not authenticated, we escape query in URL like the following one
       // /portal/intranet/outlook?et=&_host_Info=Outlook|Web|16.01|en-US|376949ab-551f-da42-aa10-448870701915|
