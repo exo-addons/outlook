@@ -18,7 +18,6 @@
  */
 package org.exoplatform.outlook.portlet;
 
-import static org.exoplatform.outlook.security.OutlookTokenService.*;
 import static org.exoplatform.social.core.relationship.model.Relationship.Type.CONFIRMED;
 
 import java.io.ByteArrayInputStream;
@@ -57,7 +56,6 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
-import org.exoplatform.outlook.web.ResponseUtils;
 import org.gatein.wci.ServletContainer;
 import org.gatein.wci.ServletContainerFactory;
 import org.gatein.wci.security.Credentials;
@@ -474,7 +472,7 @@ public class Outlook {
 
       // 'SameSite' attribute
       sb.append(ATTRIBUTE_DELIMITER);
-      sb.append(SAME_SITE_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(ResponseUtils.SAME_SITE_NONE_ATTRIBUTE_VALUE);
+      sb.append(SAME_SITE_ATTRIBUTE_NAME).append(NAME_VALUE_DELIMITER).append(RequestUtils.SAME_SITE_NONE_ATTRIBUTE_VALUE);
 
       // 'Secure' attribute; transfer only via https
       sb.append(ATTRIBUTE_DELIMITER);
@@ -1360,6 +1358,7 @@ public class Outlook {
    */
   @Ajax
   @Resource
+  @Deprecated
   public Response rememberme(RequestContext context) throws IOException {
     // we assume portal's LoginServlet with forced rememberme already worked here
     // and we will save a dedicated cookie for long period (1 year)
