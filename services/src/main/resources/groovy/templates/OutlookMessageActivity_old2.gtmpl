@@ -22,7 +22,7 @@
 %>
 <%
 
-/* Adapted from integration FileUIActivity.gtmpl of PLF 6 */
+/* Adapted from integration FileUIActivity.gtmpl of PLF 5.2.0 */
 
 import org.apache.commons.lang.ArrayUtils;
 import org.exoplatform.portal.webui.util.Util;
@@ -113,7 +113,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     def activityDeletable = uicomponent.isActivityDeletable();
     def activityEditable = uicomponent.isActivityEditable(activity);
     def activityCommentAndLikable = uicomponent.isActivityCommentAndLikable();
-    def downloadAllUrl = uicomponent.event("DownloadDocument");
+    def downloadAllUrl = uicomponent.getDownloadAllLink();
 
     def likeActivityAction = uicomponent.event("LikeActivity", "true");
     def unlikeActivityAction = uicomponent.event("LikeActivity", "false");
@@ -188,7 +188,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
 
     //make sures commentFormFocused is set to false to prevent any refresh to focus, only focus after post a comment
     uicomponent.setCommentFormFocused(false);
-    def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityUpdatedTime, absolutePostedTime;
+    def ownerName, ownerUri = "#", ownerAvatar, activityPostedTime, activityPostedTimeInSpace, activityUpdatedTime;
     def listPeopleLikeBlockClass = "", listPeopleBGClass = "";
 
     if (!likesDisplayed) {
@@ -224,10 +224,9 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
         listPeopleBGClass = "displayNone";
     }
 
-    activityPostedTime = uicomponent.getRelativeTimeLabel(_ctx, activity.postedTime);
-    activityUpdatedTime = uicomponent.getRelativeTimeLabel(_ctx, activity.updated.getTime());
+    activityPostedTime = uicomponent.getPostedTimeString(_ctx, activity.postedTime);
+    activityUpdatedTime = uicomponent.getPostedTimeString(_ctx,activity.updated.getTime());
     activityUpdatedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}", activityUpdatedTime);
-    absolutePostedTime = uicomponent.getAbsolutePostedTime(activity.postedTime);
     def ownerIdentity = uicomponent.ownerIdentity;
     if (uicomponent.isUserActivity()) {
         ownerUri = LinkProvider.getUserProfileUri(ownerIdentity.getRemoteId());
@@ -313,7 +312,7 @@ public void addActivityTimeLine(String ownerName, String ownerUri, String ownerA
     } %>
                     </div>
         <div class="dataInfor">
-            <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$absolutePostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>"<% if(activity.postedTime != activity.updated.getTime() ){%>> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
+            <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" href="<%=uicomponent.getActivityPermalink(activity.id)%>"<% if(activity.postedTime != activity.updated.getTime() ){%> title="$activityPostedTime"> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
         <div class=" actionLink hidden-desktop visible-tablet visible-phone">
         <a id="Permalink${activity.id}" class="uiIconLink uiIconLightGray" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>"></a>
                         <% if (activityDeletable) {%>
@@ -392,7 +391,7 @@ for(def index = 0; index < uicomponent.getFilesCount(); index++) {
     //ECMS declare variables - END
     def docTypeName = uicomponent.getDocTypeName(index);
     def docSummary = uicomponent.getDocSummary(index);
-    def docDownloadUrl = uicomponent.event("DownloadDocument", "" + index);
+    def docDownloadUrl = uicomponent.getDownloadLink(index);
     def remoteEditURL = uicomponent.event("OpenFile", "" + index);
     def docOpenUri = uicomponent.getCurrentDocOpenUri(index);
     def _documentInfos = openInOfficeConnector.getDocumentInfos(currentNode.getName());
@@ -427,7 +426,7 @@ for(def index = 0; index < uicomponent.getFilesCount(); index++) {
                                                                 path:'" + currentNode.getPath().replace("'", "\\'") + "', \
                                                                 title:'" + activityContentTitle.replace("'", "\\'") + "', \
                                                                 openUrl: '" + docOpenUri + "', \
-                                                                downloadUrl:'" + docDownloadUrl.replaceAll("'", "\\\\'") + "', \
+                                                                downloadUrl:'" + docDownloadUrl + "', \
                                                                 remoteEditURL:'" + remoteEditURL.replaceAll("'", "\\\\'") + "', \
                                                                 remoteEditTitle :'" + remoteEditTitle + "', \
                                                                 remoteEditClass :'" + remoteEditClass + "', \
@@ -780,8 +779,8 @@ commentMessage = commentBuffer.toString();
 
 
 
-commentPostedTime = uicomponent.getRelativeTimeLabel(_ctx, it.postedTime);
-commentEditedTime = uicomponent.getRelativeTimeLabel(_ctx, it.updated.getTime());
+commentPostedTime = uicomponent.getPostedTimeString(_ctx, it.postedTime);
+commentEditedTime = uicomponent.getPostedTimeString(_ctx, it.updated.getTime());
 commentEditedTime = _ctx.appRes("UIActivity.label.EditedFrom").replace("{0}",commentEditedTime);
 commentAbsolutePostedTime = uicomponent.getAbsolutePostedTime(it.postedTime);
 commenterAvatarImgSrc = commentId.profile.avatarUrl;
@@ -803,7 +802,7 @@ def commentActivityId = it.parentCommentId == null ? it.id : it.parentCommentId;
 <div class="author">
     <a href="$commenterProfileUri">$commenterFullName</a>
 </div>
-              <div class="contentComment">$commentMessage</div>
+              <div class="contentComment" id="${activity.id}-${commentCounter}">$commentMessage</div>
                    <div class="desktop-input clearfix">
                        <div class="blastInputPeople hideEffect">
                            <div>
@@ -824,7 +823,7 @@ def commentActivityId = it.parentCommentId == null ? it.id : it.parentCommentId;
                   _ctx.put("commentEditedTime", commentEditedTime);
                   _ctx.put("commentAbsolutePostedTime", commentAbsolutePostedTime);
                   def templateCommentActions = "war:/groovy/social/webui/activity/UIActivityCommentActions.gtmpl";
-                  _ctx.include(templateCommentActions, uicomponent.getTemplateResourceResolver(_ctx.getRequestContext(), templateCommentActions));
+                  _ctx.include(templateCommentActions);
               %>
 </div><!--end commentRight-->
 <div class="clearfix"></div>
