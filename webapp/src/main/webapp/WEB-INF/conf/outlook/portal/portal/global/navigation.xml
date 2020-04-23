@@ -27,16 +27,6 @@
       <label xml:lang="en">Outlook Add-in</label>
       <visibility>HIDDEN</visibility>
       <page-reference>portal::global::outlook</page-reference>
-      <node>
-        <name>quicksearch</name>
-        <label xml:lang="en">Quick Search eXo</label>
-        <page-reference>portal::global::outlookQuickSearch</page-reference>
-      </node>
-      <node>
-        <name>search</name>
-        <label xml:lang="en">Search eXo</label>
-        <page-reference>portal::global::outlookUnifiedSearch</page-reference>
-      </node>
     </node>
   </page-nodes>
 </node-navigation>
