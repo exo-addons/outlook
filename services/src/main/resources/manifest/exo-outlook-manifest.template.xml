@@ -28,20 +28,20 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/dw/outlook"/>
         <RequestedHeight>450</RequestedHeight>
       </DesktopSettings>
       <TabletSettings>
-        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/dw/outlook"/>
         <RequestedHeight>450</RequestedHeight>
       </TabletSettings>
     </Form>
     <Form xsi:type="ItemEdit">
       <DesktopSettings>
-        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/dw/outlook"/>
       </DesktopSettings>
       <TabletSettings>
-        <SourceLocation DefaultValue="$BASE_URL/portal/intranet/outlook"/>
+        <SourceLocation DefaultValue="$BASE_URL/portal/dw/outlook"/>
       </TabletSettings>
     </Form>
   </FormSettings>
@@ -487,19 +487,19 @@
       <bt:Urls>
         <!-- bt:Url id="functionFile" DefaultValue="$BASE_URL/outlook/login/menu;"/ -->
 
-        <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/intranet/outlook"/>
-        <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=search"/>
-        <bt:Url id="userInfoReadUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfoRead"/>
-        <bt:Url id="userInfoComposeUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=userInfoCompose"/>
+        <bt:Url id="readUrl" DefaultValue="$BASE_URL/portal/dw/outlook"/>
+        <bt:Url id="searchUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=search"/>
+        <bt:Url id="userInfoReadUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=userInfoRead"/>
+        <bt:Url id="userInfoComposeUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=userInfoCompose"/>
 
-        <bt:Url id="postStatusUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=postStatus"/>
-        <bt:Url id="startDiscussionUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=startDiscussion"/>
+        <bt:Url id="postStatusUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=postStatus"/>
+        <bt:Url id="startDiscussionUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=startDiscussion"/>
 
-        <bt:Url id="addAttachmentUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=addAttachment"/>
-        <bt:Url id="saveAttachmentUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=saveAttachment"/>
-        <bt:Url id="convertToStatusUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToStatus"/>
-        <bt:Url id="convertToWikiUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToWiki"/>
-        <bt:Url id="convertToForumUrl" DefaultValue="$BASE_URL/portal/intranet/outlook?command=convertToForum"/>
+        <bt:Url id="addAttachmentUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=addAttachment"/>
+        <bt:Url id="saveAttachmentUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=saveAttachment"/>
+        <bt:Url id="convertToStatusUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=convertToStatus"/>
+        <bt:Url id="convertToWikiUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=convertToWiki"/>
+        <bt:Url id="convertToForumUrl" DefaultValue="$BASE_URL/portal/dw/outlook?command=convertToForum"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="appDescription" DefaultValue="Interact with your eXo collaborative intranet directly from Outlook">

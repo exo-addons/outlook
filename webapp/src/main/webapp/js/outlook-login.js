@@ -151,7 +151,7 @@
 									$sessionProcess.reject();
 								});
 								$sessionProcess.done(function() {
-									setCookie("remembermeoutlook", "_init_me", 120000, document, "/portal/intranet/outlook");
+									setCookie("remembermeoutlook", "_init_me", 120000, document, "/portal/dw/outlook");
 									window.location = initialURI;
 								});
 								$sessionProcess.fail(function() {
