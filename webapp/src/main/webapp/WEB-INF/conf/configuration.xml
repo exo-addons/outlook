@@ -20,8 +20,8 @@
 
 -->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
+    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
 
   <component>
     <key>org.exoplatform.outlook.OutlookService</key>
@@ -172,7 +172,7 @@
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
                 <value>
-                  <string>/intranet/outlook.*</string>
+                  <string>/dw/outlook.*</string>
                 </value>
               </collection>
             </field>
@@ -187,7 +187,7 @@
             <field name="patterns">
               <collection type="java.util.ArrayList" item-type="java.lang.String">
                 <value>
-                  <string>/intranet/outlook.*</string>
+                  <string>/dw/outlook.*</string>
                 </value>
               </collection>
             </field>
