@@ -20,8 +20,8 @@
 
 -->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd http://www.exoplatform.org/xml/ns/kernel_1_3.xsd"
+    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_3.xsd">
 
   <external-component-plugins>
     <target-component>org.exoplatform.portal.config.UserPortalConfigService</target-component>
@@ -31,10 +31,6 @@
       <type>org.exoplatform.portal.config.NewPortalConfigListener</type>
       <description>this listener init the portal configuration</description>
       <init-params>
-        <value-param>
-          <name>override</name>
-          <value>true</value>
-        </value-param>
         <object-param>
           <name>portal.configuration</name>
           <description>description</description>
@@ -42,7 +38,7 @@
             <field name="predefinedOwner">
               <collection type="java.util.HashSet">
                 <value>
-                  <string>intranet</string>
+                  <string>global</string>
                 </value>
               </collection>
             </field>
@@ -50,10 +46,13 @@
               <string>portal</string>
             </field>
             <field name="templateLocation">
-              <string>war:/conf/outlook/</string>
+              <string>war:/conf/outlook</string>
+            </field>
+            <field name="override">
+              <boolean>${exo.outlook.portalConfig.metadata.override:true}</boolean>
             </field>
             <field name="importMode">
-              <string>${intranet.portalConfig.metadata.importmode:merge}</string>
+              <string>${exo.outlook.portalConfig.metadata.importmode:insert}</string>
             </field>
           </object>
         </object-param>
