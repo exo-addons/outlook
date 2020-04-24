@@ -1,10 +1,7 @@
 <div id="spacesSearchableDropdownWrapper">
      <div class="searchableDropdownBox">
          <div class="ms-SearchBox dropdownSearch">
-            <input class="ms-SearchBox-field" autofocus="autofocus">
-            <button class="ms-SearchBox-closeButton">
-                <i class="ms-Icon ms-Icon--x"></i>
-            </button>
+            <input class="ms-SearchBox-field">
         </div>
         <div class="ms-Dropdown sourceDropdown" tabindex="0" data-spacesnumber="${spaces.size()}">
             <i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>

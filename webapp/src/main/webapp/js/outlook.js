@@ -2209,6 +2209,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         }
 
         function initDropdownSearch($dropdownWrapper, selectName) {
+          var selectedElementTitle = "";
+          var firstDropdownElement;
+
           var $searchableDropdownBox = $dropdownWrapper.find(".searchableDropdownBox");
           var $sourceDropdown = $searchableDropdownBox.find(".sourceDropdown");
           var $source = $sourceDropdown.find("select[name='" + selectName + "']");
@@ -2219,13 +2222,38 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           $dropdownSearch.SearchBox();
           var $dropdownSearchInput = $dropdownSearch.find("input");
 
-          // Handle search.
-          $dropdownSearchInput.keypress(function (event) {
+          // Prevent the selected item hovering.
+          $dropdownSearch.on('mouseover', function (event) {
+            event.preventDefault();
+            $dropdownSearchInput.removeClass('hovering');
+          });
+
+          // Prevent form submission when pressing Enter
+          $dropdownSearchInput.keydown(function (event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode == "13") {
               event.preventDefault();
+              return false;
+            }
+          });
+
+          // Handle search.
+          $dropdownSearchInput.keyup(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == "13") {
+              // Handle enter and select first item.
+              event.preventDefault();
+              if ($dropdownSearchInput.val() != "" && !$searchableDropdownBox.find("ul .is-selected:first").length) {
+                selectFirstDropdownElement();
+                closeDropdown();
+                $dropdownSearchInput.blur();
+              } else {
+                closeDropdown();
+                $dropdownSearchInput.blur();
+              }
+            } else {
+              // Handle input change.
               searchDropdownValues($dropdownSearchInput.val());
-              selectFirstDropdownElement();
               openDropdown();
             }
           });
@@ -2236,17 +2264,17 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             $dropdownSearchInput.val("");
           });
 
-          // Handle search clearing.
-          $dropdownSearch.find(".ms-SearchBox-closeButton").on("mousedown", function () {
-            // Clear search.
-            $dropdownSearch.find(".ms-SearchBox-field").trigger("blur");
-            // Find all possible values and update the dropdown.
-            searchDropdownValues("");
-            selectFirstDropdownElement();
-          });
+          initManualDropdownOpening();
 
           // Search dropdown values (update current dropdown).
           function searchDropdownValues(searchValue) {
+
+            var selectedValue = $searchableDropdownBox.find("ul .is-selected:first").text();
+            // Remember selected element
+            if(selectedValue != "") {
+              selectedElementTitle = selectedValue;
+            }
+
             // Clear dropdown options.
             $source.empty();
 
@@ -2265,37 +2293,59 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
             var $originalDropdown = $sourceDropdown.children(".ms-Dropdown-select"),
               $originalDropdownOptions = $originalDropdown.children("option"),
-              newDropdownTitle = "",
               newDropdownItems = "",
               newDropdownSource = "";
 
             // Go through the options to fill up newDropdownTitle and newDropdownItems.
             $originalDropdownOptions.each(function (index, option) {
-
-              // If the option is selected, it should be the new dropdown's title.
-              if (option.selected) {
-                newDropdownTitle = option.text;
+              if (option.text == selectedElementTitle) {
+                // Add this option to the list of items.
+                newDropdownItems += "<li class='ms-Dropdown-item is-selected'>" + option.text + "</li>";
+              } else {
+                // Add this option to the list of items.
+                newDropdownItems += "<li class='ms-Dropdown-item" + ((option.disabled) ? " is-disabled'" : "'") + ">" + option.text + "</li>";
               }
-
-              // Add this option to the list of items.
-              newDropdownItems += "<li class='ms-Dropdown-item" + ((option.disabled) ? " is-disabled'" : "'") + ">" + option.text + "</li>";
             });
 
             // Insert the replacement dropdown.
-            newDropdownSource = "<span class='ms-Dropdown-title'>" + newDropdownTitle + "</span><ul class='ms-Dropdown-items'>" + newDropdownItems + "</ul>";
+            newDropdownSource = "<span class='ms-Dropdown-title'>" + selectedElementTitle + "</span><ul class='ms-Dropdown-items'>" + newDropdownItems + "</ul>";
             $sourceDropdown.append(newDropdownSource);
 
             setDropdownSize($sourceDropdown);
+            //initManualDropdownOpening();
           }
 
           // Select the first result.
           function selectFirstDropdownElement() {
-            $sourceDropdown.find(".ms-Dropdown-item").first().trigger("click");
+            firstDropdownElement = $sourceDropdown.find(".ms-Dropdown-item:first");
+            // If an element in the dropdown isn't selected
+            if(!$searchableDropdownBox.find("ul .is-selected:first").length){
+              if (firstDropdownElement.length && firstDropdownElement.text() != "") {
+                firstDropdownElement.trigger("click");
+              }
+            }
           }
 
           // Open the dropdown if it's not opened.
           function openDropdown() {
             $sourceDropdown.not(".is-open").find(".ms-Dropdown-title").trigger("click");
+          }
+
+          // Close the dropdown
+          function closeDropdown() {
+            if($sourceDropdown.hasClass( "is-open" )){
+              $sourceDropdown.find(".ms-Dropdown-title").trigger("click");
+            }
+          }
+
+          function initManualDropdownOpening() {
+            // Handle the manual opening of the dropdown full data.
+            $sourceDropdown.on("click",".ms-Dropdown-title", function (event) {
+              var keycode = (event.keyCode ? event.keyCode : event.which);
+              if (keycode != "13" && !$sourceDropdown.find(".is-open").length && !$dropdownSearchInput.is(":focus")) {
+                searchDropdownValues("");
+              }
+            });
           }
         }
 

@@ -16,10 +16,7 @@
 			<div class="ms-Grid-col ms-u-sm10 ms-u-md8 ms-u-lg8 ms-TextField searchableDropdownBox">
 				<label for="source" class="ms-Label">&{Outlook.documentSource}</label>
                 <div class="ms-SearchBox dropdownSearch">
-                    <input class="ms-SearchBox-field" autofocus="autofocus">
-                    <button class="ms-SearchBox-closeButton">
-                        <i class="ms-Icon ms-Icon--x"></i>
-                    </button>
+                    <input class="ms-SearchBox-field">
                 </div>
 				<div class="ms-Dropdown sourceDropdown" tabindex="0">
 					<i class="ms-Dropdown-caretDown ms-Icon ms-Icon--caretDown"></i>

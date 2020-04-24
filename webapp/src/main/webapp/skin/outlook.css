@@ -912,3 +912,31 @@ textarea[name='activityTitle'], textarea[name='comment'] {
 #NavigationPortlet, #UITopBarContainerParent {
   display: none;
 }
+
+.searchableDropdownBox:active .ms-Dropdown-title,
+.searchableDropdownBox:hover .ms-Dropdown-title {
+  border-color: #767676;
+}
+
+/*.searchableDropdownBox .sourceDropdown .ms-Dropdown-caretDown {
+  right: 0;
+  margin-right: 8px;
+  top: 0;
+  margin-top: 10px;
+  margin-left: 8px;
+  padding-bottom: 21px;
+}*/
+
+/* user select none */
+.searchableDropdownBox {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+
+  /*
+    Introduced in Internet Explorer 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
+}
