@@ -50,7 +50,7 @@ public class OutlookLoginFilter implements Filter {
   public static final String    OUTLOOK_LOGIN       = "/outlook/login";
 
   /** The Constant OUTLOOK_INITIAL_URI. */
-  public static final String    OUTLOOK_INITIAL_URI = "initialURI=%2Fportal%2Fintranet%2Foutlook";
+  public static final String    OUTLOOK_INITIAL_URI = "initialURI=%2Fportal%2Fdw%2Foutlook";
 
   /**
    * {@inheritDoc}
