@@ -52,7 +52,7 @@
     <org.exoplatform.depmgt.version>15</org.exoplatform.depmgt.version>
     <org.exoplatform.platform.version>5.2.0</org.exoplatform.platform.version>
     <!-- for tests -->
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <org.mockito.version>2.2.11</org.mockito.version>
     <httpclient-test.version>4.3.6</httpclient-test.version>
   </properties>
