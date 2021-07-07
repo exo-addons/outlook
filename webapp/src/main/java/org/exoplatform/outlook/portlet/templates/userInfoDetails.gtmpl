@@ -23,13 +23,15 @@
                 <ul class="ms--list">
                   <% if (activity.title) { %>
                   <li class="activity-title">
-                    <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link"
-                       target="_blank">
-                      ${activity.title}</a>
+                    <div class="activity-link-shell">
+                      <a href="${activity.link}" class="ms-Link ms-font-m-plus ms-fwt-sl ms-fcl-np a-link"
+                         target="_blank">
+                        ${activity.title}</a>
+                    </div>
                   </li>
-                  <% } %>
                   <% if (activity.postedDate) { %>
-                  <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                    <time class=" ms-fwt-sl ms-fcl-ns postedDate">${activity.postedDate}</time>
+                  <% } %>
                   <% } %>
                 </ul>
               </div>
@@ -45,11 +47,14 @@
                     <div class="ms-Persona">
                       <div class="ms-Persona-imageArea">
                         <div class="ms-Persona-initials ms-Persona-initials--darkBlue">
+                          <i class="ms-Icon ms-Icon--person default-user-icon"></i>
                           <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">
                             ${conn.firstName}${conn.lastName}</font>
                           </font>
                         </div>
-                        <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                        <% if (conn.avatarUrl) { %>
+                          <img class="ms-Persona-image" src="${conn.avatarUrl}">
+                        <% } %>
                       </div>
                       <div class="ms-Persona-details">
                         <div class="ms-Persona-primaryText">
@@ -75,6 +80,7 @@
             </div>
           </li>
           <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalPhones">
+            <div class="ms-PersonaCard-detailLine">
             <% if (userDet.isPhoneNumberPresent()) { %>
             <span class="ms-PersonaCard-detailLabel">&{Outlook.phone}</span>
             <% userDet.getPhones().each { phName, phNumber -> %>
@@ -130,6 +136,7 @@
             <% } else { %>
             <span class="ms-PersonaCard-detailLabel">&{Outlook.noInfo}</span>
             <% } %>
+            </div>
           </li>
           <li class="ms-PersonaCard-actionDetails detail-6 contact-detail personalIms">
             <div class="ms-PersonaCard-detailLine">

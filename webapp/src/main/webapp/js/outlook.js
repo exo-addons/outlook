@@ -158,7 +158,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           $("<i class='ms-Icon ms-Icon--alert ms-font-m ms-fontColor-error'></i><span>" + message + "</span>").appendTo($errorText);
           messageBanner.showBanner();
           $error.show("blind", {
-            "direction": "down"
+            "direction" : "down"
           });
           return message;
         };
@@ -296,11 +296,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               $message.show();
             }
             return {
-              component: function () {
+              component : function () {
                 console.log("Start initSpacesDropdown component function");
                 return $dropdown;
               },
-              value: function () {
+              value : function () {
                 console.log("Start initSpacesDropdown selected function");
                 return selected;
               }
@@ -326,7 +326,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
         // Common listener to handle message recipients updates (in compose mode)
         var isRecipientsUpdating = false;
 
-        function initRecipientsChangedListener (onChangedHandler) {
+        function initRecipientsChangedListener(onChangedHandler) {
           console.log("> init RecipientsChanged listener");
           Office.context.mailbox.item.addHandlerAsync(Office.EventType.RecipientsChanged, function (event) {
             if (!isRecipientsUpdating) {
@@ -338,7 +338,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           });
         }
 
-        function searchPeople (str, $searchPlace) {
+        function searchPeople(str, $searchPlace) {
           var $users = $searchPlace.find(".compose-Persona");
           for (var i = 0; i < $users.length; i++) {
             var fullName = $($users[i]).data("full-name");
@@ -352,7 +352,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function showConnection (recipients = Office.context.mailbox.item.to, btn, isComposeMode) {
+        function showConnection(recipients = Office.context.mailbox.item.to, btn, isComposeMode) {
           var $userInfo = $("#outlook-userInfo");
           var $recipientsPanel = $userInfo.find(".recipients-panel");
           var $connections = $userInfo.find(".connections");
@@ -369,7 +369,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function openConnectionDetails () {
+        function openConnectionDetails() {
           $(this).toggleClass("activeMenu-btn");
           var $userDetails = $("#outlook-userInfo").find(".user-details-" + $(this).data("remote-id"));
           if ($(this).hasClass("activeMenu-btn")) {
@@ -380,13 +380,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function getConnections (recipients = Office.context.mailbox.item.to, isComposeMode = false) {
+        function getConnections(recipients = Office.context.mailbox.item.to, isComposeMode = false) {
           var $userInfo = $("#outlook-userInfo");
           var $users = $userInfo.find(".compose-Persona");
           var presentUsers = "";
           var $connections = $userInfo.find(".connections"); // TODO NO ID, use class connections!! change var name to connections
 
-          if ($users.length > 0){
+          if ($users.length > 0) {
             for (var i = 0; i < $users.length; i++) {
               var userEmail = $($users[i]).data("email");
               presentUsers += userEmail + ","
@@ -396,7 +396,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
 
           $connections.jzLoad("Outlook.userInfoConnections()", {
-            presentUsers: presentUsers
+            presentUsers : presentUsers
           }, function (response, status, jqXHR) {
             if (status === "error") {
               showError(jqXHR);
@@ -408,27 +408,27 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 var $this = $(this);
                 if (isComposeMode) {
                   var $user = $this.closest(".compose-Persona");
-                  addRecipients ($($user).data("full-name"),
+                  addRecipients($($user).data("full-name"),
                     $user.data("email"),
                     recipients);
                   $this.closest(".compose-Persona").remove();
                 } else {
                   Office.context.mailbox.displayNewMessageForm(
                     {
-                      toRecipients: [$(this).data("email")]
+                      toRecipients : [$(this).data("email")]
                     });
                 }
               });
 
               $connections.find(".ms-CommandBarSearch-input").keyup(function () {
-                searchPeople ($(this).val().toLowerCase(), $connections)
+                searchPeople($(this).val().toLowerCase(), $connections)
               })
             }
           });
         }
 
-        function showUserDetails (user, $placeToLoad) {
-          $placeToLoad.jzLoad("Outlook.userInfoDetails()", {user: user},
+        function showUserDetails(user, $placeToLoad) {
+          $placeToLoad.jzLoad("Outlook.userInfoDetails()", {user : user},
             function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -436,15 +436,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
         }
 
-        function addRecipients (fullName, email, recipients) {
+        function addRecipients(fullName, email, recipients) {
           if (!recipients) { // TODO messageType!!!
             recipients = Office.context.mailbox.item.to;
           }
           isRecipientsUpdating = true;
           recipients.addAsync(
             [{
-              "displayName": fullName,
-              "emailAddress": email
+              "displayName" : fullName,
+              "emailAddress" : email
             }], function (asyncResult) {
               if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                 console.log(">> addRecipients failed: " + asyncResult.error.message);
@@ -455,7 +455,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
         }
 
-        function logResultError (opName, result) {
+        function logResultError(opName, result) {
           var err = result.error;
           if (err) {
             console.log("> Recipients " + opName + " error " + err.name + ": " + err.message);
@@ -464,7 +464,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           }
         }
 
-        function removeRecipient(email){
+        function removeRecipient(email) {
           var item = Office.context.mailbox.item;
           var toRecipient = [];
           var ccRecipient = [];
@@ -477,8 +477,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 for (var i = 0; i < asyncResult.value.length; i++) {
                   if (email !== asyncResult.value[i].emailAddress.toLowerCase()) {
                     toRecipient.push({
-                      "displayName": asyncResult.value[i].displayName,
-                      "emailAddress": asyncResult.value[i].emailAddress.toLowerCase()
+                      "displayName" : asyncResult.value[i].displayName,
+                      "emailAddress" : asyncResult.value[i].emailAddress.toLowerCase()
                     });
                   }
                 }
@@ -491,8 +491,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                     for (var i = 0; i < asyncResult.value.length; i++) {
                       if (email !== asyncResult.value[i].emailAddress.toLowerCase()) {
                         ccRecipient.push({
-                          "displayName": asyncResult.value[i].displayName,
-                          "emailAddress": asyncResult.value[i].emailAddress.toLowerCase()
+                          "displayName" : asyncResult.value[i].displayName,
+                          "emailAddress" : asyncResult.value[i].emailAddress.toLowerCase()
                         });
                       }
                     }
@@ -505,8 +505,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                         for (var i = 0; i < asyncResult.value.length; i++) {
                           if (email !== asyncResult.value[i].emailAddress.toLowerCase()) {
                             bccRecipient.push({
-                              "displayName": asyncResult.value[i].displayName,
-                              "emailAddress": asyncResult.value[i].emailAddress.toLowerCase()
+                              "displayName" : asyncResult.value[i].displayName,
+                              "emailAddress" : asyncResult.value[i].emailAddress.toLowerCase()
                             });
                           }
                         }
@@ -539,7 +539,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           });
         }
 
-        function userInfoComposeInit () {
+        function userInfoComposeInit() {
           var $userInfo = $("#outlook-userInfo");
           var item = Office.context.mailbox.item;
           var recipients = [];
@@ -547,23 +547,23 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           // TODO copy-pasted code with Read mode
           var $bigPlus = $userInfo.find(".bigPlus");
           $bigPlus.click(function () {
-            if (showConnection (recipients[0], this, true)) {
-              initRecipients ();
+            if (showConnection(recipients[0], this, true)) {
+              initRecipients();
             }
           });
 
-          function initRecipients () {
+          function initRecipients() {
             var presentEmail = "";
             recipients = [];
 
-            function addPresentEmail (email) {
+            function addPresentEmail(email) {
               var emailAddress = email.emailAddress.toLowerCase();
               if (!presentEmail.includes(emailAddress)) {
                 presentEmail += emailAddress + ",";
               }
             }
 
-            function addPresentEmails (emails) {
+            function addPresentEmails(emails) {
               if (Array.isArray(emails)) {
                 emails.forEach(addPresentEmail);
               } else {
@@ -595,10 +595,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           addPresentEmails(asyncResult.value);
                           recipients.push(item.bcc);
                         }
-                        if(recipients.length > 1){
+                        if (recipients.length > 1) {
                           recipients[0] = item.to;
                         }
-                        loadRecipients (presentEmail);
+                        loadRecipients(presentEmail);
                         if (presentEmail.length < 1) { // TODO why 5?
                           $bigPlus.click();
                         }
@@ -610,13 +610,13 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             });
           }
 
-          function loadRecipients (presentEmail) {
+          function loadRecipients(presentEmail) {
             // TODO messageType!!!
             var $recipients = $userInfo.find(".recipients-panel");
             $recipients.empty().show();
             $userInfo.find(".connections").hide();
             $recipients.jzLoad("Outlook.userInfoRecipients()", {
-              emails: presentEmail
+              emails : presentEmail
             }, function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -658,10 +658,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           var item = Office.context.mailbox.item;
           var $userInfo = $("#outlook-userInfo");
 
-          function showAllConnections () {
+          function showAllConnections() {
             // TODO load into a dedicated element, like allConnections
             $userInfo.jzLoad("Outlook.userInfoConnections()", {
-              presentEmail: ""
+              presentEmail : ""
             }, function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -670,10 +670,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 // TODO copy-pasted code with Compose mode
                 $userInfo.find(".ms-PersonaCard").PersonaCard();
                 $userInfo.find(".letter-btn").click(function () {
-                  Office.context.mailbox.displayNewMessageForm(
-                    {
-                      toRecipients: [$(this).data("email")]
-                    });
+                    Office.context.mailbox.displayNewMessageForm(
+                      {
+                        toRecipients : [$(this).data("email")]
+                      });
                   }
                 );
 
@@ -689,7 +689,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           function loadRecipients(byEmail) {
             var $recipients = $userInfo.find(".recipients-panel");
             $recipients.jzLoad("Outlook.userInfoRecipients()", {
-              emails: byEmail
+              emails : byEmail
             }, function (response, status, jqXHR) {
               if (status === "error") {
                 showError(jqXHR);
@@ -705,7 +705,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   $recipients.find(".letter-btn").click(function () {
                     Office.context.mailbox.displayNewMessageForm(
                       {
-                        toRecipients: [$(this).data("email")]
+                        toRecipients : [$(this).data("email")]
                       });
                   });
                   $recipients.find(".menu-btn").click(openConnectionDetails);
@@ -716,6 +716,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           if (item.conversationId) {
             var recipientEmails = "";
+
             function addEmailsIfNotUser(recipients) {
               if (recipients != null) {
                 for (var i = 0; i < recipients.length; i++) {
@@ -725,6 +726,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 }
               }
             }
+
             // TODO need this if-block?
             if (from.emailAddress !== userEmail) {
               recipientEmails += from.emailAddress + ",";
@@ -736,7 +738,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             // TODO copy-pasted code with Compose mode
 
             $userInfo.find(".bigPlus").click(function () {
-              showConnection(null, this,false);
+              showConnection(null, this, false);
             });
             // Listener to update the message people
             initRecipientsChangedListener(function (event) {
@@ -799,8 +801,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if (groupId && path) {
               // console.log(">> loadFolder: " + groupId + " >> " + path);
               $folders.jzLoad("Outlook.folders()", {
-                groupId: groupId,
-                path: path
+                groupId : groupId,
+                path : path
               }, function (response, status, jqXHR) {
                 if (status == "error") {
                   process.reject(showError(jqXHR));
@@ -834,7 +836,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           var item = Office.context.mailbox.item;
           if (item.attachments.length > 0) {
-            for (i = 0; i < item.attachments.length; i++) {
+            for (var i = 0; i < item.attachments.length; i++) {
               var att = item.attachments[i];
               var $li = $("<li class='ms-ListItem is-selectable'><span class='ms-ListItem-primaryText'>"
                 + att.name + "</span><span class='ms-ListItem-metaText attachmentSize'>" //
@@ -886,10 +888,10 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   function cancelSave() {
                     spinner.stop();
                     $savingAttachment.hide("blind", {
-                      "direction": "down"
+                      "direction" : "down"
                     });
                     $form.show("blind", {
-                      "direction": "down"
+                      "direction" : "down"
                     });
                   }
 
@@ -901,15 +903,15 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       // console.log(">> savingAttachment: " + JSON.stringify(attachmentIds));
                       var $savedSpaceInfo = $savedAttachment.find(".savedSpaceInfo");
                       $savedSpaceInfo.jzLoad("Outlook.saveAttachment()", {
-                        groupId: groupId,
-                        path: path,
-                        comment: $comment.val(),
-                        ewsUrl: ewsUrl,
-                        userEmail: userEmail,
-                        userName: userName,
-                        messageId: messageId,
-                        attachmentToken: attachmentToken,
-                        attachmentIds: attachmentIds.join()
+                        groupId : groupId,
+                        path : path,
+                        comment : $comment.val(),
+                        ewsUrl : ewsUrl,
+                        userEmail : userEmail,
+                        userName : userName,
+                        messageId : messageId,
+                        attachmentToken : attachmentToken,
+                        attachmentIds : attachmentIds.join()
                       }, function (response, status, jqXHR) {
                         if (status == "error") {
                           showError(jqXHR);
@@ -943,7 +945,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 } else {
                   showError("Outlook.messages.attachmentNotSelected");
                   $form.animate({
-                    scrollTop: $attachments.offset().top - $form.offset().top + $form.scrollTop()
+                    scrollTop : $attachments.offset().top - $form.offset().top + $form.scrollTop()
                   });
                 }
               }
@@ -994,9 +996,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                       var newFolderName = $newFolderName.val();
                       if (newFolderName) {
                         $folders.jzLoad("Outlook.addFolder()", {
-                          groupId: groupId,
-                          path: path,
-                          name: newFolderName
+                          groupId : groupId,
+                          path : path,
+                          name : newFolderName
                         }, function (response, status, jqXHR) {
                           if (status == "error") {
                             $popup.hide();
@@ -1063,7 +1065,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin": "0px", "padding": "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable=\"true\"></div>");
             $editorText.append($content.children());
             $content.append($editorText);
@@ -1109,11 +1111,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   var $tempText = $("<div style='display:none'></div>");
                   $textFrame.append($tempText);
                   $tempText.jzLoad("Outlook.getMessage()", {
-                    ewsUrl: ewsUrl,
-                    userEmail: userEmail,
-                    userName: userName,
-                    messageId: mid,
-                    messageToken: messageToken
+                    ewsUrl : ewsUrl,
+                    userEmail : userEmail,
+                    userName : userName,
+                    messageId : mid,
+                    messageToken : messageToken
                   }, function (response, status, jqXHR) {
                     if (status == "error") {
                       showError(jqXHR);
@@ -1139,26 +1141,26 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           var modified = Office.context.mailbox.item.dateTimeModified;
                           var from = Office.context.mailbox.item.from;
                           $convertedInfo.jzLoad("Outlook.convertToStatus()", {
-                            groupId: groupId,
-                            messageId: mid,
-                            title: $title.val(),
-                            subject: $editorSubject ? $editorSubject.val() : $subject.text(),
-                            body: $text.html(),
-                            created: formatISODate(created),
-                            modified: formatISODate(modified),
-                            userName: userName,
-                            userEmail: userEmail,
-                            fromName: from.displayName,
-                            fromEmail: from.emailAddress
+                            groupId : groupId,
+                            messageId : mid,
+                            title : $title.val(),
+                            subject : $editorSubject ? $editorSubject.val() : $subject.text(),
+                            body : $text.html(),
+                            created : formatISODate(created),
+                            modified : formatISODate(modified),
+                            userName : userName,
+                            userEmail : userEmail,
+                            fromName : from.displayName,
+                            fromEmail : from.emailAddress
                           }, function (response, status, jqXHR) {
                             if (status == "error") {
                               showError(jqXHR);
                               spinner.stop();
                               $converting.hide("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                               $form.show("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                             } else {
                               clearError();
@@ -1243,19 +1245,19 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               loadMenu("home");
             } else {
               $postedInfo.jzLoad("Outlook.postStatus()", {
-                groupId: groupId ? groupId : "",
-                message: $text.html(),
-                userName: userName,
-                userEmail: userEmail
+                groupId : groupId ? groupId : "",
+                message : $text.html(),
+                userName : userName,
+                userEmail : userEmail
               }, function (response, status, jqXHR) {
                 if (status == "error") {
                   showError(jqXHR);
                   spinner.stop();
                   $posting.hide("blind", {
-                    "direction": "down"
+                    "direction" : "down"
                   });
                   $form.show("blind", {
-                    "direction": "down"
+                    "direction" : "down"
                   });
                 } else {
                   clearError();
@@ -1273,8 +1275,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           var $convertToWiki = $("#outlook-convertToWiki");
           var $title = $convertToWiki.find("input[name='wikiTitle']");
           var $viewer = $convertToWiki.find("div.messageText");
-          var $textFrame = $viewer.find("iframe");
+          var $textFrame = $viewer.find("convertToWikiInit");
           var $text = $textFrame.contents().find("html");
+          var $editorText;
           $textFrame.on("load", function () {
             // XXX do it again for FF
             $text = $textFrame.contents().find("html");
@@ -1300,7 +1303,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin": "0px", "padding": "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable='true'></div>");
             $editorText.append($content.children());
             $content.append($editorText);
@@ -1353,11 +1356,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   var $tempText = $("<div style='display:none'></div>");
                   $textFrame.append($tempText);
                   $tempText.jzLoad("Outlook.getMessage()", {
-                    ewsUrl: ewsUrl,
-                    userEmail: userEmail,
-                    userName: userName,
-                    messageId: mid,
-                    messageToken: messageToken
+                    ewsUrl : ewsUrl,
+                    userEmail : userEmail,
+                    userName : userName,
+                    messageId : mid,
+                    messageToken : messageToken
                   }, function (response, status, jqXHR) {
                     if (status == "error") {
                       showError(jqXHR);
@@ -1385,25 +1388,25 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           // emailAddress
                           var from = Office.context.mailbox.item.from;
                           $convertedInfo.jzLoad("Outlook.convertToWiki()", {
-                            groupId: groupId,
-                            messageId: mid,
-                            subject: $title.val(),
-                            body: $text.html(),
-                            created: formatISODate(created),
-                            modified: formatISODate(modified),
-                            userName: userName,
-                            userEmail: userEmail,
-                            fromName: from.displayName,
-                            fromEmail: from.emailAddress
+                            groupId : groupId,
+                            messageId : mid,
+                            subject : $title.val(),
+                            body : $text.html(),
+                            created : formatISODate(created),
+                            modified : formatISODate(modified),
+                            userName : userName,
+                            userEmail : userEmail,
+                            fromName : from.displayName,
+                            fromEmail : from.emailAddress
                           }, function (response, status, jqXHR) {
                             if (status == "error") {
                               showError(jqXHR);
                               spinner.stop();
                               $converting.hide("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                               $form.show("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                             } else {
                               clearError();
@@ -1438,6 +1441,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
           var $viewer = $convertToForum.find("div.messageText");
           var $textFrame = $viewer.find("iframe");
           var $text = $textFrame.contents().find("html");
+          var $editorText;
           $textFrame.on("load", function () {
             // XXX do it again for FF
             $text = $textFrame.contents().find("html");
@@ -1465,7 +1469,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if ($contentBody.length > 0) {
               $content = $contentBody;
             }
-            $editorFrame.contents().find("html, body").css({"margin": "0px", "padding": "0px"});
+            $editorFrame.contents().find("html, body").css({"margin" : "5px", "padding" : "0px"});
             $editorText = $("<div contenteditable='true'></div>");
             $editorText.append($content.children());
             $content.append($editorText);
@@ -1517,11 +1521,11 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   var $tempText = $("<div style='display:none'></div>");
                   $textFrame.append($tempText);
                   $tempText.jzLoad("Outlook.getMessage()", {
-                    ewsUrl: ewsUrl,
-                    userEmail: userEmail,
-                    userName: userName,
-                    messageId: mid,
-                    messageToken: messageToken
+                    ewsUrl : ewsUrl,
+                    userEmail : userEmail,
+                    userName : userName,
+                    messageId : mid,
+                    messageToken : messageToken
                   }, function (response, status, jqXHR) {
                     if (status == "error") {
                       showError(jqXHR);
@@ -1550,25 +1554,25 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                           // emailAddress
                           var from = Office.context.mailbox.item.from;
                           $convertedInfo.jzLoad("Outlook.convertToForum()", {
-                            groupId: groupId,
-                            messageId: mid,
-                            subject: $topicName.val(),
-                            body: $text.html(),
-                            created: formatISODate(created),
-                            modified: formatISODate(modified),
-                            userName: userName,
-                            userEmail: userEmail,
-                            fromName: from.displayName,
-                            fromEmail: from.emailAddress
+                            groupId : groupId,
+                            messageId : mid,
+                            subject : $topicName.val(),
+                            body : $text.html(),
+                            created : formatISODate(created),
+                            modified : formatISODate(modified),
+                            userName : userName,
+                            userEmail : userEmail,
+                            fromName : from.displayName,
+                            fromEmail : from.emailAddress
                           }, function (response, status, jqXHR) {
                             if (status == "error") {
                               showError(jqXHR);
                               spinner.stop();
                               $converting.hide("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                               $form.show("blind", {
-                                "direction": "down"
+                                "direction" : "down"
                               });
                             } else {
                               clearError();
@@ -1686,20 +1690,20 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
               loadMenu("home");
             } else {
               $startedInfo.jzLoad("Outlook.startDiscussion()", {
-                groupId: groupId ? groupId : "",
-                name: $topicName.val(),
-                text: $topicText.html(),
-                userName: userName,
-                userEmail: userEmail
+                groupId : groupId ? groupId : "",
+                name : $topicName.val(),
+                text : $topicText.html(),
+                userName : userName,
+                userEmail : userEmail
               }, function (response, status, jqXHR) {
                 if (status == "error") {
                   showError(jqXHR);
                   spinner.stop();
                   $starting.hide("blind", {
-                    "direction": "down"
+                    "direction" : "down"
                   });
                   $form.show("blind", {
-                    "direction": "down"
+                    "direction" : "down"
                   });
                 } else {
                   clearError();
@@ -1845,8 +1849,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
 
           var searchFiles = function (text) {
             $documentSearchResults.jzLoad("Outlook.searchFiles()", {
-              sourceId: sourceId,
-              text: text
+              sourceId : sourceId,
+              text : text
             }, function (response, status, jqXHR) {
               if (status == "error") {
                 showError(jqXHR);
@@ -1906,8 +1910,8 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
             if (sourceId && path) {
               // console.log(">> loadChildred: " + sourceId + " >> " + path);
               $folderFiles.jzLoad("Outlook.exploreFiles()", {
-                sourceId: sourceId,
-                path: path
+                sourceId : sourceId,
+                path : path
               }, function (response, status, jqXHR) {
                 if (status == "error") {
                   process.reject();
@@ -1992,9 +1996,9 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 // var downloadUrl = $selected.data("downloadurl");
                 var fpath = $selected.data("path");
                 var $fileLink = $selected.jzAjax("Outlook.fileLink()", {
-                  type: 'POST',
-                  data: {
-                    nodePath: fpath
+                  type : 'POST',
+                  data : {
+                    nodePath : fpath
                   }
                 });
 
@@ -2011,9 +2015,14 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                 files.push($fileProcess);
 
                 $fileLink.done(function (response, status, jqXHR) {
+                  /*
+                  * The link should be correct. Use https, public ip and correct ssl (not self-signed) certificate
+                  * (https://docs.microsoft.com/en-us/outlook/add-ins/privacy-and-security)
+                  * */
                   var link = response.link;
                   var title = response.name;
-                  Office.context.mailbox.item.addFileAttachmentAsync(link, title, {}, function (asyncResult) {
+
+                  Office.context.mailbox.item.addFileAttachmentAsync(link, title, function (asyncResult) {
                     if (asyncResult.status === "succeeded") {
                       $docName.prepend("<i class='ms-Icon ms-Icon--checkbox ms-font-m ms-fontColor-green'>");
                       $fileProcess.resolve();
@@ -2183,7 +2192,7 @@ require(["SHARED/jquery", "SHARED/outlookFabricUI", "SHARED/outlookJqueryUI", "S
                   // XXX force iOS don't use native style for inputs (shadow on upper border)
                   if (isIOS) {
                     $container.find("input[type='text'], textarea").css({
-                      "-webkit-appearance": "none"
+                      "-webkit-appearance" : "none"
                     });
                   }
                   try {

@@ -62,7 +62,7 @@
 
 	<div id="converting" class="ms-Grid-row centered" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-		<div class="ms-Grid-col ms-u-sm8 text-centered">
+		<div class="ms-Grid-col ms-u-sm10 text-centered">
 			<div>&{Outlook.convertingToWiki}</div>
 			<div class="ms-Spinner" style="display: inline-block;"></div>
 		</div>
@@ -70,7 +70,7 @@
 	</div>
 	<div id="converted" class="ms-Grid-row" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-		<div class="ms-Grid-col ms-u-sm8">
+		<div class="ms-Grid-col ms-u-sm10">
 			<div class="convertedInfo"></div>
 		</div>
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>

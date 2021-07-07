@@ -108,7 +108,7 @@
 
 	<div id="attaching" class="ms-Grid-row centered" style="display: none;">
 		<div class="ms-Grid-col ms-u-sm1 ms-u-md2 ms-u-lg2"></div>
-		<div class="ms-Grid-col ms-u-sm8 text-centered">
+		<div class="ms-Grid-col ms-u-sm10 text-centered">
 			<div>&{Outlook.addingAttachment}</div>
 			<div class="ms-Spinner" style="display: inline-block;"></div>
 		</div>
